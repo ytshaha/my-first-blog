@@ -2,6 +2,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product
 
 # Create your views here.
+def first_page(request):
+    return render(request, 'shop/first_page.html', {})
+
 def index(request):
     return render(request, 'shop/index.html', {})
 

@@ -2,6 +2,7 @@
 
 {% block content %}
 {% load static %}
+<!-- 동영상인덱스부분 -->
 <div>
     <div class="jb-box">
         <video muted autoplay loop>
@@ -10,41 +11,62 @@
         <div class="jb-text">
             <div class="index-container-1">
                 <div class='index-container-2'>   
-                    <h1 class="style-title">우리나라 최고의 병행수입명품 경매사이트</h1>
-                    <h1 class="style-title style-title-large">MOUM International</h1>                    
+                    <h1 class="style-title">우리나라의 유일한 병행수입명품 경매사이트</h1>
+                    <h1 class="style-title style-title-large">MOUM International</h1>
+                    {% if user.is_authenticated %}                
                     <button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button>
+                    {% else %}
+                    <button type="button" class="btn btn-warning style-button-joining">JOIN SITE</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
     </div>
 </div>
-
+<!-- 경영방식 -->
 <div class="container">
-    <div class="row">
-        <div class="col-2">
-            <div class="alert alert-primary" role="alert" style="min-height:400px;">A simple primary alert-check it out!</div>
-        </div>
-        <div class="col-8">
-            <div class="alert alert-primary" role="alert" style="min-height:400px;">A simple primary alert-check it out!</div>
-        </div>
-        <div class="col-2">
-            <div class="alert alert-primary" role="alert" style="min-height:400px;">A simple primary alert-check it out!</div>
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="title__how-to-buy">어떻게 사나?</h2>    
         </div>
     </div>
+</div>  
+<div class="container" style="padding-top:50px;">
+    <div class="alert alert-primary" style="min-height: 500px;">
+        <p>가입티켓을 받음.</p>
+        <p>가입함.</p>
+        <p>물품을 봄.</p>
+        <p>보니까 살만하다하면 비딩티켓을 산다.</p>
+        <p>하루 비딩티켓을 사용하고 물품에 비딩을 건다.(하루내엔 무제한.)</p>
+        <p>당첨되면 지불하고 물건을 산다.</p>
 </div>
-<!-- 테스트용으로 아래 넣어보자. -->
-<div class='row'>
-    <div class='col-2'>
-        <div class='alert alert-primary'>
-            ML_AUTO야 제발되라.
-        </div>
-    </div>
-    <div class='col-8 ml-auto'>
-        <div class='alert alert-primary'>
-            여기에 적용되면 된다.
-        </div>
-    </div>
 </div>
+<!-- 현재 오프라인매점 현황 -->
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="title__how-to-buy">오프라인 매장소개</h2>    
+        </div>
+    </div>
+</div>  
+<div class="container" style="padding-top:50px;">
+    <div class="col">
+        <div class="alert alert-primary">
+            <p>3개의 오프라인매점이 있다. </p>
+            <div class="row">
+                <div class="col-4">
+                    <div class="alert alert-secondary" style="min-height: 500px">신세계 파주점</div>
+                </div>
+                <div class="col-4">
+                    <div class="alert alert-secondary" style="min-height: 500px">전주 롯데백</div>
+                </div>
+                <div class="col-4">
+                    <div class="alert alert-secondary" style="min-height: 500px">"어딘가 롯데백</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>  
 {% endblock %} 
 
  
