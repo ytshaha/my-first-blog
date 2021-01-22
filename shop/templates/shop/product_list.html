@@ -1,0 +1,41 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+    <div class='row'>
+        <div class='col-12'>
+            <div class="alert alert-secondary">
+                <!-- 드롭다운메뉴달고 확인누르면 바로 product_list에 카테고리가 전달되어 if로 필터들어가서 리프레쉬되게.. -->
+                <!-- 브랜드별, 카테고리별 정도 설정하여 view에서는 sql ORM문을 통해 필터할수 있게하셈. 모든 필터를 명시적으로 보이게 하는것이 파이썬스러운것. -->
+                <a>카테고리</a>
+                <a>경매종료물품</a>
+            </div>
+        </div>
+    </div>
+    <div class='container'>
+        <div class='row'>
+        {% for product in products %}
+            <div class="col-4">
+                <div class="alert alert-secondary" style="min-height:300px;">
+                    <div class="row">
+                        <div class="col"><p>이름 : {{ product.product }}</p></div>
+                        <div class="col ml-auto">
+                            <a href="{% url 'product_detail' pk=product.pk %}">
+                                <p>보기</p>
+                            </a>
+                        </div>
+                        
+                    </div>
+                    <div class="col">
+                        <div class="alert alert-secondary" style="min-height:200px;">Image</div>
+                    </div>
+                    <div class="col"><p>상품가격 : {{ product.price }}</p></div>
+                    <div class="col"><p>경매중</p></div>
+                    
+                    
+                    
+                </div>
+            </div>
+        {% endfor %}
+        </div>    
+    </div>
+{% endblock %}

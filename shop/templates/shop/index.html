@@ -1,0 +1,50 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+{% load static %}
+<div>
+    <div class="jb-box">
+        <video muted autoplay loop>
+            <source src="{% static 'shop/home.mp4' %}" type="video/mp4">
+        </video>
+        <div class="jb-text">
+            <div class="index-container-1">
+                <div class='index-container-2'>   
+                    <h1 class="style-title">우리나라 최고의 병행수입명품 경매사이트</h1>
+                    <h1 class="style-title style-title-large">MOUM International</h1>                    
+                    <button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <div class="alert alert-primary" role="alert" style="min-height:400px;">A simple primary alert-check it out!</div>
+        </div>
+        <div class="col-8">
+            <div class="alert alert-primary" role="alert" style="min-height:400px;">A simple primary alert-check it out!</div>
+        </div>
+        <div class="col-2">
+            <div class="alert alert-primary" role="alert" style="min-height:400px;">A simple primary alert-check it out!</div>
+        </div>
+    </div>
+</div>
+<!-- 테스트용으로 아래 넣어보자. -->
+<div class='row'>
+    <div class='col-2'>
+        <div class='alert alert-primary'>
+            ML_AUTO야 제발되라.
+        </div>
+    </div>
+    <div class='col-8 ml-auto'>
+        <div class='alert alert-primary'>
+            여기에 적용되면 된다.
+        </div>
+    </div>
+</div>
+{% endblock %} 
+
+ 
