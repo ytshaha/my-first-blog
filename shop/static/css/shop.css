@@ -5,6 +5,13 @@
 .navbar a {
     color: gray;
 }
+
+.navbar-toggler {
+    border: 1px solid rgb(158, 158, 158)!important;
+}
+.navbar-toggler-icon {
+    color: gray!important;
+}
 .jb-box { 
     width: 100%; 
     height: 600px; 
@@ -32,7 +39,7 @@ video { width: 100%; }
 .index-container-1 {
     overflow-x: hidden;
     position: absolute;
-    height: 180px;
+    height: 100%;
     bottom: 30vh;
     width: 100%;
     top:200px;
@@ -57,6 +64,18 @@ video { width: 100%; }
     font-size: 25px !important;
 }
 
+.first-page-account {
+    color: #fff!important;
+    text-align: left!important;
+    text-transform: uppercase;
+    margin-top: 10px!important;
+    opacity: 1;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    font-size: 14px;
+    line-height: 1.1;
+    text-shadow: 0.4px 0.4px #000;
+}
 
 .style-title {
     color: #fff!important;
@@ -97,4 +116,61 @@ ul#horizontal-list {
 
 .social-button {
     width: 80px;
+}
+/* product_list 관련 */
+.product-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    border-style: none;
+}
+
+.product-card__name {
+    letter-spacing: 0;
+    line-height: normal;
+    font-style: normal;
+    font-size: .7875rem;
+    max-width: 100%;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.product-card__price {
+    letter-spacing: 0;
+    line-height: normal;
+    font-style: normal;
+    font-size: .7875rem;
+    max-width: 100%;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+
+.product-card__bidding {
+    letter-spacing: 0;
+    line-height: normal;
+    font-style: normal;
+    font-size: .8000rem;
+    max-width: 100%;
+    font-weight: 300;
+    text-transform: uppercase; 
+    padding-top:10px;
+}
+
+.product-icon-button {
+    box-sizing: border-box;
+    width: 2rem;
+    height: 2rem;
+    transition: background-color .3s cubic-bezier(.39,.575,.565,1);
+}
+
+/* 프로덕트 디테일부분 */
+@media (min-width: 2000px) {
+    .container-product-detail{
+        max-width: 1800px!important;
+    }
+}
+@media (min-width: 1200px) {
+    .container-product-detail{
+        max-width: 1140px!important;
+    }
 }

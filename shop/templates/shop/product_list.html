@@ -1,41 +1,61 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
+{% load static %}
+<!-- 카테고리의 네브바 -->
+    <!-- 드롭다운메뉴달고 확인누르면 바로 product_list에 카테고리가 전달되어 if로 필터들어가서 리프레쉬되게.. -->
+    <!-- 브랜드별, 카테고리별 정도 설정하여 view에서는 sql ORM문을 통해 필터할수 있게하셈. 모든 필터를 명시적으로 보이게 하는것이 파이썬스러운것. -->
+<ul class="nav">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Category</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">전체</a>
+        <a class="dropdown-item" href="#">의류</a>
+        <a class="dropdown-item" href="#">잡화</a>
+        <a class="dropdown-item" href="#">기타</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">좋아요누른거</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">경매종료물품(1주일이내)</a>
+      </div>
+    </li>
+  </ul>
+
+<!-- 프로덕트 목록 -->
+<div class='container-fluid' style="width:80%;">
     <div class='row'>
-        <div class='col-12'>
-            <div class="alert alert-secondary">
-                <!-- 드롭다운메뉴달고 확인누르면 바로 product_list에 카테고리가 전달되어 if로 필터들어가서 리프레쉬되게.. -->
-                <!-- 브랜드별, 카테고리별 정도 설정하여 view에서는 sql ORM문을 통해 필터할수 있게하셈. 모든 필터를 명시적으로 보이게 하는것이 파이썬스러운것. -->
-                <a>카테고리</a>
-                <a>경매종료물품</a>
-            </div>
-        </div>
-    </div>
-    <div class='container'>
-        <div class='row'>
-        {% for product in products %}
-            <div class="col-4">
-                <div class="alert alert-secondary" style="min-height:300px;">
-                    <div class="row">
-                        <div class="col"><p>이름 : {{ product.product }}</p></div>
-                        <div class="col ml-auto">
-                            <a href="{% url 'product_detail' pk=product.pk %}">
-                                <p>보기</p>
-                            </a>
-                        </div>
-                        
+    {% for product in products %}
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div style="min-height:300px;margin:10px;">
+                <picture>
+                    <a href="{% url 'product_detail' pk=product.pk %}"><img src="{% static 'shop/product_ex1/1_16_16.jpg' %}" class="product-main-image"></a>
+                </picture>
+                <!-- <div class="product-add-to-wishlist">
+                    <button aria-label="product_page_add_to_wishlist" aria-disabled="false" tabindex="0" class="product-icon-button">
+                        <svg class="ui-icon-navigation-wishlist-off" id="sprite-navigation-wishlist-off" viewBox="0 0 80 80">
+                            <path d="M40 74.8l-1.5-.9C37 72.9 0 50 0 30.3a27.3 27.3 0 015.7-17.1 21.1 21.1 0 0117-8c8.7 0 14.3 5.1 17.2 8.9a21.5 21.5 0 0117.6-8.9C72.1 5.2 80 18.1 80 30.3c0 20-37 42.7-38.6 43.6zm-17.3-64c-11.3 0-17.1 9.8-17.1 19.5 0 13.1 23.6 31 34.4 37.9 10.8-6.9 34.4-24.6 34.4-37.9 0-9.7-5.8-19.5-16.9-19.5s-14.9 9.6-15 9.7l-2.4 5.8-2.7-5.7c-.1-.4-4.7-9.8-14.7-9.8z" fill-rule="evenodd"></path>
+                        </svg>
+                    </button>
+                </div> -->
+
+                
+                <div class="row">
+                    <div class='col-8'>
+                        <span class="product-card__name">{{ product.product }}</span></br>
+                        <span class="product-card__price">₩{{ product.start_price }}</span>
                     </div>
-                    <div class="col">
-                        <div class="alert alert-secondary" style="min-height:200px;">Image</div>
+
+                    <div class='col-4 ml-auto align-self-center'>
+                        {% if product.bidding %}
+                        <p class="product-card__bidding text-right">경매중</p>
+                        {% else %}
+                        <p class="product-card__bidding text-right">{{ product.bidding_date|date:"m/d H시" }}</p>
+                        {% endif %}
                     </div>
-                    <div class="col"><p>상품가격 : {{ product.price }}</p></div>
-                    <div class="col"><p>경매중</p></div>
-                    
-                    
-                    
                 </div>
             </div>
-        {% endfor %}
-        </div>    
-    </div>
+        </div>
+    {% endfor %}
+    </div>    
+</div>
 {% endblock %}
