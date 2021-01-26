@@ -1,0 +1,48 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+{% load static %}
+<!-- 카테고리의 네브바 -->
+    <!-- 드롭다운메뉴달고 확인누르면 바로 product_list에 카테고리가 전달되어 if로 필터들어가서 리프레쉬되게.. -->
+    <!-- 브랜드별, 카테고리별 정도 설정하여 view에서는 sql ORM문을 통해 필터할수 있게하셈. 모든 필터를 명시적으로 보이게 하는것이 파이썬스러운것. -->
+<!-- <ul class="nav">
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Category</a>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="#">전체</a>
+        <a class="dropdown-item" href="#">여성의류</a>
+        <a class="dropdown-item" href="#">남성의류</a>
+        <a class="dropdown-item" href="#">신발</a>
+        <a class="dropdown-item" href="#">패션잡화</a>
+        <a class="dropdown-item" href="#">유아동</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">좋아요누른거</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">경매종료물품(1주일이내)</a>
+      </div>
+    </li>
+  </ul> -->
+
+
+<!-- 바잉티켓 리스트 헤더 -->
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center"  style="padding-top:20px;">BUYING TICKET RESULT</h2>
+          <hr class="index-title-divider" style="margin-bottom:0px;margin-top:15px;">
+      </div>
+  </div>
+</div>  
+
+<!-- 바잉티켓의 폼 -->
+<div class="container">
+  <div class='row'>
+    <div class="col-12 ml-auto mr-auto">
+        <p>ID : {{ buying_ticket.user }}</p>
+        <p>AMOUNT : {{ buying_ticket.amount }}</p>
+        <p>NUMBER : {{ buying_ticket.buying_number }}</p>
+        
+    </div>
+  </div>
+</div>
+{% endblock %}

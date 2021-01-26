@@ -5,28 +5,68 @@
 <!-- 카테고리의 네브바 -->
     <!-- 드롭다운메뉴달고 확인누르면 바로 product_list에 카테고리가 전달되어 if로 필터들어가서 리프레쉬되게.. -->
     <!-- 브랜드별, 카테고리별 정도 설정하여 view에서는 sql ORM문을 통해 필터할수 있게하셈. 모든 필터를 명시적으로 보이게 하는것이 파이썬스러운것. -->
-<ul class="nav">
+<!-- <ul class="nav">
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Category</a>
       <div class="dropdown-menu">
         <a class="dropdown-item" href="#">전체</a>
-        <a class="dropdown-item" href="#">의류</a>
-        <a class="dropdown-item" href="#">잡화</a>
-        <a class="dropdown-item" href="#">기타</a>
+        <a class="dropdown-item" href="#">여성의류</a>
+        <a class="dropdown-item" href="#">남성의류</a>
+        <a class="dropdown-item" href="#">신발</a>
+        <a class="dropdown-item" href="#">패션잡화</a>
+        <a class="dropdown-item" href="#">유아동</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#">좋아요누른거</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" href="#">경매종료물품(1주일이내)</a>
       </div>
     </li>
-  </ul>
+  </ul> -->
 
-<!-- 프로덕트 목록 -->
+
+<!-- 프로덕트 리스트 헤더 -->
+
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center"  style="padding-top:20px;">PRODUCT LIST</h2>
+            <hr class="index-title-divider" style="margin-bottom:0px;margin-top:15px;">
+        </div>
+    </div>
+</div>  
+
+<!-- 프로덕트 카테고리 선택바 -->
+<ul class="nav nav-tabs sticky-top-2" id="myTab" role="tablist" style="background-color:white;">
+    <li class="nav-item">
+      <a class="nav-link active" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">전체</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="woman-tab" data-toggle="tab" href="#woman" role="tab" aria-controls="woman" aria-selected="false">여성의류</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="man-tab" data-toggle="tab" href="#man" role="tab" aria-controls="man" aria-selected="false">남성의류</a>
+    </li>
+  </ul>
+  <div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="total" role="tabpanel" aria-labelledby="total-tab">
+        <p>전체 목록</p>
+    </div>
+    <div class="tab-pane fade" id="woman" role="tabpanel" aria-labelledby="woman-tab">
+        <p>여성의류 목록</p>
+    </div>
+    <div class="tab-pane fade" id="man" role="tabpanel" aria-labelledby="man-tab">
+        <p>남성의류 목록</p>
+    </div>
+  </div>
+  
+
+<!-- 프로덕트 리스트-->
+
 <div class='container-fluid' style="width:80%;">
     <div class='row'>
     {% for product in products %}
         <div class="col-lg-4 col-md-6 col-sm-12">
-            <div style="min-height:300px;margin:10px;">
+            <div class="product-list-image">
                 <picture>
                     <a href="{% url 'product_detail' pk=product.pk %}"><img src="{% static 'shop/product_ex1/1_16_16.jpg' %}" class="product-main-image"></a>
                 </picture>
@@ -38,18 +78,24 @@
                     </button>
                 </div> -->
 
-                
-                <div class="row">
-                    <div class='col-8'>
+                {% if product.bidding %}
+                <div class="row product-card__div product-card-on-bidding">
+                {% else %}
+                <div class="row product-card__div">
+                {% endif %}
+                    <div class='col-5 align-self-center'>
                         <span class="product-card__name">{{ product.product }}</span></br>
                         <span class="product-card__price">₩{{ product.start_price }}</span>
                     </div>
 
-                    <div class='col-4 ml-auto align-self-center'>
+                    <div class='col-5 ml-auto align-self-center product-card__bidding'>
                         {% if product.bidding %}
-                        <p class="product-card__bidding text-right">경매중</p>
+                        <p class="product-card__on-bidding text-right">On Bidding</p>
+                        <p class="text-right">2hr 10min left</p>
+                        
                         {% else %}
-                        <p class="product-card__bidding text-right">{{ product.bidding_date|date:"m/d H시" }}</p>
+                        <p class="text-right">START BIDDING AT</p>
+                        <p class="text-right">{{ product.bidding_date|date:"Y/m/d f" }}</p>
                         {% endif %}
                     </div>
                 </div>

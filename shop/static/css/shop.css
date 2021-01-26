@@ -1,3 +1,46 @@
+@font-face {
+    font-family: 'NanumBarunGothic';
+    font-style: normal;
+    font-weight: 400;
+    src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWeb.eot');
+    src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWeb.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWeb.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWeb.ttf') format('truetype');
+   }
+   
+   @font-face {
+    font-family: 'NanumBarunGothic';
+    font-style: normal;
+    font-weight: 700;
+    src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebBold.eot');
+    src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebBold.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebBold.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebBold.ttf') format('truetype')
+   }
+   
+   @font-face {
+    font-family: 'NanumBarunGothic';
+    font-style: normal;
+    font-weight: 300;
+    src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.eot');
+    src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.ttf') format('truetype');
+   }
+   
+   .nanumbarungothic * {
+    font-family: 'NanumBarunGothic', sans-serif;
+   }
+
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-block-start: 0.83em;
+    margin-block-end: 0.83em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    font-weight: bold;
+}
+
+.body {
+    font-family: 'NanumBarunGothic', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"!important;
+}
+
+
 .bg-white {
     background-color: white;
 }
@@ -12,6 +55,8 @@
 .navbar-toggler-icon {
     color: gray!important;
 }
+
+/* Index 페이지 */
 .jb-box { 
     width: 100%; 
     height: 600px; 
@@ -52,16 +97,25 @@ video { width: 100%; }
 }
 
 
-.title__how-to-buy {
+.index-title-index {
     line-height: 1.2 !important;
     color: rgba(0,0,0,.87) !important;
     opacity: 0.87 !important;
     font-weight: bold !important;
     text-transform: uppercase !important;
     letter-spacing: 1.5px !important;
-    padding-top: 50px !important;
+    padding-top: 50px;
     margin: 0px auto !important;
     font-size: 25px !important;
+}
+
+.index-title-divider {
+    width: 30px;
+    height: 1px !important;
+    border: none !important;
+    border-bottom: 1px solid #000000 !important;
+    opacity: 0.50 !important;
+    margin: 25px auto;
 }
 
 .first-page-account {
@@ -117,13 +171,161 @@ ul#horizontal-list {
 .social-button {
     width: 80px;
 }
+
+
+/* how-to buy 부분 */
+
+@media (min-width: 1200px)
+.container-card {
+    max-width: 1200px;
+}
+
+@media (min-width: 992px)
+.container-card {
+    max-width: 990px;
+}
+@media (min-width: 768px)
+.container-card {
+    max-width: 720px;
+}
+@media (min-width: 576px)
+.container-card {
+    max-width: 540px;
+}
+.container-card {
+    width: 100%;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.process-card-div, .store-card-div {
+    box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
+    margin: 20px auto;
+    padding-top:20px;
+    border-radius: 0.7rem;
+}
+
+.recent-item-card-div {
+    margin: 20px auto;
+    padding-top:20px;
+}
+
+.process-card-onecard-div {
+    margin:0px;
+    padding:5px;
+    /* border:1px solid rgb(238, 238, 238); */
+    border-radius: 1rem;
+}
+
+.store-card-onecard-div {
+    margin:0px 10px;
+    padding-bottom:15px;
+    border-radius: 1rem;
+}
+
+.process-card-number {
+    width:70px;
+    padding:0px;
+    margin-bottom:0px;
+    margin-top:10px;
+}
+
+.process-card-header {
+    margin-top:10px;
+    font-size:large!important;
+    font-weight:bold;
+}
+
+.store-card-header {
+    margin-top:10px;
+    font-size:large!important;
+    font-weight:bold;
+}
+
+.store-card-map {
+    width:100%!important;
+    height:200px!important;
+}
+
+.process-card-img {
+    width:150px;
+    position:relative;
+    margin-bottom:10px;
+}
+
+
+.process-card-description li {
+    padding-top: 0px;
+    line-height: normal;
+    font-style: normal;
+    font-size: 0.9rem;
+    display: block;
+    line-height: 1.6;
+    
+}
+
+.store-card-description li{
+    padding-top: 0px;
+    line-height: normal;
+    font-style: normal;
+    font-size: 1rem;
+    display: block;
+    
+}
+
+.info-card-description li{
+    padding-top: 6px;
+    line-height: normal;
+    font-style: normal;
+    font-size: 1rem;
+    display: block;
+    line-height: 1.6;
+    font-family: 'NanumBarunGothic'!important;
+}
+
+.process-card-description ul, .store-card-description ul{
+    padding-left:10px;
+}
+
+.info-card-description ul {
+    padding-left:10px;
+}
+
 /* product_list 관련 */
+
+.sticky-top-2 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 46px;
+    z-index: 2;
+}
+.product-list-image {
+    min-height:300px;
+    margin:5px;
+    border-top:1px solid rgb(238, 238, 238);
+    border-bottom:2px solid rgb(238, 238, 238);
+    border-left:1px solid rgb(238, 238, 238);
+    border-right:2px solid rgb(238, 238, 238);
+    
+    padding:0px;
+}
+
 .product-main-image {
     width: 100%;
     height: 100%;
     object-fit: contain;
     display: block;
     border-style: none;
+    padding:0px;
+}
+
+.product-card__div {
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-left:10px;
+    padding-right:10px;
 }
 
 .product-card__name {
@@ -156,11 +358,34 @@ ul#horizontal-list {
     padding-top:10px;
 }
 
+.product-card__on-bidding {
+    font-size: 0.8rem;
+    color:orange;
+    font-weight: bold;
+}
+
 .product-icon-button {
     box-sizing: border-box;
     width: 2rem;
     height: 2rem;
     transition: background-color .3s cubic-bezier(.39,.575,.565,1);
+}
+
+.company-card-img {
+    width:80px!important;
+    position:relative;
+    margin-bottom:10px;
+}
+
+.company-text-orange {
+    color:white;
+    background-color: orange;
+}
+
+.company-text-black {
+    color:white;
+    background-color: gray;
+    font-weight: bold;
 }
 
 /* 프로덕트 디테일부분 */
@@ -173,4 +398,114 @@ ul#horizontal-list {
     .container-product-detail{
         max-width: 1140px!important;
     }
+}
+
+.detail-image {
+    width:100%;
+    height:100%;
+    object-fit: cover;
+    object-position: 70% 70%;
+    overflow: hidden;
+    padding:10px;
+}
+
+.detail-image-header {
+    border-top: 1px solid rgb(238, 238, 238);
+    padding-top:20px;
+}
+
+.detail-image-header-text {
+    letter-spacing: 0;
+    line-height: normal;
+    font-size: 1rem;
+    font-weight:bold;
+    color: inherit;
+    display: block;
+    flex: 1;
+}
+
+
+
+.product-detail-number,
+.product-detail-brand {
+    letter-spacing: 0;
+    line-height: normal;
+    font-style: normal;
+    font-size: .7875rem;
+    color: inherit;
+    display: block;
+    flex: 1;
+}
+.product-detail-brand {
+    font-size: 1rem;
+    font-weight:400;
+}
+
+
+.product-detail-product-name{
+    letter-spacing: 0;
+    line-height: normal;
+    font-style: normal;
+    font-size: 1.78125rem;
+    color: inherit;
+    font-weight: 800;
+}
+
+.product-detail-head {
+    padding-bottom: 5px;
+}
+
+.product-detail-main {
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgb(238, 238, 238);
+}
+.product-detail-bidding, .product-detail-bidding-info {
+    padding-top:20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgb(238, 238, 238);
+}
+
+.product-detail-bidding-header {
+    margin-bottom: 5px;
+}
+
+
+/* .product-detail-start-price, .product-detail-limit-price {
+    letter-spacing: 0;
+    line-height: normal;
+    font-size: 0.8rem;
+    font-weight:700;
+    color: inherit;
+    display: block;
+    flex: 1;
+    margin-bottom:10px;
+} */
+
+.table-bidding-info td {
+    font-size: 0.74rem;
+    font-weight:400;
+    color: inherit;
+}
+
+.table-bidding-info th {
+    font-size: 0.74rem;
+    font-weight:700;
+    color: inherit;
+}
+
+.table-bidding-info tr {
+    height:20px;
+}
+
+.product-detail-description {
+    padding-top:20px;
+    padding-bottom: 20px;
+}
+
+.product-detail-description li{
+    padding-top: 6px;
+    line-height: normal;
+    font-style: normal;
+    font-size: .7875rem;
+    display: block;
 }
