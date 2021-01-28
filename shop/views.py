@@ -10,9 +10,20 @@ def index(request):
     return render(request, 'shop/index.html', {'products':products})
 
 @login_required
-def product_list(request):
-    products = Product.objects.all()
+def product_list(request, option=False):
+    if not option:
+        products = Product.objects.all()
+    else:
+        products = Product.objects.filter(category__name=option)
     return render(request, 'shop/product_list.html', {'products':products})
+
+
+# 아직 잘안되므로 꼭 확인하자.......
+def product_search(request):
+    search = request.GET.get('search','')
+    products = Product.objects.filter(product__exact=search)
+    return render(request, 'shop/product_list.html', {'products':products})
+
 
 @login_required
 def product_detail(request, pk):
@@ -46,12 +57,19 @@ def buying_ticket(request):
         form = BuyingTicketForm()
     return render(request, 'shop/buying_ticket.html', {'form':form})
 
+class BuyingTicketResultView(generic.DetailView):
+    model = BuyingTicket
+    template_name = 'shop/buying_ticket_result.html'
+    context_object_name = 'buying_ticket'
+
+
 @login_required
 def bidding(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'shop/bidding.html', {'product':product})
 
-@login_required
-def buying_ticket_result(request, pk):
-    buying_ticket = get_object_or_404(BuyingTicket, pk=pk)
-    return render(request, 'shop/buying_ticket_result.html', {'buying_ticket':buying_ticket})
+# @login_required
+# def buying_ticket_result(request, pk):
+#     buying_ticket = get_object_or_404(BuyingTicket, pk=pk)
+#     return render(request, 'shop/buying_ticket_result.html', {'buying_ticket':buying_ticket})
+

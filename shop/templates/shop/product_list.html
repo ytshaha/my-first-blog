@@ -36,7 +36,7 @@
 </div>  
 
 <!-- 프로덕트 카테고리 선택바 -->
-<ul class="nav nav-tabs sticky-top-2" id="myTab" role="tablist" style="background-color:white;">
+<!-- <ul class="nav nav-tabs sticky-top-2" id="myTab" role="tablist" style="background-color:white;">
     <li class="nav-item">
       <a class="nav-link active" id="total-tab" data-toggle="tab" href="#total" role="tab" aria-controls="total" aria-selected="true">전체</a>
     </li>
@@ -58,7 +58,55 @@
         <p>남성의류 목록</p>
     </div>
   </div>
-  
+   -->
+<!-- <div class="btn-toolbar sticky-top-2" role="toolbar" aria-label="Toolbar with button groups" style="background-color:white;padding:10px;border-bottom:1px solid rgb(238, 238, 238);">
+    <div class="btn-group mr-2" role="group" aria-label="Group1">
+        <div type="submit" class="btn btn-secondary">전체</button>
+        
+    </div>
+    <p><bold> 전체</bold></p>
+    <div class="btn-group mr-2" role="group" aria-label="Group2">
+        <a href="{% url 'product_list' 'woman' %}"><button type="button" class="btn btn-secondary">여성의류</button></a>
+        <button type="button" class="btn btn-secondary">남성의류</button>
+    </div>
+    <div class="btn-group mr-2" role="group" aria-label="Group3">
+        <button type="button" class="btn btn-secondary">신발</button>
+        <button type="button" class="btn btn-secondary">패션잡화</button>
+    </div>
+    <div class="btn-group" role="group" aria-label="Group4">
+        <button type="button" class="btn btn-secondary">유아동</button>
+    </div>
+</div>
+<form method="POST" class='post-form'>
+    <button type="submit" name="total" class="btn btn-secondary">전체</button>
+</form> -->
+
+<div class='container-fluid sticky-top-2 text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
+    <div class='container'>
+        <div class="row">
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <a href="{% url 'product_list' %}"><p class="product-list-category-text">전체</p></a>
+            </div>
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <a href="{% url 'product_list' 'woman' %}"><p class="product-list-category-text">여성의류</p></a>
+            </div>
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <a href="{% url 'product_list' 'man' %}"><p class="product-list-category-text">남성의류</p></a>
+            </div>
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <a href="{% url 'product_list' 'shoes' %}"><p class="product-list-category-text">신발</p></a>
+            </div>
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <a href="{% url 'product_list' 'fashion_accessory' %}"><p class="product-list-category-text">패션잡화</p></a>
+            </div>
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <a href="{% url 'product_list' 'kid' %}"><p class="product-list-category-text">유아동</p></a>
+            </div>
+            
+        </div>
+    </div>   
+</div>
+
 
 <!-- 프로덕트 리스트-->
 

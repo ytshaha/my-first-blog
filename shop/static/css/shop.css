@@ -301,6 +301,30 @@ ul#horizontal-list {
     top: 46px;
     z-index: 2;
 }
+
+.product-list-cateogory {
+    margin:0px!important;
+    padding:0px!important;
+}
+
+.product-list-category-text {
+    font-size: 0.9rem;
+    color: rgb(128, 128, 128);
+    font-weight: bold;
+    vertical-align: middle;
+    margin:0px;
+}
+
+.product-list-category-text:hover {
+    font-size: 0.9rem;
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+    vertical-align: middle;
+    margin:0px;
+
+}
+
 .product-list-image {
     min-height:300px;
     margin:5px;

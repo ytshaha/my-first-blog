@@ -28,11 +28,11 @@
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'product_list' %}">전체</a>
-              <a class="dropdown-item" href="#">여성의류</a>
-              <a class="dropdown-item" href="#">남성의류</a>
-              <a class="dropdown-item" href="#">신발</a>
-              <a class="dropdown-item" href="#">패션잡화</a>
-              <a class="dropdown-item" href="#">유아동</a>
+              <a class="dropdown-item" href="{% url 'product_list' 'woman' %}">여성의류</a>
+              <a class="dropdown-item" href="{% url 'product_list' 'man' %}">남성의류</a>
+              <a class="dropdown-item" href="{% url 'product_list' 'shoes' %}">신발</a>
+              <a class="dropdown-item" href="{% url 'product_list' 'fashion_accessory' %}">패션잡화</a>
+              <a class="dropdown-item" href="{% url 'product_list' 'kid' %}">유아동</a>
             </div>
           </li>
           
@@ -56,23 +56,6 @@
           </li>
           {% endif %}      
               
-<ul class="nav">
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Category</a>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="#">전체</a>
-        <a class="dropdown-item" href="#">여성의류</a>
-        <a class="dropdown-item" href="#">남성의류</a>
-        <a class="dropdown-item" href="#">신발</a>
-        <a class="dropdown-item" href="#">패션잡화</a>
-        <a class="dropdown-item" href="#">유아동</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">좋아요누른거</a>
-        <div class="dropdown-divider"></div>
-        <a class="dropdown-item" href="#">경매종료물품(1주일이내)</a>
-      </div>
-    </li>
-  </ul>
 
           <!-- <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -89,8 +72,8 @@
             <a class="nav-link disabled" href="#">Disabled</a>
           </li>
         </ul> -->
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <form class="form-inline my-2 my-lg-0" method="get" action="{% url 'product_search' %}">
+          <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search" value="{{ search }}">
           <!-- 왜 아웃라인은 안되냐 확인필요. -->
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="color:black;">Search</button>
         </form>
