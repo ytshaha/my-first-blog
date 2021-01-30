@@ -416,6 +416,7 @@ ul#horizontal-list {
 }
 
 .product-list-image {
+    
     min-height:300px;
     margin:5px;
     border-top:1px solid rgb(238, 238, 238);
@@ -423,7 +424,6 @@ ul#horizontal-list {
     border-left:1px solid rgb(238, 238, 238);
     border-right:2px solid rgb(238, 238, 238);
     padding:0px;
-    object-fit:cover;
 }
 
 .product-main-image {
@@ -433,6 +433,7 @@ ul#horizontal-list {
     display: block;
     border-style: none;
     padding:0px;
+    object-fit:cover;
 }
 
 .product-card__div {
