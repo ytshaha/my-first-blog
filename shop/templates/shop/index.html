@@ -13,11 +13,11 @@
                 <div class='index-container-2'>   
                     <h1 class="style-title">우리나라의 유일한 병행수입명품 경매사이트</h1>
                     <h1 class="style-title style-title-large">MOUM EIGHTY-EIGHT</h1>
-                    {% if user.is_authenticated %}                
-                    <button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button>
-                    {% else %}
-                    <button type="button" class="btn btn-warning style-button-joining">JOIN SITE</button>
-                    {% endif %}
+                    <!-- {% if user.is_authenticated %}                 -->
+                    <a href="{% url 'product_list' %}"><button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button></a>
+                    <!-- {% else %} -->
+                    <!-- <button type="button" class="btn btn-warning style-button-joining">JOIN SITE</button> -->
+                    <!-- {% endif %} -->
                 </div>
             </div>
         </div>
@@ -99,10 +99,10 @@
             <div class="text-center" style="padding:0px;">
                 <img class="process-card-img mx-auto" src="{% static 'shop/open-iconic/svg/zoom-in.svg' %}">
             </div>
-            <div class="process-card-description">
+            <div class="process-card-description text-center">
                 <ul>
-                    <li>1. 마음에 드는 물품이 있는지 확인.</li>
-                    <li>2. 마음에 드는 물품의 BIDDING DATE를 확인.</li>
+                    <li>- 마음에 드는 물품이 있는지 확인 -</li>
+                    <li>- 마음에 드는 물품의 BIDDING DATE를 확인 -</li>
                 </ul>
             </div>
         </div>
@@ -117,11 +117,11 @@
             <div class="text-center" style="padding:0px;">
                 <img class="process-card-img mx-auto" src="{% static 'shop/open-iconic/svg/envelope-closed.svg' %}">
             </div>
-            <div class="process-card-description">
+            <div class="process-card-description text-center">
                 <ul>
-                    <li>1. BIDDING-TICKET을 구매.</li>
-                    <li>2. 물품의 BIDDING 일정 TICKET을 사용</li>
-                    <li>※ TICKET 사용 시 그날의 모든 BIDDING 가능.</li>
+                    <li>- BIDDING-TICKET을 구매 -</li>
+                    <li>- 물품의 BIDDING 일정 TICKET을 사용 -</li>
+                    <li>※ TICKET 사용 시 그날의 모든 BIDDING 가능 -</li>
                     
                 </ul>
             </div>
@@ -137,11 +137,11 @@
             <div class="text-center" style="padding:0px;">
                 <img class="process-card-img mx-auto" src="{% static 'shop/open-iconic/svg/people.svg' %}">
             </div>
-            <div class="process-card-description">
+            <div class="process-card-description text-center">
                 <ul>
-                    <li>1. 물품 내 BIDDING 참여</li>
-                    <li>2. 현재 가격과 가격 Step 고려하여 BIDDING</li>
-                    <li>3. BIDDING이 끝난 후 당첨여부 확인</li>
+                    <li>- 물품 내 BIDDING 참여 -</li>
+                    <li>- 현재 가격과 가격 Step 고려하여 BIDDING -</li>
+                    <li>- BIDDING이 끝난 후 당첨여부 확인 -</li>
                     
                 </ul>
             </div>
@@ -157,11 +157,11 @@
             <div class="text-center" style="padding:0px;">
                 <img class="process-card-img mx-auto" src="{% static 'shop/open-iconic/svg/home.svg' %}">
             </div>
-            <div class="process-card-description">
+            <div class="process-card-description text-center">
                 <ul>
-                    <li>1. 배송장 작성.</li>
-                    <li>2. MOUM의 초고속 배송시스템으로 배송</li>
-                    <li>3. 내손에 물품 도착!</li>
+                    <li>- 배송장 작성 -</li>
+                    <li>- MOUM의 초고속 배송시스템으로 배송 -</li>
+                    <li>- 내손에 물품 도착 -</li>
                     
                 </ul>
             </div>
@@ -170,159 +170,7 @@
 </div>
 
 
-<!-- 기업소개 카드 -->
-
-<div class="container">
-    <div class='row'>
-        <div class="col-12 ml-auto mr-auto ">
-            <h2 class="index-title-index text-center">COMPANY INFO</h2>
-            <hr class="index-title-divider">
-        </div>
-    </div>
-</div>
-<div class="container store-card-div" style="margin-top:10px;">
-    <div class="row">
-        <div class="col-lg-6 col-sm-6 mx-auto store-card-onecard-div">
-            <div class="text-center" style="padding:0px;">
-                <img class="company-card-img mx-auto" src="{% static 'shop/open-iconic/svg/briefcase.svg' %}">
-            </div>
-            <div class="store-card-header">
-                <p class="text-center">ABOUT US</p>
-            </div>
-            <div class="info-card-description text-left">
-                <ul>
-                    <li><p>모움인터내셔널은 이태리 및 유럽등지에서 명품 잡화, 의류, 신발, 악세사리를 수입하여 합리적인 가격과 신뢰를 바탕으로 정직하게 수입하여 유통하는 회사로써 내국인 들에게 회사명만 말하면 믿음이 떠오르는 회사로 자리 매김 하겠습니다.</p></li>
-                    <li><p>- 사업자등록번호 : 141-85-09861</p></li>
-                    <li><p>- 통신판매업번호 : 2021-경기파주-XXXX</p></li>
-                    <li><p>- 이메일 : selectedmoum@naver.com</p></li>
-                </ul>
-            </div>
-            <div class="col-12 text-center">
-                <img src="{% static 'shop/about_moum.jpg' %}" alt="TIPA 인증" style="width:100%;">
-            </div>
-        </div>
-        <div class="col-lg-6 col-sm-6 mx-auto store-card-onecard-div">
-            <div class="text-center" style="padding:0px;">
-                <img class="company-card-img mx-auto" src="{% static 'shop/open-iconic/svg/check.svg' %}">
-            </div>
-            <div class="store-card-header">
-                <p class="text-center">ABOUT OUR PRODUCT</p>
-            </div>
-            <div class="info-card-description text-left">
-                <ul>
-                    <li><p><span class="company-text-orange">모움은 관세청 인증의 병행수입통관업체</span>입니다. 모움에서 판매하는 브랜드 상품은 대한민국 세관을 통과한 <span class="company-text-orange">100%</span> 정품입니다.</p></li>
-                    <li><p>판매자가 직접 이태리 현지에서 딜러 없이 수입하는 것으로, 직접 셀렉하는 것이기에 최고의 상품을 합리적인 가격으로 판매할 수 있도록 노력하고 있습니다. </p></li>
-                    <li><p>고객님들께서 온라인에서 겪으실 우려가 있는 가품(위조상품)으로부터 안심하고 쇼핑하실 수 있도록 아래와 같이 노력하고 있습니다. </p></li>
-                    <li><p><span class="company-text-black">첫 번째, 당사는 위조품 수출입, 유통 방지 위원회 'TIPA CAC'에 가입되어 있습니다.</span>
-                        TIPA에서 실시하는 상품 및 물류 창고의 관리상태확인, 상품의 샘플감정을 주기적으로 진행하고 있으며 분기별 1회 이상 위조품 식별 및 유통예방교육을 받고 있습니다.</p></li>
-                    <li><p><span class="company-text-black">두 번째, 위조품 의심, 상품 상담 및 신고를 받고 있습니다.</span>
-                        당사는 신고 접수된 정보를 TIPA에 전달하고 TIPA는 해당 상표권자에게 해당 상품의 감정의뢰를 하여 정품 여부를 확인해드립니다. </p></li>
-                    <li><p><span class="company-text-black">세 번째, 판매한 상품이 위조품으로 판명 시 100% 보상해드립니다.</span>
-                        당사는 SGI 서울보증보험에 가입되어 있으며 구매한 물품이 위조품으로 확인될 경우 가입된 보험에 따라 구매 금액의 100%를 보상해 드립니다.</p></li>
-                    <li><p></p></li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- 현재 오프라인매점 현황 -->
-<div class="container">
-    <div class='row'>
-        <div class="col-12 ml-auto mr-auto ">
-            <h2 class="index-title-index text-center">OFFLINE STORE</h2>
-            <hr class="index-title-divider">
-        </div>
-    </div>
-</div>  
-<div class="container store-card-div" style="margin-top:10px;">
-    <div class="row">
-        <div class="col-11 mx-auto store-card-onecard-div">
-            <div class="store-card-header">
-                <p class="text-center">모움 인터내셔널</p>
-            </div>
-            <div class="store-card-description text-center">
-                <ul>
-                    <li><p>주소 : 경기 파주시 필승로210, 109~112호</p></li>
-                </ul>
-            </div>
-            <div class="store-card-header-div">
-                <div id="daumRoughmapContainer1611666801738" class="root_daum_roughmap root_daum_roughmap_landing store-card-map"></div>
-            </div>
-        </div>
-        <div class="col-11 mx-auto store-card-onecard-div">
-            <div class="store-card-header">
-                <p class="text-center">모움 신세계사이먼 파주 프리미엄아울렛</p>
-                
-            </div>
-            <div class="store-card-description text-center">
-                <ul>
-                    <li><p>주소 : 경기도 파주시 탄현면 필승로 200</p></li>
-                </ul>
-            </div>
-            <div class="store-card-header-div">
-                <div id="daumRoughmapContainer1611659027413" class="root_daum_roughmap root_daum_roughmap_landing store-card-map"></div>
-            </div>
-        </div>
-        <div class="col-11 mx-auto store-card-onecard-div">
-            <div class="store-card-header">
-                <p class="text-center">모움 롯데백화점 전주점</p>
-            </div>
-            <div class="store-card-description text-center">
-                <ul>
-                    <li><p>주소 : 전북 전주시 완산구 온고을로 2</p></li>
-                </ul>
-            </div>
-            <div class="store-card-header-div">
-                <div id="daumRoughmapContainer1611668212139" class="root_daum_roughmap root_daum_roughmap_landing store-card-map"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
 <!-- JavaScript 영역 -->
 
-<!-- 카카오맵 모움 본점 설치스크립트 -->
-<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
-
-<!-- 카카오맵 모움 본점 실행스크립트 -->
-<script charset="UTF-8">
-	new daum.roughmap.Lander({
-		"timestamp" : "1611666801738",
-		"key" : "245b4",
-		"mapWidth" : "100%",
-		"mapHeight" : "200"
-	}).render();
-</script>
-
-
-<!-- 카카오맵 모움 신세계사이먼 설치스크립트 -->
-<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
-
-<!-- 카카오맵 모움 신세계사이먼 실행스크립트 -->
-<script charset="UTF-8">
-	new daum.roughmap.Lander({
-		"timestamp" : "1611659027413",
-		"key" : "2459t",
-		"mapWidth" : "100%",
-		"mapHeight" : "200"
-	}).render();
-</script>
-
-
-
-<!-- 카카오맵 모움 롯데백화점 전주점 설치스크립트 -->
-<script charset="UTF-8" class="daum_roughmap_loader_script" src="https://ssl.daumcdn.net/dmaps/map_js_init/roughmapLoader.js"></script>
-
-<!-- 카카오맵 모움 롯데백화점 전주점 실행스크립트 -->
-<script charset="UTF-8">
-	new daum.roughmap.Lander({
-		"timestamp" : "1611668212139",
-		"key" : "245bb",
-		"mapWidth" : "100%",
-		"mapHeight" : "200"
-	}).render();
-</script>
 
 {% endblock %}

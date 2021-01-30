@@ -4,12 +4,11 @@
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/shop.css' %}">
-    <title>Good, world!</title>
+    <title>MOUM, 시작</title>
   </head> 
   
   <body>
@@ -18,7 +17,8 @@
     <nav class="navbar sticky-top navbar-expand-lg" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255); padding: 6px 24px 0px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
       <a class="navbar-brand" href="{% url 'index' %}"><bold>MOUM<small>_모움</small></bold></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <!-- <span class="navbar-toggler-icon"></span> -->
+        <img src="{% static 'shop/open-iconic/svg/menu.svg' %}" alt="아이콘" style="width:12px;">
       </button>
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -38,7 +38,10 @@
           
           <li class="nav-item">
             <a class="nav-link" href="{% url 'buying_ticket' %}">TICKET</a>
-          </li> 
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'introduction' %}">ABOUT MOUM</a> 
+          </li>
           <li class="nav-item">
             <a class="nav-link" href="#">MY</a> 
           </li>
@@ -100,7 +103,7 @@
     <!-- 여기부터 Footer -->      
     <div class="container" style="padding-top:50px">
       <div class="row">
-        <div class="col-lg-4 col-sm-12 mr-auto">
+        <div class="col-lg-3 col-sm-12 mr-auto">
           <!-- <div class="alert alert-secondary"> -->
             <div class="footer-social">
               <span>Connect With Us</span>
@@ -141,32 +144,33 @@
           </div>
 
       
-        <div class="col-lg-4 col-sm-12 mr-auto">
+        <div class="col-lg-6 col-sm-12 mr-auto">
           <div>
             <div style="box-sizing: border-box; padding: 0px; width: 100%; height: 300px;">
               <div cols="4" rows="1" style="position: relative; display: block; height: 100%; overflow: hidden;">
                 <div class="style__companyDetails___A6xCJ">
                   <p>© 2021-2025 MOUM International, LLC. All Rights Reserved.</p>
-                  <p>경기 파주시 필승로210, 109~112호</p>
-                  <p><a href="tel:010-1111-1111">010-1111-1111</a></p>
-                  <ul>
-                    <li><a href="/terms-of-service">Terms of Service</a></li>
-                    <li><a href="/copyright-policy">Copyright Policy</a></li>
-                    <li><a href="/privacy-policy">Privacy Policy</a></li>
-                  </ul>
+                  <p>Address : 경기 파주시 필승로210, 109~112호</p>
+                  <p>Tel : 010-1111-1111</p>
+                  
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="col-lg-4 col-sm-12 mr-auto">
+        <div class="col-lg-3 col-sm-12 mr-auto">
+          <ul>
+            <li><a href="/terms-of-service">Terms of Service</a></li>
+            <li><a href="/copyright-policy">Copyright Policy</a></li>
+            <li><a href="/privacy-policy">Privacy Policy</a></li>
+          </ul>
         </div>
       </div>
     <!-- Footer 끝 -->
 
     <!-- 로긴되어있지 않다면? -->
     {% else %}
-    <div class="container-fluid">
+    <div style='height:1200px;'>
       <div class="jb-box first-page">
           <img src="{% static 'shop/first_page_image.jpg' %}" style="width:100%;height:50%">
           <div class="jb-text">
@@ -174,7 +178,7 @@
                   <div class='index-container-2'>   
                       <h1 class="style-title">우리나라의 유일한 병행수입명품 경매사이트</h1>
                       <h1 class="style-title style-title-large">MOUM International</h1>
-                      <div style='margin-top:20px;'>
+                      <div class="style-title-desc">
                         <p class="first-page-account">처음 오신분이라면 가입티켓을 통한 가입</p>
                         <p class="first-page-account">기존 고객이시라면 로그인</p>
                       </div>

@@ -14,6 +14,7 @@ class Product(models.Model):
     bidding = models.BooleanField(default=False, help_text=u'경매여부')
     bidding_date = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
     category = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
+    image = models.ImageField(upload_to="shop/images")
     # image, 이것은 썸네일이든 그냥 이미지든 다른 Model에서 ForeignKey로 참조할 것.(조영일 슬라이드 참고)
     # category, 나중에 추가, 2-depth 이상일경우 Django-mptt라이브러리사용(조영일 슬라이드 참고)
     

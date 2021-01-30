@@ -29,8 +29,8 @@
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
-            <h2 class="index-title-index text-center"  style="padding-top:20px;">PRODUCT LIST</h2>
-            <hr class="index-title-divider" style="margin-bottom:0px;margin-top:15px;">
+            <h2 class="index-title-index text-center">PRODUCT LIST</h2>
+            <hr class="index-title-divider">
         </div>
     </div>
 </div>  
@@ -110,13 +110,15 @@
 
 <!-- 프로덕트 리스트-->
 
-<div class='container-fluid' style="width:80%;">
+<div class='container' style="width:80%;">
     <div class='row'>
     {% for product in products %}
         <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="product-list-image">
                 <picture>
-                    <a href="{% url 'product_detail' pk=product.pk %}"><img src="{% static 'shop/product_ex1/1_16_16.jpg' %}" class="product-main-image"></a>
+                    <a href="{% url 'product_detail' pk=product.pk %}"><img src="{{ product.image.url }}" class="product-main-image"></a>
+                    <!-- <a href="{% url 'product_detail' pk=product.pk %}"><img src="{% static 'shop/product_ex1/1_16_16.jpg' %}" class="product-main-image"></a> -->
+                    
                 </picture>
                 <!-- <div class="product-add-to-wishlist">
                     <button aria-label="product_page_add_to_wishlist" aria-disabled="false" tabindex="0" class="product-icon-button">
@@ -131,12 +133,13 @@
                 {% else %}
                 <div class="row product-card__div">
                 {% endif %}
-                    <div class='col-5 align-self-center'>
-                        <span class="product-card__name">{{ product.product }}</span></br>
-                        <span class="product-card__price">₩{{ product.start_price }}</span>
+                    <div class='col-6 align-self-center'>
+                        <span class="product-card__name">{{ product.brand }}</span></br>
+                        <span class="product-card__name" style="font-weight:bold;font-size:20px;">{{ product.product }}</span></br>
+                        <span class="product-card__price" style="font-weight:bold;font-size:15px;">₩{{ product.start_price }}</span>
                     </div>
 
-                    <div class='col-5 ml-auto align-self-center product-card__bidding'>
+                    <div class='col-6 ml-auto align-self-center product-card__bidding'>
                         {% if product.bidding %}
                         <p class="product-card__on-bidding text-right">On Bidding</p>
                         <p class="text-right">2hr 10min left</p>

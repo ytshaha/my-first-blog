@@ -1,13 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import Product, Brand, Category, BuyingTicket
 from django.contrib.auth.decorators import login_required
-from .forms import BuyingTicketForm
+from .forms import BuyingTicketForm, ProductForm
 from django.views import generic
 # from .forms import PostForm, CommentForm
+from django.core.files.storage import FileSystemStorage
 
 def index(request):
     products = Product.objects.all()[:3]
     return render(request, 'shop/index.html', {'products':products})
+
+def introduction(request):
+    return render(request, 'shop/introduction.html', {})
 
 @login_required
 def product_list(request, option=False):
@@ -29,6 +33,17 @@ def product_search(request):
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
     return render(request, 'shop/product_detail.html', {'product':product})
+
+@login_required
+def product_upload(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('product_list')
+    else:
+        form = ProductForm()
+    return render(request, 'shop/product_upload.html', {'form':form})
 
 @login_required
 def buying_ticket(request):

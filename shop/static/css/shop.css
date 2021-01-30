@@ -36,9 +36,144 @@ h2 {
     font-weight: bold;
 }
 
-.body {
+body {
     font-family: 'NanumBarunGothic', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"!important;
 }
+
+.index-container-1 {
+    overflow-x: hidden;
+    position: absolute;
+    height: 100%;
+    bottom: 30vh;
+    width: 100%;
+    top:200px;
+}
+
+.style-title {
+    color: #fff;
+    text-align: left!important;
+    text-transform: uppercase;
+    margin: 0!important;
+    opacity: 1;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    font-size: 25px;
+    line-height: 1.1;
+    text-shadow: 0.4px 0.4px #000;
+}
+
+.index-container-2 {
+    position: relative;
+    margin-left: 100px;
+    height: 100%;
+}
+
+.style-title-large {
+    font-size: 47px;
+}
+
+.style-button-joining {
+    width: 176px;
+    margin-top: 20px;
+    color:white;
+}
+
+.style-title-desc {
+    margin-top:20px;
+}
+.jb-box { 
+    width: 100%; 
+    height: 600px; 
+    overflow: hidden;
+    margin: 0px auto; 
+    position: relative; 
+}
+
+.first-page { 
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden;
+    margin: 0px auto; 
+    position: relative; 
+}
+
+
+@media (max-width: 992px) {
+    .jb-box { 
+        width: 100%; 
+        height: 500px; 
+        overflow: hidden;
+        margin: 0px auto; 
+        position: relative;
+
+    }
+    .first-page { 
+        width: 100%; 
+        height: 1200px; 
+        overflow: hidden;
+        margin: 0px auto; 
+        position: relative; 
+    }
+}
+@media (max-width: 745px) {
+    .jb-box { 
+        width: 100%; 
+        height: 300px; 
+        overflow: hidden;
+        margin: 0px auto; 
+        position: relative; 
+    }
+    .index-container-1 {
+        overflow-x: hidden;
+        position: absolute;
+        height: 100%;
+        bottom: 30vh;
+        width: 100%;
+        top:70px;
+    }
+    .index-container-2 {
+        position: relative;
+        margin-left: 40px;
+        height: 100%;
+    }
+    .style-title {
+        color: #fff;
+        text-align: left!important;
+        text-transform: uppercase;
+        margin: 0!important;
+        opacity: 1;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        font-size: 15px;
+        line-height: 1.2;
+        text-shadow: 0.4px 0.4px #000;
+    }
+    .style-title-large {
+        font-size: 25px;
+    }
+    
+    .style-button-joining {
+        width: 130px;
+        margin-top: 8px!important;
+        color:white;
+        font-size:14px;
+    }
+    .style-title-desc {
+        margin-top:10px;
+    }
+
+    .first-page { 
+        width: 100%; 
+        height: 700px; 
+        overflow: hidden;
+        margin: 0px auto; 
+        position: relative; 
+    }
+    
+}
+
+
+
 
 
 .bg-white {
@@ -57,21 +192,8 @@ h2 {
 }
 
 /* Index 페이지 */
-.jb-box { 
-    width: 100%; 
-    height: 600px; 
-    overflow: hidden;
-    margin: 0px auto; 
-    position: relative; 
-}
 
-.first-page { 
-    width: 100%; 
-    height: 100%; 
-    overflow: hidden;
-    margin: 0px auto; 
-    position: relative; 
-}
+
 
 
 video { width: 100%; }
@@ -81,20 +203,8 @@ video { width: 100%; }
 .jb-text p { margin-top: -24px; text-align: center; font-size: 48px; color: #ffffff; }
 .jb-text .index-container-1 { margin-top: -24px;} */
 
-.index-container-1 {
-    overflow-x: hidden;
-    position: absolute;
-    height: 100%;
-    bottom: 30vh;
-    width: 100%;
-    top:200px;
-}
 
-.index-container-2 {
-    position: relative;
-    margin-left: 100px;
-    height: 100%;
-}
+
 
 
 .index-title-index {
@@ -131,28 +241,9 @@ video { width: 100%; }
     text-shadow: 0.4px 0.4px #000;
 }
 
-.style-title {
-    color: #fff!important;
-    text-align: left!important;
-    text-transform: uppercase;
-    margin: 0!important;
-    opacity: 1;
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    font-size: 25px;
-    line-height: 1.1;
-    text-shadow: 0.4px 0.4px #000;
-}
 
-.style-title-large {
-    font-size: 47px;
-}
 
-.style-button-joining {
-    width: 176px;
-    margin-top: 20px;
-    color:white;
-}
+
 
 .btn-outline-success{
     border-color:black;
@@ -175,7 +266,7 @@ ul#horizontal-list {
 
 /* how-to buy 부분 */
 
-@media (min-width: 1200px)
+/* @media (min-width: 1200px)
 .container-card {
     max-width: 1200px;
 }
@@ -198,7 +289,7 @@ ul#horizontal-list {
     padding-left: 15px;
     margin-right: auto;
     margin-left: auto;
-}
+} */
 
 .process-card-div, .store-card-div {
     box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23);
@@ -322,7 +413,6 @@ ul#horizontal-list {
     text-decoration: underline;
     vertical-align: middle;
     margin:0px;
-
 }
 
 .product-list-image {
@@ -332,13 +422,13 @@ ul#horizontal-list {
     border-bottom:2px solid rgb(238, 238, 238);
     border-left:1px solid rgb(238, 238, 238);
     border-right:2px solid rgb(238, 238, 238);
-    
     padding:0px;
+    object-fit:cover;
 }
 
 .product-main-image {
     width: 100%;
-    height: 100%;
+    height:100%;
     object-fit: contain;
     display: block;
     border-style: none;
