@@ -116,7 +116,11 @@
         <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="product-list-image">
                 <picture>
+                    {% if product.image %}
                     <a href="{% url 'product_detail' pk=product.pk %}"><img src="{{ product.image.url }}" class="product-main-image"></a>
+                    {% else %}
+                    <span class="text-muted">No Image</span>
+                    {% endif %}
                     <!-- <a href="{% url 'product_detail' pk=product.pk %}"><img src="{% static 'shop/product_ex1/1_16_16.jpg' %}" class="product-main-image"></a> -->
 
                 <!-- <div class="product-add-to-wishlist">

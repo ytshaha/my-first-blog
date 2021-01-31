@@ -1,0 +1,49 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<!-- 프로덕트 리스트 헤더 -->
+
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">LOGIN</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
+<!-- 로긴 콘테이너 부분 -->
+
+
+
+<div class='container' style="width:80%;">
+    <div class='row'>
+        <div class='col-12'>
+        {% if form.errors %}
+           <span>이름과 비밀번호가 일치하지 않습니다. 다시 시도해주세요.</span>
+           <br/>
+        {% endif %}
+        </div>
+        <div class='col-12'>
+            <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+                <table>
+                    <tr>
+                        <td>{{ form.username.label_tag }}</td>
+                        <td>{{ form.username }}</td>
+                    </tr>
+                    <tr>
+                        <td>{{ form.password.label_tag }}</td>
+                        <td>{{ form.password }}</td>
+                    </tr>
+                </table>
+
+                <input type="submit" value="login" />
+                <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock%}
+
