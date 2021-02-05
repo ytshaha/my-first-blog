@@ -7,13 +7,6 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('moum/', views.introduction, name='introduction'),
     
-    path('product/', views.product_list, name='product_list'),
-    path('product/<option>/', views.product_list, name='product_list'),
-    path('product/search/', views.product_search, name='product_search'),
-    path('upload/', views.product_upload, name='product_upload'),
-
-    path('product/detail/<int:pk>/', views.product_detail, name='product_detail'),
-    path('product/bidding/<int:pk>/', views.bidding, name='bidding'),
     # path('ticket/', views.buying_ticket, name='buying_ticket'),
     path('ticket/', views.buying_ticket, name='buying_ticket'),
     

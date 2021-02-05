@@ -1,7 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Product, Brand, Category, BuyingTicket
+from .models import BuyingTicket
 from django.contrib.auth.decorators import login_required
-from .forms import BuyingTicketForm, ProductForm
+from .forms import BuyingTicketForm
+
 from django.views import generic
 # from .forms import PostForm, CommentForm
 from django.core.files.storage import FileSystemStorage
@@ -13,37 +14,7 @@ def index(request):
 def introduction(request):
     return render(request, 'shop/introduction.html', {})
 
-@login_required
-def product_list(request, option=False):
-    if not option:
-        products = Product.objects.all()
-    else:
-        products = Product.objects.filter(category__name=option)
-    return render(request, 'shop/product_list.html', {'products':products})
 
-
-# 아직 잘안되므로 꼭 확인하자.......
-def product_search(request):
-    search = request.GET.get('search','')
-    products = Product.objects.filter(product__exact=search)
-    return render(request, 'shop/product_list.html', {'products':products})
-
-
-@login_required
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'shop/product_detail.html', {'product':product})
-
-@login_required
-def product_upload(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('product_list')
-    else:
-        form = ProductForm()
-    return render(request, 'shop/product_upload.html', {'form':form})
 
 @login_required
 def buying_ticket(request):
