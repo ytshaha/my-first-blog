@@ -5,9 +5,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 
-
+app_name = 'search'
 urlpatterns = [
-    path('', views.SearchProductListView.as_view(), name='product_list'),
+    path('', views.SearchProductListView.as_view(), name='query'),
 ]
 
 

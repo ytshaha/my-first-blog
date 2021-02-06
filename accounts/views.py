@@ -41,7 +41,7 @@ def login_page(request):
             # else:
             #     return redirect("/")
             print(form.cleaned_data)
-            return redirect("/accounts/login")    
+            return redirect("/shop/")    
         else:
             # Return an 'invalid login' error message.
             print("Error")

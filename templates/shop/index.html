@@ -16,7 +16,7 @@
                     <h1 class="style-title">우리나라의 유일한 병행수입명품 경매사이트</h1>
                     <h1 class="style-title style-title-large">MOUM EIGHTY-EIGHT</h1>
                     <!-- {% if user.is_authenticated %}                 -->
-                    <a href="{% url 'product_list' %}"><button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button></a>
+                    <a href="{% url 'products:product_list' %}"><button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button></a>
                     <!-- {% else %} -->
                     <!-- <button type="button" class="btn btn-warning style-button-joining">JOIN SITE</button> -->
                     <!-- {% endif %} -->
@@ -42,7 +42,7 @@
             <div class="col-lg-4 col-md-6 col-sm-12">
                 <div class="product-list-image">
                     <picture>
-                        <a href="{% url 'product_detail' pk=product.pk %}"><img src="{{ product.image.url }}" class="product-main-image"></a>
+                        <a href="{% url 'products:product_detail' pk=product.pk %}"><img src="{{ product.image.url }}" class="product-main-image"></a>
                     </picture>
                     <!-- <div class="product-add-to-wishlist">
                         <button aria-label="product_page_add_to_wishlist" aria-disabled="false" tabindex="0" class="product-icon-button">
@@ -185,7 +185,7 @@
                         <p class="first-page-account">처음 오신분이라면 가입티켓을 통한 가입</p>
                         <p class="first-page-account">기존 고객이시라면 로그인</p>
                       </div>
-                      <a href="{% url 'login' %}"><button type="button" class="btn btn-warning style-button-joining">SIGN IN(LOGIN)</button></a>
+                      <a href="{% url 'accounts:login' %}"><button type="button" class="btn btn-warning style-button-joining">SIGN IN(LOGIN)</button></a>
                       <a href=""><button type="button" class="btn btn-warning style-button-joining" style="margin-left:20px;">SIGN UP(JOIN)</button></a>
                   </div>
               </div>

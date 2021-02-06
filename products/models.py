@@ -6,7 +6,7 @@ from django.db import models
 from django.utils import timezone
 from .utils import unique_slug_generator
 from django.db.models.signals import pre_save, post_save
-
+from django.db.models import Q
 
 def get_filename_ext(filepath):
     base_name = os.path.basename(filepath)
@@ -28,6 +28,14 @@ class ProductQuerySet(models.query.QuerySet):
     def active(self):
         return self.filter(active=True)
 
+    def search(self, query):
+        lookups = (Q(title__icontains=query) | 
+                  Q(description__icontains=query) |
+                  Q(brand__name__icontains=query) |
+                  Q(category__name__icontains=query))
+                  
+        return self.filter(lookups).distinct()
+
 class ProductManager(models.Manager):
     def get_queryset(self):
         return ProductQuerySet(self.model, using=self._db)
@@ -43,6 +51,10 @@ class ProductManager(models.Manager):
         if qs.count() == 1:
             return qs.first()
         return None
+    
+    def search(self, query):
+        
+        return self.get_queryset().active().search(query)
 
 class Product(models.Model):
     number = models.CharField(max_length=10, blank=True, null=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
@@ -50,7 +62,7 @@ class Product(models.Model):
     brand = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
     start_price = models.PositiveIntegerField(default=0, help_text=u'경매시작가격')
     limit_price = models.PositiveIntegerField(default=0, help_text=u'경매한도가격')
-    info = models.TextField(blank=True, null=True, help_text=u'정보') 
+    description = models.TextField(blank=True, null=True, help_text=u'정보') 
     amount = models.IntegerField(default=0, help_text=u'수량')
     created_date = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
     bidding = models.BooleanField(default=False, help_text=u'경매여부')

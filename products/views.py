@@ -90,24 +90,19 @@ class ProductDetailView(generic.DetailView):
 
 
 # 아직 잘안되므로 꼭 확인하자.......
-def product_search(request):
-    search = request.GET.get('search','')
-    products = Product.objects.filter(product__exact=search)
-    return render(request, 'shop/product_list.html', {'products':products})
 
+# @login_required
+# def product_detail(request, pk):
+#     product = get_object_or_404(Product, pk=pk)
+#     return render(request, 'products/product_detail.html', {'product':product})
 
-@login_required
-def product_detail(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'shop/product_detail.html', {'product':product})
-
-@login_required
-def product_upload(request):
-    if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('product_list')
-    else:
-        form = ProductForm()
-    return render(request, 'shop/product_upload.html', {'form':form})
+# @login_required
+# def product_upload(request):
+#     if request.method == 'POST':
+#         form = ProductForm(request.POST, request.FILES)
+#         if form.is_valid():
+#             form.save()
+#             return redirect('products:product_list')
+#     else:
+#         form = ProductForm()
+#     return render(request, 'products/product_upload.html', {'form':form})
