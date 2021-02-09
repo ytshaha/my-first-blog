@@ -53,7 +53,6 @@ class ProductManager(models.Manager):
         return None
     
     def search(self, query):
-        
         return self.get_queryset().active().search(query)
 
 class Product(models.Model):
