@@ -32,9 +32,11 @@ class ProductQuerySet(models.query.QuerySet):
         lookups = (Q(title__icontains=query) | 
                   Q(description__icontains=query) |
                   Q(brand__name__icontains=query) |
-                  Q(category__name__icontains=query))
+                  Q(category__name__icontains=query) |
+                  Q(tag__title__icontains=query)
+                  )
                   
-        return self.filter(lookups).distinct()
+        return self.filter(lookups).distinct() # distinct 안하면 저위의 lookup들이 중복으로 검색되는 것들을 다 표시하게된다. 그냥 누적하되 중복은안되야하는게 맞을때 하므.
 
 class ProductManager(models.Manager):
     def get_queryset(self):
