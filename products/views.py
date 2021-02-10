@@ -6,6 +6,7 @@ from django.core.files.storage import FileSystemStorage
 
 from .models import Product, Brand, Category
 from .forms import ProductForm
+from carts.models import Cart
 
 class ProductFeaturedListView(generic.ListView):
     template_name = 'products/product_list.html'
@@ -40,6 +41,13 @@ class ProductListView(generic.ListView):
 class ProductDetailSlugView(generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductDetailSlugView, self).get_context_data(*args, **kwargs)
+        request = self.request
+        cart_obj, new_obj = Cart.objects.new_or_get(request)
+        context['cart'] = cart_obj
+        return context
 
     def get_object(self, *args, **kwargs):
         request = self.request

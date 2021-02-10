@@ -1,3 +1,6 @@
+{% url 'cart:home' as cart_url %}
+
+
 {% load static %}
 <!doctype html>
 <html lang="en">
@@ -8,6 +11,8 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
     <title>MOUM, 시작</title>
   </head> 
   
@@ -42,6 +47,9 @@
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">MY</a> 
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ cart_url }}">{{ request.session.cart_items }} <i class="fas fa-cart-plus"></i> </a> 
           </li>
           <li class="nav-item"></li>
             <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>

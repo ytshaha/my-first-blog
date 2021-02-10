@@ -4,6 +4,7 @@ import os
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.urls import reverse
 from .utils import unique_slug_generator
 from django.db.models.signals import pre_save, post_save
 from django.db.models import Q
@@ -80,9 +81,14 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         # return "products/{slug}".format(slug=self.slug)
-        return "detail/{slug}/".format(slug=self.slug)
+        # return "detail/{slug}/".format(slug=self.slug)
+        return reverse("products:product_detail_slug", kwargs={"slug":self.slug})
 
     def __str__(self):
+        return self.title
+
+    @property
+    def name(self):
         return self.title
 
 def product_pre_save_receiver(sender, instance, *args, **kwargs):
