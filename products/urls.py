@@ -1,6 +1,8 @@
 from django.urls import path
 import django.contrib.auth.views as django_views
 from django.conf import settings
+from django.conf.urls import url
+
 
 from django.conf.urls.static import static
 from . import views
@@ -9,8 +11,8 @@ app_name = 'products'
 urlpatterns = [
     path('', views.ProductListView.as_view(), name='product_list'),
     path('featured/', views.ProductFeaturedListView.as_view(), name='product_featured_list'), ##
-    path('detail/<int:pk>/', views.ProductDetailView.as_view(), name='product_detail'),
-    path('detail/<str:slug>/', views.ProductDetailSlugView.as_view(), name='product_detail'),
+    url(r'^detail/<int:pk>/$', views.ProductDetailView.as_view(), name='product_detail'),
+    url(r'^detail/(?P<slug>[\w-]+)/$', views.ProductDetailSlugView.as_view(), name='product_detail_slug'),
 
     path('detail/featured/<int:pk>/', views.ProductFeaturedDetailView.as_view(), name='product_featured_detail'), ##
 

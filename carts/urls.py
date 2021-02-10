@@ -1,13 +1,15 @@
 from django.urls import path
 import django.contrib.auth.views as django_views
 from django.conf import settings
+from django.conf.urls import url
 
 from django.conf.urls.static import static
 from . import views
 
 app_name = 'carts'
 urlpatterns = [
-    path('', views.cart_home, name='cart_home'),
+    path('', views.cart_home, name='home'),
+    url(r'^update/$', views.cart_update, name='update')
     ]
 
 

@@ -15,9 +15,9 @@ urlpatterns = [
     # path('', include('shop.urls')),
     path('shop/', include('shop.urls')),
     path('accounts/', include('accounts.urls')),
-    path('product/', include('products.urls')),
-    path('search/', include('search.urls')),
-    path('cart/', include('carts.urls')),   
+    url(r'^product/', include('products.urls')),
+    url(r'^search/', include('search.urls')),
+    url(r'^cart/', include('carts.urls')),   
 ]
 
 if settings.DEBUG:

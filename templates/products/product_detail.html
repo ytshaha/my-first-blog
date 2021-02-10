@@ -2,6 +2,14 @@
 
 {% block content %}
 {% load static %}
+
+<div class='row'>
+    <div calss='col-12 col-md-6'>
+        {% include 'products/snippets/update-cart.html' with product=product cart=cart %}
+    </div>
+</div>
+
+
 <div class='container' style="padding-top:20px;">
     <div class='row'>
         <!-- 사진부분 -->
