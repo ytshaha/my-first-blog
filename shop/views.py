@@ -9,7 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from products.models import Product
 def index(request):
     products = Product.objects.all()[:3]
-    return render(request, 'shop/index.html', {'products':products})
+    return render(request, '/product/', {'products':products})
 
 def introduction(request):
     return render(request, 'shop/introduction.html', {})

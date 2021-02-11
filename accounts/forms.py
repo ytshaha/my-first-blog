@@ -6,6 +6,9 @@ from django.utils.safestring import mark_safe
 
 User = get_user_model()
 
+class GuestForm(forms.Form):
+    email = forms.EmailField() 
+
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)

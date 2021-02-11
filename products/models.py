@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
-from .utils import unique_slug_generator
+from mysite.utils import unique_slug_generator
 from django.db.models.signals import pre_save, post_save
 from django.db.models import Q
 

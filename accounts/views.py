@@ -12,36 +12,48 @@ from django.shortcuts import render,redirect
 from django.utils.http import is_safe_url
 from django.utils.safestring import mark_safe
 
-from .forms import LoginForm, RegisterForm  # GuestForm, ReactivateEmailForm, UserDetailChangeForm
-# from .models import GuestEmail, EmailActivation
+from .forms import LoginForm, RegisterForm, GuestForm # ReactivateEmailForm, UserDetailChangeForm
+from .models import GuestEmail # EmailActivation
 # from .signals import user_logged_in
 
 # Create your views here.
-def login_page(request):
-    form = LoginForm(request.POST or None)
-    print("User loggged in")
+
+def guest_register_view(request):
+    form = GuestForm(request.POST or None)
     context = {
         "form": form
     }
-    # next_ = request.GET.get('next')
-    # next_post = request.POST.get('next')
-    # redirect_path = next_ or next_post or None
+    next_ = request.GET.get('next')
+    next_post = request.POST.get('next')
+    redirect_path = next_ or next_post or None
+    if form.is_valid():
+        email = form.cleaned_data.get('email')
+        new_guest_email = GuestEmail.objects.create(email=email)
+        request.session['guest_email_id'] = new_guest_email.id
+        if is_safe_url(redirect_path, request.get_host()):
+            return redirect(redirect_path)
+        else:
+            return redirect("/register/")
+    return redirect("/register/")
+
+def login_page(request):
+    form = LoginForm(request.POST or None)
+    context = {
+        "form": form
+    }
+    next_ = request.GET.get('next')
+    next_post = request.POST.get('next')
+    redirect_path = next_ or next_post or None
     if form.is_valid():
         username  = form.cleaned_data.get("username")
         password  = form.cleaned_data.get("password")
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            # try:
-            #     del request.session['guest_email_id']
-            # except:
-            #     pass
-            # if is_safe_url(redirect_path, request.get_host()):
-            #     return redirect(redirect_path)
-            # else:
-            #     return redirect("/")
-            print(form.cleaned_data)
-            return redirect("/shop/")    
+            if is_safe_url(redirect_path, request.get_host()):
+                return redirect(redirect_path)
+            else:
+                return redirect("products:product_list")
         else:
             # Return an 'invalid login' error message.
             print("Error")

@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from .models import GuestEmail
-
+from .models import Order
 # Register your models here.
-admin.site.register(GuestEmail)
+admin.site.register(Order)

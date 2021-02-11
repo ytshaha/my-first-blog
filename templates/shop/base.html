@@ -1,4 +1,4 @@
-{% url 'cart:home' as cart_url %}
+{% url 'carts:home' as cart_url %}
 
 
 {% load static %}
@@ -56,7 +56,10 @@
           </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'accounts:login' %}">LOGIN</a>
+            <a class="nav-link" href="{% url 'login' %}">LOGIN</a>
+          </li>  
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">REGISTER</a>
           </li>  
           {% endif %}
           {% if user.is_superuser %}
