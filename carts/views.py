@@ -30,24 +30,27 @@ def cart_update(request):
 
 def checkout_home(request):
     cart_obj, cart_created = Cart.objects.new_or_get(request)
+    order_obj = None
     if cart_created or cart_obj.products.count() == 0:
-        return redirect("carts:home")
-    else:
-        order_obj, new_order_obj = Order.objects.get_or_create(cart=cart_obj)
+        return redirect("carts:home")   
     user = request.user
     billing_profile = None
     login_form = LoginForm()
     guest_form = GuestForm()
     guest_email_id = request.session.get('guest_email_id')
     if user.is_authenticated:
-        billing_profile = billing_profile_created = BillingProfile.objects.get_or_create(
+        billing_profile, billing_profile_created = BillingProfile.objects.get_or_create(
                                                         user=user, email=user.email)
     elif guest_email_id is not None:
         guest_email_obj = GuestEmail.objects.get(id=guest_email_id)
-        billing_profile = billing_guest_profile_created = BillingProfile.objects.get_or_create(
-                                                        email=guset_email_obj.email)
+        billing_profile, billing_guest_profile_created = BillingProfile.objects.get_or_create(
+                                                        email=guest_email_obj.email)
     else:
         pass
+    
+    if billing_profile is not None:
+        order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)
+      
     context = {
         'object':order_obj,
         'billing_profile':billing_profile,
