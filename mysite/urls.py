@@ -16,9 +16,9 @@ urlpatterns = [
     # path('accounts/logout/', views.LogoutView.as_view(next_page='/'), name='logout'),
     # path('', include('shop.urls')),
     path('login/', login_page, name='login'),
-    path('register/guest/', guest_register_view, name='guest_register'),
+    url(r'^register/guest/$', guest_register_view, name='guest_register'),
     
-    path('register/', register_page, name='register'),
+    url(r'^register/$', register_page, name='register'),
     path('logout/', LogoutView.as_view(next_page='product/'), name='logout'),
     path('shop/', include('shop.urls')),
     # path('accounts/', include('accounts.urls')),
