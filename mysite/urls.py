@@ -6,9 +6,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import include, url
 from django.contrib.auth import views
+
 from accounts.views import login_page, register_page, guest_register_view
 from django.contrib.auth.views import LogoutView
-
+from addresses.views import checkout_address_create_view, checkout_address_reuse_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -17,9 +18,11 @@ urlpatterns = [
     # path('', include('shop.urls')),
     path('login/', login_page, name='login'),
     url(r'^register/guest/$', guest_register_view, name='guest_register'),
-    
+    url(r'^checkout/address/create/$', checkout_address_create_view, name='checkout_address_create'),
+    url(r'^checkout/address/reuse/$', checkout_address_reuse_view, name='checkout_address_reuse'),
+
     url(r'^register/$', register_page, name='register'),
-    path('logout/', LogoutView.as_view(next_page='product/'), name='logout'),
+    path('logout/', LogoutView.as_view(next_page='/product/'), name='logout'),
     path('shop/', include('shop.urls')),
     # path('accounts/', include('accounts.urls')),
     url(r'^product/', include('products.urls')),

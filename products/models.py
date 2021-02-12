@@ -59,23 +59,23 @@ class ProductManager(models.Manager):
         return self.get_queryset().active().search(query)
 
 class Product(models.Model):
-    number = models.CharField(max_length=10, blank=True, null=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
-    title = models.CharField(max_length=200, help_text=u'상품명')
-    brand = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
-    start_price = models.PositiveIntegerField(default=0, help_text=u'경매시작가격')
-    limit_price = models.PositiveIntegerField(default=0, help_text=u'경매한도가격')
-    description = models.TextField(blank=True, null=True, help_text=u'정보') 
-    amount = models.IntegerField(default=0, help_text=u'수량')
-    created_date = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
-    bidding = models.BooleanField(default=False, help_text=u'경매여부')
-    bidding_date = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
-    image = models.FileField(upload_to=upload_image_path, null=True, blank=True)
+    number          = models.CharField(max_length=10, blank=True, null=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
+    title           = models.CharField(max_length=200, help_text=u'상품명')
+    brand           = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
+    start_price     = models.PositiveIntegerField(default=0, help_text=u'경매시작가격')
+    limit_price     = models.PositiveIntegerField(default=0, help_text=u'경매한도가격')
+    description     = models.TextField(blank=True, null=True, help_text=u'정보') 
+    amount          = models.IntegerField(default=0, help_text=u'수량')
+    created_date    = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
+    bidding         = models.BooleanField(default=False, help_text=u'경매여부')
+    bidding_date    = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
+    category        = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
+    image           = models.FileField(upload_to=upload_image_path, null=True, blank=True)
     # image, 이것은 썸네일이든 그냥 이미지든 다른 Model에서 ForeignKey로 참조할 것.(조영일 슬라이드 참고)
     # category, 나중에 추가, 2-depth 이상일경우 Django-mptt라이브러리사용(조영일 슬라이드 참고)
-    featured = models.BooleanField(default=False)
-    active = models.BooleanField(default=True)
-    slug = models.SlugField(blank=True, unique=True, allow_unicode=True)
+    featured        = models.BooleanField(default=False)
+    active          = models.BooleanField(default=True)
+    slug            = models.SlugField(blank=True, unique=True, allow_unicode=True)
     
     objects = ProductManager()
 
