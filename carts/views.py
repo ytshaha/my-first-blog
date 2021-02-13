@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
 from accounts.forms import LoginForm, GuestForm
@@ -18,6 +19,7 @@ def cart_home(request):
 
 def cart_update(request):
     product_id = request.POST.get('product_id')
+    
     if product_id is not None:
         try:
             product_obj = Product.objects.get(id=product_id)
@@ -29,7 +31,13 @@ def cart_update(request):
             cart_obj.products.remove(product_obj)
         else:
             cart_obj.products.add(product_obj)
-    request.session['cart_items'] = cart_obj.products.count()
+        request.session['cart_items'] = cart_obj.products.count()
+        if request.is_ajax(): # Asyncronous JavaScripts ANd XM
+            print("Ajax request")
+            json_data = {
+                "added":?
+            }
+            return JsonResponse({})
     return redirect("carts:home")
 
 def checkout_home(request):
