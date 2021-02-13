@@ -25,7 +25,7 @@ SECRET_KEY = '30gkclf)zp_aa8*_@otx!)3q=z1@&9leo$klr_htq278r^w^++'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', '192.168.219.106', '172.20.10.4']
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', '192.168.219.106', '172.20.10.4', '0.0.0.0']
 
 
 # Application definition
@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     # my app
+    'blog',
     'shop',
     'accounts',
     'products',
