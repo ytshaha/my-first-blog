@@ -10,7 +10,11 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0" />
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Shop Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/shop.css' %}">
+    <!-- Stripe Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/stripe-custom-style.css' %}">
+    
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
 
     <title>MOUM, 시작</title>
@@ -49,7 +53,7 @@
             <a class="nav-link" href="#">MY</a> 
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ cart_url }}">{{ request.session.cart_items }} <i class="fas fa-cart-plus"></i> </a> 
+            <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i> </a> 
           </li>
           <li class="nav-item"></li>
             <a class="nav-link" href="{% url 'logout' %}">LOGOUT</a>
@@ -186,16 +190,58 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+    <!-- Stripe JS -->
+    <script src="https://js.stripe.com/v3/"></script> 
 
+    <!-- Jquery-confirm JavaScript -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script>
       $(document).ready(function(){
+        // Auto Search
+        var searchForm = $(".search-form")
+        var searchInput = searchForm.find("[name='q']") // input name='q'
+        var typingTimer
+        var typingInterval = 500 // 0.5 seconds
+        var searchBtn = searchForm.find("[type='submit']")
+
+
+        searchInput.keyup(function(event){
+          // key released
+          clearTimeout(typingTimer)
+          typingTimer = setTimeout(performSearch, typingInterval)
+        })
+
+        searchInput.keydown(function(event){
+        // key pressed
+          clearTimeout(typingTimer)
+        })
+
+        function displaySearch(){
+          searchBtn.addClass("disable")
+          searchBtn.html("<i class='fa fa-spin fa-spinner'></i> Searching...")
+        }
+
+
+        function performSearch(){
+          displaySearch()
+          var query = searchInput.val()
+          setTimeout(function(){
+            window.location.href='/search/?q=' + query
+          }, 1000)
+          
+        }
+
+        // Cart + Add Products
         var productForm = $(".form-product-ajax") // #form-product-ajax
 
         productForm.submit(function(event){
           event.preventDefault()
-          console.log("Form is not sending")
+          // console.log("Form is not sending")
           var thisForm = $(this)
-          var actionEndpoint = thisForm.attr('action')
+          // var actionEndpoint = thisForm.attr('action')  // API Endpoint
+          var actionEndpoint = thisForm.attr('data-endpoint')  // API Endpoint
           var httpMethod = thisForm.attr('method')
           var formData = thisForm.serialize()
 
@@ -204,21 +250,81 @@
             method: httpMethod,
             data: formData,
             success: function(data){
-              console.log("success")
-              console.log(data)
-            },
-            error: function(errorData){
-              console.log("error")
-              console.log(errorData)
+              var submitSpan = thisForm.find(".submit-span")
+              if (data.added){
+                submitSpan.html("In cart<button type='submit' class='btn btn-link'>Remove?</button>")
+              } else {
+                submitSpan.html("<button class='btn btn-success'>Add?</button>")
+              }
+              var navbarCount = $(".navbar-cart-count")
+              navbarCount.text(data.cartItemCount)
+              var currentPath = window.location.href
 
+              if (currentPath.indexOf("cart") != -1){
+                refreshCart()
+              }
+           },
+            error: function(errorData){
+              $.alert({
+                title: "Oops!",
+                content: "An error occurred",
+                theme: "modern"
+              })
             }
 
           })
         })
 
+        function refreshCart(){
+          console.log("in current cart")
+          var cartTable = $(".cart-table")
+          var cartBody = cartTable.find(".cart-body")
+          //cartBody.html("<h1>Changed<h1>")
+            var productRows = cartBody.find(".cart-product")
+            var currentUrl = window.location.href
+
+          var refreshCartUrl = '/api/cart/'
+          var refreshCartMethod = "GET"
+          var data = {}
+          $.ajax({
+            url: refreshCartUrl,
+            method: refreshCartMethod,
+            data:data,
+            success: function(data){
+              var hiddenCartItemRemoveForm = $(".cart-item-remove-form")
+              if (data.products.length > 0){
+                productRows.html("")
+                i = data.products.length
+                $.each(data.products, function(index, value){
+                  console.log(value)
+                  var newCartItemRemove = hiddenCartItemRemoveForm.clone()
+                  newCartItemRemove.css("display", "block")
+                  newCartItemRemove.find(".cart-item-product-id").val(value.id)
+                  cartBody.prepend("<tr><th scope=\"row\">" + i + "</th><td><a href='" + value.url + "'>" + value.name + "</a></td>" + "<td>" + value.price + "</td><td>" + newCartItemRemove.html() + "</td></tr>")
+                  i --
+                })
+                cartBody.find(".cart-subtotal").text(data.subtotal)
+                cartBody.find(".cart-total").text(data.total)
+                
+              } else {
+                window.location.href = currentUrl
+              }
+              
+            },
+            error: function(errorData){
+              $.alert({
+                title: "Oops!",
+                content: "An error occurred",
+                theme: "modern"
+              })
+            }
+          })
+        }
+
       })
 
     </script>
-
+  {% block javascript %}
+  {% endblock %}
   </body>
 </html>
