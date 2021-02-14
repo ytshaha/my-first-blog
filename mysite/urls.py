@@ -10,7 +10,7 @@ from django.contrib.auth import views
 from accounts.views import login_page, register_page, guest_register_view
 from django.contrib.auth.views import LogoutView
 from addresses.views import checkout_address_create_view, checkout_address_reuse_view
-from billing.views import payment_method_view
+from billing.views import payment_method_view, payment_method_createview
 from carts.views import cart_detail_api_view
 
 urlpatterns = [
@@ -26,6 +26,9 @@ urlpatterns = [
 
     url(r'^register/$', register_page, name='register'),
     url(r'^billing/payment-method/$', payment_method_view, name='billing-payment-method'),
+    url(r'^billing/payment-method/create/$', payment_method_createview, name='billing-payment-method-endpoint'),
+
+
 
     path('logout/', LogoutView.as_view(next_page='/product/'), name='logout'),
     path('shop/', include('shop.urls')),
