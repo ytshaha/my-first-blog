@@ -1,6 +1,8 @@
 
 import random
 import os
+from decimal import Decimal
+import datetime
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -58,19 +60,34 @@ class ProductManager(models.Manager):
     def search(self, query):
         return self.get_queryset().active().search(query)
 
+def strfdelta(tdelta, fmt):
+    d = {"days": tdelta.days}
+    d["hours"], rem = divmod(tdelta.seconds, 3600)
+    d["minutes"], d["seconds"] = divmod(rem, 60)
+    return fmt.format(**d)
+
 class Product(models.Model):
-    number          = models.CharField(max_length=10, blank=True, null=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
-    title           = models.CharField(max_length=200, help_text=u'상품명')
-    brand           = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
-    start_price     = models.PositiveIntegerField(default=0, help_text=u'경매시작가격')
-    limit_price     = models.PositiveIntegerField(default=0, help_text=u'경매한도가격')
-    description     = models.TextField(blank=True, null=True, help_text=u'정보') 
-    amount          = models.IntegerField(default=0, help_text=u'수량')
-    created_date    = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
-    bidding         = models.BooleanField(default=False, help_text=u'경매여부')
-    bidding_date    = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
-    category        = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
-    image           = models.FileField(upload_to=upload_image_path, null=True, blank=True)
+    number              = models.CharField(max_length=10, blank=True, null=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
+    title               = models.CharField(max_length=200, help_text=u'상품명')
+    brand               = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
+    start_price         = models.PositiveIntegerField(default=0, help_text=u'경매시작가격')
+    limit_price         = models.PositiveIntegerField(default=0, help_text=u'경매한도가격')
+    current_price       = models.PositiveIntegerField(default=0, help_text=u'경매현재가격')
+    list_price          = models.PositiveIntegerField(default=0, help_text=u'정가')
+    sale_ratio          = models.DecimalField(default=0, max_digits=100, decimal_places=1, help_text=u'할인율')
+    info_made_country   = models.CharField(default=0, max_length=30, help_text=u'원산지')
+    info_product_number = models.CharField(default=0, max_length=30, help_text=u'모델명')
+    info_delivery       = models.CharField(default='택배', max_length=30, help_text=u'배송방법')
+    info_delivery_from  = models.CharField(default='국내', max_length=30, help_text=u'배송방법_국내해외')
+    description         = models.TextField(blank=True, null=True, help_text=u'정보')
+    amount              = models.IntegerField(default=0, help_text=u'수량')
+    created_date        = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
+    bidding             = models.BooleanField(default=False, help_text=u'경매여부')
+    bidding_start_date  = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
+    bidding_end_date    = models.DateTimeField(default=timezone.now, help_text=u'경매종료일')
+    remain_bidding_time = models.CharField(default=0, max_length=200, help_text=u'남은경매시간')
+    category            = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
+    image               = models.FileField(upload_to=upload_image_path, null=True, blank=True)
     # image, 이것은 썸네일이든 그냥 이미지든 다른 Model에서 ForeignKey로 참조할 것.(조영일 슬라이드 참고)
     # category, 나중에 추가, 2-depth 이상일경우 Django-mptt라이브러리사용(조영일 슬라이드 참고)
     featured        = models.BooleanField(default=False)
@@ -92,9 +109,17 @@ class Product(models.Model):
         return self.title
 
 def product_pre_save_receiver(sender, instance, *args, **kwargs):
+    # 슬러그 설정
     if not instance.slug:
         instance.slug = unique_slug_generator(instance)
-
+    # 할인율
+    instance.sale_ratio = Decimal(instance.current_price / instance.list_price)*100
+    # 남은 비딩타임.
+    time_remain = instance.bidding_end_date - datetime.datetime.now(timezone.utc)
+    print(time_remain, type(time_remain))
+    # instance.remain_bidding_time = "{}시간{}분".format(time_remain.hour, time_remain.minute)
+    instance.remain_bidding_time = strfdelta(time_remain, "{days} days {hours}:{minutes}:{seconds}")
+    
 pre_save.connect(product_pre_save_receiver, sender=Product)
 
 

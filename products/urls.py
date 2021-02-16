@@ -11,6 +11,8 @@ app_name = 'products'
 urlpatterns = [
     path('', views.ProductListView.as_view(), name='product_list'),
     path('featured/', views.ProductFeaturedListView.as_view(), name='product_featured_list'), ##
+    path('category/<category>/', views.ProductCategoryListView.as_view(), name='product_category_list'), ##
+    
     url(r'^detail/<int:pk>/$', views.ProductDetailView.as_view(), name='product_detail'),
     url(r'^detail/(?P<slug>[\w-]+)/$', views.ProductDetailSlugView.as_view(), name='product_detail_slug'),
 

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
@@ -11,6 +12,13 @@ from billing.models import BillingProfile
 from orders.models import Order
 from .models import Cart
 from products.models import Product
+
+import stripe
+STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM")
+STRIPE_PUB_KEY = getattr(settings, "STRIPE_PUB_KEY", "pk_test_51IKQwOCVFucPeMu3FS46t1eZG8bfs5elOnEvuL878YygdQmsR485txEKT2bL0qd5LXdV1Qs0eKuMkPdPRcWH6GRR00DNZK6kv0")
+
+stripe.api_key = STRIPE_SECRET_KEY
+
 
 def cart_detail_api_view(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
@@ -71,6 +79,7 @@ def checkout_home(request):
 
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     address_qs = None
+    has_card = False
     if billing_profile is not None:
         if request.user.is_authenticated:
             address_qs = Address.objects.filter(billing_profile=billing_profile)
@@ -83,22 +92,33 @@ def checkout_home(request):
             del request.session['billing_address_id']
         if billing_address_id or shipping_address_id:
             order_obj.save()
+        has_card = billing_profile.has_card
 
     if request.method == "POST":
-        "some check that order is done"
-        is_done = order_obj.check_done()
-        if is_done:
-            order_obj.mark_paid()
-            request.session['cart_items'] = 0
-            del request.session['cart_id']
-            return redirect("carts:success")
+        "check that order is done"
+        is_prepared = order_obj.check_done()
+        if is_prepared:
+            did_charge, charge_msg = billing_profile.charge(order_obj)
+            if did_charge:
+                order_obj.mark_paid()
+                request.session['cart_items'] = 0
+                del request.session['cart_id']
+                if not billing_profile.user:
+                    billing_profile.set_cards_inactive()
+                return redirect("carts:success")
+            else:
+                print(charge_msg)
+                return redirect("carts:checkout")
+
     context = {
         'object':order_obj,
-        'billing_profile':billing_profile,
-        'login_form':login_form,
-        'guest_form':guest_form,
-        'address_form':address_form,
-        'address_qs':address_qs
+        'billing_profile': billing_profile,
+        'login_form': login_form,
+        'guest_form': guest_form,
+        'address_form': address_form,
+        'address_qs': address_qs,
+        'has_card': has_card,
+        'publish_key': STRIPE_PUB_KEY
     }
     return render(request, "carts/checkout.html", context)
 

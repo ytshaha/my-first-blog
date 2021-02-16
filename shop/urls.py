@@ -2,7 +2,7 @@ from django.urls import path
 from . import views
 import django.contrib.auth.views as django_views
 
-
+app_name = 'shop'
 urlpatterns = [
     path('', views.index, name='index'),
     path('moum/', views.introduction, name='introduction'),

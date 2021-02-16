@@ -16,6 +16,19 @@ class ProductFeaturedListView(generic.ListView):
         request = self.request
         return Product.objects.all().featured()
 
+class ProductCategoryListView(generic.ListView):
+    template_name = 'products/product_list.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        print("self.kwargs:", self.kwargs)
+        category = self.kwargs['category']
+        if category is not None:
+            return Product.objects.filter(category__name__icontains=category)
+        return Product.objects.all()
+
+
+
 class ProductFeaturedDetailView(generic.DetailView):
     template_name = 'products/product_featured-detail.html'
     context_object_name = 'product'

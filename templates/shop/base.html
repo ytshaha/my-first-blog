@@ -23,7 +23,7 @@
   <body>
     <!-- Navbar -->
     <nav class="navbar sticky-top navbar-expand-lg" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255); padding: 6px 24px 0px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
-      <a class="navbar-brand" href="{% url 'index' %}"><bold>MOUM<small>_모움</small></bold></a>
+      <a class="navbar-brand" href="{% url 'shop:index' %}"><bold>MOUM<small>_모움</small></bold></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <img src="{% static 'shop/open-iconic/svg/menu.svg' %}" alt="아이콘" style="width:12px;">
       </button>
@@ -44,10 +44,10 @@
           </li>
           
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'buying_ticket' %}">TICKET</a>
+            <a class="nav-link" href="{% url 'shop:buying_ticket' %}">TICKET</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'introduction' %}">ABOUT MOUM</a> 
+            <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#">MY</a> 
@@ -193,6 +193,16 @@
     
     <!-- Stripe JS -->
     <script src="https://js.stripe.com/v3/"></script> 
+
+    <!-- CSRF for ajax JS -->
+    <script src="{% static 'js/csrf.ajax.js' %}"></script>
+
+      <!-- js render -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.11/jsrender.js"></script>
+    {% include 'shop/base/js_template.html' %}
+    
+    <!-- ecommerce Custom2 js -->
+    <script src="{% static 'js/ecommerce.billing.js' %}"></script>  
 
     <!-- Jquery-confirm JavaScript -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">

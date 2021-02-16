@@ -57,7 +57,7 @@ def login_page(request):
             if is_safe_url(redirect_path, request.get_host()):
                 return redirect(redirect_path)
             else:
-                return redirect("products:product_list")
+                return redirect("shop:index")
         else:
             # Return an 'invalid login' error message.
             print("Error")
