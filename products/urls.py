@@ -6,6 +6,8 @@ from django.conf.urls import url
 
 from django.conf.urls.static import static
 from . import views
+from biddings.views import bidding_new, bidding_result
+
 
 app_name = 'products'
 urlpatterns = [
@@ -15,11 +17,13 @@ urlpatterns = [
     
     url(r'^detail/<int:pk>/$', views.ProductDetailView.as_view(), name='product_detail'),
     url(r'^detail/(?P<slug>[\w-]+)/$', views.ProductDetailSlugView.as_view(), name='product_detail_slug'),
+    url(r'^detail/(?P<slug>[\w-]+)/bidding/$', bidding_new, name='bidding_new'),
+    url(r'^detail/(?P<slug>[\w-]+)/result/$', bidding_result, name='bidding_result'),
 
     path('detail/featured/<int:pk>/', views.ProductFeaturedDetailView.as_view(), name='product_featured_detail'), ##
 
     # path('<option>/', views.ProductListView.as_view(), name='product_list'),
-    # path('upload/', views.product_upload, name='product_upload'),
+    path('upload/', views.product_upload, name='product_upload'),
 ]
 
 

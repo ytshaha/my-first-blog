@@ -44,7 +44,7 @@
           </li>
           
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'shop:buying_ticket' %}">TICKET</a>
+            <a class="nav-link" href="{% url 'tickets:home' %}">TICKET</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
@@ -100,10 +100,8 @@
       </div>
     </nav>
   
-  <div class='container pt-3'>
     {% block content %}
     {% endblock %} 
-  </div>
   
 
     <!-- Optional JavaScript; choose one of the two! -->

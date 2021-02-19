@@ -21,7 +21,7 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 
 def cart_detail_api_view(request):
-    cart_obj, new_obj = Cart.objects.new_or_get(request)
+    cart_obj, new_obj, is_cart = Cart.objects.new_or_get(request)
     products = [{
             "id": x.id,
             "url": x.get_absolute_url(),
@@ -38,7 +38,7 @@ def cart_home(request):
 
 def cart_update(request):
     product_id = request.POST.get('product_id')
-    
+    print(product_id)
     if product_id is not None:
         try:
             product_obj = Product.objects.get(id=product_id)
@@ -80,6 +80,7 @@ def checkout_home(request):
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     address_qs = None
     has_card = False
+    request.session['is_ticket'] = False
     if billing_profile is not None:
         if request.user.is_authenticated:
             address_qs = Address.objects.filter(billing_profile=billing_profile)
@@ -123,4 +124,10 @@ def checkout_home(request):
     return render(request, "carts/checkout.html", context)
 
 def checkout_done_view(request):
+    # 여기에 product 수량감소시키는 스크립트 작성.
+    # 0보다 높으면 결재가 진행되었다. 깔끔. 수량 감소시키자. 
+    # bidding여부 field를 추가하여 bidding 이면 그냥 amount. 아니면 amount_always_on을 감소시키자.
+    # 만약 감소시키기 전에 1 보다 낮으면 실패이므로 결재가 진행되지 않았습니다 문구 발생
+    # 그리고 order 는 실패상태로 놔두든가 order에 석세스 실패 여부 field추가하자.
+     
     return render(request, "carts/checkout-done.html", {})

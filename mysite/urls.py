@@ -35,7 +35,8 @@ urlpatterns = [
     # path('accounts/', include('accounts.urls')),
     url(r'^product/', include('products.urls')),
     url(r'^search/', include('search.urls')),
-    url(r'^cart/', include('carts.urls')),   
+    url(r'^cart/', include('carts.urls')),
+    url(r'^ticket/', include('tickets.urls')),
     url(r'^api/cart/$', cart_detail_api_view, name='api-cart'),   
 
 

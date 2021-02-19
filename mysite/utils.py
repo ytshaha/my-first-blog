@@ -19,6 +19,33 @@ def unique_order_id_generator(instance):
         return unique_slug_generator(instance)
     return order_new_id
 
+def unique_ticket_id_generator(instance):
+    """
+    This is for a Django project and it assumes your instance 
+    has a model with a slug field and a title character (char) field.
+    """
+    ticket_new_id = random_string_generator()
+    Klass = instance.__class__
+    qs_exists = Klass.objects.filter(ticket_id=ticket_new_id).exists()
+    if qs_exists:
+        return unique_slug_generator(instance)
+    return ticket_new_id
+
+
+def unique_bidding_id_generator(instance, username):
+    """
+    This is for a Django project and it assumes your instance 
+    has a model with a slug field and a title character (char) field.
+    """
+    bidding_new_id = username + "_" + random_string_generator()
+    Klass = instance.__class__
+    qs_exists = Klass.objects.filter(bidding_id=bidding_new_id).exists()
+    if qs_exists:
+        return unique_slug_generator(instance)
+    print("bidding_new_id: ",bidding_new_id)
+    return bidding_new_id
+
+
 def unique_slug_generator(instance, new_slug=None):
     """
     This is for a Django project and it assumes your instance 

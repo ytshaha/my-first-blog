@@ -1,0 +1,46 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class='container'>
+    <h1>BIDDING WINNER</h1>
+</div>
+
+
+{% if biddings.exists %}
+<!--  나중에 바로 구매하기를 원하는 사람이 있을 수있으므로 여기에도 구매하기 버튼 배치하자. -->
+<p class='lead'>PRODUCT : {{ product }}</h1>
+<div class='row'>
+    <div class='col-10'>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">USER</th>
+                <th scope="col">BIDDING PRICE</th>
+                <th scope="col">TIMESTAMP</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for bidding in biddings %}
+            <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ bidding.user|upper }}</td>
+                <td>{{ bidding.bidding_price }}</td>
+                <td>{{ bidding.timestamp }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        
+        <form method="post" action="{% url 'carts:update' %}">
+            {% csrf_token %}
+            <label for="product">PRODUCT : {{ product.title }}</label>
+            <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
+            <button type="submit" class='btn btn-default btn-success'>BUY PRODUCT</button>
+        </form>
+    </div>
+</div>
+{% else %}
+<h1>No ones bidding...</h1>
+{% endif %}
+{% endblock %}

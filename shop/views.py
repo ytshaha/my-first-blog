@@ -9,6 +9,9 @@ from django.core.files.storage import FileSystemStorage
 from products.models import Product
 def index(request):
     products = Product.objects.all()[:3]
+    print("Current request.session.")
+    for key, value in request.session.items():
+        print('{} => {}'.format(key, value))
     return render(request, 'shop/index.html', {'products':products})
 
 def introduction(request):

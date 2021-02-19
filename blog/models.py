@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.template.defaultfilters import slugify
 
 class Post(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -19,6 +20,19 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+
+def get_image_filename(instance, filename):
+    title = instance.post.title
+    slug = slugify(title)
+    return "post_images/%s-%s" % (slug, filename)  
+
+
+class TestImages(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE ,default=None)
+    image = models.ImageField(upload_to=get_image_filename,
+                              verbose_name='Image')
+
+
 class Comment(models.Model):
     post = models.ForeignKey('blog.Post', on_delete=models.CASCADE, related_name='comments')
     author = models.CharField(max_length=200)
@@ -32,3 +46,5 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+

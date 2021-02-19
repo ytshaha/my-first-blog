@@ -1,0 +1,45 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class='container'>
+    <h1>TICKET CART</h1>
+    {% if ticketcart_obj %}
+    <table class="table cart-table">
+        <thead>
+          <tr>
+            <th scope="col">TICKET TYPE</th>
+            <th scope="col">PRICE</th>
+            <th scope="col">REMOVE?</th>
+          </tr>
+        </thead>
+        <tbody class='cart-body'>
+          <tr class='cart-product'>
+            <td>{{ ticketcart_obj.tickets_type }}EA TICKET{{ tickets_type|pluralize}}</td>
+            <td>{{ ticketcart_obj.subtotal }}</td>
+            <td>remove</td>
+          </tr>
+          <tr>
+            <td colspan='2'></td>
+            <td><b>Total</b> <span class='cart-subtotal'>{{ ticketcart_obj.total }}</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan='2'></td>
+            <td><b>할인율</b> <span class='cart-total'>{{ ticketcart_obj.sale_ratio }}</span></td>
+            <td></td>
+          </tr>
+          <tr>
+            <td colspan='2'></td>
+            <td><a class='btn btn-success' href="{% url 'tickets:checkout' %}">Checkout</a></td>
+            <td></td>
+          </tr>
+        </tbody>
+    </table>
+    {% else %}
+        <p class='lead'>Cart is empty</p>
+        <p class='lead'>No ticketcart</p>
+
+    {% endif %}
+</div>
+
+{% endblock %}

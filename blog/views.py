@@ -90,3 +90,49 @@ def comment_remove(request, pk):
 
 def jq(request):
     return render(request, 'blog/index.html', {})
+
+# Formset을 수행하기 위해 임시로 만든 뷰.
+from django.shortcuts import render
+from django.forms import modelformset_factory
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.http import HttpResponseRedirect
+from .forms import TestImageForm
+from .models import TestImages
+
+@login_required
+def post(request):
+ 
+    ImageFormSet = modelformset_factory(TestImages,
+                                        form=TestImageForm, extra=10)
+    #'extra' means the number of photos that you can upload   ^
+    if request.method == 'POST':
+    
+        postForm = PostForm(request.POST)
+        formset = ImageFormSet(request.POST, request.FILES,
+                               queryset=TestImages.objects.none())
+    
+    
+        if postForm.is_valid() and formset.is_valid():
+            post_form = postForm.save(commit=False)
+            post_form.author = request.user
+            post_form.save()
+    
+            for form in formset.cleaned_data:
+                #this helps to not crash if the user   
+                #do not upload all the photos
+                if form:
+                    image = form['image']
+                    photo = TestImages(post=post_form, image=image)
+                    photo.save()
+            # use django messages framework
+            messages.success(request,
+                             "Yeeew, check it out on the home page!")
+            return HttpResponseRedirect("blog/post_upload_images.html")
+        else:
+            print(postForm.errors, formset.errors)
+    else:
+        postForm = PostForm()
+        formset = ImageFormSet(queryset=TestImages.objects.none())
+    return render(request, 'blog/post_upload_images.html',
+                  {'postForm': postForm, 'formset': formset})

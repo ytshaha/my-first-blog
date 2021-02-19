@@ -63,8 +63,10 @@
             <p>Cart Total: {{ object.cart.total }}</p>
             <p>Shipping Total : {{ object.shipping_total }}</p>
             <p>Order Total : {{ object.total }}</p>
+            <!-- 여기 폼에다가 수량 감소관련 정보를 POST할 수 있게 해줘야겠다.ㄴ -->
             <form class='form' method='POST' action="">
                 {% csrf_token %}
+                <input type="hidden" name="order_obj" value="{{ object }}">
                 <button type='submit' class='btn btn-success'>Checkout</button>
             </form>
         {% endif %}

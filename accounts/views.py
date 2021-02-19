@@ -79,3 +79,7 @@ def register_page(request):
         new_user = User.objects.create_user(username, email, password)
         print(new_user)
     return render(request, "accounts/register.html", context)
+
+
+def user_home(request):
+    return render(request, 'accounts/user_home.html', {})

@@ -7,4 +7,3 @@ class BuyingTicketForm(forms.ModelForm):
     class Meta:
         model = BuyingTicket
         fields = ('amount',)
-

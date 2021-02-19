@@ -1,0 +1,11 @@
+<h1>New Post</h1>
+<form id="post_form" method="post" action="" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ postForm.as_p }}
+    
+    {{ formset.management_form }}
+    {% for form in formset %}
+        {{ form.as_p }}
+    {% endfor %}
+    <button type="submit" name="submit" value="Submit" class="save btn btn-default">Save</button>
+</form>

@@ -1,0 +1,73 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class='container'>
+    <h1>TICKET HOME</h1>
+
+
+    <div class='container'>
+        <h1>-Ticket Available List</h1>
+
+    {% if message %}
+    <h1>{{ message }}</h1>
+    {% endif %}
+
+    {% if tickets.exists %}
+    <form method="post", action="{% url 'tickets:home' %}">
+        {% csrf_token %}
+        <div class='row'>
+            <div class='col-10'>
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">USER</th>
+                        <th scope="col">TICKET ID</th>
+                        <th scope="col">AVAILABLE</th>
+                        <th scope="col">BIDDING</th>
+                        <th scope="col">사용선택</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ticket in tickets %}
+                    <tr>
+                        <th scope="row">{{ forloop.counter }}</th>
+                        <td>{{ ticket.user|upper }}</td>
+                        <td>{{ ticket.ticket_id }}</td>
+                        
+                        {% if ticket.status == 'unused' %}
+                        <td>AVAILABLE</td>
+                        {% elif ticket.status == 'activate' %}
+                        <td style='color:red;'>ACTIVATE</td>
+                        {% elif ticket.status == 'used' %}
+                        <td style='color:gray;'>UNAVAILABLE</td>
+                        {% else %}
+                        <td style='color:gray;'>?</td>
+                        {% endif %}
+                        
+                        {% if ticket.bidding_success %}
+                        <td>SUCCESS</td>
+                        {% elif ticket.status == 'used' and not ticket.bidding_success %}
+                        <td style='color:gray;'>FAIL</td>
+                        {% else %}
+                        <td></td>
+                        {% endif %}
+                        {% if ticket.status == 'unused' %}
+                        <td><input type="radio" name="ticket_id" value="{{ ticket.ticket_id }}" /></td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button class='btn btn-success'>USE TICKET</button>
+            </div>
+        </div>
+    </form>
+    {% else %}
+    <h3>Ticket Not Exists.</h3>
+    <hr/>
+    <h1><a href="{% url 'tickets:buy' %}">TICKET BUY</a></h1>
+    {% endif %}
+</div>
+
+{% endblock %}
