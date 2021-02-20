@@ -35,11 +35,11 @@
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
-              <a class="dropdown-item" href="{% url 'products:product_list'  %}">여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list'  %}">남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list'  %}">신발</a>
-              <a class="dropdown-item" href="{% url 'products:product_list'  %}">패션잡화</a>
-              <a class="dropdown-item" href="{% url 'products:product_list'  %}">유아동</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='woman' %}">여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='men' %}">남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='shoes' %}">신발</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='acc' %}">패션잡화</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='kid' %}">유아동</a>
             </div>
           </li>
           
@@ -66,7 +66,7 @@
             <a class="nav-link" href="{% url 'register' %}">REGISTER</a>
           </li>  
           {% endif %}
-          {% if user.is_superuser %}
+          {% if user.is_admin %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
           </li>

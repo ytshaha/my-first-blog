@@ -2,7 +2,7 @@
 
 {% block content %}
 
-
+<div class='container'>
 {% if not billing_profile %}
     <div class='row text-center'>
         <div class='col-12 col-md-6'>
@@ -66,10 +66,11 @@
             <!-- 여기 폼에다가 수량 감소관련 정보를 POST할 수 있게 해줘야겠다.ㄴ -->
             <form class='form' method='POST' action="">
                 {% csrf_token %}
-                <input type="hidden" name="order_obj" value="{{ object }}">
+                <input type="hidden" name="order_obj" value="{{object}}">
                 <button type='submit' class='btn btn-success'>Checkout</button>
             </form>
         {% endif %}
     {% endif %}
 {% endif %}
+</div>
 {% endblock %} 

@@ -17,6 +17,17 @@ from .models import GuestEmail # EmailActivation
 # from .signals import user_logged_in
 
 # Create your views here.
+@login_required # /account/login/?next=/some/path/
+def account_home_view(request):
+    return render(request, "accounts/home.html", {})
+
+class AccountHomeView(LoginRequiredMixin, DetailView):
+    template_name = "accounts/home.html"
+
+    def get_object(self):
+        return self.request.user
+
+
 
 def guest_register_view(request):
     form = GuestForm(request.POST or None)
@@ -36,15 +47,16 @@ def guest_register_view(request):
             return redirect("/register/")
     return redirect("/register/")
 
-def login_page(request):
-    form = LoginForm(request.POST or None)
-    context = {
-        "form": form
-    }
-    next_ = request.GET.get('next')
-    next_post = request.POST.get('next')
-    redirect_path = next_ or next_post or None
-    if form.is_valid():
+class LoginView(FormView):
+    form_class = LoginForm
+    success_url = '/shop/:'
+    template_name = "accounts/login.html"
+    def form_valid(self, form):
+        request = self.request
+        next_ = request.GET.get('next')
+        next_post = request.POST.get('next')
+        redirect_path = next_ or next_post or None
+        
         username  = form.cleaned_data.get("username")
         password  = form.cleaned_data.get("password")
         user = authenticate(request, username=username, password=password)
@@ -58,28 +70,56 @@ def login_page(request):
                 return redirect(redirect_path)
             else:
                 return redirect("shop:index")
-        else:
-            # Return an 'invalid login' error message.
-            print("Error")
-    return render(request, "accounts/login.html", context)
-
-User = get_user_model()
-
-def register_page(request):
-    form = RegisterForm(request.POST or None)
-    context = {
-        "form": form
-    }
-    if form.is_valid():
-        # form.save()
-        print(form.cleaned_data)
-        username  = form.cleaned_data.get("username")
-        email = form.cleaned_data.get("email")
-        password  = form.cleaned_data.get("password")
-        new_user = User.objects.create_user(username, email, password)
-        print(new_user)
-    return render(request, "accounts/register.html", context)
+        return super(LoginView, self).form_valid(form)
 
 
-def user_home(request):
-    return render(request, 'accounts/user_home.html', {})
+
+class RegisterView(CreateView):
+    form_class = RegisterForm
+    template_name = 'accounts/register.html'
+    success_url = '/login/'
+
+
+
+
+# def login_page(request):
+#     form = LoginForm(request.POST or None)
+#     context = {
+#         "form": form
+#     }
+#     next_ = request.GET.get('next')
+#     next_post = request.POST.get('next')
+#     redirect_path = next_ or next_post or None
+#     if form.is_valid():
+#         username  = form.cleaned_data.get("username")
+#         password  = form.cleaned_data.get("password")
+#         user = authenticate(request, username=username, password=password)
+#         if user is not None:
+#             login(request, user)
+#             try:
+#                 del request.session['guest_email_id']
+#             except:
+#                 pass
+#             if is_safe_url(redirect_path, request.get_host()):
+#                 return redirect(redirect_path)
+#             else:
+#                 return redirect("shop:index")
+#         else:
+#             # Return an 'invalid login' error message.
+#             print("Error")
+#     return render(request, "accounts/login.html", context)
+
+# User = get_user_model()
+
+# def register_page(request):
+#     form = RegisterForm(request.POST or None)
+#     context = {
+#         "form": form
+#     }
+#     if form.is_valid():
+#         form.save()
+#     return render(request, "accounts/register.html", context)
+
+
+# def user_home(request): 
+#     return render(request, 'accounts/user_home.html', {})

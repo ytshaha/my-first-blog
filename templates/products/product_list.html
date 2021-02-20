@@ -17,7 +17,10 @@
 <div class='container-fluid sticky-top-2 text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
     <div class='container'>
         <div class="row">
-            <div class='col product-list-category' style='padding:0;'>
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <p class=""><bold>- Category -</bold></p>
+            </div>
+                <div class='col product-list-category' style='padding:0;'>
                 <a href="{% url 'products:product_list' %}"><p class="product-list-category-text">전체</p></a>
             </div>
             <div class='col product-list-category' style='padding:0;'>
@@ -36,6 +39,20 @@
                 <a href="{% url 'products:product_category_list' category='kid' %}"><p class="product-list-category-text">유아동</p></a>
             </div>
         </div>
+        {% if brands.exists %}
+
+        <hr>
+        <div class="row">
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <p class=""><bold>- Brand -</bold></p>
+            </div>
+            {% for brand in brands %}
+            <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_brand_list' brand=brand %}"><p class="product-list-category-text">{{ brand|upper }}</p></a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
     </div>   
 </div>
 

@@ -1,8 +1,7 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
-
-
+<div class='container'>
 {% if not billing_profile %}
     <div class='row text-center'>
         <div class='col-12 col-md-6'>
@@ -52,8 +51,6 @@
     {% else %}
         {% if not has_card %}
             <!-- Enter Credit Card hear -->
-            <div class='stripe-payment-form' data-token='{{ publish_key }}' data-next-url='{{ request.build_absolute_uri }}' data-btn-title='Add Payment Method'></div>
-
         {% else %}
             <h1>Finalize Checkout</h1>
             <p>Tickets: {{ object.ticketcart.tickets_type }}</p>
@@ -68,4 +65,6 @@
         {% endif %}
     {% endif %}
 {% endif %}
+</div>
+
 {% endblock %} 

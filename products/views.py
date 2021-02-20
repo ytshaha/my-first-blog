@@ -26,11 +26,37 @@ class ProductCategoryListView(generic.ListView):
     template_name = 'products/product_list.html'
     context_object_name = 'products'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductCategoryListView, self).get_context_data(*args, **kwargs)
+        print(context)
+        brands = Brand.objects.all()
+        context['brands'] = brands
+        return context
+
     def get_queryset(self):
         print("self.kwargs:", self.kwargs)
         category = self.kwargs['category']
         if category is not None:
             return Product.objects.filter(category__name__icontains=category)
+        return Product.objects.all()
+
+class ProductBrandListView(generic.ListView):
+    template_name = 'products/product_list.html'
+    context_object_name = 'products'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductBrandListView, self).get_context_data(*args, **kwargs)
+        print(context)
+        brands = Brand.objects.all()
+        context['brands'] = brands
+        return context
+
+    def get_queryset(self):
+        print("self.kwargs:", self.kwargs)
+        brand = self.kwargs['brand']
+        if brand is not None:
+            # print('brand.name', brand.name)
+            return Product.objects.filter(brand__name__icontains=brand)
         return Product.objects.all()
 
 
@@ -51,6 +77,8 @@ class ProductListView(generic.ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(ProductListView, self).get_context_data(*args, **kwargs)
         print(context)
+        brands = Brand.objects.all()
+        context['brands'] = brands
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -65,9 +93,11 @@ class ProductDetailSlugView(generic.DetailView):
         context = super(ProductDetailSlugView, self).get_context_data(*args, **kwargs)
         request = self.request
         slug = self.kwargs.get('slug')
+        is_stock = True
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         product_images_qs = ProductImage.objects.filter(product__title=slug)
         product_obj = Product.objects.get(slug=slug)
+        product_obj.save()
         bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')[:10]
         # 경매준비 경매중 경매종료 여부확인
         now = timezone.now()
@@ -79,7 +109,12 @@ class ProductDetailSlugView(generic.DetailView):
             bidding_on = '3'
         else:
             bidding_on = None
-        print("bidding_on",bidding_on)
+        
+        # 상시판매물품 재고여부
+        if product_obj.amount_always_on == 0:
+            is_stock = False
+        
+        context['is_stock'] = is_stock
         context['bidding_on'] = bidding_on
         context['cart'] = cart_obj
         context['images'] = product_images_qs

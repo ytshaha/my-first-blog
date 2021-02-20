@@ -47,7 +47,7 @@ def cart_update(request):
             return redirect("carts:home")
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         if product_obj in cart_obj.products.all():
-            cart_obj.products.remove(product_obj)
+            # cart_obj.products.remove(product_obj)
             added = False
         else:
             cart_obj.products.add(product_obj)
@@ -76,7 +76,9 @@ def checkout_home(request):
     address_form = AddressForm()
     billing_address_id = request.session.get('billing_address_id', None)
     shipping_address_id = request.session.get('shipping_address_id', None)
-
+    print("shipping_address_id", shipping_address_id )
+    print("billing_address_id", billing_address_id )
+    
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     address_qs = None
     has_card = False
@@ -86,14 +88,29 @@ def checkout_home(request):
             address_qs = Address.objects.filter(billing_profile=billing_profile)
         order_obj, order_obj_created = Order.objects.new_or_get(billing_profile, cart_obj)
         if shipping_address_id:
+            print("shipping_address : OK")
             order_obj.shipping_address = Address.objects.get(id=shipping_address_id) 
             del request.session['shipping_address_id']
         if billing_address_id:
+            print("billing_address : OK")
             order_obj.billing_address = Address.objects.get(id=billing_address_id)
             del request.session['billing_address_id']
         if billing_address_id or shipping_address_id:
             order_obj.save()
         has_card = billing_profile.has_card
+    
+    # 물건들의 재고가 남아있는지 check
+    # order_obj = request.POST.get('order_obj')
+    for product in cart_obj.products.all():
+        print("Stock Check...product.title")
+        if product.amount_always_on < 1:
+            print('{}의 재고가 없어 카트에서 제거합니다.'.format(protuct.title))
+            cart_obj.products.item.delete()
+            print("cart_obj.products: ",cart_obj.products)
+            cart_obj.save()
+            # 카트에 뭐가있는지 체크아웃도 다시한번하게하기위해 redirect
+            return redirect("carts:home")
+    
 
     if request.method == "POST":
         "check that order is done"
@@ -106,6 +123,11 @@ def checkout_home(request):
                 del request.session['cart_id']
                 if not billing_profile.user:
                     billing_profile.set_cards_inactive()
+                # 재고 있는것들에 대해서 아래와 같이 구매한다.
+                for product in cart_obj.products.all():
+                    print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(product.title, product.amount_always_on))
+                    product.amount_always_on = product.amount_always_on - 1
+                    product.save()
                 return redirect("carts:success")
             else:
                 print(charge_msg)
@@ -124,10 +146,22 @@ def checkout_home(request):
     return render(request, "carts/checkout.html", context)
 
 def checkout_done_view(request):
-    # 여기에 product 수량감소시키는 스크립트 작성.
-    # 0보다 높으면 결재가 진행되었다. 깔끔. 수량 감소시키자. 
-    # bidding여부 field를 추가하여 bidding 이면 그냥 amount. 아니면 amount_always_on을 감소시키자.
-    # 만약 감소시키기 전에 1 보다 낮으면 실패이므로 결재가 진행되지 않았습니다 문구 발생
-    # 그리고 order 는 실패상태로 놔두든가 order에 석세스 실패 여부 field추가하자.
-     
+    '''
+     여기에 product 수량감소시키는 스크립트 작성.
+    0보다 높으면 결재가 진행되었다. 깔끔. 수량 감소시키자. 
+    bidding여부 field를 추가하여 bidding 이면 그냥 amount. 아니면 amount_always_on을 감소시키자.
+    만약 감소시키기 전에 1 보다 낮으면 실패이므로 결재가 진행되지 않았습니다 문구 발생
+    그리고 order 는 실패상태로 놔두든가 order에 석세스 실패 여부 field추가하자.
+    지금은 일단 일반 prduct만 한정해서 하자.
+    나중에 메모장에 적어둔 cart_item 모델을 따로 만들어서 product_always_on, product_bidding, ticket이라고 따로 카테고리화하면 완성 시키자. 
+    '''
+    # order_obj = request.POST.get('order_obj')
+    # for item in order_obj.cart.products.all:
+    #     print(item)
+    #     if product.amount_always_on < 1:
+    #         print('{}의 재고가 없습니다.')
+    #     product.amount_always_on = 
+    
+
+
     return render(request, "carts/checkout-done.html", {})

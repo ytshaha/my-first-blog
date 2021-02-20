@@ -1,10 +1,16 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
-<form method='POST'>
-    {% csrf_token %}
-    {{ form }}
+<div class='container'>
+    <div class='row'>
+        <h3>Register</h3>
+    </div>
+    <form method='POST'>
+        {% csrf_token %}
+        {{ form.as_p }}
+    
+        <button type="submit" class="btn btn-default">SUBMIT</button>
+    </form>
+</div>
 
-    <button type="submit" class="btn btn-default">SUBMIT</button>
-</form>
 {% endblock %}

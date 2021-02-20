@@ -90,9 +90,9 @@
                         <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">USER</th>
-                            <th scope="col">BIDDING PRICE</th>
-                            <th scope="col">TIMESTAMP</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">경매 참가액</th>
+                            <th scope="col">경매 참여시간</th>
                         </tr>
                         </thead>
                     </table>
@@ -118,6 +118,8 @@
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <a href="{% url 'products:bidding_new' slug=product.slug %}"><button type="button" class="btn btn-primary btn-block" style="margin-top:20px;">경매 참여</button></a>
         </div>
+
+        {% if is_stock %}
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <form method="post" action="{% url 'carts:update' %}">
                 {% csrf_token %}
@@ -125,12 +127,18 @@
                 <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
             </form>
         </div>
+        {% else %}
+        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+            <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 재고없음</button></a>
+        </div>
+        {% endif %}
     </div>
     {% elif bidding_on == '3' %}
     <div class='row'>
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <a href="{% url 'products:bidding_result' slug=product.slug %}"><button type="button" class="btn btn-success btn-block" style="margin-top:20px;">경매 결과확인</button></a>
         </div>
+        {% if is_stock %}
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <form method="post" action="{% url 'carts:update' %}">
                 {% csrf_token %}
@@ -138,6 +146,11 @@
                 <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
             </form>
         </div>
+        {% else %}
+        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+            <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 재고없음</button></a>
+        </div>
+        {% endif %}
     </div>
     {% else %}
     <div class='row'>
@@ -176,6 +189,8 @@
                     <th scope="col">경매종료 일정</th>
                     <th scope="col">경매금액 단위</th>
                     <th scope="col">경매물품 수량</th>
+                    <th scope="col">상시상품 수량</th>
+                    
                 </thead>
                 <tbody>
                     <tr>
@@ -183,6 +198,7 @@
                         <td class="table-bidding-info">{{ product.bidding_end_date|date:"SHORT_DATE_FORMAT" }}{{ product.bidding_end_date|time:"H:i" }}</td>
                         <td class="table-bidding-info">₩1,000</td>
                         <td class="table-bidding-info">{{ product.amount }}EA</td>
+                        <td class="table-bidding-info">{{ product.amount_always_on }}EA</td>
                     </tr>
                 </tbody>
             </table>

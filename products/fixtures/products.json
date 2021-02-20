@@ -1,0 +1,219 @@
+[
+{
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+        "number": "00000001",
+        "title": "\uc5ec\uc790\uc7a0\ubc14_WOMAN",
+        "brand": 1,
+        "start_price": 10000,
+        "limit_price": 20000,
+        "current_price": 15000,
+        "list_price": 30000,
+        "sale_ratio": "50.0",
+        "price_step": 1000,
+        "info_made_country": "\uc774\ud0c8\ub9ac\uc544",
+        "info_product_number": "M9293831",
+        "info_delivery": "\ud0dd\ubc30",
+        "info_delivery_from": "\uad6d\ub0b4",
+        "description": "\uc560\uad6d\uac00\uc758 \uac00\uc0ac\ub294 1900\ub144\ub300 \ucd08\uc5d0 \uc4f0\uc5ec\uc84c\ub2e4. \r\n\uc791\uc0ac\uc790\ub294 \ud06c\uac8c \uc724\uce58\ud638\ub77c\ub294 \uc124\uacfc \uc548\ucc3d\ud638\ub77c\ub294 \uc124 \ub450 \uac00\uc9c0\uac00 \uc788\uc73c\uba70\r\n, \uad6d\uc0ac\ud3b8\ucc2c\uc704\uc6d0\ud68c\uc758 \uacf5\uc2dd\uc801\uc778 \uc785\uc7a5\uc73c\ub85c\ub294 \ubbf8\uc0c1\uc774\ub2e4. \uc791\uc0ac\uc790 \uc724\uce58\r\n\ud638 \uc124\uc740 \uc724\uce58\ud638\uac00 \uc560\uad6d\uac00\uc758 \uac00\uc0ac\ub97c 1907\ub144\uc5d0 \uc368\uc11c \ud6c4\uc5d0 \uadf8 \uc790\r\n\uc2e0\uc758 \uc774\ub984\uc73c\ub85c \ucd9c\ud310\ud588\ub2e4\ub294 \uac83\uc774\ub2e4. \ud55c\ud3b8 \uc548\ucc3d\ud638\uac00 \uc37c\ub2e4\ub294 \uc8fc\uc7a5\uc740 \uc548\ucc3d\ud638\uac00 \uc560\uad6d\uac00\ub97c \ubcf4\uae09\ud558\ub294 \ub370\uc5d0 \uc55e\uc7a5\uc130\ub2e4\ub294 \ub370\uc5d0 \uc911\uc810\uc744 \ub450\uace0 \uc788\ub2e4. 1908\ub144\uc5d0 \ucd9c\ud310\ub41c \uac00\uc0ac\r\n \u300a\ucc2c\ubbf8\uac00\u300b\uc5d0 \uc218\ub85d\ub41c \uac83\uc744 \ube44\ub86f\ud55c \ub9ce\uc740 \uc77c\uc81c \uac15\r\n\uae30\uc758 \uc560\uad6d\uac00 \ucd9c\ud310\ubb3c\uc740 \uc724\uce58\ud638\ub97c \uc791\r\n\uc0ac\uc790\ub85c\r\n\ub3cc\ub9ac\uace0 \uc788\ub294 \ub4f1 \uc724\uce58\ud638 \uc124\uc5d0\ub294 \uc99d\uac70\uac00 \ub9ce\uc740 \ubc18\uba74[4] \uc548\ucc3d\ud638 \uc124\uc5d0\ub294 \uc2e4\uc99d\uc801\uc778 \uc790\ub8cc\uac00 \ubd80\uc871\ud558\ub2e4.\r\n\r\n\uc724\uce58\ud638\uc758 \uc0ac\ucd0c\ub3d9\uc0dd \uc724\uce58\uc601(\u5c39\u81f4\r\n\u745b)\uc740 \uc724\uce58\r\n\ud638\uac00 \ub300\ud55c\ubbfc\uad6d\uc758 \uc560\uad6d\uac00 \uac00\uc0ac\uc758 \uc77c\ubd80\ub97c \uc37c\ub2e4\uace0 \uc8fc\uc7a5\ud588\ub2e4.[5] \uc724\uce58\uc601\uc5d0 \uc758\ud558\uba74 \uc560\uad6d\uac00 \uac00\uc0ac\uc758 \uc55e\ubd80\ubd84\uc740 \ucd5c\ubcd1\ud5cc \ubaa9\r\n\uc0ac\uac00 \uc9d3\uace0, \ud6c4\ub834\uad6c\ub294 \uc724\uce58\ud638\uac00 \uc9c0\uc5c8\ub2e4\ub294 \uac83\uc774\ub2e4. \ucd5c\ubcd1\ud5cc\uc740 \uc724\uce58\ud638\uac00 \ub2e4\ub2c8\ub358 \uc815\ub3d9\uac10\ub9ac\uad50\ud68c\uc758 \ubaa9\uc0ac\uc600\ub2e4.[5] \uc724\uce58\ud638\uc640 \ucd5c\ubcd1\ud5cc\uc774 \ud568\uaed8 \uc9c0\uc5c8\ub2e4\ub294 \uc560\uad6d\uac00 \uc0ac\r\n\ubcf8\uc774 2002\ub144 \ud55c\ub0a8\ub300\ud559\uad50 \uad50\uc218 \ubc15\uc815\uaddc\uc5d0 \uc758\ud574 \ubc1c\uacac\ub418\uae30\ub3c4 \ud588\ub2e4. \uc774\ub294 \uc724\uce58\ud638\uc758 \u2018\ubb34\uad81\ud654 \ub178\ub798\u2019(1896)\uc640 \uae40\uc778\uc2dd\uc758 \u2018\ucf54\ub9ac\uc544\u2019(1910)\uac00 \ud569\uccd0\uc9c4 \ud615\ud0dc\ub85c\r\n, \ud6c4\ub834\r\n\uc774 \ud604\uc7ac\uc758 \uc560\uad6d\uac00\uc640 \uac19\ub2e4.[6] \ub610\ud55c \uc560\uad6d\uac00\uc758 \uc6d0\ubcf8\uc740 \uadf8\uac00 \uc9c0\uc5c8\uc73c\ub098, \ud6c4\uc5d0 \ub300\ud55c\ubbfc\uad6d \uc784\uc2dc\uc815\ubd80\uc5d0\uc11c \uc77c\ubd80 \uac1c\uc0ac\ud588\ub2e4\uace0\ub3c4 \ud55c\ub2e4.\r\n\r\n\uadf8\ubc16\uc5d0 '\uc131\uc790\uc2e0\uc190 \uc624\ubc31\ub144\uc740, \uc6b0\ub9ac \r\n\ud669\uc2e4\uc774\uc694'\ub85c \uc2dc\uc791\ub418\ub294 \ud611\uc131\ud68c \ubb34\uad81\ud654\r\n\uac00 \uc5ed\uc2dc \uc724\uce58\ud638\uac00 \uc791\uc0ac\ub97c \ud558\uc600\ub2e4\ub294 \uc124\uc774 \uc788\r\n\r\n\r\n\ub2e4.[7] \uc724\uce58\ud638\uac00 \uc9c0\uc740 \ub178\ub798 \uc911 \uc548\ucc3d\ud638\uac00 \uac00\uc0ac\uc758 \uc131\r\n\uc2e0\uc190 \uc624\ubc31\ub144\uc740 \uc6b0\ub9ac \ud669\uc2e4\uc774\uc694 \ub97c \ubb38\uc81c\uc0bc\uc544 \uac00\uc0ac\ub97c \ubc14\uafb8\ub77c\uace0 \uc694\uccad\ud558\uc790 \ub3d9\ud574\ubb3c\uacfc \ubc31\ub450\uc0b0\uc774 \ub9c8\ub974\uace0 \ub2f3\ub3c4\ub85d \uc73c\ub85c \uace0\ucce4\ub2e4. \uadf8\ub7ec\ub098 1919\ub144 \ub300\ud55c\ubbfc\uad6d \uc784\uc2dc \uc815\r\n\ubd80\uc5d0 \ucc38\uc5ec\ud55c \uc548\ucc3d\ud638\ub294 \uc724\uce58\ud638\uac00 \uc9c0\uc5c8\ub2e4\uac00 \ubcf8\uc778 \uc2a4\uc2a4\ub85c \uc218\uc815\r\n\ud55c \ubd80\r\n\ubd84 \uc911\uc5d0\uc11c\ub3c4 \uc6b0\ub9ac \ub300\ud55c \ub9cc\uc138\ub97c \uc6b0\ub9ac \ub098\ub77c \ub9cc\uc138\ub85c, \uc774\uae30\uc0c1\uacfc \uc774\ub9d8\uc73c\ub85c \uc784\uae08\uc744 \uc12c\uae30\uba70\ub97c \uc774\uae30\uc0c1\uacfc \uc774\ub9d8\uc73c\ub85c \ucda9\uc131\uc744 \ub2e4\ud558\uba70\ub85c \uc548\ucc3d\ud638\uac00 \r\n\uc2dc \uace0\ucce4\ub2e4\ub294 \uac83\uc774\ub2e4.\r\n\r\n\ub3c5\ub9bd\uc6b4\ub3d9\uac00 \uacb8 \uc815\uce58\uc778 \uc8fc\uc694\ud55c\uacfc\r\n, \ub3c5\ub9bd\uc6b4\ub3d9\uac00 \uc548\ud0dc\uad6d\uc758 \uc0ac\uc704 \ud64d\uc7ac\ud615 \r\n\ub4f1\uc740 \uadf8\uac00 \uc9c0\uc740 \ud611\uc131\ud68c \ubb34\uad81\ud654\uac00\ub97c \uc548\r\n\r\n\ucc3d\ud638\uc758 \uc694\uccad\uc73c\ub85c \uac1c\uc0ac\ud55c \uac83\uc774 \uc560\uad6d\uac00\uc758 \uae30\r\n\uc6d0\uc774 \ub418\uc5c8\ub2e4\uace0 \uc9c4\uc220\ud588\ub2e4. \uc774\ub294 \ud55c\ub9d0 \ub3c5\ub9bd\uc6b4\ub3d9\r\n\uac00\uc778 \uc548\ud0dc\uad6d(\uc548\ucc3d\ud638, \uc591\uae30\ud0c1 \uc120\uc0dd\uacfc \uc2e0\ubbfc\ud68c\ub97c \r\n\uc870\uc9c1, 105\uc778 \uc0ac\uac74\uc758 \uc8fc\ubaa8\uc790\ub85c \ud53c\uac80)\uc758 \uc0ac\uc704\uc778 \ud64d\r\n\uc7ac\ud615\uc774 \uc548\ud0dc\uad6d\uc758 \ub9d0\uc744 \ud68c\uace0\ud558\ub294 < \uc548\ub3c4\uc0b0\uc804\uc11c(\u5b89\u5cf6\u5c71\u5168\u66f8) > \uc758 \ub0b4\uc6a9\uc5d0\uc11c \uc0b4\ud3b4 \ubcfc \uc218 \uc788",
+        "amount": 1,
+        "amount_always_on": 3,
+        "created_date": "2021-02-16T03:32:10Z",
+        "bidding_start_date": "2021-02-16T03:32:10Z",
+        "bidding_end_date": "2021-02-17T03:32:10Z",
+        "remain_bidding_time": "-4 days 20:54:42",
+        "category": 1,
+        "image": "products/35372602/35372602.PNG",
+        "featured": false,
+        "active": true,
+        "slug": "\uc5ec\uc790\uc7a0\ubc14_WOMAN"
+    }
+},
+{
+    "model": "products.product",
+    "pk": 2,
+    "fields": {
+        "number": "00000002",
+        "title": "\uc5b4\ub9b0\uc560\uaebc_KID",
+        "brand": 2,
+        "start_price": 200000,
+        "limit_price": 300000,
+        "current_price": 205000,
+        "list_price": 400000,
+        "sale_ratio": "48.8",
+        "price_step": 1000,
+        "info_made_country": "\uc774\ud0c8\ub9ac\uc544",
+        "info_product_number": "WKKWJ11231",
+        "info_delivery": "\ud0dd\ubc30",
+        "info_delivery_from": "\uad6d\ub0b4",
+        "description": "Lorem Ipsum is simply dummy text of the printing and t\r\n\r\nypesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into elect\r\n\r\nronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\r\n\r\nWhy do we use it?\r\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it \r\nhas a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\r\n\r\n\r\nWhere does it come from?\r\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the \r\nmore obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.",
+        "amount": 1,
+        "amount_always_on": 2,
+        "created_date": "2021-02-16T03:33:26Z",
+        "bidding_start_date": "2021-02-20T03:33:26Z",
+        "bidding_end_date": "2021-02-20T09:00:00Z",
+        "remain_bidding_time": "0 days 2:22:32",
+        "category": 2,
+        "image": "products/30807631/30807631.PNG",
+        "featured": false,
+        "active": true,
+        "slug": "\uc5b4\ub9b0\uc560\uaebc_KID"
+    }
+},
+{
+    "model": "products.product",
+    "pk": 3,
+    "fields": {
+        "number": "00000003",
+        "title": "\uc9c0\uac11_FASHION_ACC",
+        "brand": 3,
+        "start_price": 50000,
+        "limit_price": 60000,
+        "current_price": 50000,
+        "list_price": 70000,
+        "sale_ratio": "28.6",
+        "price_step": 1000,
+        "info_made_country": "\uc774\ud0c8\ub9ac\uc544",
+        "info_product_number": "KM11",
+        "info_delivery": "\ud0dd\ubc30",
+        "info_delivery_from": "\uad6d\ub0b4",
+        "description": "\ubbf8\uc6b0\uce58\uc544 \ud504\ub77c\ub2e4\uc640 \ub77c\ud504 \uc2dc\ubaac\uc2a4\uac00 \r\n\ud504\ub77c\ub2e4\uc758 \uacf5\ub3d9 \ud06c\ub9ac\uc5d0\uc774\ud2f0\ube0c \ub514\ub809\ud130\ub85c\uc11c \ucd5c\ucd08\ub85c \ud568\uaed8 \uc120\ubcf4\uc774\ub294\r\n\r\n \ud504\ub77c\ub2e4 2021 \ubd04/\uc5ec\ub984 \uc5ec\uc131 \uceec\ub809\uc158\uc740 \ud601\uc2e0\uc801\uc778 \uc18c\uc7ac\uc640 \ucfe0\ud280\ub974\uc5d0\uc11c \uc601\uac10\uc744 \ubc1b\uc740 \ub2e4\ucc44\ub85c\uc6b4 \uae30\ubc95\uc758 \uc138\ub828\ub418\uace0 \ucf58\uc149\ud2b8\uc5d0 \ucda9\uc2e4\ud55c \ub514\uc790\uc778\uc73c\ub85c \uc720\ub2c8\ud3fc\uc758 \uc758\ubbf8\ub97c \ud0d0\uad6c\ud569\ub2c8\ub2e4. \ubbf8\uc6b0\uce58\r\n\uc544 \ud504\ub77c\ub2e4\uc640 \ub77c\ud504 \uc2dc\ubaac\uc2a4\uac00 \ud504\ub77c\ub2e4\uc758 \uacf5\ub3d9 \ud06c\ub9ac\uc5d0\uc774\ud2f0\ube0c \ub514\ub809\ud130\ub85c\uc11c \ucd5c\ucd08\ub85c \ud568\uaed8 \uc120\ubcf4\uc774\ub294 \ud504\ub77c\ub2e4 2021 \ubd04/\uc5ec\ub984 \uc5ec\uc131 \uceec\ub809\uc158\uc740 \ud601\uc2e0\uc801\r\n\r\n\uc778 \uc18c\uc7ac\uc640 \ucfe0\ud280\ub974\uc5d0\uc11c \uc601\uac10\uc744 \ubc1b\uc740 \ub2e4\ucc44\ub85c\uc6b4 \uae30\ubc95\uc758 \uc138\ub828\ub418\uace0 \ucf58\uc149\ud2b8\uc5d0 \ucda9\uc2e4\ud55c \ub514\uc790\uc778\uc73c\ub85c \uc720\ub2c8\ud3fc\uc758 \uc758\ubbf8\ub97c \ud0d0\uad6c\ud569\ub2c8\ub2e4. \ubbf8\uc6b0\uce58\uc544 \ud504\ub77c\ub2e4\uc640 \ub77c\ud504 \uc2dc\ubaac\uc2a4\uac00 \ud504\ub77c\ub2e4\uc758 \uacf5\ub3d9 \ud06c\ub9ac\uc5d0\uc774\ud2f0\ube0c \ub514\ub809\ud130\ub85c\uc11c \ucd5c\ucd08\ub85c \ud568\r\n\uaed8 \uc120\ubcf4\uc774\ub294 \ud504\ub77c\ub2e4 2021 \ubd04/\uc5ec\ub984 \uc5ec\uc131 \uceec\ub809\uc158\uc740 \ud601\uc2e0\uc801\uc778 \uc18c\uc7ac\uc640 \ucfe0\ud280\ub974\uc5d0\uc11c \uc601\uac10\uc744 \ubc1b\uc740 \ub2e4\ucc44\ub85c\uc6b4 \uae30\ubc95\uc758 \uc138\ub828\ub418\uace0 \ucf58\uc149\ud2b8\uc5d0 \ucda9\uc2e4\ud55c \ub514\uc790\uc778\uc73c\ub85c \uc720\ub2c8\ud3fc\uc758 \uc758\ubbf8\ub97c \ud0d0\uad6c\ud569\ub2c8\ub2e4. \ubbf8\uc6b0\uce58\uc544 \ud504\ub77c\ub2e4\uc640 \ub77c\ud504 \uc2dc\r\n\r\n\ubaac\uc2a4\uac00 \ud504\ub77c\ub2e4\uc758 \uacf5\ub3d9 \ud06c\ub9ac\uc5d0\uc774\ud2f0\ube0c \ub514\ub809\ud130\ub85c\uc11c \ucd5c\ucd08\ub85c \ud568\uaed8 \uc120\ubcf4\uc774\ub294 \ud504\ub77c\ub2e4 2021 \ubd04/\uc5ec\ub984 \uc5ec\uc131 \uceec\ub809\uc158\uc740 \ud601\uc2e0\uc801\uc778 \uc18c\uc7ac\uc640 \ucfe0\ud280\ub974\uc5d0\uc11c \uc601\uac10\uc744 \ubc1b\uc740 \ub2e4\ucc44\ub85c\uc6b4 \uae30\ubc95\uc758 \uc138\ub828\ub418\uace0 \ucf58\uc149\ud2b8\uc5d0 \ucda9\r\n\uc2e4\ud55c \ub514\uc790\uc778\uc73c\ub85c \uc720\ub2c8\ud3fc\r\n\uc758 \uc758\ubbf8\ub97c \ud0d0\uad6c\ud569\ub2c8\ub2e4.",
+        "amount": 1,
+        "amount_always_on": 2,
+        "created_date": "2021-02-16T03:34:45Z",
+        "bidding_start_date": "2021-02-16T03:34:45Z",
+        "bidding_end_date": "2021-02-16T03:34:45Z",
+        "remain_bidding_time": "-5 days 20:57:17",
+        "category": 3,
+        "image": "products/3557312/3557312.jpg",
+        "featured": false,
+        "active": true,
+        "slug": "\uc9c0\uac11_FASHION_ACC"
+    }
+},
+{
+    "model": "products.product",
+    "pk": 4,
+    "fields": {
+        "number": "00000004",
+        "title": "\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC",
+        "brand": 3,
+        "start_price": 500000,
+        "limit_price": 600000,
+        "current_price": 557000,
+        "list_price": 800000,
+        "sale_ratio": "30.4",
+        "price_step": 1000,
+        "info_made_country": "\uc774\ud0c8\ub9ac\uc544",
+        "info_product_number": "KSKS101010",
+        "info_delivery": "\ud0dd\ubc30",
+        "info_delivery_from": "\uad6d\ub0b4",
+        "description": "\ub514\uc988\ub2c8\uc758 \ub300\ud45c\uc801\uc778 \uce90\ub9ad\ud130\ub4e4\uc740 \ud558\uc6b0\uc2a4\uc758 \ub0b4\ub7ec\ud2f0\ube0c\ub97c \ud48d\uc131\ud558\uac8c \ud558\uba70 \ub3c4\ub110\ub4dc \ub355\uc740 \uad6c\ucc0c\uc758 \uc0c1\uc9d5\uc801\uc778 \uc250\uc785\uacfc \ub514\uc790\uc778\uc5d0 \uc7ac\uce58 \uc788\ub294 \uac10\uc131\uc744 \ub354\ud568. \ub3c4\ub110\ub4dc \ub355\uc758 \uc870\uce74 \ud734\uc774, \ub4c0\uc774, \ub8e8\uc774\uac00 \ud568\uaed8 \ub514\uc790\uc778\uc5d0 \ub354\ud574\uc838 \ud1a0\ud2b8\ubc31\uc5d0 \uc0dd\uae30\ub97c \ub354\ud568.\r\n\r\n-\uc81c\uc870\uc790: \uad6c\ucc0c\r\n-\uc81c\uc870\uad6d: \uc774\ud0dc\ub9ac\r\n-\uc218\uc785\uc790: \uad6c\ucc0c\ucf54\ub9ac\uc544\r\n-\uc5d0\ud544\ub85c\uadf8 \uceec\ub809\uc158\r\n-\uce5c\ud658\uacbd \uacf5\uc815\uc73c\ub85c \uc81c\uc791\ub41c \ub3c4\ub110\ub4dc \ub355 \ud504\ub9b0\ud2b8 \ub514\ud14c\uc77c\uc758 \ubca0\uc774\uc9c0/\uc5d0\ubcf4\ub2c8 GG \uc218\ud504\ub9bc \uce94\ubc84\uc2a4 \u00a9 Di-sney\r\n-\ube0c\ub77c\uc6b4 \uac00\uc8fd \ud2b8\ub9ac\ubc0d\r\n-\uac00\uc8fd \uc778\ud130\ub85c\ud0b9 G \ud0dc\uadf8\r\n-\ucf54\ud2bc \ub9b0\ub128 \uc548\uac10\r\n-\ub0b4\ubd80 \uc9c0\ud37c \ud3ec\ucf13\r\n-\ud0d1 \ud578\ub4e4, 8cm \ub4dc\ub86d\r\n-\uc204\ub354 \uc2a4\ud2b8\ub7a9, 40cm \ub4dc\ub86d\r\n-\uac00\ub85c 31cm x \uc138\ub85c 26.6cm x \ub108\ube44 14cm\r\n-\ub300\uccb4 \uba54\ud0c8 \ub610\ub294 \ud06c\ub86c \ud504\ub9ac \ud0dc\ub2dd \ucc98\ub9ac\ud55c \uac00\uc8fd \uc18c\uc7ac-\ub85c, \uae30\uc874 \uacf5\uc815\uc5d0 \ube44\ud574 \ud658\uacbd\uc5d0 \ubbf8\uce58\ub294 \uc601\ud5a5\uc744 \uc904\uc785\ub2c8\ub2e4.\r\n-\uccab \ubc88\uc9f8 \uace0\uac1d\ub2d8\uc758 \uc2e0\uc7a5\uc740 177cm \uc785\ub2c8\ub2e4., \ub450 \ubc88\uc9f8 \uace0\uac1d\ub2d8\uc758 \uc2e0\uc7a5\uc740 185cm \uc785\ub2c8\ub2e4.\r\n-\ud488\uc9c8\ubcf4\uc99d\uae30\uc900: A/S \ubcf4\uc99d\uae30\uac04 2\ub144 (\uc0c1\ud488 \uc774\uc0c1 \uc2dc \ubb34\uc0c1\uc218\uc120, \uace0\uac1d\uc758 \ubd80\uc8fc\uc758\ub85c \ud310\ub2e8\ub418\ub294 \uacbd\uc6b0 \uc720\uc0c1\uc218\uc120)\r\n-AS \uc720\uc120\uc811\uc218: \ud074\ub77c\uc774\uc5b8\ud2b8\uc11c\ube44\uc2a4\uc13c\ud130 02-3452-1921 / \uc774\uba54\uc77c\uc811\uc218: \ud074\ub77c\uc774\uc5b8\ud2b8\uc11c\ube44\uc2a4\uc13c\ud130 clientservice.kr@gucci.com",
+        "amount": 1,
+        "amount_always_on": 4,
+        "created_date": "2021-02-16T05:47:07Z",
+        "bidding_start_date": "2021-02-20T08:42:48Z",
+        "bidding_end_date": "2021-02-20T11:42:49Z",
+        "remain_bidding_time": "0 days 5:6:58",
+        "category": 3,
+        "image": "products/\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC/_acc-1.jpg",
+        "featured": false,
+        "active": true,
+        "slug": "\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC"
+    }
+},
+{
+    "model": "products.productimage",
+    "pk": 1,
+    "fields": {
+        "product": 4,
+        "image": "products/\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC/_acc-2.jpg"
+    }
+},
+{
+    "model": "products.productimage",
+    "pk": 2,
+    "fields": {
+        "product": 4,
+        "image": "products/\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC/_acc-3.jpg"
+    }
+},
+{
+    "model": "products.productimage",
+    "pk": 3,
+    "fields": {
+        "product": 4,
+        "image": "products/\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC/_acc-4.jpg"
+    }
+},
+{
+    "model": "products.productimage",
+    "pk": 4,
+    "fields": {
+        "product": 4,
+        "image": "products/\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC/_acc-5.jpg"
+    }
+},
+{
+    "model": "products.productimage",
+    "pk": 5,
+    "fields": {
+        "product": 4,
+        "image": "products/\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC/_acc-6.jpg"
+    }
+},
+{
+    "model": "products.productimage",
+    "pk": 6,
+    "fields": {
+        "product": 4,
+        "image": "products/\uac1c\uac04\uc9c0\ud504\ub77c\ub2e4\uac00\ubc29_ACC/_acc-7.jpg"
+    }
+},
+{
+    "model": "products.brand",
+    "pk": 1,
+    "fields": {
+        "name": "Guzzi",
+        "website": null
+    }
+},
+{
+    "model": "products.brand",
+    "pk": 2,
+    "fields": {
+        "name": "\ubabd\ud074\ub808\uc5b4",
+        "website": null
+    }
+},
+{
+    "model": "products.brand",
+    "pk": 3,
+    "fields": {
+        "name": "\ud504\ub77c\ub2e4",
+        "website": null
+    }
+},
+{
+    "model": "products.category",
+    "pk": 1,
+    "fields": {
+        "name": "woman"
+    }
+},
+{
+    "model": "products.category",
+    "pk": 2,
+    "fields": {
+        "name": "kid"
+    }
+},
+{
+    "model": "products.category",
+    "pk": 3,
+    "fields": {
+        "name": "acc"
+    }
+}
+]
