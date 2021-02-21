@@ -1,0 +1,219 @@
+[
+    {
+        "model": "products.product",
+        "pk": 1,
+        "fields": {
+            "number": "00000001",
+            "title": "여자잠바_WOMAN",
+            "brand": 1,
+            "start_price": 10000,
+            "limit_price": 20000,
+            "current_price": 15000,
+            "list_price": 30000,
+            "sale_ratio": "50.0",
+            "price_step": 1000,
+            "info_made_country": "이탈리아",
+            "info_product_number": "M9293831",
+            "info_delivery": "택배",
+            "info_delivery_from": "국내",
+            "description": "애국가의 가사는 1900년대 초에 쓰여졌다. \r\n작사자는 크게 윤치호라는 설과 안창호라는 설 두 가지가 있으며\r\n, 국사편찬위원회의 공식적인 입장으로는 미상이다. 작사자 윤치\r\n호 설은 윤치호가 애국가의 가사를 1907년에 써서 후에 그 자\r\n신의 이름으로 출판했다는 것이다. 한편 안창호가 썼다는 주장은 안창호가  애국가를 보급하는 데에 앞장섰다는 데에 중점을 두고 있다. 1908년에 출판된 가사\r\n 《찬미가》에 수록된 것을 비롯한 많은 일제 강\r\n기의 애국가 출판물은 윤치호를 작\r\n사자로\r\n돌리고 있는 등 윤치호 설에는 증거가 많은 반면[4] 안창호 설에는 실증적인 자료가 부족하다.\r\n\r\n윤치호의 사촌동생 윤치영(尹致\r\n瑛)은 윤치\r\n호가 대한민국의 애국가 가사의 일부를 썼다고 주장했다.[5] 윤치영에 의하면 애국가 가사의 앞부분은 최병헌 목\r\n사가 짓고, 후렴구는 윤치호가 지었다는 것이다. 최병헌은 윤치호가 다니던 정동감리교회의 목사였다.[5] 윤치호와 최병헌이 함께 지었다는 애국가 사\r\n본이 2002년 한남대학교 교수 박정규에 의해 발견되기도 했다. 이는 윤치호의 ‘무궁화 노래’(1896)와 김인식의 ‘코리아’(1910)가 합쳐진 형태로\r\n, 후렴\r\n이 현재의 애국가와 같다.[6] 또한 애국가의 원본은 그가 지었으나, 후에 대한민국 임시정부에서 일부 개사했다고도 한다.\r\n\r\n그밖에 '성자신손 오백년은, 우리 \r\n황실이요'로 시작되는 협성회 무궁화\r\n가 역시 윤치호가 작사를 하였다는 설이 있\r\n\r\n\r\n다.[7] 윤치 호가 지은 노래 중 안창호가 가사의 성\r\n신손 오백년은 우리 황실이요 를 문제삼아 가사를 바꾸라고 요청하자 동해물과 백두산이 마르고 닳도록 으로 고쳤다. 그러나 1919년 대한민국 임시 정\r\n부에 참여한 안창호는 윤치호가 지었다가 본인 스스로 수정\r\n한 부\r\n분 중에서도 우리 대한 만세를 우리 나라 만세로, 이기상과 이맘으로 임금을 섬기며를 이기상과 이맘으로 충성을 다하며로 안창호가 \r\n시 고쳤다는 것이다.\r\n\r\n독립운동가 겸 정치인 주요한과\r\n, 독립운동가 안태국의 사위 홍재형 \r\n등은 그가 지은 협성회 무궁화가를 안\r\n\r\n창호의 요청으로 개사한 것이 애국가의 기\r\n원이 되었다고 진술했다. 이는 한말 독립운동\r\n가인 안태국(안창호, 양기탁 선생과 신민회를 \r\n조직, 105인 사건의 주모자로 피검)의 사위인 홍\r\n재형이 안태국의 말을 회고하는 < 안도산전서(安島山全書) > 의 내용에서 살펴 볼 수 있",
+            "amount": 1,
+            "amount_always_on": 3,
+            "created_date": "2021-02-16T03:32:10Z",
+            "bidding_start_date": "2021-02-16T03:32:10Z",
+            "bidding_end_date": "2021-02-17T03:32:10Z",
+            "remain_bidding_time": "-4 days 3:21:28",
+            "category": 1,
+            "image": "products/여자잠바_WOMAN/_woman-1.jpg",
+            "featured": false,
+            "active": true,
+            "slug": "여자잠바_WOMAN"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 2,
+        "fields": {
+            "number": "00000002",
+            "title": "어린애꺼_KID",
+            "brand": 2,
+            "start_price": 200000,
+            "limit_price": 300000,
+            "current_price": 205000,
+            "list_price": 400000,
+            "sale_ratio": "48.8",
+            "price_step": 1000,
+            "info_made_country": "이탈리아",
+            "info_product_number": "WKKWJ11231",
+            "info_delivery": "택배",
+            "info_delivery_from": "국내",
+            "description": "Lorem Ipsum is simply dummy text of the printing and t\r\n\r\nypesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into elect\r\n\r\nronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\r\n\r\nWhy do we use it?\r\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it \r\nhas a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\r\n\r\n\r\nWhere does it come from?\r\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the \r\nmore obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.",
+            "amount": 1,
+            "amount_always_on": 2,
+            "created_date": "2021-02-16T03:33:26Z",
+            "bidding_start_date": "2021-02-20T03:33:26Z",
+            "bidding_end_date": "2021-02-20T09:00:00Z",
+            "remain_bidding_time": "-1 days 8:49:3",
+            "category": 2,
+            "image": "products/어린애꺼_KID/_kid-프라다지갑.jpg",
+            "featured": false,
+            "active": true,
+            "slug": "어린애꺼_KID"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 3,
+        "fields": {
+            "number": "00000003",
+            "title": "지갑_FASHION_ACC",
+            "brand": 3,
+            "start_price": 50000,
+            "limit_price": 60000,
+            "current_price": 50000,
+            "list_price": 70000,
+            "sale_ratio": "28.6",
+            "price_step": 1000,
+            "info_made_country": "이탈리아",
+            "info_product_number": "KM11",
+            "info_delivery": "택배",
+            "info_delivery_from": "국내",
+            "description": "미우치아 프라다와 라프 시몬스가 \r\n프라다의 공동 크리에이티브 디렉터로서 최초로 함께 선보이는\r\n\r\n 프라다 2021 봄/여름 여성 컬렉션은 혁 신적인 소재와 쿠튀르에서 영감을 받은 다채로운 기법의 세련되고 콘셉트에 충실한 디자인으로 유니폼의 의미를 탐구합니다. 미우치\r\n아 프라다와 라프 시몬스가 프라다의 공동 크리에이티브 디렉터로서 최초로 함께 선보이는 프라다 2021 봄/여름 여성 컬렉션은 혁신적\r\n\r\n인 소재와 쿠튀르에서 영감을 받은 다채로운 기법의 세련되고 콘셉트에  충실한 디자인으로 유니폼의 의미를 탐구합니다. 미우치아 프라다와 라프 시몬스가 프라다의 공동 크리에이티브 디렉터로서 최초로 함\r\n께 선보이는 프라다 2021 봄/여름 여 성 컬렉션은 혁신적인 소재와 쿠튀르에서 영감을 받은 다채로운 기법의 세련되고 콘셉트에 충실한 디자인으로 유니폼의 의미를 탐구합니다. 미우치아 프라다와 라프 시\r\n\r\n몬스가 프라다의 공동 크리에이티브 디렉터로서 최초로 함께 선보이는 프라다 2021 봄/여름 여성 컬렉션은 혁신적인 소재와 쿠튀르에서 영감을 받은 다채로운 기법의 세련되고 콘셉트에 충\r\n실한 디자인으로 유니폼\r\n의 의미를 탐구합니다.",
+            "amount": 1,
+            "amount_always_on": 2,
+            "created_date": "2021-02-16T03:34:45Z",
+            "bidding_start_date": "2021-02-16T03:34:45Z",
+            "bidding_end_date": "2021-02-16T03:34:45Z",
+            "remain_bidding_time": "-5 days 3:24:41",
+            "category": 3,
+            "image": "products/지갑_FASHION_ACC/_fashion_acc-몽클레어.PNG",
+            "featured": false,
+            "active": true,
+            "slug": "지갑_FASHION_ACC"
+        }
+    },
+    {
+        "model": "products.product",
+        "pk": 4,
+        "fields": {
+            "number": "00000004",
+            "title": "개간지프라다가방_ACC",
+            "brand": 3,
+            "start_price": 500000,
+            "limit_price": 600000,
+            "current_price": 557000,
+            "list_price": 800000,
+            "sale_ratio": "30.4",
+            "price_step": 1000,
+            "info_made_country": "이탈리아",
+            "info_product_number": "KSKS101010",
+            "info_delivery": "택배",
+            "info_delivery_from": "국내",
+            "description": "디즈니의 대표적인 캐릭터들은 하우스의 내러티브를 풍성하게 하며 도널드 덕은 구찌의 상징적인 쉐입과 디자인에 재치 있는 감성을 더함. 도널드 덕 의 조카 휴이, 듀이, 루이가 함께 디자인에 더해져 토트백에 생기를 더함.\r\n\r\n-제조자: 구찌\r\n-제조국: 이태리\r\n-수입자: 구찌코리아\r\n-에필로그 컬렉션\r\n-친환경 공정으로 제작된 도널드 덕 프린트 디테일의 베이지/에보니 GG 수프림 캔버스 © Di-sney\r\n-브라운 가죽 트리밍\r\n-가죽 인터로킹 G 태그\r\n-코튼 린넨 안감\r\n-내부 지퍼 포켓\r\n-탑 핸들, 8cm 드롭\r\n-숄더 스트랩, 40cm 드롭\r\n-가로 31cm x 세로 26.6cm x 너비 14cm\r\n-대체 메탈 또는 크롬 프리 태닝 처리한 가죽 소재-로, 기존 공정에 비 해 환경에 미치는 영향을 줄입니다.\r\n-첫 번째 고객님의 신장은 177cm 입니다., 두 번째 고객님의 신장은 185cm 입니다.\r\n-품질보증기준: A/S 보증기간 2년 (상품 이상 시 무상수선, 고객의 부주의로 판단되는 경우 유상수선)\r\n-AS 유선접수: 클라이언트서비스센터 02-3452-1921 / 이메일접수: 클라이언트서비스센터 clientservice.kr@gucci.com",
+            "amount": 1,
+            "amount_always_on": 2,
+            "created_date": "2021-02-16T05:47:07Z",
+            "bidding_start_date": "2021-02-20T08:42:48Z",
+            "bidding_end_date": "2021-02-20T11:42:49Z",
+            "remain_bidding_time": "-1 days 11:30:49",
+            "category": 3,
+            "image": "products/개간지프라다가방_ACC/_acc-구찌.PNG",
+            "featured": false,
+            "active": true,
+            "slug": "개간지프라다가방_ACC"
+        }
+    },
+    {
+        "model": "products.productimage",
+        "pk": 1,
+        "fields": {
+            "product": 4,
+            "image": "products/개간지프라다가방_ACC/_acc-2.jpg"
+        }
+    },
+    {
+        "model": "products.productimage",
+        "pk": 2,
+        "fields": {
+            "product": 4,
+            "image": "products/개간지프라다가방_ACC/_acc-3.jpg"
+        }
+    },
+    {
+        "model": "products.productimage",
+        "pk": 3,
+        "fields": {
+            "product": 4,
+            "image": "products/개간지프라다가방_ACC/_acc-4.jpg"
+        }
+    },
+    {
+        "model": "products.productimage",
+        "pk": 4,
+        "fields": {
+            "product": 4,
+            "image": "products/개간지프라다가방_ACC/_acc-5.jpg"
+        }
+    },
+    {
+        "model": "products.productimage",
+        "pk": 5,
+        "fields": {
+            "product": 4,
+            "image": "products/개간지프라다가방_ACC/_acc-6.jpg"
+        }
+    },
+    {
+        "model": "products.productimage",
+        "pk": 6,
+        "fields": {
+            "product": 4,
+            "image": "products/개간지프라다가방_ACC/_acc-7.jpg"
+        }
+    },
+    {
+        "model": "products.brand",
+        "pk": 1,
+        "fields": {
+            "name": "Guzzi",
+            "website": null
+        }
+    },
+    {
+        "model": "products.brand",
+        "pk": 2,
+        "fields": {
+            "name": "몽클레어",
+            "website": null
+        }
+    },
+    {
+        "model": "products.brand",
+        "pk": 3,
+        "fields": {
+            "name": "프라다",
+            "website": null
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 1,
+        "fields": {
+            "name": "woman"
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 2,
+        "fields": {
+            "name": "kid"
+        }
+    },
+    {
+        "model": "products.category",
+        "pk": 3,
+        "fields": {
+            "name": "acc"
+        }
+    }
+    ]
