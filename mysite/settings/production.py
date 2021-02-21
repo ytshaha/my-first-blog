@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    
+    # third party
+    'storages',
     # my app
     'blog',
     'shop',
@@ -156,6 +157,9 @@ LOGIN_REDIRECT_URL = '/product/'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static_cdn', 'media_root')
+
+
+from mysite.aws.conf import *
 
 # https://kirr.co/vklau5
 
