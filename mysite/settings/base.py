@@ -36,7 +36,7 @@ DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <taesun.yoo@gmail.com?>'
 
 
 Managers = (
-    ("taesun.yoo@gmail.com"),
+    ("TAESUN YOO", "taesun.yoo@gmail.com"),
 )
 
 ADMIN = Managers
