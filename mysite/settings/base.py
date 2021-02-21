@@ -27,8 +27,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', '192.168.219.106', '172.20.10.4', '0.0.0.0']
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'taesun.yoo@gmail.com' 
+EMAIL_HOST_PASSWORD = 'yourpassword'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <taesun.yoo@gmail.com?>'
 
-# Application definition
+
+Managers = (
+    ("taesun.yoo@gmail.com"),
+)
+
+ADMIN = Managers
 
 INSTALLED_APPS = [
     'django.contrib.admin',
