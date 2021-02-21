@@ -37,11 +37,11 @@ EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <taesun.yoo@gmail.com?>'
 
 
-Managers = (
+MANAGERS = (
     ("TAESUN YOO", "taesun.yoo@gmail.com"),
 )
 
-ADMIN = Managers
+ADMIN = MANAGERS
 
 # Application definition
 
