@@ -7,6 +7,27 @@ from django.utils.text import slugify
 def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
+def unique_key_generator(instance):
+    """
+    This is for a Django project and it assumes your instance 
+    has a model with a slug field and a title character (char) field.
+    """
+    size    = random.randint(30,45)
+    key     = random_string_generator(size=size)
+ 
+    Klass = instance.__class__
+    qs_exists = Klass.objects.filter(key=key).exists()
+    if qs_exists:
+        return unique_slug_generator(instance)
+    return key
+
+    
+    qs      = EmailActivation.objects.filter(key__iexact=key)
+    if qs.exists():
+        key     = random_string_generator(size=size)
+    instance.key = key
+
+
 def unique_order_id_generator(instance):
     """
     This is for a Django project and it assumes your instance 

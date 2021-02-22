@@ -70,9 +70,9 @@ class Ticket(models.Model):
     # 사용여부.., 이것은 티켓홈에서 사용하게 한다
     # 사용하면 사용한 날을 표기한다(update나 timestamp로 해야겠지.)
     # 그리고 pre_save로 사용한 날이 지나면 active를 꺼야한다.(이건 jquery로 해야하나...)
-    status            = models.CharField(max_length=20, default='unused', choices=TICKET_STATUS)
-    active          = models.BooleanField(default=True)
-    bidding_success = models.BooleanField(default=False) # 비딩성공시 해당 비딩가격은 포인트로 반환해주지 않는다.
+    status           = models.CharField(max_length=20, default='unused', choices=TICKET_STATUS)
+    active           = models.BooleanField(default=True)
+    bidding_success  = models.BooleanField(default=False) # 비딩성공시 해당 비딩가격은 포인트로 반환해주지 않는다.
 
     objects = TicketManager()
 

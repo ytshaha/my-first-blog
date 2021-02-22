@@ -35,11 +35,12 @@
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='woman' %}">여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='men' %}">남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='shoes' %}">신발</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='acc' %}">패션잡화</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='kid' %}">유아동</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='woman' %}"><i class="fas fa-female"></i>  여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='men' %}"><i class="fas fa-male"></i>  남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='shoes' %}"><i class="fas fa-shoe-prints"></i> 신발</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='acc' %}"><i class="fas fa-shopping-bag"></i> 패션잡화</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='kid' %}"><i class="fas fa-child"></i> 유아동</a>
             </div>
           </li>
           
@@ -49,9 +50,21 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">MY</a> 
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">ACCOUNT</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="">Home</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="">Billing</a>
+              <a class="dropdown-item" href="">Preference</a>
+              <a class="dropdown-item" href="">History</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="">Logout</a>
+              <a class="dropdown-item" href=""></a>
+            </div>
           </li>
+
           <li class="nav-item">
             <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i> </a> 
           </li>
@@ -94,12 +107,29 @@
           </li>
         </ul> -->
 
+        <!-- 메세지 부분 -->
+        
+        
+
+
+
         {% if user.is_authenticated %}
           {% include 'search/snippets/search-form.html' %}
         {% endif %}
       </div>
     </nav>
-  
+    
+    {% if messages %}
+        <div class="alert alert-success messages">
+            {% for message in messages %}
+            <span{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+                {{ message }}<br/>
+            </span>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     {% block content %}
     {% endblock %} 
   

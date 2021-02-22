@@ -22,7 +22,14 @@ STRIPE_PUB_KEY = getattr(settings, "STRIPE_PUB_KEY", "pk_test_51IKQwOCVFucPeMu3F
 
 stripe.api_key = STRIPE_SECRET_KEY
 
-
+TICKET_BUY_INFO = [
+                { "amount": 1, "subtotal": 5000, "total": 5000, 'sale_ratio': 0},
+                { "amount": 3, "subtotal": 15000, "total": 14250, 'sale_ratio': 5},
+                { "amount": 5, "subtotal": 25000, "total": 23750, 'sale_ratio': 5},
+                { "amount": 10, "subtotal": 50000, "total": 45000, 'sale_ratio': 10},
+                { "amount": 20, "subtotal": 100000, "total": 90000, 'sale_ratio': 10},
+                { "amount": 30, "subtotal": 150000, "total": 135000, 'sale_ratio': 10}
+                ]
 
 
 # class TicketAvailableListView(generic.ListView):
@@ -80,18 +87,29 @@ def ticket_home(request):
 
 # 티켓 구매 페이지. 일단 FBV로 만든다.
 def ticket_buy(request):
+    print(request.POST)
     if request.method == 'POST':
         form = TicketCartForm(request.POST)
+        print("form",form)
+        print("form.is_valid()",form.is_valid())
         if form.is_valid():
             ticketcart = form.save(commit=False)
             ticketcart.user = request.user
             ticketcart.save()
             request.session['ticketcart_id'] = ticketcart.id
             return redirect('tickets:cart')
-
     else:
         form = TicketCartForm()
-        return render(request, 'tickets/ticket_buy.html', {'form':form})
+        ticket_type_list = [1,3,5,10,20,30]
+        ticket_subtotal_list = [5000,15000,25000,50000,100000,150000]
+        ticket_total_list = [5000,14250,23750,45000,90000,135000]
+        ticket_info = zip(ticket_type_list, ticket_subtotal_list, ticket_total_list)
+        
+        context = {
+            'form':form,
+            'ticket_buy_info': TICKET_BUY_INFO
+        }
+        return render(request, 'tickets/ticket_buy.html', context)
 
 def ticket_cart_home(request):
     ticketcart_obj, new_obj = TicketCart.objects.new_or_get(request)

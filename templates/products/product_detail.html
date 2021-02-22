@@ -58,7 +58,7 @@
     <div class='row'>
         <h3>-경매 현황-</h3>
         <div class='col-lg-12 col-md-12 col-sm-12 mx-auto'> 
-            {% if bidding_obj %}
+            {% if bidding_obj_up_to_10 %}
             <div class='row'>
                 <div class='col-12'>
                     <table class="table text-center">
@@ -71,7 +71,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for bidding in bidding_obj %}
+                        {% for bidding in bidding_obj_up_to_10 %}
                         <tr>
                             <th scope="row">{{ forloop.counter }}</th>
                             <td>{{ bidding.user|upper|slice:":2" }}*****</td>
@@ -107,12 +107,14 @@
     </div>
 
     <!-- 경매 참여버튼 -->
+    <!-- 경매 시작전 버튼설정 -->
     {% if bidding_on == '1' %}
     <div class='row'>
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">경매 준비 중</button></a>
         </div>
     </div>
+    <!-- 경매 중 버튼설정 -->
     {% elif bidding_on == '2' %}
     <div class='row'>
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
@@ -120,38 +122,54 @@
         </div>
 
         {% if is_stock %}
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <form method="post" action="{% url 'carts:update' %}">
-                {% csrf_token %}
-                <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
-                <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
-            </form>
-        </div>
+            {% if buy_activate %}
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <form method="post" action="{% url 'carts:update' %}">
+                    {% csrf_token %}
+                    <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
+                    <input id="product" type="hidden" name="location" value="detail_page">
+                    <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
+                </form>
+            </div>
+            {% else %}
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 구매불가</button></a>
+            </div>
+            {% endif %}  
         {% else %}
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 재고없음</button></a>
         </div>
         {% endif %}
     </div>
+    <!-- 경매 종료후 버튼설정 -->
     {% elif bidding_on == '3' %}
     <div class='row'>
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <a href="{% url 'products:bidding_result' slug=product.slug %}"><button type="button" class="btn btn-success btn-block" style="margin-top:20px;">경매 결과확인</button></a>
         </div>
         {% if is_stock %}
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <form method="post" action="{% url 'carts:update' %}">
-                {% csrf_token %}
-                <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
-                <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
-            </form>
-        </div>
+            {% if buy_activate %}
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <form method="post" action="{% url 'carts:update' %}">
+                    {% csrf_token %}
+                    <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
+                    <input id="product" type="hidden" name="location" value="detail_page">
+                    <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
+                </form>
+            </div>
+            {% else %}
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 구매불가</button></a>
+            </div>
+            {% endif %}    
         {% else %}
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 재고없음</button></a>
         </div>
         {% endif %}
     </div>
+    <!-- 버튼관련 에러있을 때. -->
     {% else %}
     <div class='row'>
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>

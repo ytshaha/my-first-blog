@@ -21,7 +21,7 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 
 def cart_detail_api_view(request):
-    cart_obj, new_obj, is_cart = Cart.objects.new_or_get(request)
+    cart_obj, new_obj = Cart.objects.new_or_get(request)
     products = [{
             "id": x.id,
             "url": x.get_absolute_url(),
@@ -37,8 +37,23 @@ def cart_home(request):
 
 
 def cart_update(request):
+    '''
+    원래 강의에서는 물품의 갯수도 상관없고 그냥 바로 제거하는 것으로 되어있음.
+    카트에서 다시누르는 컨셉은 그대로 냅두고
+    그냥 product_detail에서 누를때는 무조건 추가만하게 하는것으로 하는게 나을 것 같다.
+    '''
+    print('request.POST',request.POST)
     product_id = request.POST.get('product_id')
-    print(product_id)
+    # 물건을 추가한 위치가 product_detail이면 form의 POST에 name=location이 있음. 그래서 무조건 추가로 함.
+    # 만약 카트 내라면 location이 없어서 두번이면 제거하게 함.
+    # 하지만 카트의 항목을 다양화한다고 하면 나중에 이부분은 수정이 필요할 것으로 보임.
+    only_add = False
+    try:
+        if request.POST.get('location'):
+            only_add = True
+    except:
+        pass
+    print(only_add)
     if product_id is not None:
         try:
             product_obj = Product.objects.get(id=product_id)
@@ -47,7 +62,8 @@ def cart_update(request):
             return redirect("carts:home")
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         if product_obj in cart_obj.products.all():
-            # cart_obj.products.remove(product_obj)
+            if not only_add:
+                cart_obj.products.remove(product_obj)
             added = False
         else:
             cart_obj.products.add(product_obj)

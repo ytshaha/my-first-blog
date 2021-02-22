@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import GuestEmail
+from .models import GuestEmail,EmailActivation
 from .forms import UserAdminCreationForm, UserAdminChangeForm
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -15,11 +15,11 @@ class UserAdmin(BaseUserAdmin):
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
     list_display = ('username','email', 'full_name','admin')
-    list_filter = ('admin','staff','active',)
+    list_filter = ('admin','staff',)
     fieldsets = (
         (None, {'fields': ('username','email', 'password')}),
         ('Full name', {'fields': ('full_name',  )}),
-        ('Permissions', {'fields': ('admin','staff','active',)}),
+        ('Permissions', {'fields': ('admin','staff','is_active',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -36,4 +36,16 @@ class UserAdmin(BaseUserAdmin):
 admin.site.register(User, UserAdmin)
 # admin.site.register(Group)
 
-admin.site.register(GuestEmail)
+class EmailActivationAdmin(admin.ModelAdmin):
+    serarch_fields = ['email']
+    class Meta:
+        model = EmailActivation
+
+admin.site.register(EmailActivation, EmailActivationAdmin)
+
+class GuestEmailAdmin(admin.ModelAdmin):
+    serarch_fields = ['email']
+    class Meta:
+        model = GuestEmail
+
+admin.site.register(GuestEmail, GuestEmailAdmin)

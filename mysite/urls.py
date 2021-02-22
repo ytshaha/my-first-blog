@@ -39,7 +39,10 @@ urlpatterns = [
     url(r'^product/', include('products.urls')),
     url(r'^search/', include('search.urls')),
     url(r'^cart/', include('carts.urls')),
-    url(r'^accounts/', include('accounts.urls')),
+    
+    url(r'^account/', include('accounts.urls')),
+    url(r'^accounts/', include('accounts.passwords.urls')),
+    
     url(r'^ticket/', include('tickets.urls')),
     url(r'^api/cart/$', cart_detail_api_view, name='api-cart'),   
 

@@ -3,10 +3,38 @@
 {% block content %}
 <div class='container'>
     <h1>Buying Ticket</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <p><label for="id_tickets_type">Tickets type:</label> 
+            <table class="table text-center">
+                <thead>
+                <tr>
+                    <!-- <th scope="col">#</th> -->
+                    <th scope="col">Ticket 수량</th>
+                    <th scope="col">정가</th>
+                    <th scope="col">할인가</th>
+                    <th scope="col">할인울</th>
+                    <th scope="col">선택</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for ticket in ticket_buy_info %}
+                <tr>
+                    <!-- <th scope="row">{{ forloop.counter }}</th> -->
+                    <td>{{ ticket.amount }} EA</td>
+                    <td>{{ ticket.subtotal }} 원</td>
+                    <td>{{ ticket.total }} 원</td>
+                    <td>{{ ticket.sale_ratio }} %</td>
+                    {% if ticket.amount == 1 %}
+                        <td><input type="radio"  id="id_tickets_type" name="tickets_type" value="{{ ticket.amount }}" checked></td>
+                    {% else %}
+                        <td><input type="radio"  id="id_tickets_type" name="tickets_type" value="{{ ticket.amount }}" /></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        <button type="submit" class="btn btn-success">BUY TICKET</button>
+    </form>
 </div>
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type='submit' class='btn btn-success'>Checkout</button>
-</form>
 {% endblock %}

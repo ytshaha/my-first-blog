@@ -1,10 +1,29 @@
 from django import forms
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
-# from django.core.urlresolvers import reverse
+from django.contrib import messages
+
+from django.urls import reverse
 from django.utils.safestring import mark_safe
+from .models import EmailActivation
+from .signals import user_logged_in
+
 
 User = get_user_model()
+
+class ReactivateEmailForm(forms.Form):
+    email = forms.EmailField()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        qs = EmailActivation.objects.email_exists(email)
+        if not qs.exists():
+            register_link = reverse("register")
+            msg = '''This email does not exists, would you like to register?
+            Would you like to <a href="{link}">register</a>?
+            '''.format(link=register_link)
+            raise forms.ValidationError(mark_safe(msg))
+        return email
 
 
 class UserAdminCreationForm(forms.ModelForm):
@@ -45,7 +64,7 @@ class UserAdminChangeForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ('username','email', 'full_name', 'password', 'active', 'admin')
+        fields = ('username','email', 'full_name', 'password', 'admin')
 
     def clean_password(self):
         # Regardless of what the user provides, return the initial value.
@@ -58,9 +77,55 @@ class GuestForm(forms.Form):
     email = forms.EmailField() 
 
 class LoginForm(forms.Form):
-    username = forms.CharField()
+    username = forms.CharField(label='Username')
     password = forms.CharField(widget=forms.PasswordInput)
 
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        request = self.request
+        data = self.cleaned_data
+        username  = data.get("username")
+        password  = data.get("password")
+        user = authenticate(request, username=username, password=password)
+        if user is None:
+            raise forms.ValidationError("Invalid credentials")
+        login(request, user)
+        self.user = user
+        user_logged_in.send(user.__class__, instance=user, request=request)
+        try:
+            del request.session['guest_email_id']
+        except:
+            pass
+        return data
+
+
+    # def form_valid(self, form):
+    #     request = self.request
+    #     next_ = request.GET.get('next')
+    #     next_post = request.POST.get('next')
+    #     redirect_path = next_ or next_post or None
+        
+    #     username  = form.cleaned_data.get("username")
+    #     password  = form.cleaned_data.get("password")
+        
+    #     if user is not None:
+    #         if not user.is_active:
+    #             # message
+    #             messages.error(request, "This user in inactive")
+    #             return super(LoginView, self).form_valid(form)
+    #         login(request, user)
+    #         try:
+    #             del request.session['guest_email_id']
+    #         except:
+    #             pass
+    #         if is_safe_url(redirect_path, request.get_host()):
+    #             return redirect(redirect_path)
+    #         else:
+    #             return redirect("shop:index")
+    #     return super(LoginView, self).form_valid(form)
 
 class RegisterForm(forms.ModelForm):
     """
@@ -86,7 +151,9 @@ class RegisterForm(forms.ModelForm):
         # Save the provided password in hashed format
         user = super(RegisterForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        # user.active = False # send confirmation email
+        user.is_active = False # send confirmation email via signals
+        # obj = EmailActivation.create(user=instance)
+        # obj.send_activation()
         if commit:
             user.save()
         return user

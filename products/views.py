@@ -10,6 +10,7 @@ from django.utils import timezone
 
 from .models import Product, Brand, Category, ProductImage
 from biddings.models import Bidding
+from orders.models import Order
 from .forms import ProductForm, ProductImageForm
 from biddings.forms import BiddingForm
 from carts.models import Cart
@@ -85,6 +86,9 @@ class ProductListView(generic.ListView):
         request = self.request
         return Product.objects.order_by('-bidding_start_date')
 
+
+
+# 실질적으로 사용하는 detail View
 class ProductDetailSlugView(generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product'
@@ -92,13 +96,15 @@ class ProductDetailSlugView(generic.DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(ProductDetailSlugView, self).get_context_data(*args, **kwargs)
         request = self.request
+        user = request.user
         slug = self.kwargs.get('slug')
         is_stock = True
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         product_images_qs = ProductImage.objects.filter(product__title=slug)
         product_obj = Product.objects.get(slug=slug)
         product_obj.save()
-        bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')[:10]
+        bidding_obj_up_to_10 = Bidding.objects.filter(product=product_obj).order_by('-timestamp')[:10]
+        bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')
         # 경매준비 경매중 경매종료 여부확인
         now = timezone.now()
         if now < product_obj.bidding_start_date:
@@ -114,11 +120,25 @@ class ProductDetailSlugView(generic.DetailView):
         if product_obj.amount_always_on == 0:
             is_stock = False
         
+        # User가 비딩 위너인지여부(상시상품구매못하게 하기위함.)   
+        # 여기 order 오브젝트의 Paid된놈들에 물품이 있으면 구매못하게 하려고 하는데... 
+        # 일단 템플릿은 그냥 뜨는데 쉘에서 해봐야할듯
+        bidding_win_obj = bidding_obj.filter(user=user, win=True)
+        order_obj = Order.objects.filter(cart__products=product_obj)
+        order_paid_object = order_obj.filter(billing_profile__user=user, status='paid')
+        
+        if bidding_win_obj.count() == 1:
+            if order_paid_object.count() == 1:
+                buy_activate = False
+        else:
+            buy_activate = True
+
         context['is_stock'] = is_stock
         context['bidding_on'] = bidding_on
+        context['buy_activate'] = buy_activate
         context['cart'] = cart_obj
         context['images'] = product_images_qs
-        context['bidding_obj'] = bidding_obj
+        context['bidding_obj_up_to_10'] = bidding_obj_up_to_10
         return context
 
     def get_object(self, *args, **kwargs):
@@ -136,6 +156,7 @@ class ProductDetailSlugView(generic.DetailView):
             raise Http404("Uhmmmmm")
         return instance
 
+# 사용안함.
 class ProductDetailView(generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product'
