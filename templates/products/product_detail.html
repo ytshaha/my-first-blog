@@ -3,11 +3,11 @@
 {% block content %}
 {% load static %}
 
-<div class='row'>
+<!-- <div class='row'>
     <div calss='col-12 col-md-6'>
         {% include 'products/snippets/update-cart.html' with product=product cart=cart %}
     </div>
-</div>
+</div> -->
 
 <div class='container' style="padding-top:20px;">
     <div class='row'>
@@ -120,27 +120,6 @@
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
             <a href="{% url 'products:bidding_new' slug=product.slug %}"><button type="button" class="btn btn-primary btn-block" style="margin-top:20px;">경매 참여</button></a>
         </div>
-
-        {% if is_stock %}
-            {% if buy_activate %}
-            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-                <form method="post" action="{% url 'carts:update' %}">
-                    {% csrf_token %}
-                    <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
-                    <input id="product" type="hidden" name="location" value="detail_page">
-                    <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
-                </form>
-            </div>
-            {% else %}
-            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-                <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 구매불가</button></a>
-            </div>
-            {% endif %}  
-        {% else %}
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 재고없음</button></a>
-        </div>
-        {% endif %}
     </div>
     <!-- 경매 종료후 버튼설정 -->
     {% elif bidding_on == '3' %}
@@ -154,18 +133,18 @@
                 <form method="post" action="{% url 'carts:update' %}">
                     {% csrf_token %}
                     <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
-                    <input id="product" type="hidden" name="location" value="detail_page">
+                    <!-- <input id="product" type="hidden" name="location" value="detail_page"> 카트에서 리무브안디게하려고 했으나 카트에있는애들만 리무브되게하는것으로 변경--> 
                     <button type="submit" class="btn btn-block btn-success" style="margin-top:20px;">상시상품 구매</button>
                 </form>
             </div>
             {% else %}
             <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-                <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 구매불가</button></a>
+                <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;" title="경매 당첨 고객 및 상시상품 구매하신 고객께서는 구매가 불가합니다.">상시상품 구매불가</button></a>
             </div>
             {% endif %}    
         {% else %}
         <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">상시상품 재고없음</button></a>
+            <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;" title="재고없음">상시상품 재고없음</button></a>
         </div>
         {% endif %}
     </div>

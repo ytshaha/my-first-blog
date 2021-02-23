@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from .models import EmailActivation
+from .models import EmailActivation, GuestEmail
 from .signals import user_logged_in
 
 
@@ -55,6 +55,13 @@ class UserAdminCreationForm(forms.ModelForm):
         return user
 
 
+class UserDetailChangeForm(forms.ModelForm):
+    full_name = forms.CharField(label='Name', required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
+
+    class Meta:
+        model = User
+        fields = ['full_name']
+
 class UserAdminChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
     the user, but replaces the password field with admin's
@@ -71,10 +78,30 @@ class UserAdminChangeForm(forms.ModelForm):
         # This is done here, rather than on the field, because the
         # field does not have access to the initial value
         return self.initial["password"]
+    
 
+class GuestForm(forms.ModelForm):
+    # email = forms.EmailField() 
+    class Meta:
+        model = GuestEmail
+        fields = [
+            'email'
+        ]
 
-class GuestForm(forms.Form):
-    email = forms.EmailField() 
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+        super(GuestForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        # Save the provided password in hashed format
+        obj = super(GuestForm, self).save(commit=False)
+        if commit:
+            obj.save()
+            request = self.request
+            request.session['guest_email_id'] = obj.id
+
+        return obj
+    
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username')
@@ -89,6 +116,32 @@ class LoginForm(forms.Form):
         data = self.cleaned_data
         username  = data.get("username")
         password  = data.get("password")
+        email = User.objects.get(username=username).email
+        
+        qs = User.objects.filter(username=username)
+        if qs.exists():
+            # user email is registered, check active.
+            not_active = qs.filter(is_active=False)
+            if not_active.exists():
+                # not active, check email activation
+                link = reverse("accounts:resend-activation")
+                reconfirm_mgs = """Go to <a href='{resend_link}'>
+                resend confirmation email</a>
+                """.format(resend_link=link)
+                confirm_email = EmailActivation.objects.filter(email=email)
+                is_confirmable = confirm_email.confirmable().exists()
+                if is_confirmable:
+                    msg1 = 'Please check your email to confirm your account.' + reconfirm_mgs
+                    raise forms.ValidationError(mark_safe(msg1))
+                email_confirm_exists = EmailActivation.objects.email_exists(email).exists()
+                if email_confirm_exists:
+                    msg2 = "Email not confirmed." + reconfirm_mgs
+                    raise forms.ValidationError(mark_safe(msg2))
+                if not is_confirmable and not email_confirm_qs.exists():
+                    raise forms.ValidationError("This user is inactive")
+
+
+
         user = authenticate(request, username=username, password=password)
         if user is None:
             raise forms.ValidationError("Invalid credentials")

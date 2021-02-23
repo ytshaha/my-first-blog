@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.conf import settings
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 import datetime
 
 from accounts.forms import LoginForm, GuestForm
@@ -48,7 +49,7 @@ TICKET_BUY_INFO = [
 #             return tickets
         # else:
         #     return HttpResponse({"messsage":"You have not Available ticket now. Buy some ticket."})
-
+@login_required
 def ticket_home(request):
     # 로긴했을때 아래 과정들에 대한 체크가 필요할 듯.
     # 현재 사용중이면 request.session['ticket_activate'] = True
@@ -86,6 +87,7 @@ def ticket_home(request):
 
 
 # 티켓 구매 페이지. 일단 FBV로 만든다.
+@login_required
 def ticket_buy(request):
     print(request.POST)
     if request.method == 'POST':
@@ -110,19 +112,20 @@ def ticket_buy(request):
             'ticket_buy_info': TICKET_BUY_INFO
         }
         return render(request, 'tickets/ticket_buy.html', context)
-
+@login_required
 def ticket_cart_home(request):
     ticketcart_obj, new_obj = TicketCart.objects.new_or_get(request)
     return render(request, "tickets/ticket_cart_home.html", {'ticketcart_obj':ticketcart_obj})
 
+@login_required
 def ticket_checkout_home(request):
     ticketcart_obj, ticketcart_created = TicketCart.objects.new_or_get(request)
     order_obj = None
     if ticketcart_created:
         return redirect("tickets:buy")   
     
-    login_form = LoginForm()
-    guest_form = GuestForm()
+    login_form = LoginForm(request=request)
+    guest_form = GuestForm(request=request)
     address_form = AddressForm()
     billing_address_id = request.session.get('billing_address_id', None)
     shipping_address_id = request.session.get('shipping_address_id', None)
@@ -176,6 +179,7 @@ def ticket_checkout_home(request):
     }
     return render(request, "tickets/checkout.html", context)
 
+@login_required
 def checkout_done_view(request):
     order_id = request.session.get('order_id')
     order_obj = TicketOrder.objects.get(id=order_id)

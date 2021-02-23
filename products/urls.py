@@ -24,7 +24,7 @@ urlpatterns = [
     path('detail/featured/<int:pk>/', views.ProductFeaturedDetailView.as_view(), name='product_featured_detail'), ##
 
     # path('<option>/', views.ProductListView.as_view(), name='product_list'),
-    path('upload/', views.product_upload, name='product_upload'),
+    path('upload/', views.product_upload, name='upload'),
 ]
 
 

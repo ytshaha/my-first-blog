@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils import timezone
 
 from products.models import Product
+from tickets.models import Ticket
 from .models import Bidding
 from .forms import BiddingForm, BiddingBuyForm
 
@@ -14,11 +15,24 @@ from .forms import BiddingForm, BiddingBuyForm
 # 기본적으로 유저만 넣었으므로 product와 price등을 입력해야함.
 # product에서 비딩참여를 눌렀으므로 form의 post로 product의 슬러그를확인하여 하자. 슬러그로 들어가려고하니까.
 # def bidding_new(request):
-
+@login_required
 def bidding_new(request, slug):
+    # 비딩참여 가능한지 티켓 activate상태 확인.
+    user = request.user
+    ticket_qs = Ticket.objects.filter(user=user, status='activate')
+    if not ticket_qs.exists():
+        messages.success(request, "경매에 참여하기 위해서는 티켓이 필요합니다. 티켓을 구매하고 활성화 시키십시오.")
+        return redirect("tickets:home")
+    # 티켓이 activate일때 아래 항목 발동. 모델에서 티켓검증은 뺀다.
     products = Product.objects.all()
     product_obj = Product.objects.get(slug=slug)
-    price_step = range(product_obj.current_price + product_obj.price_step, product_obj.limit_price + product_obj.price_step, product_obj.price_step)
+    price_step = range(
+                       product_obj.current_price + product_obj.price_step, 
+                       product_obj.limit_price + product_obj.price_step, 
+                       product_obj.price_step
+                       )
+    print(product_obj.current_price)
+    print(price_step)
     # product_slug = request.session.get('slug')
     if request.method == 'POST':
         form = BiddingForm(request.POST)
@@ -35,20 +49,21 @@ def bidding_new(request, slug):
             bidding_obj.save()
             product_obj.save()
             return redirect('products:product_detail_slug', slug=slug)
-    else:
-        form = BiddingForm()
-        context = {
-            'price_step': price_step,
-            'products':products,
-            'product_obj':product_obj,
-            'form': form,
-            'slug': slug
+    
+    # POST가 아니거나 POST더라도 form이 안채워졌을때..
+    form = BiddingForm()
+    context = {
+        'price_step': price_step,
+        'products':products,
+        'product_obj':product_obj,
+        'form': form,
+        'slug': slug
         }
     # return render(request, 'biddings/bidding_new.html', {'form':form, 'product_slug':product_slug})
     return render(request, 'biddings/bidding_new.html', context)
 
 
-
+@login_required
 def bidding_result(request, slug):
     pass
     '''

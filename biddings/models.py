@@ -30,7 +30,9 @@ class BiddingManager(models.Manager):
         product_obj = Product.objects.get(slug=slug)
 
         qs = self.get_queryset().filter(user=user, product=product_obj)
-        if request.user.is_authenticated and ticket_qs.exists(): # 로긴한것과 activate 티켓있는지 확인.나중에는 일정등급 user인지만 확인하게하자. 
+        print('qs길이가 1나이면 좋긴한데 아니면 .first를 해줘야함..')
+        print(qs)
+        if request.user.is_authenticated: # 로긴한것과 activate 티켓있는지 확인.나중에는 일정등급 user인지만 확인하게하자. 
             if qs.exists():
                 updated = True
                 qs.update(active=False)

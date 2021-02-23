@@ -47,10 +47,10 @@ def cart_update(request):
     # 물건을 추가한 위치가 product_detail이면 form의 POST에 name=location이 있음. 그래서 무조건 추가로 함.
     # 만약 카트 내라면 location이 없어서 두번이면 제거하게 함.
     # 하지만 카트의 항목을 다양화한다고 하면 나중에 이부분은 수정이 필요할 것으로 보임.
-    only_add = False
+    only_add = True
     try:
-        if request.POST.get('location'):
-            only_add = True
+        if request.POST.get('at_cart'):
+            only_add = False
     except:
         pass
     print(only_add)
@@ -87,8 +87,8 @@ def checkout_home(request):
     if cart_created or cart_obj.products.count() == 0:
         return redirect("carts:home")   
     
-    login_form = LoginForm()
-    guest_form = GuestForm()
+    login_form = LoginForm(request=request)
+    guest_form = GuestForm(request=request)
     address_form = AddressForm()
     billing_address_id = request.session.get('billing_address_id', None)
     shipping_address_id = request.session.get('shipping_address_id', None)

@@ -36,16 +36,19 @@
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='woman' %}"><i class="fas fa-female"></i>  여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='men' %}"><i class="fas fa-male"></i>  남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='shoes' %}"><i class="fas fa-shoe-prints"></i> 신발</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='acc' %}"><i class="fas fa-shopping-bag"></i> 패션잡화</a>
-              <a class="dropdown-item" href="{% url 'products:product_category_list' category='kid' %}"><i class="fas fa-child"></i> 유아동</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='woman' %}">여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='men' %}">남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='shoes' %}">신발</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='acc' %}">패션잡화</a>
+              <a class="dropdown-item" href="{% url 'products:product_category_list' category='kid' %}">유아동</a>
             </div>
           </li>
           
           <li class="nav-item">
             <a class="nav-link" href="{% url 'tickets:home' %}">TICKET</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'tickets:home' %}">BIDDING</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
@@ -54,7 +57,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">ACCOUNT</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="">Home</a>
+              <a class="dropdown-item" href="{% url 'accounts:home' %}">Home</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="">Billing</a>
               <a class="dropdown-item" href="">Preference</a>
@@ -79,14 +82,18 @@
             <a class="nav-link" href="{% url 'register' %}">REGISTER</a>
           </li>  
           {% endif %}
+
+          {% if user.is_staff %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'products:upload' %}">UPLOAD</a> 
+          </li>
+          {% endif %}
+
           {% if user.is_admin %}
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
           </li>
-          <li class="nav-item">
-            <!-- <a class="nav-link" href="">UPLOAD</a>  -->
-          </li>
-
+          
 
           {% endif %}      
               

@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
@@ -8,6 +9,7 @@ from django.contrib import messages
 from django.forms import modelformset_factory
 from django.utils import timezone
 
+
 from .models import Product, Brand, Category, ProductImage
 from biddings.models import Bidding
 from orders.models import Order
@@ -15,7 +17,7 @@ from .forms import ProductForm, ProductImageForm
 from biddings.forms import BiddingForm
 from carts.models import Cart
 
-class ProductFeaturedListView(generic.ListView):
+class ProductFeaturedListView(LoginRequiredMixin, generic.ListView):
     template_name = 'products/product_list.html'
     context_object_name = 'products'
 
@@ -23,7 +25,7 @@ class ProductFeaturedListView(generic.ListView):
         request = self.request
         return Product.objects.all().featured()
 
-class ProductCategoryListView(generic.ListView):
+class ProductCategoryListView(LoginRequiredMixin, generic.ListView):
     template_name = 'products/product_list.html'
     context_object_name = 'products'
 
@@ -41,7 +43,7 @@ class ProductCategoryListView(generic.ListView):
             return Product.objects.filter(category__name__icontains=category)
         return Product.objects.all()
 
-class ProductBrandListView(generic.ListView):
+class ProductBrandListView(LoginRequiredMixin, generic.ListView):
     template_name = 'products/product_list.html'
     context_object_name = 'products'
 
@@ -62,7 +64,7 @@ class ProductBrandListView(generic.ListView):
 
 
 
-class ProductFeaturedDetailView(generic.DetailView):
+class ProductFeaturedDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_featured-detail.html'
     context_object_name = 'product'
 
@@ -70,8 +72,7 @@ class ProductFeaturedDetailView(generic.DetailView):
     #     request = self.request
     #     return Product.objects.all().featured
 
-
-class ProductListView(generic.ListView):
+class ProductListView(LoginRequiredMixin, generic.ListView):
     template_name = 'products/product_list.html'
     context_object_name = 'products'
 
@@ -84,12 +85,26 @@ class ProductListView(generic.ListView):
 
     def get_queryset(self, *args, **kwargs):
         request = self.request
-        return Product.objects.order_by('-bidding_start_date')
+        return Product.objects.filter(product_type='bidding').order_by('-bidding_start_date')
 
+# class UserProductHistoryView(LoginRequiredMixin, generic.ListView):
+#     template_name = 'products/product_list.html'
+#     context_object_name = 'products'
+
+#     def get_context_data(self, *args, **kwargs):
+#         context = super(ProductListView, self).get_context_data(*args, **kwargs)
+#         print(context)
+#         brands = Brand.objects.all()
+#         context['brands'] = brands
+#         return context
+
+#     def get_queryset(self, *args, **kwargs):
+#         request = self.request
+#         return Product.objects.order_by('-bidding_start_date')
 
 
 # 실질적으로 사용하는 detail View
-class ProductDetailSlugView(generic.DetailView):
+class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product'
 
@@ -107,15 +122,19 @@ class ProductDetailSlugView(generic.DetailView):
         bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')
         # 경매준비 경매중 경매종료 여부확인
         now = timezone.now()
+        print('product.current_price == product.limit_price', product_obj.current_price == product_obj.limit_price)
+        print('currnt:',product_obj.current_price)
+        print('limit:',product_obj.limit_price)
+        
         if now < product_obj.bidding_start_date:
             bidding_on = '1' # 경매 준비중
-        elif now >= product_obj.bidding_start_date and now < product_obj.bidding_end_date:
+        elif now >= product_obj.bidding_start_date and now < product_obj.bidding_end_date and product_obj.current_price < product_obj.limit_price:
             bidding_on = '2'
-        elif now > product_obj.bidding_end_date or product.current_price == product.limit_price:
+        elif now > product_obj.bidding_end_date or product_obj.current_price == product_obj.limit_price:
             bidding_on = '3'
         else:
             bidding_on = None
-        
+        print('bidding_on',bidding_on)
         # 상시판매물품 재고여부
         if product_obj.amount_always_on == 0:
             is_stock = False
@@ -123,16 +142,14 @@ class ProductDetailSlugView(generic.DetailView):
         # User가 비딩 위너인지여부(상시상품구매못하게 하기위함.)   
         # 여기 order 오브젝트의 Paid된놈들에 물품이 있으면 구매못하게 하려고 하는데... 
         # 일단 템플릿은 그냥 뜨는데 쉘에서 해봐야할듯
-        bidding_win_obj = bidding_obj.filter(user=user, win=True)
+        bidding_win_exist = bidding_obj.filter(user=user, win=True).exists()
         order_obj = Order.objects.filter(cart__products=product_obj)
-        order_paid_object = order_obj.filter(billing_profile__user=user, status='paid')
-        
-        if bidding_win_obj.count() == 1:
-            if order_paid_object.count() == 1:
-                buy_activate = False
+        order_paid_exist = order_obj.filter(billing_profile__user=user, status='paid').exists()
+        if bidding_win_exist or order_paid_exist:
+            buy_activate = False            
         else:
             buy_activate = True
-
+        
         context['is_stock'] = is_stock
         context['bidding_on'] = bidding_on
         context['buy_activate'] = buy_activate
@@ -157,7 +174,7 @@ class ProductDetailSlugView(generic.DetailView):
         return instance
 
 # 사용안함.
-class ProductDetailView(generic.DetailView):
+class ProductDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product'
 
@@ -210,14 +227,25 @@ def product_upload(request):
         print("formset.is_valid():", formset.is_valid())
 
         if productform.is_valid() and formset.is_valid():
-            new_product = productform.save(commit=False)
-            new_product.save()
+            new_product_bidding = productform.save(commit=False) # 비딩용 product -> 이미지연결
+            new_product_bidding.product_type = 'bidding'
+            new_product_bidding.save()
+
+            new_product_bidding.pk = None
+            new_product_normal = new_product_bidding
+            new_product_normal.product_type = 'normal'
+            new_product_normal.image = None
+            
+            new_product_normal.slug = None
+            
+            new_product_normal.save()
+
             for form in formset.cleaned_data:
                 if form:
                     image = form['image']
-                    photo = ProductImage(product=new_product, image=image)
+                    photo = ProductImage(product=new_product_bidding, image=image)
                     photo.save()
-            messages.success(request, "Yeeew, check it out on the home page!")
+            messages.success(request, "업로드완료")
             return redirect('products:product_list')
     else:
         productform = ProductForm()
@@ -225,7 +253,10 @@ def product_upload(request):
     return render(request, 'products/product_upload.html', {'productform': productform, 'formset': formset})
 
 
-class BiddingDetailView(generic.DetailView):
+
+
+
+class BiddingDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'biddings/bidding_new.html'
     context_object_name = 'bidding'
 

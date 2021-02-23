@@ -15,7 +15,7 @@ from django.utils.http import is_safe_url
 from django.utils.safestring import mark_safe
 
 from mysite.mixin import NextUrlMixIn, RequestFormAttachMixin
-from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm # ReactivateEmailForm, UserDetailChangeForm
+from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, UserDetailChangeForm
 from .models import GuestEmail, EmailActivation
 from .signals import user_logged_in
 
@@ -100,6 +100,24 @@ def guest_register_view(request):
             return redirect("/register/")
     return redirect("/register/")
 
+
+class GuestRegisterView(NextUrlMixIn, RequestFormAttachMixin, CreateView):
+    form_class = GuestForm
+    default_next = '/register/'
+
+    def get_success_url(self):
+        return self.get_next_url()
+
+    def form_invalid(self, form):
+        return redirect(self.default_next)
+
+
+    # def form_valid(self, form):
+    #     request = self.request
+    #     email = form.cleaned_data.get('email')
+    #     new_guest_email = GuestEmail.objects.create(email=email)
+    #     return redirect(self.get_next_url())
+
 class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
     form_class = LoginForm
     success_url = '/shop/'
@@ -115,9 +133,20 @@ class RegisterView(CreateView):
     template_name = 'accounts/register.html'
     success_url = '/login/'
 
+class UserDetailUpdateView(LoginRequiredMixin, UpdateView):
+    form_class = UserDetailChangeForm
+    template_name = 'accounts/detail-update-view.html'
+    
+    def get_object(self):
+        return self.request.user
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(UserDetailUpdateView, self).get_context_data(*args, **kwargs)
+        context['title'] = 'Change Your Account Details'
+        return context
 
-
+    def get_success_url(self):
+        return reverse("accounts:home")
 # def login_page(request):
 #     form = LoginForm(request.POST or None)
 #     context = {

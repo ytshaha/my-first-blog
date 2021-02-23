@@ -13,6 +13,13 @@ from mysite.utils import unique_slug_generator
 from django.db.models.signals import pre_save, post_save
 from django.db.models import Q
 
+
+PRODUCT_TYPE = (
+    ('normal','상시상품구매'),
+    ('bidding','경매상품구매'),
+)
+
+
 def get_filename_ext(filepath):
     base_name = os.path.basename(filepath)
     name, ext = os.path.splitext(filepath)
@@ -54,6 +61,7 @@ class ProductQuerySet(models.query.QuerySet):
         return self.filter(lookups).distinct() # distinct 안하면 저위의 lookup들이 중복으로 검색되는 것들을 다 표시하게된다. 그냥 누적하되 중복은안되야하는게 맞을때 하므.
 
 class ProductManager(models.Manager):
+
     def get_queryset(self):
         return ProductQuerySet(self.model, using=self._db)
 
@@ -103,6 +111,7 @@ class Product(models.Model):
     image              = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
     # image, 이것은 썸네일이든 그냥 이미지든 다른 Model에서 ForeignKey로 참조할 것.(조영일 슬라이드 참고)
     # category, 나중에 추가, 2-depth 이상일경우 Django-mptt라이브러리사용(조영일 슬라이드 참고)
+    product_type        = models.CharField(max_length=100, default='bidding', choices=PRODUCT_TYPE)
     featured        = models.BooleanField(default=False)
     active          = models.BooleanField(default=True)
     slug            = models.SlugField(blank=True, unique=True, allow_unicode=True)

@@ -10,7 +10,8 @@
           <tr>
             <th scope="col">#</th>
             <th scope="col">Product Name</th>
-            <th scope="col">Product Price</th>
+            <th scope="col">Price</th>
+            <th scope="col">Information</th>
             <th scope="col">Remove?</th>
           </tr>
         </thead>
@@ -19,7 +20,13 @@
           <tr class='cart-product'>
             <th scope="row">{{ forloop.counter }}</th>
             <td><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></td>
-            <td>{{ product.start_price }}</td>
+            
+            {% if product.product_type == 'bidding' %}
+            <td>{{ product.current_price }}</td>
+            {% else %}
+            <td>{{ product.limit_price }}</td>
+            {% endif %}
+            <td>{{ product.product_type }}</a></td>
             <td>{% include 'carts/snippets/remove-product.html' with product_id=product.id %}
             </td>
           </tr>

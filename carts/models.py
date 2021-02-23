@@ -36,7 +36,7 @@ class Cart(models.Model):
     user        = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     products    = models.ManyToManyField(Product, blank=True)
     subtotal    = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
-    total       = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
+    total       = models.DecimalField(default=0.00, max_digits=100, decimal_places=2, null=True)
     updated     = models.DateTimeField(auto_now_add=True)
     timestamp   = models.DateTimeField(auto_now_add=True)
 
@@ -52,7 +52,13 @@ def m2m_changed_cart_receiver(sender, instance, action, *args, **kwargs):
         products = instance.products.all()
         total = 0
         for x in products:
-            total += x.start_price
+            if x.product_type == 'bidding':
+                total += x.current_price
+            elif x.product_type == 'normal':
+                total += x.limit_price
+            else:
+                total = None
+
         if instance.subtotal != total:
             instance.subtotal = total
             instance.save()
