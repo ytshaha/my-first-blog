@@ -186,9 +186,9 @@ def checkout_home(request):
                     billing_profile.set_cards_inactive()
                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
                 for cart_item_obj in cart_obj.cart_items.all():
-                    print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product.title, cart_item_obj.product.amount_always_on))
                     cart_item_obj.product.amount_always_on = cart_item_obj.product.amount_always_on - 1
                     cart_item_obj.product.save()
+                    print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product.title, cart_item_obj.product.amount_always_on))
                 return redirect("carts:success")
             else:
                 print(charge_msg)
