@@ -19,18 +19,11 @@
           {% for cart_item in cart.cart_items.all %}
           <tr class='cart-product'>
             <th scope="row">{{ forloop.counter }}</th>
-            <td><a href="{{ cart_item.product.get_absolute_url }}">{{ cart_item.product.title }}</a></td>
+            <td><a href="{{ cart_items.product.get_absolute_url }}">{{ cart_item.product.title }}</a></td>
             <td>{{ cart_item.price }}</td>
             <td>{{ cart_item.product_type }}</a></td>
-            <!-- JQuery 잘몰라서 그냥 remove 버튼 누르면 redirect하게 한다.... -->
-            <td>
-              <form method='POST' action="{% url 'carts:update' %}" data-endpoint="{% url 'carts:update' %}">
-                {% csrf_token %}
-                <input class='cart-item-product-id' type="hidden" name='product_id' value='{{ cart_item.product_id }}' />
-                <input class='cart-item-product-type' type="hidden" name='product_type' value='{{ cart_item.product_type }}' />
-                <input id="product" type="hidden" name="at_cart" value="at_cart">
-                <button type='submit' class='btn btn-default btn-sm'>Remove?</button>
-              </form>
+            
+            <td>{% include 'carts/snippets/remove-product.html' with product_id=cart_item.product.id product_type=cart_item.product_type %}
             </td>
           </tr>
           {% endfor %}

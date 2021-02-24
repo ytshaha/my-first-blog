@@ -94,6 +94,9 @@ def unique_slug_generator(instance, new_slug=None):
 
 
 def check_ticket_activate(user, request, model):
+    '''
+    티켓이 액티베이트 되었는지 확인.
+    '''
     if user is not None:
         ticket_qs = model.objects.filter(user=user, status='activate')
         if ticket_qs.count() == 1:

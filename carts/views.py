@@ -79,9 +79,7 @@ def cart_update(request):
         amount = 1 # 경매상품일때
     elif product_type == "normal":
         amount = request.POST.get('amount') # 상시상품일때
-    else:
-        amount = None
-    
+   
     only_add = True
     try:
         if request.POST.get('at_cart'):
@@ -97,22 +95,38 @@ def cart_update(request):
             return redirect("carts:home")
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         cart_item_obj, new_item_obj = CartItem.objects.new_or_get(request)
-        cart_item_obj.amount = amount
-        
-        # 단가 정하기
-        if product_type == 'bidding':
-            price = Bidding.objects.get(user=user, product=product_obj, win=True).bidding_price
-        elif product_type == 'normal':
-            price = product_obj.limit_price
-        cart_item_obj.price = price
-        cart_item_obj.save()
-        # 기존에 있던 product(+type)일 경우
+         
+        # 기존에 있던 cart_item일 경우
         if cart_item_obj in cart_obj.cart_items.all():
-            added = False
-        # 처음 추가되는 product(+type)일경우
+            if not only_add:
+                cart_obj.cart_items.remove(cart_item_obj)
+                added = False
+                # 부득이하게 여기에 cart_item계산을 한번 더 넣는다... jquery잘하게 되면 다시 구현하자.
+                request.session['cart_items'] = cart_obj.cart_items.count()
+                return redirect("carts:home")
+                
+            else:
+                added = False
+        # 처음 추가되는 cart_item일경우
         else:
             cart_obj.cart_items.add(cart_item_obj)
             added = True
+        
+        # amount가 None이 아닌 경우(즉 추가하는경우임.)
+        # None인 경우는 remove-product에서 at_cart가 True인 경우만 임.
+        # 지금 둘러보니 amount가 None이면 at_cart든 added든 필요없어 보임.
+        if amount:
+            cart_item_obj.amount = amount
+            
+            # 단가 정하기
+            
+            if product_type == 'bidding':
+                price = Bidding.objects.get(user=user, product=product_obj, win=True).bidding_price
+            elif product_type == 'normal':
+                price = product_obj.limit_price
+            cart_item_obj.price = price
+            cart_item_obj.save()
+        
         request.session['cart_items'] = cart_obj.cart_items.count()
         if request.is_ajax(): # Asyncronous JavaScripts ANd XM
             print("Ajax request")
