@@ -8,6 +8,46 @@ from products.models import Product
 
 User = settings.AUTH_USER_MODEL
 
+PRODUCT_TYPE = (
+    ('normal','상시상품구매'),
+    ('bidding','경매상품구매'),
+)
+
+
+class CartItemManager(models.Manager):
+    def new_or_get(self, request):
+        user = request.user
+        product_id = request.POST.get('product_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
+        product_type = request.POST.get('product_type') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product_type넣자. 
+        product_obj = Product.objects.get(id=product_id)
+        qs = self.get_queryset().filter(user=user, product=product_obj, product_type=product_type)
+        if qs.exists():
+            new_obj = False
+            cart_item_id = qs.first()
+        else:
+            cart_item_id = self.new(user=user, product=product_obj, product_type=product_type)
+            new_obj = True
+        return cart_item_id, new_obj
+
+    def new(self, user, product, product_type):
+        return self.model.objects.create(user=user, product=product, product_type=product_type)
+
+
+class CartItem(models.Model):
+    user            = models.ForeignKey(User, on_delete=models.CASCADE)
+    product         = models.ForeignKey(Product, on_delete=models.CASCADE)
+    amount          = models.IntegerField(default=1)
+    price           = models.PositiveIntegerField(default=0, help_text=u'가격')
+    product_type    = models.CharField(max_length=20, default='bidding', choices=PRODUCT_TYPE)
+    timestamp       = models.DateTimeField(auto_now_add=True)
+
+    objects = CartItemManager()
+    
+    def __str__(self):
+        return "{}_{}".format(str(self.product.title), str(self.product_type))
+
+
+
 class CartManager(models.Manager):
 
     def new_or_get(self, request):
@@ -34,7 +74,8 @@ class CartManager(models.Manager):
 
 class Cart(models.Model):
     user        = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    products    = models.ManyToManyField(Product, blank=True)
+    # products    = models.ManyToManyField(Product, blank=True)
+    cart_items  = models.ManyToManyField(CartItem, blank=True)
     subtotal    = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
     total       = models.DecimalField(default=0.00, max_digits=100, decimal_places=2, null=True)
     updated     = models.DateTimeField(auto_now_add=True)
@@ -49,13 +90,13 @@ class Cart(models.Model):
 
 def m2m_changed_cart_receiver(sender, instance, action, *args, **kwargs):
     if action == 'post_add' or action == 'post_remove' or action == 'post_clear':
-        products = instance.products.all()
+        cart_items = instance.cart_items.all()
         total = 0
-        for x in products:
+        for x in cart_items: # x는 개별 cart_items
             if x.product_type == 'bidding':
-                total += x.current_price
+                total += x.price
             elif x.product_type == 'normal':
-                total += x.limit_price
+                total += x.price * x.amount
             else:
                 total = None
 
@@ -63,7 +104,7 @@ def m2m_changed_cart_receiver(sender, instance, action, *args, **kwargs):
             instance.subtotal = total
             instance.save()
 
-m2m_changed.connect(m2m_changed_cart_receiver, sender=Cart.products.through)
+m2m_changed.connect(m2m_changed_cart_receiver, sender=Cart.cart_items.through)
 
 def pre_save_cart_receiver(sender, instance, *args, **kwargs):
     if instance.subtotal > 0:
@@ -71,4 +112,3 @@ def pre_save_cart_receiver(sender, instance, *args, **kwargs):
     else:
         instance.total = 0.00
 pre_save.connect(pre_save_cart_receiver, sender=Cart)
-

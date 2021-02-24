@@ -4,7 +4,7 @@
 <div class='container'>
     <h1>Cart</h1>
 
-    {% if cart.products.exists %}
+    {% if cart.cart_items.exists %}
     <table class="table cart-table">
         <thead>
           <tr>
@@ -16,17 +16,12 @@
           </tr>
         </thead>
         <tbody class='cart-body'>
-          {% for product in cart.products.all %}
+          {% for cart_item in cart.cart_items.all %}
           <tr class='cart-product'>
             <th scope="row">{{ forloop.counter }}</th>
-            <td><a href="{{ product.get_absolute_url }}">{{ product.title }}</a></td>
-            
-            {% if product.product_type == 'bidding' %}
-            <td>{{ product.current_price }}</td>
-            {% else %}
-            <td>{{ product.limit_price }}</td>
-            {% endif %}
-            <td>{{ product.product_type }}</a></td>
+            <td><a href="{{ cart_items.product.get_absolute_url }}">{{ cart_item.product.title }}</a></td>
+            <td>{{ cart_item.price }}</td>
+            <td>{{ cart_item.product_type }}</a></td>
             <td>{% include 'carts/snippets/remove-product.html' with product_id=product.id %}
             </td>
           </tr>

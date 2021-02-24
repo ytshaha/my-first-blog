@@ -134,7 +134,7 @@ def ticket_checkout_home(request):
     address_qs = None
     has_card = False
     is_ticket = True
-    request.session['is_ticket'] = True
+    request.session['is_ticket'] = is_ticket
     if billing_profile is not None:
         if request.user.is_authenticated:
             address_qs = Address.objects.filter(billing_profile=billing_profile)
@@ -177,6 +177,7 @@ def ticket_checkout_home(request):
         'publish_key': STRIPE_PUB_KEY,
         'is_ticket': is_ticket
     }
+    print(180, 'context',context)
     return render(request, "tickets/checkout.html", context)
 
 @login_required

@@ -85,7 +85,7 @@ class ProductListView(LoginRequiredMixin, generic.ListView):
 
     def get_queryset(self, *args, **kwargs):
         request = self.request
-        return Product.objects.filter(product_type='bidding').order_by('-bidding_start_date')
+        return Product.objects.order_by('-bidding_start_date')
 
 # class UserProductHistoryView(LoginRequiredMixin, generic.ListView):
 #     template_name = 'products/product_list.html'
@@ -122,37 +122,24 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')
         # 경매준비 경매중 경매종료 여부확인
         now = timezone.now()
-        print('product.current_price == product.limit_price', product_obj.current_price == product_obj.limit_price)
-        print('currnt:',product_obj.current_price)
-        print('limit:',product_obj.limit_price)
-        
+        bidding_on = None
         if now < product_obj.bidding_start_date:
-            bidding_on = '1' # 경매 준비중
+            bidding_on = 'bidding_ready' # 경매 준비중
         elif now >= product_obj.bidding_start_date and now < product_obj.bidding_end_date and product_obj.current_price < product_obj.limit_price:
-            bidding_on = '2'
+            bidding_on = 'bidding'
         elif now > product_obj.bidding_end_date or product_obj.current_price == product_obj.limit_price:
-            bidding_on = '3'
+            bidding_on = 'bidding_end'
         else:
             bidding_on = None
-        print('bidding_on',bidding_on)
         # 상시판매물품 재고여부
         if product_obj.amount_always_on == 0:
             is_stock = False
-        
-        # User가 비딩 위너인지여부(상시상품구매못하게 하기위함.)   
-        # 여기 order 오브젝트의 Paid된놈들에 물품이 있으면 구매못하게 하려고 하는데... 
-        # 일단 템플릿은 그냥 뜨는데 쉘에서 해봐야할듯
-        bidding_win_exist = bidding_obj.filter(user=user, win=True).exists()
-        order_obj = Order.objects.filter(cart__products=product_obj)
-        order_paid_exist = order_obj.filter(billing_profile__user=user, status='paid').exists()
-        if bidding_win_exist or order_paid_exist:
-            buy_activate = False            
         else:
-            buy_activate = True
+            amount_select_list = range(1, product_obj.amount_always_on + 1)
         
+        context['amount_select_list'] = amount_select_list
         context['is_stock'] = is_stock
         context['bidding_on'] = bidding_on
-        context['buy_activate'] = buy_activate
         context['cart'] = cart_obj
         context['images'] = product_images_qs
         context['bidding_obj_up_to_10'] = bidding_obj_up_to_10

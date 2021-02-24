@@ -15,9 +15,12 @@ from django.utils.http import is_safe_url
 from django.utils.safestring import mark_safe
 
 from mysite.mixin import NextUrlMixIn, RequestFormAttachMixin
+from mysite.utils import check_ticket_activate
 from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, UserDetailChangeForm
 from .models import GuestEmail, EmailActivation
 from .signals import user_logged_in
+from tickets.models import Ticket
+User = get_user_model()
 
 # Create your views here.
 @login_required # /account/lo gin/?next=/some/path/
@@ -117,6 +120,19 @@ class GuestRegisterView(NextUrlMixIn, RequestFormAttachMixin, CreateView):
     #     email = form.cleaned_data.get('email')
     #     new_guest_email = GuestEmail.objects.create(email=email)
     #     return redirect(self.get_next_url())
+def check_ticket_activate(user, request, model):
+    if user is not None:
+        ticket_qs = model.objects.filter(user=user, status='activate')
+        if ticket_qs.count() == 1:
+            ticket_obj = ticket_qs.first()
+            if ticket_obj.timestamp + timezone.timedelta(days=1) < timezone.now():
+                ticket_obj.status = 'used'
+                request.session['ticket_activate'] = False
+                return True
+            elif ticket_obj.timestamp + timezone.timedelta(days=1) >= timezone.now():
+                request.session['ticket_activate'] = True
+                return False
+    return False
 
 class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
     form_class = LoginForm
@@ -126,12 +142,39 @@ class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
    
     def form_valid(self, form):
         next_path = self.get_next_url()
+        # 유효하여 로긴하게 되면 현재 activate되어있는 티켓을 확인하여 기간내가 아니면 used 처리함.
+        # 이것은 함수화해서 지속확인할 수 있게 해야할듯.
+        request = self.request
+        user = request.user
+        ticket_activate = check_ticket_activate(user=user, request=request, model=Ticket)
+        
+        for key, value in self.request.session.items():
+            print('{} => {}'.format(key, value))
         return redirect(next_path)
 
 class RegisterView(CreateView):
     form_class = RegisterForm
     template_name = 'accounts/register.html'
-    success_url = '/login/'
+    success_url = '/register/success/'
+
+def register_success(request):
+    return render(request, "accounts/register_success.html", {})
+    
+# class ProductDetailView(LoginRequiredMixin, generic.DetailView):
+#     template_name = 'products/product_detail.html'
+#     context_object_name = 'product'
+
+#     def get_context_data(self, *args, **kwargs):
+#         context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
+#         print(context)
+#         return context
+
+#     def get_queryset(self, *args, **kwargs):
+#         request = self.request
+#         pk = self.kwargs.get('pk')
+#         product_obj = Product.objects.filter(pk=pk)
+#         request.session['product_number'] = product_obj.number
+#         return product_obj    
 
 class UserDetailUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserDetailChangeForm

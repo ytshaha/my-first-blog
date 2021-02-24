@@ -16,7 +16,6 @@
         </div>
     </div>
 {% else %}
-
     {% if not object.shipping_address %}
         <div class='row'>
             <div class='col-12'>
@@ -51,6 +50,7 @@
     {% else %}
         {% if not has_card %}
             <!-- Enter Credit Card hear -->
+            <div class='stripe-payment-form' data-token='{{ publish_key }}' data-next-url='{{ request.build_absolute_uri }}' data-btn-title='Add Payment Method'></div>
         {% else %}
             <h1>Finalize Checkout</h1>
             <p>Tickets: {{ object.ticketcart.tickets_type }}</p>

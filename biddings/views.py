@@ -6,6 +6,7 @@ from django.utils import timezone
 
 from products.models import Product
 from tickets.models import Ticket
+from orders.models import Order
 from .models import Bidding
 from .forms import BiddingForm, BiddingBuyForm
 
@@ -82,6 +83,7 @@ def bidding_result(request, slug):
     product_obj = Product.objects.get(slug=slug)
     bidding_end_date = product_obj.bidding_end_date
     product_amount = product_obj.amount 
+    user = request.user
 
     qs = Bidding.objects.filter(product=product_obj, active=True)
     bidding_count = qs.count()
@@ -92,12 +94,22 @@ def bidding_result(request, slug):
     qs_win = qs.order_by("-bidding_price")[:win]
     qs_win_pk = qs_win.values('pk')
     qs.filter(pk__in=qs_win_pk).update(win=True)
-
+    is_bidding_winner = qs.filter(user=user).exists()
+    buying_activate = False
+    bidding_order_paid_exists = Order.objects.filter(
+                                                cart__cart_items__product=product_obj, 
+                                                cart__cart_items__product_type='bidding', 
+                                                billing_profile__user=user,
+                                                status='paid'
+                                                ).exists()
+    if is_bidding_winner and not bidding_order_paid_exists:
+        buying_activate = True
     context = {
             'product': product_obj,
             'biddings': qs_win,
             'slug': slug,
-            'form':BiddingBuyForm
+            'form': BiddingBuyForm,
+            'buying_activate': buying_activate
             }
             # 이거 다 get_query로 돌릴 수 있을거 같은데? 
     return render(request, 'biddings/bidding_result.html', context)

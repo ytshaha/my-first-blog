@@ -65,9 +65,11 @@
     </form>
     {% else %}
     <h3>Ticket Not Exists.</h3>
+
+    {% endif %}
     <hr/>
     <h1><a href="{% url 'tickets:buy' %}">TICKET BUY</a></h1>
-    {% endif %}
+    
 </div>
 
 {% endblock %}

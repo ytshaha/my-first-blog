@@ -14,12 +14,6 @@ from django.db.models.signals import pre_save, post_save
 from django.db.models import Q
 
 
-PRODUCT_TYPE = (
-    ('normal','상시상품구매'),
-    ('bidding','경매상품구매'),
-)
-
-
 def get_filename_ext(filepath):
     base_name = os.path.basename(filepath)
     name, ext = os.path.splitext(filepath)
@@ -95,7 +89,7 @@ class Product(models.Model):
     current_price       = models.PositiveIntegerField(default=0, help_text=u'경매현재가격')
     list_price          = models.PositiveIntegerField(default=0, help_text=u'정가')
     sale_ratio          = models.DecimalField(default=0, max_digits=100, decimal_places=1, help_text=u'할인율')
-    price_step          = models.IntegerField(default=1000)
+    price_step          = models.IntegerField(default=5000)
     info_made_country   = models.CharField(default=0, max_length=30, help_text=u'원산지')
     info_product_number = models.CharField(default=0, max_length=30, help_text=u'모델명')
     info_delivery       = models.CharField(default='택배', max_length=30, help_text=u'배송방법')
@@ -111,7 +105,7 @@ class Product(models.Model):
     image              = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
     # image, 이것은 썸네일이든 그냥 이미지든 다른 Model에서 ForeignKey로 참조할 것.(조영일 슬라이드 참고)
     # category, 나중에 추가, 2-depth 이상일경우 Django-mptt라이브러리사용(조영일 슬라이드 참고)
-    product_type        = models.CharField(max_length=100, default='bidding', choices=PRODUCT_TYPE)
+    # product_type        = models.CharField(max_length=100, default='bidding', choices=PRODUCT_TYPE)
     featured        = models.BooleanField(default=False)
     active          = models.BooleanField(default=True)
     slug            = models.SlugField(blank=True, unique=True, allow_unicode=True)
@@ -138,7 +132,7 @@ def product_pre_save_receiver(sender, instance, *args, **kwargs):
     instance.sale_ratio = Decimal(instance.list_price - instance.current_price) / instance.list_price * 100
     # 남은 비딩타임.
     time_remain = instance.bidding_end_date - datetime.datetime.now(timezone.utc)
-    print(time_remain, type(time_remain))
+    # print(time_remain, type(time_remain))
     # instance.remain_bidding_time = "{}시간{}분".format(time_remain.hour, time_remain.minute)
     instance.remain_bidding_time = strfdelta(time_remain, "{days} days {hours}:{minutes}:{seconds}")
     

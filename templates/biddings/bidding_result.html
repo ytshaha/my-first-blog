@@ -31,13 +31,20 @@
             {% endfor %}
             </tbody>
         </table>
+        {{ buying_activate }}
         
-        <form method="post" action="{% url 'carts:update' %}">
-            {% csrf_token %}
-            <label for="product">PRODUCT : {{ product.title }}</label>
-            <input id="product" type="hidden" name="product_id" value="{{ product.id }}">
-            <button type="submit" class='btn btn-default btn-success'>BUY PRODUCT</button>
-        </form>
+        {% if buying_activate %}
+            <form method="post" action="{% url 'carts:update' %}">
+                {% csrf_token %}
+                <label for="product">PRODUCT : {{ product.title }}</label>
+                <input id="id_product" type="hidden" name="product_id" value="{{ product.id }}">
+                <input id="id_product_type" type="hidden" name="product_type" value="bidding">
+                
+                <button type="submit" class='btn btn-default btn-success'>BUY PRODUCT</button>
+            </form>
+        {% else %}
+            <button type="button" class='btn btn-secondary btn-block' title="이미 경매상품을 1개 구매하여 구매가 불가합니다.">경매 상품 구매불가</button>
+        {% endif %}
     </div>
 </div>
 {% else %}

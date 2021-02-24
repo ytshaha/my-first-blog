@@ -210,7 +210,6 @@ class RegisterForm(forms.ModelForm):
         if commit:
             user.save()
         return user
-
 # class RegisterForm(forms.Form):
 #     username = forms.CharField()
 #     email = forms.EmailField() 

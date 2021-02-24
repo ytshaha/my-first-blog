@@ -1,6 +1,7 @@
 
 import random
 import string
+from django.utils import timezone
 
 from django.utils.text import slugify
 
@@ -89,3 +90,19 @@ def unique_slug_generator(instance, new_slug=None):
         return unique_slug_generator(instance, new_slug=new_slug)
     print(slug)
     return slug
+
+
+
+def check_ticket_activate(user, request, model):
+    if user is not None:
+        ticket_qs = model.objects.filter(user=user, status='activate')
+        if ticket_qs.count() == 1:
+            ticket_obj = ticket_qs.first()
+            if ticket_obj.timestamp + timezone.timedelta(days=1) < timezone.now():
+                ticket_obj.status = 'used'
+                request.session['ticket_activate'] = False
+                return True
+            elif ticket_obj.timestamp + timezone.timedelta(days=1) >= timezone.now():
+                request.session['ticket_activate'] = True
+                return False
+    return False
