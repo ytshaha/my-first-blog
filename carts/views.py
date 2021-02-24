@@ -96,37 +96,38 @@ def cart_update(request):
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         cart_item_obj, new_item_obj = CartItem.objects.new_or_get(request)
          
-        # 기존에 있던 cart_item일 경우
-        if cart_item_obj in cart_obj.cart_items.all():
-            if not only_add:
-                cart_obj.cart_items.remove(cart_item_obj)
-                added = False
-                # 부득이하게 여기에 cart_item계산을 한번 더 넣는다... jquery잘하게 되면 다시 구현하자.
-                request.session['cart_items'] = cart_obj.cart_items.count()
-                return redirect("carts:home")
-                
-            else:
-                added = False
+        # 1. remove인경우 처리
+        if cart_item_obj in cart_obj.cart_items.all() and not only_add:
+            cart_obj.cart_items.remove(cart_item_obj)
+            added = False
+            # 부득이하게 여기에 cart_item계산을 한번 더 넣는다... jquery잘하게 되면 다시 구현하자.
+            request.session['cart_items'] = cart_obj.cart_items.count()
+            return redirect("carts:home")
+
+        # 2. 그냥 추가 혹은 수량조정인경우
+        # m2m Change가 적용되려면 cart_item의 수량과 단가가 확정되어야함.
+        
+        # 단가확정
+        if product_type == 'bidding':
+            price = Bidding.objects.get(user=user, product=product_obj, win=True).bidding_price
+        elif product_type == 'normal':
+            price = product_obj.limit_price
+        cart_item_obj.price = price
+        cart_item_obj.amount = amount
+        cart_item_obj.save()
+
+        if cart_item_obj in cart_obj.cart_items.all() and only_add:
+            # m2mchange가 안되서 그냥 지웠다가 다시 추가함.
+            cart_obj.cart_items.remove(cart_item_obj)
+            cart_obj.cart_items.add(cart_item_obj)
+            added = False
         # 처음 추가되는 cart_item일경우
         else:
             cart_obj.cart_items.add(cart_item_obj)
             added = True
-        
-        # amount가 None이 아닌 경우(즉 추가하는경우임.)
-        # None인 경우는 remove-product에서 at_cart가 True인 경우만 임.
-        # 지금 둘러보니 amount가 None이면 at_cart든 added든 필요없어 보임.
-        if amount:
-            cart_item_obj.amount = amount
             
-            # 단가 정하기
             
-            if product_type == 'bidding':
-                price = Bidding.objects.get(user=user, product=product_obj, win=True).bidding_price
-            elif product_type == 'normal':
-                price = product_obj.limit_price
-            cart_item_obj.price = price
-            cart_item_obj.save()
-        
+        # 그냥 나중에 쓸수도 있는 json이기에 남겨둠.
         request.session['cart_items'] = cart_obj.cart_items.count()
         if request.is_ajax(): # Asyncronous JavaScripts ANd XM
             print("Ajax request")
@@ -175,17 +176,19 @@ def checkout_home(request):
     print(150, 'has_card',has_card)
     # 물건들의 재고가 남아있는지 check
     # order_obj = request.POST.get('order_obj')
+    stock_refresh = False # 괜찮으면 넘어가고 안괜찮으면 스탁없는 물품들을 refresh하기 위해 carts:home 보냄.
     for cart_item_obj in cart_obj.cart_items.all():
         print("Stock Check...product.title")
-        if cart_item_obj.product.amount_always_on < 1:
-            print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product.title))
-            cart_obj.cart_item_obj.item.delete()
-            cart_obj.save()
-            # 카트에 뭐가있는지 체크아웃도 다시한번하게하기위해 redirect
-            print("160")
-
-            return redirect("carts:home")
-    print("161")
+        if cart_item_obj.product_type == 'normal':
+            if cart_item_obj.product.amount_always_on < 1:
+                print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product.title))
+                cart_obj.cart_items.remove(cart_item_obj)
+                cart_obj.save()
+                stock_refresh = True
+        elif cart_item_obj.product_type == 'bidding':
+            pass
+    if stock_refresh:
+        return redirect("carts:home")
 
     if request.method == "POST":
         "check that order is done"
@@ -200,9 +203,10 @@ def checkout_home(request):
                     billing_profile.set_cards_inactive()
                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
                 for cart_item_obj in cart_obj.cart_items.all():
-                    cart_item_obj.product.amount_always_on = cart_item_obj.product.amount_always_on - 1
-                    cart_item_obj.product.save()
-                    print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product.title, cart_item_obj.product.amount_always_on))
+                    if cart_item_obj.product_type == 'normal':
+                        cart_item_obj.product.amount_always_on = cart_item_obj.product.amount_always_on - 1
+                        cart_item_obj.product.save()
+                        print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product.title, cart_item_obj.product.amount_always_on))
                 return redirect("carts:success")
             else:
                 print(charge_msg)

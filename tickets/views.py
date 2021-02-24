@@ -4,6 +4,8 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import datetime
+from django.contrib import messages
+
 
 from accounts.forms import LoginForm, GuestForm
 from accounts.models import GuestEmail
@@ -73,7 +75,8 @@ def ticket_home(request):
                 return redirect("tickets:home")
             # 이미 사용하고 있는 티켓이 있으면 에러메세지로 이미 사용중인 티켓이 있습니다라고 띄운다.
             if Ticket.objects.filter(user=request.user, status='activate').exists():
-                return render(request, "tickets/ticket_home.html", {'tickets':tickets, "message":"이미 사용중인 티켓이 있습니다."})
+                messages.success(request, "이미 사용중인 티켓이 있습니다.")
+                return render(request, "tickets/ticket_home.html", {'tickets':tickets})
             ticket_obj = ticket_obj.first()
             ticket_obj.timestamp = datetime.datetime.now()
             ticket_obj.status = 'activate'

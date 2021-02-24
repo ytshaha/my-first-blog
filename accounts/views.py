@@ -120,19 +120,7 @@ class GuestRegisterView(NextUrlMixIn, RequestFormAttachMixin, CreateView):
     #     email = form.cleaned_data.get('email')
     #     new_guest_email = GuestEmail.objects.create(email=email)
     #     return redirect(self.get_next_url())
-def check_ticket_activate(user, request, model):
-    if user is not None:
-        ticket_qs = model.objects.filter(user=user, status='activate')
-        if ticket_qs.count() == 1:
-            ticket_obj = ticket_qs.first()
-            if ticket_obj.timestamp + timezone.timedelta(days=1) < timezone.now():
-                ticket_obj.status = 'used'
-                request.session['ticket_activate'] = False
-                return True
-            elif ticket_obj.timestamp + timezone.timedelta(days=1) >= timezone.now():
-                request.session['ticket_activate'] = True
-                return False
-    return False
+
 
 class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
     form_class = LoginForm

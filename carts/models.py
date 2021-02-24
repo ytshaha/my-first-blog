@@ -37,16 +37,20 @@ class CartItem(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE)
     product         = models.ForeignKey(Product, on_delete=models.CASCADE)
     amount          = models.IntegerField(default=1)
-    price           = models.PositiveIntegerField(default=0, help_text=u'가격')
+    price           = models.IntegerField(default=0, help_text=u'단가')
+    subtotal        = models.IntegerField(default=0, help_text=u'카트총액')
     product_type    = models.CharField(max_length=20, default='bidding', choices=PRODUCT_TYPE)
     timestamp       = models.DateTimeField(auto_now_add=True)
 
     objects = CartItemManager()
     
     def __str__(self):
-        return "{}_{}".format(str(self.product.title), str(self.product_type))
+        return "{}_{}_{}".format(str(self.product.title), str(self.product_type), str(self.user))
 
+def pre_save_cart_item_receiver(sender, instance, *args, **kwargs):
+    instance.subtotal = int(instance.price) * int(instance.amount)
 
+pre_save.connect(pre_save_cart_item_receiver, sender=CartItem)
 
 class CartManager(models.Manager):
 
@@ -88,17 +92,14 @@ class Cart(models.Model):
         return str(self.id)
 
 
+
+
 def m2m_changed_cart_receiver(sender, instance, action, *args, **kwargs):
     if action == 'post_add' or action == 'post_remove' or action == 'post_clear':
         cart_items = instance.cart_items.all()
         total = 0
         for x in cart_items: # x는 개별 cart_items
-            if x.product_type == 'bidding':
-                total += x.price
-            elif x.product_type == 'normal':
-                total += x.price * x.amount
-            else:
-                total = None
+            total += x.subtotal
 
         if instance.subtotal != total:
             instance.subtotal = total

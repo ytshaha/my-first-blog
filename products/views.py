@@ -132,8 +132,9 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         else:
             bidding_on = None
         # 상시판매물품 재고여부
-        if product_obj.amount_always_on == 0:
+        if product_obj.amount_always_on < 1:
             is_stock = False
+            amount_select_list = 0
         else:
             amount_select_list = range(1, product_obj.amount_always_on + 1)
         
