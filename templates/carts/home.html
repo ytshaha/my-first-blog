@@ -1,6 +1,7 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
+{% load humanize %}
 <div class='container'>
     <h1>Cart</h1>
 
@@ -11,6 +12,7 @@
             <th scope="col">#</th>
             <th scope="col">Product</th>
             <th scope="col">단가</th>
+            <th scope="col">수량</th>
             <th scope="col">가격</th>
             <th scope="col">구매종류</th>
             <th scope="col">Remove?</th>
@@ -21,7 +23,8 @@
           <tr class='cart-product'>
             <th scope="row">{{ forloop.counter }}</th>
             <td><a href="{{ cart_item.product.get_absolute_url }}">{{ cart_item.product.title }}</a></td>
-            <td>{{ cart_item.price }} 원</td>
+            <td>{{ cart_item.price|intcomma }} 원</td>
+            <td>{{ cart_item.amount }} EA</td>
             <td>{{ cart_item.subtotal }} 원</td>
             <td>{{ cart_item.product_type }}</a></td>
             <!-- JQuery 잘몰라서 그냥 remove 버튼 누르면 redirect하게 한다.... -->

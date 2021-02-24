@@ -138,6 +138,8 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         else:
             amount_select_list = range(1, product_obj.amount_always_on + 1)
         
+    
+        
         context['amount_select_list'] = amount_select_list
         context['is_stock'] = is_stock
         context['bidding_on'] = bidding_on
@@ -216,17 +218,7 @@ def product_upload(request):
 
         if productform.is_valid() and formset.is_valid():
             new_product_bidding = productform.save(commit=False) # 비딩용 product -> 이미지연결
-            new_product_bidding.product_type = 'bidding'
             new_product_bidding.save()
-
-            new_product_bidding.pk = None
-            new_product_normal = new_product_bidding
-            new_product_normal.product_type = 'normal'
-            new_product_normal.image = None
-            
-            new_product_normal.slug = None
-            
-            new_product_normal.save()
 
             for form in formset.cleaned_data:
                 if form:

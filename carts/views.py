@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 
 from accounts.forms import LoginForm, GuestForm
 from accounts.models import GuestEmail
@@ -13,6 +14,7 @@ from orders.models import Order
 from .models import Cart, CartItem
 from biddings.models import Bidding
 from products.models import Product
+from tickets.models import Ticket
 
 import stripe
 STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM")
@@ -72,7 +74,14 @@ def cart_update(request):
     print('request.POST',request.POST)
     product_id = request.POST.get('product_id')
     product_type = request.POST.get('product_type')
+
+    # 경매든 그냥 상시상품이든 티켓없으면 티켓사라고 한다.
     user = request.user
+    ticket_qs = Ticket.objects.filter(user=user, status='activate')
+    if not ticket_qs.exists() and product_type == 'normal':
+        messages.success(request, "상시판매 상품을 구매하기 위해서는 티켓이 필요합니다. 티켓을 구매하고 활성화 시키십시오.")
+        return redirect("tickets:home")
+
     # 추가수량에 대해 POST로 오면 업뎃
     # 이부분이 product_type으로 if문을 추가로 안에 넣을지는 고민 필요.
     if product_type == "bidding":

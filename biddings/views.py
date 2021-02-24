@@ -24,9 +24,22 @@ def bidding_new(request, slug):
     if not ticket_qs.exists():
         messages.success(request, "경매에 참여하기 위해서는 티켓이 필요합니다. 티켓을 구매하고 활성화 시키십시오.")
         return redirect("tickets:home")
+
+    
     # 티켓이 activate일때 아래 항목 발동. 모델에서 티켓검증은 뺀다.
     products = Product.objects.all()
     product_obj = Product.objects.get(slug=slug)
+
+
+    # 비딩참여후 1분안에 재참여 불가. 
+    recent_bidding_qs = Bidding.objects.filter(user=user, product=product_obj, active=True)
+    if recent_bidding_qs.count() == 1:
+        recent_bidding_obj = recent_bidding_qs.first()
+        if recent_bidding_obj.timestamp + timezone.timedelta(minutes=1) > timezone.now():
+            messages.success(request, "경매에 재참가 하기 위해서는 1분의 대기시간이 필요합니다.")
+            return redirect("products:product_detail_slug", slug=product_obj.slug)
+
+
     price_step = range(
                        product_obj.current_price + product_obj.price_step, 
                        product_obj.limit_price + product_obj.price_step, 
