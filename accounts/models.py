@@ -19,7 +19,7 @@ from mysite.utils import unique_key_generator
 DEFAULT_ACTIVATION_DAYS = getattr(settings, 'DEFAULT_ACTIVATION_DAYS', 7)
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, full_name, password=None, is_active=True, is_staff=False, is_admin=False):
+    def create_user(self, username, email, full_name, phone_number, password=None, is_active=True, is_staff=False, is_admin=False):
         if not email and username:
             raise ValueError("Users must have an username and an email address.")
         if not password:
@@ -28,10 +28,12 @@ class UserManager(BaseUserManager):
         user_obj = self.model(
             username=username,
             email=self.normalize_email(email),
-            full_name=full_name
+            full_name=full_name,
+            phone_number=phone_number
         )
         user_obj.username = username
         user_obj.email = email
+        user_obj.phone_number = phone_number
         user_obj.set_password(password)
         user_obj.staff = is_staff
         user_obj.admin = is_admin
@@ -39,7 +41,7 @@ class UserManager(BaseUserManager):
         user_obj.save(using=self._db)
         return user_obj
 
-    def create_staffuser(self, username, full_name, email, password=None):
+    def create_staffuser(self, username, full_name, phone_number, email, password=None):
         user = self.create_user(
             username=username,
             email=email,
@@ -49,11 +51,12 @@ class UserManager(BaseUserManager):
         )
         return user
 
-    def create_superuser(self, username, full_name, email, password=None):
+    def create_superuser(self, username, full_name, phone_number, email, password=None):
         user = self.create_user(
             username=username,
             email=email,
             full_name=full_name,
+            phone_number=phone_number,
             password=password,
             is_staff=True,
             is_admin=True
@@ -65,6 +68,7 @@ class User(AbstractBaseUser):
     username = models.CharField(max_length=20, unique=True)
     email = models.EmailField(max_length=255, unique=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True)
     # active = models.BooleanField(default=True) # can login
     is_active = models.BooleanField(default=True) # can login
     staff = models.BooleanField(default=False) # staff user non superuser
@@ -74,7 +78,7 @@ class User(AbstractBaseUser):
     # confirmed_date = models.DateTimeField(default=False)
 
     USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = ['email', 'full_name']
+    REQUIRED_FIELDS = ['email', 'full_name', 'phone_number']
 
     objects = UserManager()
 

@@ -2,6 +2,8 @@ from django.urls import path
 import django.contrib.auth.views as django_views
 from django.conf import settings
 from django.conf.urls import url
+from django.views.generic import TemplateView
+
 
 from django.conf.urls.static import static
 from . import views
@@ -12,6 +14,9 @@ urlpatterns = [
     url(r'^update/$', views.cart_update, name='update'),
     url(r'^checkout/$', views.checkout_home, name='checkout'),
     url(r'^checkout/success/$', views.checkout_done_view, name='success'),
+    url(r'^checkout/iamport/$', views.checkout_iamport, name='checkout-iamport'),
+    url(r'^payment/test/$', TemplateView.as_view(template_name='carts/payment_test.html'), name='payment_test'),
+    url(r'^payment/complete/$', views.payment_complete, name='payment_complete'),
     ]
 
 

@@ -103,6 +103,7 @@ def check_ticket_activate(user, request, model):
             ticket_obj = ticket_qs.first()
             if ticket_obj.timestamp + timezone.timedelta(days=1) < timezone.now():
                 ticket_obj.status = 'used'
+                ticket_obj.save()
                 request.session['ticket_activate'] = False
                 return True
             elif ticket_obj.timestamp + timezone.timedelta(days=1) >= timezone.now():

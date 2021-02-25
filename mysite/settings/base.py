@@ -41,6 +41,11 @@ MANAGERS = (
 
 ADMIN = MANAGERS
 
+IAMPORT_CODE = 'imp30832141'
+IMPORT_REST_API_KEY = '8306112827056798'
+IMPORT_REST_API_SECRET = 'WmAHFCAyZFfaMy10g6xRPvFawuuJAVPxiqfY2Pw2uMcgkegAlOsak7kQCOzdKpK2PZ0RPxTjj6AEkQfF'
+
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',

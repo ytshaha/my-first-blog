@@ -29,3 +29,6 @@ class Address(models.Model):
             postal = self.postal_code,
             country = self.country
         )
+
+    def get_postal_code(self):
+        return self.postal_code

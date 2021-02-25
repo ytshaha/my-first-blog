@@ -190,3 +190,14 @@ class Charge(models.Model):
 #   currency="usd",
 #   source="tok_mastercard",
 #   description="My First Test Charge (created for API docs)",
+
+
+# class ChargeIamport(models.Model):
+#     billing_profile = models.ForeignKey(BillingProfile, on_delete=models.CASCADE)
+#     stripe_id       = models.CharField(max_length=120)
+#     paid            = models.BooleanField(default=False)
+#     refunded        = models.BooleanField(default=False)
+#     outcome         = models.TextField(null=True, blank=True)
+#     outcome_type    = models.CharField(max_length=120, null=True, blank=True)
+#     seller_message  = models.CharField(max_length=120, null=True, blank=True)
+#     risk_level      = models.CharField(max_length=120, null=True, blank=True)

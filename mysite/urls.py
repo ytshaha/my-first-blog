@@ -27,11 +27,12 @@ urlpatterns = [
     url(r'^checkout/address/create/$', checkout_address_create_view, name='checkout_address_create'),
     url(r'^checkout/address/reuse/$', checkout_address_reuse_view, name='checkout_address_reuse'),
 
+
     url(r'^register/$', RegisterView.as_view(), name='register'),
     url(r'^register/success/$', register_success, name='register-success'),
     url(r'^billing/payment-method/$', payment_method_view, name='billing-payment-method'),
     url(r'^billing/payment-method/create/$', payment_method_createview, name='billing-payment-method-endpoint'),
-
+    
 
 
     path('logout/', LogoutView.as_view(next_page='/product/'), name='logout'),

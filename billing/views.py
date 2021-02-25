@@ -12,6 +12,7 @@ STRIPE_PUB_KEY = getattr(settings, "STRIPE_PUB_KEY", "pk_test_51IKQwOCVFucPeMu3F
 
 stripe.api_key = STRIPE_SECRET_KEY
 
+
 def payment_method_view(request):
     # if request.user.is_authenticated:
     #     billing_profile = request.user.billingprofile
@@ -36,4 +37,5 @@ def payment_method_createview(request):
             new_card_obj = Card.objects.add_new(billing_profile=billing_profile, token=token)
         return JsonResponse({"message":"Success! Your card was added."})
     return HttpResponse("error", status_code=401)
+
 
