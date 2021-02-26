@@ -74,8 +74,8 @@ class Order(models.Model):
     billing_address     = models.ForeignKey(Address, related_name='billing_address', null=True, blank=True, on_delete=models.CASCADE)
     cart                = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True, null=True)
     status              = models.CharField(max_length=120, default='created', choices=ORDER_STATUS_CHOICES)
-    shipping_total      = models.DecimalField(default=5.99, max_digits=100, decimal_places=2)
-    total               = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
+    shipping_total      = models.IntegerField(default=0)
+    total               = models.IntegerField(default=0)
     active              = models.BooleanField(default=True)
     updated     = models.DateTimeField(auto_now_add=True)
     timestamp   = models.DateTimeField(auto_now_add=True)
@@ -101,9 +101,10 @@ class Order(models.Model):
     def update_total(self):
         cart_total = self.cart.total
         shipping_total = self.shipping_total
-        new_total = math.fsum([cart_total, shipping_total])
-        formatted_total = format(new_total, '2f')
-        self.total = formatted_total
+        new_total = cart_total + shipping_total
+        # formatted_total = format(new_total, '2f')
+        self.total = new_total
+        print(new_total)
         self.save()
         return new_total
 
@@ -185,8 +186,8 @@ class TicketOrder(models.Model):
     shipping_address    = models.ForeignKey(Address, related_name='ticketorder_shopping_address', null=True, blank=True, on_delete=models.CASCADE)
     billing_address     = models.ForeignKey(Address, related_name='ticketorder_billing_address', null=True, blank=True, on_delete=models.CASCADE)
     status              = models.CharField(max_length=120, default='created', choices=ORDER_STATUS_CHOICES)
-    shipping_total      = models.DecimalField(default=5.99, max_digits=100, decimal_places=2)
-    total               = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
+    shipping_total      = models.IntegerField(default=0)
+    total               = models.IntegerField(default=0)
     active              = models.BooleanField(default=True)
 
 

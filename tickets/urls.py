@@ -11,7 +11,7 @@ urlpatterns = [
     # path('list/', views.TicketAvailableListView, name='list'),
     path('buy/', views.ticket_buy, name='buy'),
     path('cart/', views.ticket_cart_home, name='cart'),
-    path('checkout/', views.ticket_checkout_home, name='checkout'),
+    path('checkout/', views.ticket_checkout_home, name='checkout-iamport'),
     url(r'^checkout/success/$', views.checkout_done_view, name='success'),
 
 

@@ -10,12 +10,50 @@
     </div>
     <div class='row'>
         <!-- <form method='post' action="{% url 'carts:payment_complete' %}"> -->
-            <!-- <button class='btn btn-primary btn-block' onclick="requestPay()">결제하기</button> -->
+            <button onclick="requestPay()">결제하기</button>
         <!-- </form> -->
     </div>
 </div>
 
+<div>
+    <h1 class="check-out-complete-text">Checkout Process</h1>
+</div>
 
+<!-- 체크아웃부분.... -->
+<!-- <div class='row'>
+    <form method="post" action="" class='form-get-checkout-data'>
+        {% csrf_token %}
+        <input type="hidden" name='get-checkout-data' value='get-checkout-data'/>
+        <button type='submit' id='get-checkout-data-btn' class='btn btn-primary'>아임포트가져오기.?</button>
+    </form>
+</div>
+
+<div class="row">
+    <div class='col'>
+        <div class='check-out-div' style=''>
+            <button class='btn btn-primary' id='check-out-button'>CHECKOUT(IMPORT)</button>
+        </div>
+    </div>
+</div>
+
+<div class='row'>
+    <form action="" class='form-get-data' style='display:none;'>
+        <input type="hidden" class='pg' name='pg' value='{{ pg }}'/>
+        <input type="hidden" class='pay_method' name='pay_method' value='{{ pay_method }}'/>
+        <input type="hidden" class='merchant_uid' name='merchant_uid' value='{{ merchant_uid }}'/>
+        <input type="hidden" class='name'name='name' value='{{ name }}'/>
+        <input type="hidden" class='amount' name='amount' value='{{ amount }}'/>
+        <input type="hidden" class='buyer_email' value='{{ buyer_email }}'/>
+        <input type="hidden" class='buyer_email' name='buyer_name' value='{{ buyer_name }}'/>
+        <input type="hidden" class='buyer_tel' name='buyer_tel' value='{{ buyer_tel }}'/>
+        <input type="hidden" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
+        <input type="hidden" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
+    </form>
+</div>
+
+<div>
+    <h1 class="check-out-complete-text">Checkout Process</h1>
+</div> -->
 
 
 
@@ -25,62 +63,86 @@
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 
 <script>
-    var IMP = window.IMP;
-    IMP.init("imp30832141");
-    IMP.request_pay({
-        pg: 'danal_tpay',
-        pay_method: 'card',
-        merchant_uid: 'merchant_' + new Date().getTime(),
-        name: '주문명:결제테스트',
-        amount: 100,
-        buyer_email: 'iamport@siot.do',
-        buyer_name: 'yellowdonkey',
-        buyer_tel: '010-1234-5678',
-        buyer_addr: '서울특별시 강남구 삼성동',
-        buyer_postcode: '123-456'
-    }, function (rsp) {
-        if (rsp.success) {
-            //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
-            jQuery.ajax({
-                url: "{% url 'carts:payment_complete' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
-                type: 'POST',
-                dataType: 'json',
-                data: {
-                    imp_uid: rsp.imp_uid
-                    //기타 필요한 데이터가 있으면 추가 전달
-                },
-            }).done(function (data) {
-                //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
-                alert("ajax done");               
-                console.log("ajax done");
-                if (data.status=='success') {
-                    var msg = '결제가 완료되었습니다.';
-                    msg += '\n고유ID : ' + rsp.imp_uid;
-                    msg += '\n상점 거래ID : ' + rsp.merchant_uid;
-                    msg += '\결제 금액 : ' + rsp.paid_amount;
-                    msg += '카드 승인번호 : ' + rsp.apply_num;
-                    alert(msg);
-                    console.log(msg);
-                } else {
-                    //[3] 아직 제대로 결제가 되지 않았습니다.
-                    //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
-                    var msg = '아직 제대로 결제가 되지 않았습니다.';
-                    alert(msg);
-                    console.log(msg);
-                }
-            }).fail(function () {
-                alert("ajax fail");
-                console.log("ajax fail");
-            }).always(function () {
-                alert("ajax always");
-                console.log("ajax always");
-            });
-        } else {
-            var msg = '결제에 실패하였습니다.';
-            msg += '에러내용 : ' + rsp.error_msg;
-            alert(msg);
-        }
-    });
+    function requestPay() {
+    // IMP.request_pay(param, callback) 호출
+        var IMP = window.IMP;
+        var code = "imp30832141";  // FIXME: 가맹점 식별코드
+        IMP.init(code);
+
+        // 결제요청
+        IMP.request_pay({ // param
+            pg : 'html5_inicis', // pg 사 선택
+            pay_method : 'card',
+            merchant_uid : 'merchant_' + new Date().getTime(),
+            name : '주문명:결제테스트',
+            amount : 100,
+            buyer_email : 'iamport@siot.do',
+            buyer_name : '구매자이름',
+            buyer_tel : '010-1234-5678',
+            buyer_addr : '서울특별시 강남구 삼성동',
+            buyer_postcode : '123-456',
+            m_redirect_url : "{% url 'carts:payment_complete' %}"
+        }, function (rsp) {
+            if (rsp.success) {
+                //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+                jQuery.ajax({
+                    url: "{% url 'carts:payment_complete' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        imp_uid: rsp.imp_uid
+                        //기타 필요한 데이터가 있으면 추가 전달
+                    },
+                }).done(function (data) {
+                    //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
+                    alert("ajax done");               
+                    console.log("ajax done");
+                    if (data.status=='success') {
+                        var msg = '결제가 완료되었습니다.';
+                        msg += '\n고유ID : ' + rsp.imp_uid;
+                        msg += '\n상점 거래ID : ' + rsp.merchant_uid;
+                        msg += '\결제 금액 : ' + rsp.paid_amount;
+                        msg += '카드 승인번호 : ' + rsp.apply_num;
+                        alert(msg);
+                        console.log(msg);
+                    } else {
+                        //[3] 아직 제대로 결제가 되지 않았습니다.
+                        //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
+                        // var msg = '아직 제대로 결제가 되지 않았습니다.';
+                        var msg = data.message;
+                        
+                        alert(msg);
+                        console.log(msg);
+                    }
+
+
+
+                }).fail(function () {
+                    alert("ajax fail");
+                    console.log("ajax fail");
+                }).always(function () {
+                    alert("ajax always");
+                    console.log("ajax always");
+
+
+                });
+                // 성공시 이동할 페이지
+                var checkOutText = $(".check-out-complete-text")
+                checkOutText.text("Checkout SUCCESS")
+                window.location.href= "{% url 'carts:payment_success' %}"
+
+            } else {
+                // var msg = '결제에 실패하였습니다.';
+                var msg = data.message;
+                msg += '에러내용 : ' + rsp.error_msg;
+                alert(msg);
+                var checkOutText = $(".check-out-complete-text")
+                checkOutText.text("Checkout FAIL")
+                // 실패시 이동할 페이지
+                window.location.href= "{% url 'carts:payment_fail' %}"
+            }
+        });
+    }
 </script>
 
 

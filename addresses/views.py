@@ -28,17 +28,17 @@ def checkout_address_create_view(request):
         else:
             print('Error here')
             if is_ticket:
-                return redirect("tickets:checkout")
+                return redirect("tickets:checkout-iamport")
             else:
-                return redirect("carts:checkout")
+                return redirect("carts:checkout-iamport")
         if is_safe_url(redirect_path, request.get_host()):
             return redirect(redirect_path)
         else:
             if is_ticket:
-                return redirect("tickets:checkout")
+                return redirect("tickets:checkout-iamport")
             else:
-                return redirect("carts:checkout")
-    return redirect("carts:checkout")
+                return redirect("carts:checkout-iamport")
+    return redirect("carts:checkout-iamport")
 
 def checkout_address_reuse_view(request):
     is_ticket = request.session.get('is_ticket')
@@ -58,6 +58,6 @@ def checkout_address_reuse_view(request):
                 if is_safe_url(redirect_path, request.get_host()):
                     return redirect(redirect_path)
     if is_ticket:
-        return redirect("tickets:checkout")
+        return redirect("tickets:checkout-iamport")
     else:
-        return redirect("carts:checkout")
+        return redirect("carts:checkout-iamport")

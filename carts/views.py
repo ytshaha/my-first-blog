@@ -20,6 +20,7 @@ from .models import Cart, CartItem
 from biddings.models import Bidding
 from products.models import Product
 from tickets.models import Ticket
+from mysite.utils import random_string_generator
 
 import stripe
 
@@ -323,10 +324,10 @@ def checkout_iamport(request):
     if stock_refresh:
         return redirect("carts:home")
 
-    ################################################################
-    ################################################################
-    ################################################################
-    ################################################################
+    # ################################################################
+    # ################################################################
+    # ################################################################
+    # ################################################################
     
     # 아임포트 토큰 가져오기
     iamport = Iamport(imp_key=IMPORT_REST_API_KEY, imp_secret=IMPORT_REST_API_SECRET)
@@ -347,33 +348,130 @@ def checkout_iamport(request):
     for cart_item in cart_obj.cart_items.all():
         cart_items_name = cart_items_name + cart_item.product.title + "_"
     print('cart_items_name',cart_items_name)
-    iamport_charge_data = {
+    print("request.POST", request.POST)
+    iamport_data = {
+                'pg': "html5_inicis",
+                'pay_method':'card',
+                'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
+                'name':cart_items_name,
+                'amount': int(order_obj.total),
+                'buyer_email': billing_profile.email,
+                'buyer_name': user.full_name,
+                'buyer_tel': user.phone_number,# 얘는 만들어야함. 
+                'buyer_addr': address,
+                'buyer_postcode': postcode
+                }
+    if request.method == 'POST' and request.is_ajax():
+        get_data = request.POST.get('get_data')
+        print(380, "get_data",get_data)
+        # if not get_data:
+        #     # imaport_data 가져오기 버튼 누름.
+        #     return JsonResponse(iamport_data)
+        # else:
+        #     print(385, ' elif not get_data',get_data)
+        # 결재정보 확인 실행
+        imp_uid = request.POST.get('imp_uid')
+        # // 액세스 토큰(access token) 발급받기
+        data = {
+            "imp_key": IMPORT_REST_API_KEY,
+            "imp_secret": IMPORT_REST_API_SECRET
+        }
+        print(data)
+        response = requests.post('https://api.iamport.kr/users/getToken', data=data)
+        data = response.json()
+        print(data)
+        my_token = data['response']['access_token']
+        print('my_token',my_token)
+        #  // imp_uid로 아임포트 서버에서 결제 정보 조회
+        headers = {"Authorization": my_token}
+        response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
+        data = response.json()
+        # // DB에서 결제되어야 하는 금액 조회 const
+        order_amount = order_obj.total
+        amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
+        print('amountToBePaid',amountToBePaid)
+        status = data['response']['status']  # 아임포트에서의 상태
+        print('status',status)
+        if order_amount==amountToBePaid:
+            # DB에 결제 정보 저장
+            # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
+            if status == 'ready':
+                # DB에 가상계좌 발급정보 저장
+                print("결재 상태 : ready, vbankIssued")
+                return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
+                                    content_type="application/json")
+            elif status=='paid':
+                print("결재 상태 : paid, success")
+
+                order_obj.mark_paid()
+                request.session['cart_items'] = 0
+                del request.session['cart_id']
+                # 재고 있는것들에 대해서 아래와 같이 구매한다.
+                for cart_item_obj in cart_obj.cart_items.all():
+                    if cart_item_obj.product_type == 'normal':
+                        cart_item_obj.product.amount_always_on = cart_item_obj.product.amount_always_on - 1
+                        cart_item_obj.product.save()
+                        print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product.title, cart_item_obj.product.amount_always_on))
+
+
+
+                return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
+                                    content_type="application/json")
+            else:
+                pass
+        else:
+            print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
+            return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json")
+        
+
+    context = {
+        'object':order_obj,
+        'billing_profile': billing_profile,
+        'login_form': login_form,
+        'guest_form': guest_form,
+        'address_form': address_form,
+        'address_qs': address_qs,
+        'has_card': has_card,
+        'publish_key': STRIPE_PUB_KEY,
+        # 결재용 context
         'pg': "html5_inicis",
         'pay_method':'card',
-        'merchant_uid':order_obj.order_id,
+        'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
         'name':cart_items_name,
-        'amount': int(order_obj.total),
+        'amount': order_obj.total,
         'buyer_email': billing_profile.email,
         'buyer_name': user.full_name,
         'buyer_tel': user.phone_number,# 얘는 만들어야함. 
         'buyer_addr': address,
         'buyer_postcode': postcode
-        }
-    # if request.method == 'POST':
-        # return JsonResponse(iamport_charge_data)
-    # data_jsonresponse = JsonResponse(iamport_charge_data)
-    # context = {
-    #     'data_json': json.dumps(data_jsonresponse)
-    # }
-    return render(request, 'carts/checkout-iamport.html',iamport_charge_data)
+        # 'pg' : 'html5_inicis', 
+        # 'pay_method' : 'card',
+        # 'merchant_uid' : 'merchant_' + random_string_generator(size=10),
+        # 'name' : '주문명:결제테스트',
+        # 'amount' : 100,
+        # 'buyer_email' : 'iamport@siot.do',
+        # 'buyer_name' : '고길동',
+        # 'buyer_tel' : '010-1234-5678',
+        # 'buyer_addr' : '서울특별시 영등포구 도신로',
+        # 'buyer_postcode' : '123-456',
+
+                }
+    
+    # print('♥♥♥♥♥context')
+    # print(context)
+    
+    return render(request, "carts/checkout-iamport.html", context)
+
+    
 
 class CheckoutView(generic.TemplateView):
     template_name='carts/payment_test.html'
-
+    
 
 # @csrf_exempt
 
 def payment_complete(request):
+    print('request', request)
     print('request.POST', request.POST)
     if request.method == 'POST' and request.is_ajax():
         imp_uid = request.POST.get('imp_uid')
@@ -401,14 +499,24 @@ def payment_complete(request):
             # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
             if status == 'ready':
                 # DB에 가상계좌 발급정보 저장
+                print("결재 상태 : ready, vbankIssued")
                 return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
                                     content_type="application/json")
             elif status=='paid':
+                print("결재 상태 : paid, success")
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
                                     content_type="application/json")
             else:
                 pass
         else:
+            print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
             return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json")
     else:
-        return render(request, 'carts/payment_complete.html', locals())   #수정 필요
+        print("Not post or Not Ajax requested.")
+        return render(request, 'carts/payment_complete.html')   #수정 필요
+
+def payment_fail(request):
+    return render(request, 'carts/payment_fail.html', {})
+
+def payment_success(request):
+    return render(request, 'carts/payment_success.html', {})

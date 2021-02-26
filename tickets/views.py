@@ -1,3 +1,9 @@
+import requests
+import json
+from django.http import HttpResponse
+from django.http import Http404
+
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import generic
 from django.conf import settings
@@ -18,12 +24,16 @@ from orders.models import Order, TicketOrder
 
 from .models import TicketCart, Ticket
 from .forms import TicketCartForm
+from mysite.utils import random_string_generator
 
 import stripe
 STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM")
 STRIPE_PUB_KEY = getattr(settings, "STRIPE_PUB_KEY", "pk_test_51IKQwOCVFucPeMu3FS46t1eZG8bfs5elOnEvuL878YygdQmsR485txEKT2bL0qd5LXdV1Qs0eKuMkPdPRcWH6GRR00DNZK6kv0")
 
 stripe.api_key = STRIPE_SECRET_KEY
+
+from mysite.client import Iamport
+
 
 TICKET_BUY_INFO = [
                 { "amount": 1, "subtotal": 5000, "total": 5000, 'sale_ratio': 0},
@@ -33,6 +43,10 @@ TICKET_BUY_INFO = [
                 { "amount": 20, "subtotal": 100000, "total": 90000, 'sale_ratio': 10},
                 { "amount": 30, "subtotal": 150000, "total": 135000, 'sale_ratio': 10}
                 ]
+
+IAMPORT_CODE = getattr(settings, "IAMPORT_CODE", 'imp30832141')
+IMPORT_REST_API_KEY = getattr(settings, "IMPORT_REST_API_KEY", '8306112827056798')
+IMPORT_REST_API_SECRET = getattr(settings, "IMPORT_REST_API_SECRET", 'WmAHFCAyZFfaMy10g6xRPvFawuuJAVPxiqfY2Pw2uMcgkegAlOsak7kQCOzdKpK2PZ0RPxTjj6AEkQfF')
 
 
 # class TicketAvailableListView(generic.ListView):
@@ -151,23 +165,123 @@ def ticket_checkout_home(request):
         if billing_address_id or shipping_address_id:
             order_obj.save()
         has_card = billing_profile.has_card
+    
+    # if request.method == "POST":
+    #     "check that order is done"
+    #     is_prepared = order_obj.check_done()
+    #     if is_prepared:
+    #         did_charge, charge_msg = billing_profile.charge(order_obj)
+    #         if did_charge:
+    #             order_obj.mark_paid()
+    #             # request.session['cart_items'] = 0 # 왜하는지 모르겠네.--->???
+    #             del request.session['ticketcart_id']
+    #             if not billing_profile.user:
+    #                 billing_profile.set_cards_inactive()
+    #             request.session['order_id'] = order_obj.id
+    #             return redirect("tickets:success")
+    #         else:
+    #             print(charge_msg)
+    #             return redirect("tickets:checkout")
 
-    if request.method == "POST":
-        "check that order is done"
-        is_prepared = order_obj.check_done()
-        if is_prepared:
-            did_charge, charge_msg = billing_profile.charge(order_obj)
-            if did_charge:
+    # context = {
+    #     'object':order_obj,
+    #     'billing_profile': billing_profile,
+    #     'login_form': login_form,
+    #     'guest_form': guest_form,
+    #     'address_form': address_form,
+    #     'address_qs': address_qs,
+    #     'has_card': has_card,
+    #     'publish_key': STRIPE_PUB_KEY,
+    #     'is_ticket': is_ticket
+    # }
+    # print(180, 'context',context)
+    # return render(request, "tickets/checkout.html", context)
+
+
+
+    # 아임포트 토큰 가져오기
+    iamport = Iamport(imp_key=IMPORT_REST_API_KEY, imp_secret=IMPORT_REST_API_SECRET)
+    # access_token = iamport._get_token()
+    # response = iamport.get_response(access_token)
+    # 결재정보 받아오기위한 json data 준비
+    user = request.user
+
+    shipping_address_qs = Address.objects.filter(billing_profile__email=user.email, address_type='shipping')
+    if shipping_address_qs.count() == 1:
+        shipping_address_obj = shipping_address_qs.first()
+    else:
+        print('address에 문제가 있다.')
+    address = shipping_address_obj.get_address()
+    postcode = shipping_address_obj.get_postal_code()
+    
+    cart_items_name = "경매 참여 티켓 {}장".format(ticketcart_obj.tickets_type)
+
+    iamport_data = {
+                'pg': "html5_inicis",
+                'pay_method':'card',
+                'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
+                'name':cart_items_name,
+                'amount': order_obj.total,
+                'buyer_email': billing_profile.email,
+                'buyer_name': user.full_name,
+                'buyer_tel': user.phone_number,# 얘는 만들어야함. 
+                'buyer_addr': address,
+                'buyer_postcode': postcode
+                }
+    if request.method == 'POST' and request.is_ajax():
+        get_data = request.POST.get('get_data')
+        print(380, "get_data",get_data)
+        # if not get_data:
+        #     # imaport_data 가져오기 버튼 누름.
+        #     return JsonResponse(iamport_data)
+        # else:
+        #     print(385, ' elif not get_data',get_data)
+        # 결재정보 확인 실행
+        imp_uid = request.POST.get('imp_uid')
+        # // 액세스 토큰(access token) 발급받기
+        data = {
+            "imp_key": IMPORT_REST_API_KEY,
+            "imp_secret": IMPORT_REST_API_SECRET
+        }
+        print(data)
+        response = requests.post('https://api.iamport.kr/users/getToken', data=data)
+        data = response.json()
+        print(data)
+        my_token = data['response']['access_token']
+        print('my_token',my_token)
+        #  // imp_uid로 아임포트 서버에서 결제 정보 조회
+        headers = {"Authorization": my_token}
+        response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
+        data = response.json()
+        # // DB에서 결제되어야 하는 금액 조회 const
+        order_amount = order_obj.total
+        amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
+        print('amountToBePaid',amountToBePaid)
+        status = data['response']['status']  # 아임포트에서의 상태
+        print('status',status)
+        if order_amount==amountToBePaid:
+            # DB에 결제 정보 저장
+            # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
+            if status == 'ready':
+                # DB에 가상계좌 발급정보 저장
+                print("결재 상태 : ready, vbankIssued")
+                return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
+                                    content_type="application/json")
+            elif status=='paid':
+                print("결재 상태 : paid, success")
+
                 order_obj.mark_paid()
-                # request.session['cart_items'] = 0 # 왜하는지 모르겠네.--->???
+                # request.session['cart_items'] = 0
                 del request.session['ticketcart_id']
-                if not billing_profile.user:
-                    billing_profile.set_cards_inactive()
                 request.session['order_id'] = order_obj.id
-                return redirect("tickets:success")
+
+                return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
+                                    content_type="application/json")
             else:
-                print(charge_msg)
-                return redirect("tickets:checkout")
+                pass
+        else:
+            print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
+            return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json")
 
     context = {
         'object':order_obj,
@@ -178,15 +292,47 @@ def ticket_checkout_home(request):
         'address_qs': address_qs,
         'has_card': has_card,
         'publish_key': STRIPE_PUB_KEY,
-        'is_ticket': is_ticket
-    }
-    print(180, 'context',context)
-    return render(request, "tickets/checkout.html", context)
+        # 결재용 context
+        'pg': "html5_inicis",
+        'pay_method':'card',
+        'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
+        'name':cart_items_name,
+        'amount': order_obj.total,
+        'buyer_email': billing_profile.email,
+        'buyer_name': user.full_name,
+        'buyer_tel': user.phone_number,# 얘는 만들어야함. 
+        'buyer_addr': address,
+        'buyer_postcode': postcode
+        # 'pg' : 'html5_inicis', 
+        # 'pay_method' : 'card',
+        # 'merchant_uid' : 'merchant_' + random_string_generator(size=10),
+        # 'name' : '주문명:결제테스트',
+        # 'amount' : 100,
+        # 'buyer_email' : 'iamport@siot.do',
+        # 'buyer_name' : '고길동',
+        # 'buyer_tel' : '010-1234-5678',
+        # 'buyer_addr' : '서울특별시 영등포구 도신로',
+        # 'buyer_postcode' : '123-456',
+
+                }
+    
+    # print('♥♥♥♥♥context')
+    # print(context)
+    
+    return render(request, "tickets/checkout-iamport.html", context)
+
+
+
 
 @login_required
 def checkout_done_view(request):
     order_id = request.session.get('order_id')
-    order_obj = TicketOrder.objects.get(id=order_id)
+    print(order_id)
+    try:
+        order_obj = TicketOrder.objects.get(id=order_id)
+    except TicketOrder.DoesNotExist:
+        messages.success(request, "티켓이 정상적으로 구매되지 않았습니다..")
+        return render(request, "tickets/checkout-done.html", {'msg': '티켓이 정상적으로 구매되지 않았습니다..'})    
     ticket_count = order_obj.ticketcart.tickets_type
     if request.user.is_authenticated:
         user = request.user
@@ -198,7 +344,8 @@ def checkout_done_view(request):
         tickets = Ticket.objects.get(request)
     except Ticket.DoesNotExist:
         return HttpResponse({"messsage":"You have not Available ticket now. Buy some ticket."})
-    return render(request, "tickets/checkout-done.html", {'tickets':tickets})
+
+    return render(request, "tickets/checkout-done.html", {'msg': 'Thank you for your order!!', 'tickets':tickets})
 
 
 

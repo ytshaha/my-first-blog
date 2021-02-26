@@ -80,8 +80,8 @@ class Cart(models.Model):
     user        = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     # products    = models.ManyToManyField(Product, blank=True)
     cart_items  = models.ManyToManyField(CartItem, blank=True)
-    subtotal    = models.DecimalField(default=0.00, max_digits=100, decimal_places=2)
-    total       = models.DecimalField(default=0.00, max_digits=100, decimal_places=2, null=True)
+    subtotal    = models.IntegerField(default=0)
+    total       = models.IntegerField(default=0)
     updated     = models.DateTimeField(auto_now_add=True)
     timestamp   = models.DateTimeField(auto_now_add=True)
 
@@ -109,7 +109,7 @@ m2m_changed.connect(m2m_changed_cart_receiver, sender=Cart.cart_items.through)
 
 def pre_save_cart_receiver(sender, instance, *args, **kwargs):
     if instance.subtotal > 0:
-        instance.total = Decimal(instance.subtotal) * Decimal(1.08) # 8% tax
+        instance.total = instance.subtotal # 8% tax
     else:
         instance.total = 0.00
 pre_save.connect(pre_save_cart_receiver, sender=Cart)

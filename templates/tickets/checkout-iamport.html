@@ -36,13 +36,12 @@
         </div>
     {% else %}
             <h1>Finalize Checkout</h1>
-            <p>Cart Items: {% for cart_item in object.cart.cart_items.all %}{{ cart_item.product }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
+            <p>Cart Items: 경매 참여 티켓 {{ object.ticketcart.tickets_type }}장</p>
             <p>Shipping Address: {{ object.shipping_address.get_address }}</p>
             <p>Billing Address: {{ object.billing_address.get_address }}</p>
             <!-- <p>Payment Method: {{ billing_profile.default_card }} (<a href="{{ billing_profile.get_payment_method_url }}?next={{ request.build_absolute_uri }}">Change</a>)</p> -->
-            <p>Cart Total: {{ object.cart.total }}</p>
             <!-- <p>Shipping Total : {{ object.shipping_total }}</p> -->
-            <p>Order Total : {{ object.total }}</p>
+            <p>Total : {{ object.total }}</p>
             <!-- 여기 폼에다가 수량 감소관련 정보를 POST할 수 있게 해줘야겠다.ㄴ -->
             <div>
                 <h1 class="check-out-complete-text">Checkout Ready</h1>
@@ -97,6 +96,18 @@
                     </form>
                 </div>
             </div>
+            
+            <div class="row">
+                <div class='col'>
+                    <form action="{% url 'tickets:success' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name='order_id' value='{{ order_obj..id }}'>
+                        <button type='submit' class='btn btn-default btn-success'>구매완료 후 티켓 수령</button>
+
+                    </form>
+                </div>
+            </div>
+
     {% endif %}
 </div>
 
@@ -133,7 +144,7 @@ $(document).ready(function(){
     var getButton = getForm.find("#get-checkout-data-btn")
     getButton.click(function (event){
         var promise = $.ajax({
-            url: "{% url 'carts:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+            url: "{% url 'tickets:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
             type: 'POST',
             dataType: 'json',
             data: {get_data: "True"},
@@ -198,7 +209,7 @@ function requestPay() {
         if (rsp.success) {
             //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
             jQuery.ajax({
-                url: "{% url 'carts:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+                url: "{% url 'tickets:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
                 type: 'POST',
                 dataType: 'json',
                 data: {
