@@ -384,6 +384,9 @@ def checkout_iamport(request):
         print('my_token',my_token)
         #  // imp_uid로 아임포트 서버에서 결제 정보 조회
         headers = {"Authorization": my_token}
+        print("imp_uid", imp_uid)
+        print('data',data)
+        print('headers', headers)
         response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
         data = response.json()
         # // DB에서 결제되어야 하는 금액 조회 const
