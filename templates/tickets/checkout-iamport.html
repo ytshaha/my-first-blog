@@ -2,6 +2,15 @@
 
 {% block content %}
 
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">최종 결재 확인</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
 <div class='container'>
     {% if not object.shipping_address %}
         <div class='row'>
@@ -35,28 +44,28 @@
             </div>
         </div>
     {% else %}
-            <h1>Finalize Checkout</h1>
+            <p class="product-detail-bidding-header" style="font-weight:bold;font-size:1.4rem;">-Finalize Checkout-</p>
             <p>Cart Items: 경매 참여 티켓 {{ object.ticketcart.tickets_type }}장</p>
             <p>Shipping Address: {{ object.shipping_address.get_address }}</p>
             <p>Billing Address: {{ object.billing_address.get_address }}</p>
             <!-- <p>Payment Method: {{ billing_profile.default_card }} (<a href="{{ billing_profile.get_payment_method_url }}?next={{ request.build_absolute_uri }}">Change</a>)</p> -->
             <!-- <p>Shipping Total : {{ object.shipping_total }}</p> -->
-            <p>Total : {{ object.total }}</p>
+            <p>Total : {{ object.total }} 원</p>
             <!-- 여기 폼에다가 수량 감소관련 정보를 POST할 수 있게 해줘야겠다.ㄴ -->
-            <div>
-                <h1 class="check-out-complete-text">Checkout Ready</h1>
+            <div class='mt-4'>
+                <p class="product-detail-bidding-header " style="font-weight:bold;font-size:1.4rem;">-최종결재상태-</p>
+                <p class='check-out-complete-text' style="font-weight:bold;font-size:1.4rem;color:red;">결재 준비</p>
             </div>
 
             <!-- 체크아웃정보가져오기버튼 -->
-            <h1>{{ pg }}</h1>
-            <div class='row'>
+            <!-- <div class='row'>
                 <form method="post" action="" class='form-get-checkout-data'>
                     {% csrf_token %}
                     <input type="hidden" name='get-checkout-data' value='get-checkout-data'/>
                     <label for="">위 물품 주문정보를 확인해 주세요. </label>
                     <button type='submit' id='get-checkout-data-btn' class='btn btn-primary'>확인</button>
                 </form>
-            </div>
+            </div> -->
 
                 <!-- 체크아웃정보 -->
                 <div class='row'>
@@ -75,18 +84,6 @@
                 </form>
             </div>
 
-            <form action="" class='' style=''>
-                <input type="button" class='pg' name='pg' value='{{ pg }}'/>
-                <input type="button" class='pay_method' name='pay_method' value='{{ pay_method }}'/>
-                <input type="button" class='merchant_uid' name='merchant_uid' value='{{ merchant_uid }}'/>
-                <input type="button" class='name'name='name' value='{{ name }}'/>
-                <input type="button" class='amount' name='amount' value='{{ amount }}'/>
-                <input type="button" class='buyer_email' value='{{ buyer_email }}'/>
-                <input type="button" class='buyer_email' name='buyer_name' value='{{ buyer_name }}'/>
-                <input type="button" class='buyer_tel' name='buyer_tel' value='{{ buyer_tel }}'/>
-                <input type="button" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
-                <input type="button" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
-            </form>
 
             <!-- 체크아웃버튼 -->
             <div class="row">
@@ -245,6 +242,7 @@ function requestPay() {
             });
             var checkOutText = $(".check-out-complete-text")
             checkOutText.text("결재가 성공하였습니다.")
+            checkOutText.css('color', 'green')
             // window.location.href= "{% url 'carts:payment_success' %}"
 
 

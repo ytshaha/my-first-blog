@@ -1,11 +1,21 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
+
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">BUYING TICKET</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
+
 <div class='container'>
-    <h1>Buying Ticket</h1>
     <form method="POST">
+        <div class='row'>
         {% csrf_token %}
-        <p><label for="id_tickets_type">Tickets type:</label> 
             <table class="table text-center">
                 <thead>
                 <tr>
@@ -34,7 +44,13 @@
                 {% endfor %}
                 </tbody>
             </table>
-        <button type="submit" class="btn btn-success">BUY TICKET</button>
+        </div>
+        <div class='row my-4'>
+            <div class='col-8 mx-auto'>
+                <button type="submit" class="btn btn-primary btn-block">선택 티켓수량 구매</button>
+            </div>
+        </div>
+        
     </form>
 </div>
 {% endblock %}

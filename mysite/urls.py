@@ -13,8 +13,11 @@ from django.contrib.auth.views import LogoutView
 from addresses.views import checkout_address_create_view, checkout_address_reuse_view
 from billing.views import payment_method_view, payment_method_createview
 from carts.views import cart_detail_api_view
+from shop.views import index
 
 urlpatterns = [
+    path('', index, name='home'),
+    
     path('admin/', admin.site.urls),
     url(r'^blog/', include('blog.urls')),
     # path('accounts/login/', views.LoginView.as_view(), name='login'),

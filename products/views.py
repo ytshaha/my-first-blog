@@ -52,6 +52,11 @@ class ProductBrandListView(LoginRequiredMixin, generic.ListView):
         print(context)
         brands = Brand.objects.all()
         context['brands'] = brands
+
+        for product_obj in Product.objects.all():
+            product_obj.save()
+
+
         return context
 
     def get_queryset(self):
@@ -81,6 +86,11 @@ class ProductListView(LoginRequiredMixin, generic.ListView):
         print(context)
         brands = Brand.objects.all()
         context['brands'] = brands
+
+        for product_obj in Product.objects.all():
+            product_obj.save()
+
+
         return context
 
     def get_queryset(self, *args, **kwargs):

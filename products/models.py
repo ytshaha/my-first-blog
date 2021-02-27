@@ -101,6 +101,7 @@ class Product(models.Model):
     bidding_start_date  = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
     bidding_end_date    = models.DateTimeField(default=timezone.now, help_text=u'경매종료일')
     remain_bidding_time = models.CharField(default=0, max_length=200, help_text=u'남은경매시간')
+    bidding_on          = models.CharField(default=0, max_length=200, help_text=u'경매여부')
     category            = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
     image              = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
     # image, 이것은 썸네일이든 그냥 이미지든 다른 Model에서 ForeignKey로 참조할 것.(조영일 슬라이드 참고)
@@ -136,6 +137,18 @@ def product_pre_save_receiver(sender, instance, *args, **kwargs):
     # instance.remain_bidding_time = "{}시간{}분".format(time_remain.hour, time_remain.minute)
     instance.remain_bidding_time = strfdelta(time_remain, "{days} days {hours}:{minutes}:{seconds}")
     
+    bidding_on = None
+    now = timezone.now()
+    if now < instance.bidding_start_date:
+        bidding_on = 'bidding_ready' # 경매 준비중
+    elif now >= instance.bidding_start_date and now < instance.bidding_end_date and instance.current_price < instance.limit_price:
+        bidding_on = 'bidding'
+    elif now > instance.bidding_end_date or instance.current_price == instance.limit_price:
+        bidding_on = 'bidding_end'
+    else:
+        bidding_on = None
+    instance.bidding_on = bidding_on
+
 pre_save.connect(product_pre_save_receiver, sender=Product)
 
 class ProductImage(models.Model):

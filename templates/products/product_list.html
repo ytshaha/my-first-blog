@@ -18,7 +18,7 @@
     <div class='container'>
         <div class="row">
             <div class='col-2 product-list-category' style='padding:0;'>
-                <p class=""><bold>- Category -</bold></p>
+                <p class="" style="font-weight:bold;">Category</p>
             </div>
                 <div class='col product-list-category' style='padding:0;'>
                 <a href="{% url 'products:product_list' %}"><p class="product-list-category-text">전체</p></a>
@@ -44,7 +44,7 @@
         <hr>
         <div class="row">
             <div class='col-2 product-list-category' style='padding:0;'>
-                <p class=""><bold>- Brand -</bold></p>
+                <p class="" style="font-weight:bold;">Brand</p>
             </div>
             {% for brand in brands %}
             <div class='col product-list-category' style='padding:0;'>
@@ -73,7 +73,7 @@
                     <span class="text-muted">No Image</span>
                     {% endif %}
 
-                {% if product.bidding %}
+                {% if product.bidding_on == 'bidding' %}
                 <div class="row product-card__div product-card-on-bidding">
                 {% else %}
                 <div class="row product-card__div">
@@ -85,13 +85,17 @@
                     </div>
 
                     <div class='col-6 ml-auto align-self-center product-card__bidding'>
-                        {% if product.bidding %}
+                        {% if product.bidding_on == 'bidding' %}
                         <p class="product-card__on-bidding text-right">On Bidding</p>
-                        <p class="text-right">2hr 10min left</p>
+                        <p class="text-right">{{ product.remain_bidding_time }}</p>
                         
-                        {% else %}
+                        {% elif product.bidding_on == 'bidding_ready' %}
                         <p class="text-right">START BIDDING AT</p>
-                        <p class="text-right">{{ product.bidding_date|date:"Y/m/d f" }}</p>
+                        <p class="text-right">{{ product.bidding_start_date|date:"Y-m-d" }}</p>
+
+                        {% elif product.bidding_on == 'bidding_end' %}
+                        <p class="text-right">BIDDING END</p>
+
                         {% endif %}
                     </div>
                 </div>

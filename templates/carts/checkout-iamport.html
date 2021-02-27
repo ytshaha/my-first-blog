@@ -179,7 +179,7 @@ function requestPay() {
     var IMP = window.IMP;
     var code = "imp30832141";  // FIXME: 가맹점 식별코드
     IMP.init(code);
-    var data = data
+    
     console.log("리퀘스트 페이 실행도ㅣ쪄염")
     // 결제요청
     IMP.request_pay({ // param
@@ -203,7 +203,6 @@ function requestPay() {
                 dataType: 'json',
                 data: {
                     imp_uid: rsp.imp_uid,
-                    get_data: "False"
                     //기타 필요한 데이터가 있으면 추가 전달
                 },
             }).done(function (data) {

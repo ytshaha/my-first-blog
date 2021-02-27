@@ -35,50 +35,54 @@
         </div>
     </div>
 </div>  
-<div class="container recent-item-card-div" style="margin-top:10px;">
-    <div class='container-fluid' style="width:100%;">
-        <div class='row'>
-        {% for product in products %}
-            <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="product-list-image">
-                    <picture>
-                        <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" class="product-main-image"></a>
-                    </picture>
-                    <!-- <div class="product-add-to-wishlist">
-                        <button aria-label="product_page_add_to_wishlist" aria-disabled="false" tabindex="0" class="product-icon-button">
-                            <svg class="ui-icon-navigation-wishlist-off" id="sprite-navigation-wishlist-off" viewBox="0 0 80 80">
-                                <path d="M40 74.8l-1.5-.9C37 72.9 0 50 0 30.3a27.3 27.3 0 015.7-17.1 21.1 21.1 0 0117-8c8.7 0 14.3 5.1 17.2 8.9a21.5 21.5 0 0117.6-8.9C72.1 5.2 80 18.1 80 30.3c0 20-37 42.7-38.6 43.6zm-17.3-64c-11.3 0-17.1 9.8-17.1 19.5 0 13.1 23.6 31 34.4 37.9 10.8-6.9 34.4-24.6 34.4-37.9 0-9.7-5.8-19.5-16.9-19.5s-14.9 9.6-15 9.7l-2.4 5.8-2.7-5.7c-.1-.4-4.7-9.8-14.7-9.8z" fill-rule="evenodd"></path>
-                            </svg>
-                        </button>
-                    </div> -->
-    
-                    {% if product.bidding %}
-                    <div class="row product-card__div product-card-on-bidding">
+
+<div class='container' style="width:80%;">
+    <div class='row'>
+    {% for product in products %}
+        <div class="col-lg-4 col-md-6 col-sm-12">
+            <div class="product-list-image">
+                <picture>
+                    {% if product.image %}
+                    <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
+                    <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" class="product-main-image"></a>   
+                    
                     {% else %}
-                    <div class="row product-card__div">
+                    <span class="text-muted">No Image</span>
                     {% endif %}
-                        <div class='col-5 align-self-center'>
-                            <span class="product-card__name">{{ product.product }}</span></br>
-                            <span class="product-card__price">₩{{ product.start_price }}</span>
-                        </div>
-    
-                        <div class='col-5 ml-auto align-self-center product-card__bidding'>
-                            {% if product.bidding %}
-                            <p class="product-card__on-bidding text-right">On Bidding</p>
-                            <p class="text-right">2hr 10min left</p>
-                            
-                            {% else %}
-                            <p class="text-right">START BIDDING AT</p>
-                            <p class="text-right">{{ product.bidding_date|date:"Y/m/d f" }}</p>
-                            {% endif %}
-                        </div>
+
+                {% if product.bidding_on == 'bidding' %}
+                <div class="row product-card__div product-card-on-bidding">
+                {% else %}
+                <div class="row product-card__div">
+                {% endif %}
+                    <div class='col-6 align-self-center'>
+                        <span class="product-card__name">{{ product.brand }}</span></br>
+                        <span class="product-card__name" style="font-weight:bold;font-size:20px;">{{ product.title }}</span></br>
+                        <span class="product-card__price" style="font-weight:bold;font-size:15px;">₩{{ product.start_price }}</span>
+                    </div>
+
+                    <div class='col-6 ml-auto align-self-center product-card__bidding'>
+                        {% if product.bidding_on == 'bidding' %}
+                        <p class="product-card__on-bidding text-right">On Bidding</p>
+                        <p class="text-right">{{ product.remain_bidding_time }}</p>
+                        
+                        {% elif product.bidding_on == 'bidding_ready' %}
+                        <p class="text-right">START BIDDING AT</p>
+                        <p class="text-right">{{ product.bidding_start_date|date:"Y-m-d" }}</p>
+
+                        {% elif product.bidding_on == 'bidding_end' %}
+                        <p class="text-right">BIDDING END</p>
+
+                        {% endif %}
                     </div>
                 </div>
             </div>
-        {% endfor %}
-        </div>    
-    </div>
+        </div>
+    {% endfor %}
+    </div>    
 </div>
+
+
 <hr style="margin: 10px 0px 0px; height: 1px; border: none; background-color: rgb(224, 224, 224);">
 <!-- HOW TO BUY -->
 <div class="container">

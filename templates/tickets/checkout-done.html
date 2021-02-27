@@ -1,67 +1,103 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
-<div class='col-6 mx-auto py-5 text-center'>
-    <h1 class='display-1'>{{ msg }}</h1>
+
+
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">구매 완료</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
+<div class='col-12 my-3 mx-auto text-center'>
+    <h5 class='display-1'>{{ msg }}</h5>
 </div>
 
 
 
 <div class='container'>
-    <h1>-Ticket Available List</h1>
-</div>
-{% if tickets %}
-<form method="post", action="{% url 'tickets:home' %}">
-    {% csrf_token %}
     <div class='row'>
-        <div class='col-10'>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">USER</th>
-                    <th scope="col">TICKET ID</th>
-                    <th scope="col">AVAILABLE</th>
-                    <th scope="col">BIDDING</th>
-                    <th scope="col">사용선택</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for ticket in tickets %}
-                <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td>{{ ticket.user|upper }}</td>
-                    <td>{{ ticket.ticket_id }}</td>
-                    
-                    {% if ticket.status == 'unused' %}
-                    <td>AVAILABLE</td>
-                    {% elif ticket.status == 'activate' %}
-                    <td style='color:red;'>ACTIVATE</td>
-                    {% elif ticket.status == 'used' %}
-                    <td style='color:gray;'>UNAVAILABLE</td>
-                    {% else %}
-                    <td style='color:gray;'>?</td>
-                    {% endif %}
-                    
-                    {% if ticket.bidding_success %}
-                    <td>SUCCESS</td>
-                    {% elif ticket.status == 'used' and not ticket.bidding_success %}
-                    <td style='color:gray;'>FAIL</td>
-                    {% else %}
-                    <td></td>
-                    {% endif %}
-                    {% if ticket.status == 'unused' %}
-                    <td><input type="radio" name="ticket_id" value="{{ ticket.ticket_id }}" /></td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <button class='btn btn-success'>USE TICKET</button>
+        <div class='col mx-auto'>
+            <p class="product-detail-bidding-header mb-3" style="font-weight:bold;font-size:1.2rem;">- 사용가능 Ticket List -</p>
         </div>
     </div>
-</form>
+    <div>
+        {% if message %}
+        <h1>{{ message }}</h1>
+        {% endif %}
+    </div>
+    <div class='row'>
+        <div class='col-12 mx-auto'>
+            {% if tickets.exists %}
+            <form method="post", action="{% url 'tickets:home' %}">
+                {% csrf_token %}
+                <div class='row'>
+                    <div class='col-12 mx-auto'>
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th scope="col">순서</th>
+                                <th scope="col">사용자 ID</th>
+                                <th scope="col">TICKET ID</th>
+                                <th scope="col">사용가능여부</th>
+                                <th scope="col">경매당첨여부</th>
+                                <th scope="col">선택</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for ticket in tickets %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ ticket.user|upper }}</td>
+                                <td>{{ ticket.ticket_id }}</td>
+                                
+                                {% if ticket.status == 'unused' %}
+                                <td style='color:red;'>사용가능</td>
+                                {% elif ticket.status == 'activate' %}
+                                <td style='color:Green;'>티켓활성화 </td>
+                                {% elif ticket.status == 'used' %}
+                                <td style='color:gray;'>사용불가</td>
+                                {% else %}
+                                <td style='color:gray;'>?</td>
+                                {% endif %}
+                                
+                                {% if ticket.bidding_success %}
+                                <td>SUCCESS</td>
+                                {% elif ticket.status == 'used' and not ticket.bidding_success %}
+                                <td style='color:gray;'>미당첨</td>
+                                {% else %}
+                                <td></td>
+                                {% endif %}
+                                {% if ticket.status == 'unused' %}
+                                <td><input type="radio" name="ticket_id" value="{{ ticket.ticket_id }}" /></td>
+                                {% else %}
+                                <td></td>
+                                {% endif %}
 
-{% endif %}
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-7 my-2 mx-auto'>
+                        <button class='btn btn-success btn-block'>선택티켓 사용</button>
+                    </div>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+    {% else %}
+    <div class='col mx-auto text-center'>
+        <p class="product-detail-bidding-header mb-3" style="font-weight:bold;font-size:1.2rem;">사용 할 수 있는 티켓이 없습니다.</p>
+    </div>
+    {% endif %}
+   
+</div>
 
 {% endblock %} 
