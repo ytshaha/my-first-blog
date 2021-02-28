@@ -14,6 +14,8 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# BASE_LOCAL_DIR = Path(__file__).resolve().parent.parent
+
 # BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -26,7 +28,7 @@ SECRET_KEY = '30gkclf)zp_aa8*_@otx!)3q=z1@&9leo$klr_htq278r^w^++'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['moum8.herokuapp.com','127.0.0.1', '.pythonanywhere.com', '0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', '0.0.0.0']
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'taesun.yoo@gmail.com' 
