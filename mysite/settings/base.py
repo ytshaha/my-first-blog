@@ -41,11 +41,6 @@ MANAGERS = (
 
 ADMIN = MANAGERS
 
-IAMPORT_CODE = 'imp30832141'
-IMPORT_REST_API_KEY = '8306112827056798'
-IMPORT_REST_API_SECRET = 'WmAHFCAyZFfaMy10g6xRPvFawuuJAVPxiqfY2Pw2uMcgkegAlOsak7kQCOzdKpK2PZ0RPxTjj6AEkQfF'
-
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -75,9 +70,6 @@ AUTH_USER_MODEL = 'accounts.User' #changes the built-in user model.
 LOGIN_URL = '/login/'
 LOGIN_URL_REDIRECT = '/'
 LOGOUT_URL = '/logout/'
-
-STRIPE_SECRET_KEY = "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM"
-STRIPE_PUB_KEY = "pk_test_51IKQwOCVFucPeMu3FS46t1eZG8bfs5elOnEvuL878YygdQmsR485txEKT2bL0qd5LXdV1Qs0eKuMkPdPRcWH6GRR00DNZK6kv0"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

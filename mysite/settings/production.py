@@ -82,6 +82,11 @@ LOGOUT_URL = '/logout/'
 STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
 STRIPE_PUB_KEY = os.environ.get('STRIPE_PUB_KEY')
 
+COOLSMS_REST_API_KEY = os.environ.get('COOLSMS_REST_API_KEY')
+COOLSMS_REST_API_SECRET = os.environ.get('COOLSMS_REST_API_SECRET')
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

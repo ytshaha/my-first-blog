@@ -193,7 +193,7 @@ function requestPay() {
         buyer_tel : $(".buyer_tel").val(),
         buyer_addr : $(".buyer_addr").val(),
         buyer_postcode : $(".buyer_postcode").val(),
-        m_redirect_url : 'https://www.yourdomain.com/payments/complete'
+        m_redirect_url : "{% url 'carts:checkout-iamport' %}"
     }, function (rsp) {
         if (rsp.success) {
             //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
@@ -217,6 +217,8 @@ function requestPay() {
                     msg += '카드 승인번호 : ' + rsp.apply_num;
                     alert(msg);
                     console.log(msg);
+                    window.location.href= "{% url 'carts:payment_success' %}"
+
                 } else {
                     //[3] 아직 제대로 결제가 되지 않았습니다.
                     //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
