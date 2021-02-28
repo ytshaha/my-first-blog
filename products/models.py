@@ -13,6 +13,16 @@ from mysite.utils import unique_slug_generator
 from django.db.models.signals import pre_save, post_save
 from django.db.models import Q
 
+DELIVERY_FROM_CHOICE = (
+    ('domestic','국내배송'),
+    ('overseas','해외배송'),
+)
+
+BIDDING_STATUS_CHOICE = (
+    ('bidding_ready','경매대기'),
+    ('bidding','경매중'),
+    ('bidding_end','경매종료'),
+)
 
 def get_filename_ext(filepath):
     base_name = os.path.basename(filepath)
@@ -77,11 +87,14 @@ class ProductManager(models.Manager):
 def strfdelta(tdelta, fmt):
     d = {"days": tdelta.days}
     d["hours"], rem = divmod(tdelta.seconds, 3600)
+    d["hours"] = "{:02d}".format(d["hours"])
     d["minutes"], d["seconds"] = divmod(rem, 60)
+    d["seconds"] = "{:02d}".format(d["seconds"])
+    
     return fmt.format(**d)
 
 class Product(models.Model):
-    number              = models.CharField(max_length=10, blank=True, null=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
+    number              = models.CharField(max_length=10, blank=True, null=True, unique=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
     title               = models.CharField(max_length=200, help_text=u'상품명')
     brand               = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
     start_price         = models.PositiveIntegerField(default=0, help_text=u'경매시작가격')
@@ -93,7 +106,7 @@ class Product(models.Model):
     info_made_country   = models.CharField(default=0, max_length=30, help_text=u'원산지')
     info_product_number = models.CharField(default=0, max_length=30, help_text=u'모델명')
     info_delivery       = models.CharField(default='택배', max_length=30, help_text=u'배송방법')
-    info_delivery_from  = models.CharField(default='국내', max_length=30, help_text=u'배송방법_국내해외')
+    info_delivery_from  = models.CharField(default='국내', max_length=30, choices=DELIVERY_FROM_CHOICE, help_text=u'배송방법_국내해외')
     description         = models.TextField(blank=True, null=True, help_text=u'정보')
     amount              = models.IntegerField(default=0, help_text=u'경매수량')
     amount_always_on    = models.IntegerField(default=0, help_text=u'상시판매수량')
@@ -101,9 +114,11 @@ class Product(models.Model):
     bidding_start_date  = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
     bidding_end_date    = models.DateTimeField(default=timezone.now, help_text=u'경매종료일')
     remain_bidding_time = models.CharField(default=0, max_length=200, help_text=u'남은경매시간')
-    bidding_on          = models.CharField(default=0, max_length=200, help_text=u'경매여부')
+    bidding_on          = models.CharField(default=0, max_length=200, choices=BIDDING_STATUS_CHOICE, help_text=u'경매여부')
     category            = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
-    image              = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image               = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    video_link          = models.CharField(max_length=250, blank=True, null=True)
+    
     # image, 이것은 썸네일이든 그냥 이미지든 다른 Model에서 ForeignKey로 참조할 것.(조영일 슬라이드 참고)
     # category, 나중에 추가, 2-depth 이상일경우 Django-mptt라이브러리사용(조영일 슬라이드 참고)
     # product_type        = models.CharField(max_length=100, default='bidding', choices=PRODUCT_TYPE)
@@ -132,13 +147,15 @@ def product_pre_save_receiver(sender, instance, *args, **kwargs):
     # 할인율
     instance.sale_ratio = Decimal(instance.list_price - instance.current_price) / instance.list_price * 100
     # 남은 비딩타임.
-    time_remain = instance.bidding_end_date - datetime.datetime.now(timezone.utc)
+    now = timezone.now()
+    time_remain = instance.bidding_end_date - now
     # print(time_remain, type(time_remain))
     # instance.remain_bidding_time = "{}시간{}분".format(time_remain.hour, time_remain.minute)
-    instance.remain_bidding_time = strfdelta(time_remain, "{days} days {hours}:{minutes}:{seconds}")
-    
+    instance.remain_bidding_time = strfdelta(time_remain, "{hours}:{minutes}:{seconds}")
+    # instance.remain_bidding_time = strfdelta(time_remain, "{days} days {hours}:{minutes}:{seconds}")
+    # instance.remain_bidding_time = time_remain
+
     bidding_on = None
-    now = timezone.now()
     if now < instance.bidding_start_date:
         bidding_on = 'bidding_ready' # 경매 준비중
     elif now >= instance.bidding_start_date and now < instance.bidding_end_date and instance.current_price < instance.limit_price:

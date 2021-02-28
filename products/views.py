@@ -90,8 +90,12 @@ class ProductListView(LoginRequiredMixin, generic.ListView):
         for product_obj in Product.objects.all():
             product_obj.save()
 
-
+        products_bidding = Product.objects.filter(bidding_on='bidding')
+        context['products_bidding'] = products_bidding
+        
+        
         return context
+
 
     def get_queryset(self, *args, **kwargs):
         request = self.request
