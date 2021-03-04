@@ -26,64 +26,71 @@
     <div class='row'>
         <div class='col-12 mx-auto'>
             {% if tickets.exists %}
-            <form method="post", action="{% url 'tickets:home' %}">
-                {% csrf_token %}
-                <div class='row'>
-                    <div class='col-12 mx-auto'>
-                        <table class="table">
-                            <thead>
-                            <tr>
-                                <th scope="col">순서</th>
-                                <th scope="col">사용자 ID</th>
-                                <th scope="col">TICKET ID</th>
-                                <th scope="col">사용가능여부</th>
-                                <th scope="col">경매당첨여부</th>
-                                <th scope="col">선택</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {% for ticket in tickets %}
-                            <tr>
-                                <th scope="row">{{ forloop.counter }}</th>
-                                <td>{{ ticket.user|upper }}</td>
-                                <td>{{ ticket.ticket_id }}</td>
-                                
-                                {% if ticket.status == 'unused' %}
-                                <td style='color:red;'>사용가능</td>
-                                {% elif ticket.status == 'activate' %}
-                                <td style='color:Green;'>티켓활성화 </td>
-                                {% elif ticket.status == 'used' %}
-                                <td style='color:gray;'>사용불가</td>
-                                {% else %}
-                                <td style='color:gray;'>?</td>
-                                {% endif %}
-                                
-                                {% if ticket.bidding_success %}
-                                <td>SUCCESS</td>
-                                {% elif ticket.status == 'used' and not ticket.bidding_success %}
-                                <td style='color:gray;'>미당첨</td>
-                                {% else %}
-                                <td></td>
-                                {% endif %}
-                                {% if ticket.status == 'unused' %}
-                                <td><input type="radio" name="ticket_id" value="{{ ticket.ticket_id }}" /></td>
-                                {% else %}
-                                <td></td>
-                                {% endif %}
+            {% csrf_token %}
+            <div class='row'>
+                <div class='col-12 mx-auto'>
+                    <table class="table text-center">
+                        <thead>
+                        <tr>
+                            <th scope="col">순서</th>
+                            <th scope="col">사용자 ID</th>
+                            <th scope="col">TICKET ID</th>
+                            <th scope="col">사용가능여부</th>
+                            <th scope="col">경매당첨여부</th>
+                            <th scope="col">선택</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for ticket in tickets %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ ticket.user|upper }}</td>
+                            <td>{{ ticket.ticket_id }}</td>
+                            
+                            {% if ticket.status == 'unused' %}
+                            <td style='color:red;'>사용가능</td>
+                            {% elif ticket.status == 'activate' %}
+                            <td style='color:Green;'>티켓활성화 </td>
+                            {% elif ticket.status == 'used' %}
+                            <td style='color:gray;'>사용불가</td>
+                            {% else %}
+                            <td style='color:gray;'>?</td>
+                            {% endif %}
+                            
+                            {% if ticket.bidding_success %}
+                            <td>SUCCESS</td>
+                            {% elif ticket.status == 'used' and not ticket.bidding_success %}
+                            <td style='color:gray;'>미당첨</td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
+                            {% if ticket.status == 'unused' and not activated %}
+                            <td>
+                                <form method="post", action="{% url 'tickets:home' %}">
+                                    <input type="hidden" name='post_purpose' value='activate_ticket'>
+                                    <input type="hidden" name="ticket_id" value="{{ ticket.ticket_id }}">
+                                    <button type='submit' class='btn btn-success'>티켓 활성화</button>
+                                </form>
+                            </td>
+                            {% elif ticket.status == 'used' and not ticket.bidding_success and not ticket.transfer_point %}
+                            <td>
+                                <form method="post", action="{% url 'tickets:home' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name='post_purpose' value='trasnfer_point'>
+                                    <input type="hidden" name="ticket_id" value="{{ ticket.ticket_id }}">
+                                    <button type='submit' class='btn btn-primary'>POINT 전환</button>
+                                </form>
+                            </td>
+                            {% else %}
+                            <td></td>
+                            {% endif %}
 
-                            </tr>
-                            {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
-                <div class='row'>
-                    <div class='col-7 my-2 mx-auto'>
-                        <button class='btn btn-success btn-block'>선택티켓 사용</button>
-                    </div>
-                </div>
-            </form>
-            
+            </div>   
         </div>
     </div>
     {% else %}

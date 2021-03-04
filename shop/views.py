@@ -6,13 +6,14 @@ from .forms import BuyingTicketForm
 from django.views import generic
 # from .forms import PostForm, CommentForm
 from django.core.files.storage import FileSystemStorage
-from products.models import Product
+from products.models import Product, ProductItem
+
 def index(request):
-    products = Product.objects.all()[:3]
+    product_items = ProductItem.objects.get_normal().filter(featured=True)
     print("Current request.session.")
     for key, value in request.session.items():
         print('{} => {}'.format(key, value))
-    return render(request, 'shop/index.html', {'products':products})
+    return render(request, 'shop/index.html', {'product_items':product_items})
 
 def introduction(request):
     return render(request, 'shop/introduction.html', {})

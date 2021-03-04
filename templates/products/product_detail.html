@@ -2,6 +2,8 @@
 
 {% block content %}
 {% load static %}
+{% load humanize %}
+
 
 <!-- <div class='row'>
     <div calss='col-12 col-md-6'>
@@ -11,29 +13,30 @@
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
+            {% if product_type == 'bidding' %}
+            <h2 class="index-title-index text-center">BIDDING DETAIL</h2>
+            {% else %}
             <h2 class="index-title-index text-center">PRODUCT DETAIL</h2>
+            {% endif %}
             <hr class="index-title-divider">
         </div>
     </div>
 </div>  
 
+<hr>
+
 <div class='container' style="padding-top:20px;">
     <div class='row'>
         <!-- 사진부분 -->
-        <div class='col-lg-7 col-md-10 col-sm-12 mx-auto'style="padding-bottom:20px;">
-            <div>
-                <div class='row'>
-                    <div class='col-12'>
-                        <picture>
-                            <img class="detail-image detail-image-main" src="{{ product.image.url }}" alt="메인사진" style="width:90%;height:90%;float:both;">
-                        </picture>
-                    </div>
-                </div>
-            </div>
+        <div class='col-lg-6 col-md-8 col-sm-12 mx-auto'style="padding-bottom:10px;">
+            <picture>
+                <img class="detail-image detail-image-main" src="{{ product.image.url }}" alt="메인사진" style="width:100%;height:100%;float:both;">
+            </picture>
         </div>
         <!-- 설명부분 div1 -->
-        <div class='col-lg-5 col-md-12 col-sm-12 ml-auto'> 
+        <div class='col-lg-5 col-md-12 col-sm-12 ml-auto mt-5'> 
             <div style="width:100%;height:100%;">
+                <!-- 상품정보 시작 -->
                 <div class="product-detail-head">
                     <span class="product-detail-number">{{ product.number }}</span>
                 </div>
@@ -42,124 +45,171 @@
                     <span class="product-detail-brand">{{ product.brand|upper }}</span>
                 </div>
                 <div class='mb-2 mt-4'>
-                    <span style="font-size:large;">경매 현재가격 : </span>
-                    <span style="font-size:large;">₩ {{ product.current_price }}</span>
-                    <span style='color:gray;'><del>₩ {{ product.list_price }}</del></span>
-                    <span style=>{{ product.sale_ratio|floatformat }}%</del></span>
+                    {% if product_type == 'bidding' %}
+                    <div class='my-2'>
+                        <span style="font-size:large;"></span>
+                        <span style="font-weight:bold;font-size:x-large;">{{ product_item.current_price|intcomma }} 원</span>
+                        <span style='color:gray;'><del>{{ product.list_price }} 원</del></span>
+                    </div>
+                    {% else %}
+                    <div class='my-2'>
+                        <span style="font-size:large;"></span>
+                        <span style="font-weight:bold;font-size:x-large;">{{ product_item.price|intcomma }} 원</span>
+                        <span style='color:gray;'><del>₩ {{ product.list_price }}</del></span>
+                    </div>
+                    {% endif %}
                 </div>
-                <div class='my-2'>
-                    <span style="font-size:large;">상시 판매가격 : </span>
-                    <span style="font-size:large;">₩ {{ product.limit_price }}</span>
-                    <span style='color:gray;'><del>₩ {{ product.list_price }}</del></span>
-                </div>
+                
                 <div class='my-2' style="font-size:large;">
                     <p style="font-size:large;">원산지 : {{ product.made_info_made_country }}</p>
                     <p style="font-size:large;">모델명 : {{ product.info_product_number }}</p>
                     <p style="font-size:large;">배송정보 : {{ product.info_delivery }}</p>
-                    <p style="font-size:large;">국내·해외배송 : {{ product.get_info_delivery_from_display }}</p>
+                    {% if product_item.info_delivery_from == 'overseas' %}
+                    <p style="font-size:large;">국내·해외배송 : {{ product_item.get_info_delivery_from_display }}(7일이상 소요)</p>
+                    {% elif product_item.info_delivery_from == 'domestic' %}
+                    <p style="font-size:large;">국내·해외배송 : {{ product_item.get_info_delivery_from_display }}(당일 배송)</p>
+                    {% endif %}
                 </div>
+                <!-- 상품정보 끝 -->
+
+                <!-- 구매버튼 조건문 -->
+                {% if product_type == 'normal' %}
+                    {% if is_stock %}
+                    <div class='col p-0' style="margin-top:20px;">
+                        <form method="post" action="{% url 'carts:update' %}">{% csrf_token %}
+                            <input id="id_product" type="hidden" name="product_item_id" value="{{ product_item.id }}">
+                            <input id="id_product_type" type="hidden" name="product_type" value="normal">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend col-8 p-0">
+                                    <button class="btn btn-block btn-success" type="submit">물품 구매</button>
+                                </div>
+                                <select class="custom-select col-4" id="inputGroupSelect03" name="amount">
+                                    {% for amount in amount_select_list %}
+                                        <option value="{{ amount }}">{{ amount }}EA</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>    
+                    </div>
+                    {% else %}
+                    <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                        <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;" title="재고없음">상시상품 재고없음</button></a>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                <!-- 구매버튼 조건문 끝 -->
             </div>
         </div>
     </div>
 
+
+
     <!-- 경매 참여 현황 -->
-    <div class='row'>
-        <p class="product-detail-bidding-header" style="font-weight:bold;font-size:0.8rem;">-경매 현황-</p>
-        <div class='col-lg-12 col-md-12 col-sm-12 mx-auto'> 
-            {% if bidding_obj_up_to_10 %}
-            <div class='row'>
-                <div class='col-12'>
-                    <table class="table text-center">
-                        <thead>
-                        <tr>
-                            <th scope="col">순위</th>
-                            <th scope="col">ID</th>
-                            <th scope="col">경매 참가액</th>
-                            <th scope="col">경매 참여시간</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for bidding in bidding_obj_up_to_10 %}
-                        <tr>
-                            <th scope="row">{{ forloop.counter }}</th>
-                            <td>{{ bidding.user|upper|slice:":2" }}*****</td>
-                            <td>{{ bidding.bidding_price }} 원</td>
-                            <td>{{ bidding.timestamp }}</td>
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
+    {% if product_type == 'bidding' %}
+        <div class='row'>
+            <p class="product-detail-bidding-header" style="font-weight:bold;font-size:0.8rem;">-경매 현황-</p>
+            <div class='col-lg-12 col-md-12 col-sm-12 mx-auto'> 
+                {% if bidding_obj_up_to_10 %}
+                <div class='row'>
+                    <div class='col-12'>
+                        <table class="table text-center">
+                            <thead>
+                            <tr>
+                                <th scope="col">순위</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">경매 참가액</th>
+                                <th scope="col">경매 참여시간</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for bidding in bidding_obj_up_to_10 %}
+                            <tr>
+                                <th scope="row">{{ forloop.counter }}</th>
+                                <td>{{ bidding.user|upper|slice:":2" }}*****</td>
+                                <td>{{ bidding.bidding_price }} 원</td>
+                                <td>{{ bidding.timestamp }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+                {% else %}
+                <div class='row'>
+                    <div class='col-12'>
+                        <table class="table text-center">
+                            <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">ID</th>
+                                <th scope="col">경매 참가액</th>
+                                <th scope="col">경매 참여시간</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <div class='text-center'>
+                            <h3>No One Bidding...</h3>
+                        </div>
+                        
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <!-- 경매참여현황 끝 -->
+
+
+        <!-- 경매 참여버튼 -->
+        <!-- 경매 시작전 버튼설정 -->
+        {% if bidding_on == 'bidding_ready' %}
+        <div class='row'>
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">경매 준비 중</button></a>
+            </div>
+        </div>
+        <!-- 경매 중 버튼설정 -->
+        {% elif bidding_on == 'bidding' %}
+        <div class='row'>
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <a href="{% url 'products:bidding_new' slug=product.slug %}"><button type="button" class="btn btn-primary btn-block" style="margin-top:20px;">경매 참여</button></a>
+            </div>
+        </div>
+        <!-- 경매 종료후 버튼설정 -->
+        {% elif bidding_on == 'bidding_end' %}
+        <div class='row'>
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <a href="{% url 'products:bidding_result' slug=product.slug %}"><button type="button" class="btn btn-success btn-block" style="margin-top:20px;">경매 결과확인</button></a>
+            </div>
+            {% if is_stock %}
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto' style="margin-top:20px;">
+                <form method="post" action="{% url 'carts:update' %}">{% csrf_token %}
+                    <input id="id_product" type="hidden" name="product_id" value="{{ product.id }}">
+                    <input id="id_product_type" type="hidden" name="product_type" value="normal">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend col-8 pr-0">
+                            <button class="btn btn-block btn-success" type="submit">상시상품 구매</button>
+                        </div>
+                        <select class="custom-select col-4" id="inputGroupSelect03" name="amount">
+                            {% for amount in amount_select_list %}
+                                <option value="{{ amount }}">{{ amount }}EA</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>    
             </div>
             {% else %}
-            <div class='row'>
-                <div class='col-12'>
-                    <table class="table text-center">
-                        <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">ID</th>
-                            <th scope="col">경매 참가액</th>
-                            <th scope="col">경매 참여시간</th>
-                        </tr>
-                        </thead>
-                    </table>
-                    <div class='text-center'>
-                        <h3>No One Bidding...</h3>
-                    </div>
-                    
-                </div>
+            <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
+                <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;" title="재고없음">상시상품 재고없음</button></a>
             </div>
             {% endif %}
         </div>
-    </div>
-
-    <!-- 경매 참여버튼 -->
-    <!-- 경매 시작전 버튼설정 -->
-    {% if bidding_on == 'bidding_ready' %}
-    <div class='row'>
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;">경매 준비 중</button></a>
-        </div>
-    </div>
-    <!-- 경매 중 버튼설정 -->
-    {% elif bidding_on == 'bidding' %}
-    <div class='row'>
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <a href="{% url 'products:bidding_new' slug=product.slug %}"><button type="button" class="btn btn-primary btn-block" style="margin-top:20px;">경매 참여</button></a>
-        </div>
-    </div>
-    <!-- 경매 종료후 버튼설정 -->
-    {% elif bidding_on == 'bidding_end' %}
-    <div class='row'>
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <a href="{% url 'products:bidding_result' slug=product.slug %}"><button type="button" class="btn btn-success btn-block" style="margin-top:20px;">경매 결과확인</button></a>
-        </div>
-        {% if is_stock %}
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto' style="margin-top:20px;">
-            <form method="post" action="{% url 'carts:update' %}">{% csrf_token %}
-                <input id="id_product" type="hidden" name="product_id" value="{{ product.id }}">
-                <input id="id_product_type" type="hidden" name="product_type" value="normal">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend col-8 pr-0">
-                        <button class="btn btn-block btn-success" type="submit">상시상품 구매</button>
-                    </div>
-                    <select class="custom-select col-4" id="inputGroupSelect03" name="amount">
-                        {% for amount in amount_select_list %}
-                            <option value="{{ amount }}">{{ amount }}EA</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            </form>    
-        </div>
-        {% else %}
-        <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-            <button type="button" class="btn btn-secondary btn-block" style="margin-top:20px;" title="재고없음">상시상품 재고없음</button></a>
-        </div>
         {% endif %}
-    </div>
     {% endif %}
+
+
     
+    {% if product_type == 'bidding' %}
+
     <!-- 경매 정보 -->
     <div class='row'> 
         <div class="col-lg-6 col-md-12 col-sm-12 ml-auto product-detail-bidding">
@@ -173,10 +223,10 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="table-bidding-info" style="font-weight:bold;color:red;">₩ {{ product.current_price }}</td>
-                        <td class="table-bidding-info">₩ {{ product.start_price }}</td>
-                        <td class="table-bidding-info">₩ {{ product.limit_price }}</td> 
-                        <td class="table-bidding-info" style="font-weight:bold;color:red;">{{ product.remain_bidding_time }}</td>
+                        <td class="table-bidding-info" style="font-weight:bold;color:red;">{{ product_item.current_price|intcomma }} 원</td>
+                        <td class="table-bidding-info">{{ product_item.start_price|intcomma }} 원</td>
+                        <td class="table-bidding-info">{{ product_item.limit_price|intcomma }} 원</td> 
+                        <td class="table-bidding-info" style="font-weight:bold;color:red;">{{ product_item.remain_bidding_time }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -188,22 +238,25 @@
                     <th scope="col">경매시작 일정</th>
                     <th scope="col">경매종료 일정</th>
                     <th scope="col">경매금액 단위</th>
-                    <th scope="col">경매물품 수량</th>
-                    <th scope="col">상시상품 수량</th>
+                    <th scope="col">물품 수량</th>
                     
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="table-bidding-info">{{ product.bidding_start_date|date:"SHORT_DATE_FORMAT" }}{{ product.bidding_start_date|time:"H:i" }}</td>
-                        <td class="table-bidding-info">{{ product.bidding_end_date|date:"SHORT_DATE_FORMAT" }}{{ product.bidding_end_date|time:"H:i" }}</td>
-                        <td class="table-bidding-info">₩1,000</td>
-                        <td class="table-bidding-info">{{ product.amount }}EA</td>
-                        <td class="table-bidding-info">{{ product.amount_always_on }}EA</td>
+                        <td class="table-bidding-info">{{ product_item.bidding_start_date|date:"SHORT_DATE_FORMAT" }}{{ product_item.bidding_start_date|time:"H:i" }}</td>
+                        <td class="table-bidding-info">{{ product_item.bidding_end_date|date:"SHORT_DATE_FORMAT" }}{{ product_item.bidding_end_date|time:"H:i" }}</td>
+                        <td class="table-bidding-info">{{ product_item.price_step|intcomma }} 원</td>
+                        <td class="table-bidding-info">{{ product_item.amount }}EA</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
+    {% endif %}
+    <hr>
+
+
+    <!-- 물품 상세설명 -->
     <div class='row'>
         <div class="product-detail-description">
             <p class="product-detail-description-header"  style="font-weight:bold;font-size:0.8rem;margin-bottom:8px;">-PRODUCT INFO-</p>
@@ -212,7 +265,26 @@
             </ul>
         </div>
     </div>    
- 
+    <!-- 물품 설명 끝 -->
+
+    <!-- 해외배송시 주의사항 문구 -->
+    {% if product_item.info_delivery_from == 'overseas' %}
+    <hr>
+    <div class='col-12' style='background-color: #423F3B;'>
+        <div class='col pt-4 pb-4 text-center'>
+            <span style="font-size: 0.6em; color: #ffe5a9;">
+                <i class="fas fa-exclamation-triangle fa-5x"></i>
+            </span>
+        </div>
+        <div class='pb-3'>
+            <p class='text-center' style='color:white;font-weight:normal;font-size:xx-large;'>구매전 주의사항</p>
+            <p class='text-center' style='color:#ffe5a9;font-weight:normal;font-size:large;'>해당상품은 해외배송 상품입니다.</p>
+            <p class='text-center' style='color:white;font-weight:normal;font-size:medium;'>관부가세, 배송비 포함/반품비용 발생</p>
+        </div>
+    </div>
+    {% endif %}
+
+    <hr/>
     <div class="row">
         <div class='col-lg col-md col-sm-12'>
             <div class="detail-image-header">
@@ -233,6 +305,137 @@
             {% endfor %}
         </div>
     </div>
-</div>
 
+
+
+    <!-- 배송관련 안내사항 시작-->
+    <hr>
+    <div class="row">
+        <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
+            <div class='col pt-4 pb-4 text-center'>
+                <span style="font-size: 0.6em; color: #ffe5a9;">
+                    <i class="fas fa-shopping-bag fa-5x"></i>                
+                </span>
+            </div>
+            <div class="store-card-header">
+                <p class='text-center' style='color:white;font-weight:bold;font-size:xx-large;'>ABOUT OUR PRODUCT</p>
+            </div>
+            <div class="info-card-description text-left">
+                <ul style='color:white;'>
+                    <p style='font-size:medium;color:#ffe5a9;'><bold>모움은 관세청 인증의 병행수입통관업체입니다.</bold>  모움에서 판매하는 브랜드 상품은 대한민국 세관을 통과한 100% 정품입니다.<br>
+                    판매자가 직접 이태리 현지에서 딜러 없이 수입하는 것으로, 직접 셀렉하는 것이기에 최고의 상품을 합리적인 가격으로 판매할 수 있도록 노력하고 있습니다. </p>
+                    <p style='font-size:medium;color:#ffe5a9;'>고객님들께서 온라인에서 겪으실 우려가 있는 가품(위조상품)으로부터 안심하고 쇼핑하실 수 있도록 아래와 같이 노력하고 있습니다. </p>
+                    <li><p style='font-size:medium;'><span class="company-text-black">첫 번째, 당사는 위조품 수출입, 유통 방지 위원회 'TIPA CAC'에 가입되어 있습니다.</span><br>
+                        TIPA에서 실시하는 상품 및 물류 창고의 관리상태확인, 상품의 샘플감정을 주기적으로 진행하고 있으며 분기별 1회 이상 위조품 식별 및 유통예방교육을 받고 있습니다.</p></li>
+                        <li><p style='font-size:medium;'><span class="company-text-black">두 번째, 위조품 의심, 상품 상담 및 신고를 받고 있습니다.</span><br>
+                        당사는 신고 접수된 정보를 TIPA에 전달하고 TIPA는 해당 상표권자에게 해당 상품의 감정의뢰를 하여 정품 여부를 확인해드립니다. </p></li>
+                        <li><p style='font-size:medium;'><span class="company-text-black">세 번째, 판매한 상품이 위조품으로 판명 시 100% 보상해드립니다.</span><br>    
+                        당사는 SGI 서울보증보험에 가입되어 있으며 구매한 물품이 위조품으로 확인될 경우 가입된 보험에 따라 구매 금액의 100%를 보상해 드립니다.</p></li>
+                </ul>
+            </div>
+            <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+        </div>
+        
+        <!-- 재고안내 -->
+        <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
+            <div class='col pt-4 pb-4 text-center'>
+                <span style="font-size: 0.6em; color: #ffe5a9;">
+                    <i class="fas fa-cubes fa-5x"></i>
+                </span>
+            </div>
+            <div class="store-card-header">
+                <p class='text-center' style='color:white;font-weight:bold;font-size:xx-large;'>재고안내</p>
+            </div>
+            <div class="info-card-description text-left">
+                <ul style='color:white;'>
+                    <p style='font-size:medium;color: #ffe5a9;'><bold>명품의 특성상 일반 공산품처럼 수백개의 재고를 보유할 수 없으며 소량의 재고가 주기적으로 입고됩니다.</bold> </p>
+                    <p style='font-size:medium;'>실재고 수량이 실시간으로 변하여 재고상황을 반영하기 위해 만전을 가하고 있으나, 불가피하게 조기 품절되는 경우가 발생할 수 있으며 이 경우 고객님들께 확인 연락(1차문자 안내)을 드리고 있습니다.</p>
+                    <p style='font-size:medium;'>상기의사항 양해 부탁드립니다.</p> 
+                </ul>
+            </div>
+            <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+        </div>
+
+        <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
+            <div class='col pt-4 pb-4 text-center'>
+                <span style="font-size: 0.6em; color: #ffe5a9;">
+                    <i class="fas fa-truck fa-5x"></i>
+                </span>
+            </div>
+            <div class="store-card-header">
+                <p class='text-center' style='color:white;font-weight:bold;font-size:xx-large;'>배송안내</p>
+            </div>
+            <div class="info-card-description text-left">
+                <ul style='color:white;'>
+                    <p style='font-size:medium;color: #ffe5a9;'><bold>해외배송의 경우 배송기간은 7일 국내 배송은 1일입니다.</bold> </p>
+                    <p style='font-size:medium;'>월요일은 주말주문 누적으로 인해 물량이 많아 배송이 지연될 수 있습니다.</p>
+                    <p style='font-size:medium;'>일부 도서산간지역은 1-2일 정도 더 소요될 수 있습니다.</p>
+                    <p style='font-size:small;'>* 택배사 사정으로 배송이 지연될 수 있으니 양해 바랍니다.</p>
+                    
+                </ul>
+            </div>
+            <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+        </div>
+
+        <div class='col-12 pt-2 pb-5 mb-4 rounded' style='background-color:#423F3B;'>
+            <div class='col pt-4 pb-4 text-center'>
+                <span style="font-size: 0.6em; color: #ffe5a9;">
+                    <i class="fas fa-window-close fa-5x"></i>
+                </span>
+            </div>
+            <div class="store-card-header">
+                <p class='text-center' style='color:white;font-weight:bold;font-size:xx-large;'>교환반품</p>
+            </div>
+            <div class="info-card-description text-left">
+                <div class='row'>
+                    <div class='col mx-5' style='border:solid 1px #ffe5a9'>
+                        <div class='my-auto text-center'>
+                            <p style='font-size:large;color:#ffe5a9;'>상품 수령후 24시간 내 훼손 불량 유무 변심여부를 판단</p>
+                        </div>
+                    </div>
+                    <span style="font-size: 2em; color: #ffe5a9;">
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </span>
+                    <div class='col mx-5' style='border:solid 1px #ffe5a9'>
+                        <div class='my-auto text-center'>
+                            <p style='font-size:large;color: #ffe5a9;'>고객 센터 1544-xxxx를 통해 교환.반품 접수(24시간 내)</p>
+                        </div>
+                    </div>
+                    <span style="font-size: 2em; color: #ffe5a9;">
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </span>
+                    <div class='col mx-5' style='border:solid 1px #ffe5a9'>
+                        <div class='my-auto text-center'>
+                            <p style='font-size:large;color: #ffe5a9;'>우체국 택배 수거 후 7일 이내 xxx 도착</p>
+                        </div>
+                    </div>
+                    <span style="font-size: 2em; color: #ffe5a9;">
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </span>
+                    <div class='col mx-5' style='border:solid 1px #ffe5a9'>
+                        <div class='my-auto text-center'>
+                            <p style='font-size:large;color: #ffe5a9;'>교환/반품 신청서 작성 후 상품 수령시 동일하게 보관</p>
+                        </div>
+                    </div>
+
+                </div>
+                <br>
+                <ul style='color:white;'>
+                    <p style='font-size:medium;color: #ffe5a9;'><bold>구매하신 제품은 전자상거래, 소비자 보호에 관한 법률에 의거 수령일로부터 7일 이내에 미개봉 미사용 제품에 한하여 반품 및 환불을 요청하실 수 있습니다. 택을 제거한 상품은 기사용 상품으로 간주되어 교환 및 반품이 불가합니다. 기사용 상품의 하자는  A/S 처리됩니다.(A/S 내용 참고)</bold> </p>
+                    <p style='font-size:medium;'>제품의 하자를 제외한 반품의 경우 우체국 택배 이용 왕복 택배비(10,000원) 동봉 후 발송 부탁드립니다. </p>
+                    <p style='font-size:medium;'>우체국 택배가 아닌 타 백배사로 반송하여 제품이 분실될 경우 당사에서 보상해 드릴 수 없습니다. 제품 반송 시 고객님께서 수령하셨을 때와 동일한 상태로 반송해 주시길 바랍니다. 환불 소요 시간은 제품 입고 후 3일 영업일 이내이며 칻사와 사정에 의해 기간은 다소 변경될 수 있습니다. </p>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+    <!-- 배송관련 안내사항 끝 -->
+
+
+
+<!-- 코멘트 시작? -->
+
+
+<!-- 코멘트 끝 -->
+</div>
 {% endblock %}

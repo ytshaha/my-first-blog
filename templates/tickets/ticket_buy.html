@@ -13,7 +13,8 @@
 
 
 <div class='container'>
-    <form method="POST">
+    <form method="POST" action="{% url 'carts:update' %}">
+        <input type="hidden" name='product_type' value="ticket">
         <div class='row'>
         {% csrf_token %}
             <table class="table text-center">

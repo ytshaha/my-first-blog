@@ -1,0 +1,135 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">REVIEW</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+  </div>  
+
+<div class='container'>
+    <div class='row'>
+        <div class='col text-right'>
+            <a href="{% url 'reviews:upload' %}"><button>리뷰업로드</button></a>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col'>
+            <table class="table text-center" style='font-size:small;'>
+                <colgroup>
+                    <col span="1" style="width: 3%;">
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 14%;">
+                    <col span="1" style="width: 3%;">
+                    
+                    <col span="1" style="width: 40%;">
+                    <col span="1" style="width: 20%;">
+                    <col span="1" style="width: 10%;">
+                    
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">USER</th>
+                    <th scope="col">PRODUCT_ITEM</th>
+                    <th scope="col">PRODUCT_TYPE</th>
+                    <th scope="col">TITLE</th>
+                    <th scope="col">CREATED DATE</th>
+                    <th scope="col">RATE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for review in reviews %}  
+                  <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ review.user }}</td>
+                    <td>{{ review.product_item.product_item.product }}</td>
+                    <td>{{ review.product_item.product_item.product_type }}</td>
+                    <td><a href="{% url 'reviews:detail' pk=review.pk %}" style='color:black;'>{{ review.title|slice:":30" }}{% if review.title|length > 30 %}...{% endif %}</a></td>
+                    <td>{{ review.created_date|date:'Y-m-d H:i:s' }}</td>
+                    {% if review.rating == 0 %}
+                    <td>
+                        <span style="font-size: 0.6em; color:black;">
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </span>
+                    </td>
+                    {% elif review.rating == 1 %}
+                    <td>
+                        <span style="font-size: 0.6em; color:black;">
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </span>
+                    </td>
+                    {% elif review.rating == 2 %}
+                    <td>
+                        <span style="font-size: 0.6em; color:black;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </span>
+                    </td>
+                    {% elif review.rating == 3 %}
+                    <td>
+                        <span style="font-size: 0.6em; color:black;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </span>
+                    </td>
+                    {% elif review.rating == 4 %}
+                    <td>
+                        <span style="font-size: 0.6em; color:black;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="far fa-star"></i>
+                        </span>
+                    </td>
+                    {% elif review.rating == 5 %}
+                    <td>
+                        <span style="font-size: 0.6em; color:black;">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                        </span>
+                    </td>
+                    {% endif %}
+                  </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+    
+
+
+{% endblock %}
+
+<div class="review">
+    <div class="date">
+        {{ review.created_date }}
+    </div>
+    <h1><a href="{% url 'reviews:detail' pk=review.pk %}">{{ review.title }}</a></h1>
+    <p>{{ review.text|linebreaksbr }}</p>
+    <a href="{% url 'reviews:detail' pk=review.pk %}">Comments: {{ review.approved_comments.count }}</a>
+    <a href="{% url 'reviews:detail' pk=review.pk %}">Comments: {{ review.comments.count }}</a>
+    
+</div>

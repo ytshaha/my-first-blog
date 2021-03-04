@@ -1,0 +1,29 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">REVIEW</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
+<div class="container">
+    <div class='row'>
+        <div class="col-12">
+            <p>ID : {{ review.user }}</p>
+            <p>물품 : {{ review.product_item.product_item.product }}</p>
+            <p>구매타입 : {{ review.product_item.product_item.product_type }}</p>
+            <p>제목 : {{ review.title }}</p>
+            <p>작성일 : {{ review.created_date|date:'Y-m-d H:i:s' }}</p>
+            <p>내용<br>{{ review.text|linebreaks }}</p>
+            
+            
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
+{% endblock %}

@@ -73,7 +73,8 @@ class Ticket(models.Model):
     status           = models.CharField(max_length=20, default='unused', choices=TICKET_STATUS)
     active           = models.BooleanField(default=True)
     bidding_success  = models.BooleanField(default=False) # 비딩성공시 해당 비딩가격은 포인트로 반환해주지 않는다.
-
+    transfer_point   = models.BooleanField(default=False)
+    
     objects = TicketManager()
 
     def __str__(self):
@@ -118,9 +119,9 @@ pre_save.connect(pre_save_create_ticket_id, sender=Ticket)
 # order에 biiling이랑 addre는 별도이다.
 #  ticketorder만 따로 만들고 Biiling이랑 Address check아웃은 재활용하자.. 
 
-class TicketCartManager(models.Manager):
+class TicketItemManager(models.Manager):
     def new_or_get(self, request):
-        ticketcart_id = request.session.get("ticketcart_id", None)
+        ticket_item_id = request.session.get("ticket_item_id", None)
         qs = self.get_queryset().filter(id=ticketcart_id)
         if qs.count() == 1:
             new_obj = False
@@ -134,15 +135,16 @@ class TicketCartManager(models.Manager):
             request.session['ticketcart_id'] = ticketcart_obj.id
         return ticketcart_obj, new_obj
 
-    def new(self, user=None):
+    def new(self, user, tickets_type):
         user_obj = None
+        tickets_type = int(tickets_type)
         if user is not None:
             if user.is_authenticated:
                 user_obj = user
-        return self.model.objects.create(user=user_obj)
+        return self.model.objects.create(user=user_obj, tickets_type=tickets_type)
 
 
-class TicketCart(models.Model):
+class TicketItem(models.Model):
     user            = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
     subtotal        = models.IntegerField(default=0)  # 일단 그냥 단순 갯수*5000원 한 값
     total           = models.IntegerField(default=0)  # 할인율을 적용한 값.
@@ -150,13 +152,13 @@ class TicketCart(models.Model):
     timestamp       = models.DateTimeField(auto_now_add=True)
     tickets_type    = models.IntegerField(default=0, choices=TICKETS_TYPES)
 
-    objects = TicketCartManager()
+    objects = TicketItemManager()
 
     def __str__(self):
         return str(self.id)
 
 
-def pre_save_ticketcart_receiver(sender, instance, *args, **kwargs):
+def pre_save_ticket_item_receiver(sender, instance, *args, **kwargs):
     if instance.tickets_type == 1:
         instance.subtotal = 5000
         instance.total = 5000
@@ -175,5 +177,5 @@ def pre_save_ticketcart_receiver(sender, instance, *args, **kwargs):
     else:    
         instance.sale_ratio = Decimal(instance.subtotal - instance.total) / instance.subtotal * 100
 
-pre_save.connect(pre_save_ticketcart_receiver, sender=TicketCart)
+pre_save.connect(pre_save_ticket_item_receiver, sender=TicketItem)
 

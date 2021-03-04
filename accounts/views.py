@@ -65,7 +65,7 @@ class AccountEmailActivateView(FormMixin, View):
     def post(self, request, *args, **kwargs):
         # create form to receive an email
         form = self.get_form()
-        if form.is_valid():
+        if form.is_valid(): 
             return self.form_valid(form)
         else:
             return self.form_invalid(form)

@@ -72,6 +72,8 @@ INSTALLED_APPS = [
     'addresses',
     'biddings',
     'tickets',
+    'points',
+    'reviews',
 ]
 
 AUTH_USER_MODEL = 'accounts.User' #changes the built-in user model.

@@ -18,8 +18,9 @@ from billing.models import BillingProfile
 from orders.models import Order
 from .models import Cart, CartItem
 from biddings.models import Bidding
-from products.models import Product
-from tickets.models import Ticket
+from products.models import Product, ProductItem
+from tickets.models import Ticket, TicketItem
+from points.models import Point
 from mysite.utils import random_string_generator
 
 import stripe
@@ -43,16 +44,17 @@ def select_price(cart_item):
     cart_detail_api_view에서 JSON 형태로 넘겨줄때 price를 정의해주기 위한 함수.
     bidding이면 current_price를
     normal이면 limit_price를 return
+    ticket이면 TicketItem.total
     '''
     product_type = cart_item.product_type
     user = cart_item.user
 
     if product_type == "bidding":
-        return Bidding.objects.get(user=user, product=product_obj, win=True).bidding_price
+        return Bidding.objects.get(user=user, product_item=cart_item.product_item, win=True).bidding_price
     elif product_type == "normal":
-        return cart_item.product_obj.limit_price
-    else:
-        return None
+        return cart_item.product_item_obj.price
+    elif product_type == "ticket":
+        return cart_item.ticket_item.total
 
 def cart_detail_api_view(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
@@ -85,85 +87,136 @@ def cart_update(request):
 
     아니다 수량 변경은 못하게 하자..
     그냥 product_detail에서 POST 받아오는 수량이 무조건 그 수량이 되는것이다.
+    2021.03.03 update
+    티켓도 여기 카트에서 구매가능하게 업뎃하자.
+
+    2021.03.04 update
+    cart update엔 3가지의 POST가 있다.
+    1. 티켓구매에서 오는거
+    2. 물품구매에서 오는거
+    3. 카트의 remove칸에서 오는거
+
+    각각의 POST는 아래와 같다. 
+    1. 티켓구매 : ticket_item_id, product_type
+    2. 물품구매 : product_item_id, product_type
+    3. 카트의 remove : cart_item_id, product_type, at_cart
+    
+    at_cart로 일단 remove가 구현이 안되어있다. 해당 parameter로 구분해서 그 케이스를 구현하자.
     '''
-    print('request.POST',request.POST)
-    product_id = request.POST.get('product_id')
+
+    try:
+        at_cart = request.POST.get('at_cart')
+        only_add = False
+    except:
+        at_cart = False
+        only_add = True
+    user = request.user
+    
     product_type = request.POST.get('product_type')
 
-    # 경매든 그냥 상시상품이든 티켓없으면 티켓사라고 한다.
-    user = request.user
-    ticket_qs = Ticket.objects.filter(user=user, status='activate')
-    if not ticket_qs.exists() and product_type == 'normal':
-        messages.success(request, "상시판매 상품을 구매하기 위해서는 티켓이 필요합니다. 티켓을 구매하고 활성화 시키십시오.")
-        return redirect("tickets:home")
+    # 1. 카트에서 remove가 호출된 경우
+    if at_cart:
+        '''
+        카트에서 호출된 경우
+        1. cart_item_id 받고
+        2. cart_item_obj 받고
+        3. 지우면 지우고 아니면 그냥 추가하고.
+        4. return redirect
+        '''
+        cart_item_id = request.POST.get('cart_item_id')
 
-    # 추가수량에 대해 POST로 오면 업뎃
-    # 이부분이 product_type으로 if문을 추가로 안에 넣을지는 고민 필요.
-    if product_type == "bidding":
-        amount = 1 # 경매상품일때
-    elif product_type == "normal":
-        amount = request.POST.get('amount') # 상시상품일때
-   
-    only_add = True
-    try:
-        if request.POST.get('at_cart'):
-            only_add = False
-    except:
-        pass
-    print(only_add)
-    if product_id is not None:
-        try:
-            product_obj = Product.objects.get(id=product_id)
-        except Product.DoesNotExist:
-            print("Show message to user, product is gone?")
-            return redirect("carts:home")
         cart_obj, new_obj = Cart.objects.new_or_get(request)
         cart_item_obj, new_item_obj = CartItem.objects.new_or_get(request)
-         
-        # 1. remove인경우 처리
-        if cart_item_obj in cart_obj.cart_items.all() and not only_add:
+        
+        if cart_item_obj in cart_obj.cart_items.all():
             cart_obj.cart_items.remove(cart_item_obj)
             added = False
+            cart_obj.save()
             # 부득이하게 여기에 cart_item계산을 한번 더 넣는다... jquery잘하게 되면 다시 구현하자.
             request.session['cart_items'] = cart_obj.cart_items.count()
             return redirect("carts:home")
-
-        # 2. 그냥 추가 혹은 수량조정인경우
-        # m2m Change가 적용되려면 cart_item의 수량과 단가가 확정되어야함.
-        
-        # 단가확정
-        if product_type == 'bidding':
-            price = Bidding.objects.get(user=user, product=product_obj, win=True).bidding_price
-        elif product_type == 'normal':
-            price = product_obj.limit_price
-        cart_item_obj.price = price
-        cart_item_obj.amount = amount
-        cart_item_obj.save()
-
-        if cart_item_obj in cart_obj.cart_items.all() and only_add:
-            # m2mchange가 안되서 그냥 지웠다가 다시 추가함.
-            cart_obj.cart_items.remove(cart_item_obj)
-            cart_obj.cart_items.add(cart_item_obj)
-            added = False
-        # 처음 추가되는 cart_item일경우
         else:
-            cart_obj.cart_items.add(cart_item_obj)
-            added = True
-            
-            
-        # 그냥 나중에 쓸수도 있는 json이기에 남겨둠.
-        request.session['cart_items'] = cart_obj.cart_items.count()
-        if request.is_ajax(): # Asyncronous JavaScripts ANd XM
-            print("Ajax request")
-            json_data = {
-                "added": added,
-                'removed':not added,
-                "cartItemCount": cart_obj.cart_items.count()
-            }
-            return JsonResponse(json_data, status=200)
-            # return JsonResponse({"message":"Error 400"}, status_code=400) # django rest framework
+            return redirect("carts:home")
+    else:
 
-    return redirect("carts:home")
+        # 2. 물품추가 혹은 티켓구매인경우
+        if product_type == 'bidding' or product_type == 'normal':
+            product_item_id = request.POST.get('product_item_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
+            product_item_obj = ProductItem.objects.get(id=product_item_id)
+
+            ticket_item_id = None
+            
+        elif product_type == 'ticket':
+            tickets_type = request.POST.get('tickets_type')
+            # ticket_item_obj = TicketItem.objects.get(id=ticket_item_id)
+            ticket_item_obj = TicketItem.objects.new(user=user, tickets_type=tickets_type)
+            ticket_item_id = ticket_item_obj.id
+            
+            ticket_item_obj.save()
+
+            product_item_id = None
+        else:
+            raise Http404
+
+
+        # 추가수량에 대해 POST로 오면 업뎃
+        # 이부분이 product_type으로 if문을 추가로 안에 넣을지는 고민 필요.
+        if product_type == "bidding":
+            amount = 1 # 경매상품일때
+        elif product_type == "normal":
+            amount = request.POST.get('amount') # 상시상품일때
+        elif product_type == 'ticket':
+            amount = 1
+
+        if product_item_id is not None or ticket_item_id is not None:
+            if product_item_id is not None:
+                temp_id = product_item_id
+            elif ticket_item_id is not None:
+                temp_id = ticket_item_id
+            cart_obj, new_obj = Cart.objects.new_or_get(request)
+            cart_item_obj, new_item_obj = CartItem.objects.new_or_get(request, temp_id)
+            
+            
+            # 2. 그냥 추가 혹은 수량조정인경우
+            # m2m Change가 적용되려면 cart_item의 수량과 단가가 확정되어야함.
+            
+            # 단가확정
+            if product_type == "bidding":
+                price = Bidding.objects.get(user=user, product_item=cart_item_obj.product_item, win=True).bidding_price
+            elif product_type == "normal":
+                price = product_item_obj.price
+            elif product_type == "ticket":
+                price = ticket_item_obj.total
+
+            cart_item_obj.price = price
+            cart_item_obj.amount = amount
+            cart_item_obj.save()
+
+            if cart_item_obj in cart_obj.cart_items.all() and only_add:
+                # m2mchange가 안되서 그냥 지웠다가 다시 추가함.
+                cart_obj.cart_items.remove(cart_item_obj)
+                cart_obj.cart_items.add(cart_item_obj)
+                added = False
+                cart_obj.save()
+            # 처음 추가되는 cart_item일경우
+            else:
+                cart_obj.cart_items.add(cart_item_obj)
+                added = True
+                cart_obj.save()
+                
+            # 그냥 나중에 쓸수도 있는 json이기에 남겨둠.
+            request.session['cart_items'] = cart_obj.cart_items.count()
+            if request.is_ajax(): # Asyncronous JavaScripts ANd XM
+                print("Ajax request")
+                json_data = {
+                    "added": added,
+                    'removed':not added,
+                    "cartItemCount": cart_obj.cart_items.count()
+                }
+                return JsonResponse(json_data, status=200)
+                # return JsonResponse({"message":"Error 400"}, status_code=400) # django rest framework
+
+        return redirect("carts:home")
 
 def checkout_home(request):
     cart_obj, cart_created = Cart.objects.new_or_get(request)
@@ -204,7 +257,7 @@ def checkout_home(request):
     for cart_item_obj in cart_obj.cart_items.all():
         print("Stock Check...product.title")
         if cart_item_obj.product_type == 'normal':
-            if cart_item_obj.product.amount_always_on < 1:
+            if cart_item_obj.product_item.amount < 1:
                 print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product.title))
                 cart_obj.cart_items.remove(cart_item_obj)
                 cart_obj.save()
@@ -234,7 +287,7 @@ def checkout_home(request):
                 return redirect("carts:success")
             else:
                 print(charge_msg)
-                return redirect("carts:checkout")
+                return redirect("carts:checkout-iamport")
 
     context = {
         'object':order_obj,
@@ -292,7 +345,6 @@ def checkout_iamport(request):
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     address_qs = None
     has_card = False
-    request.session['is_ticket'] = False
     if billing_profile is not None:
         if request.user.is_authenticated:
             address_qs = Address.objects.filter(billing_profile=billing_profile)
@@ -314,12 +366,12 @@ def checkout_iamport(request):
     for cart_item_obj in cart_obj.cart_items.all():
         print("Stock Check...product.title")
         if cart_item_obj.product_type == 'normal':
-            if cart_item_obj.product.amount_always_on < 1:
-                print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product.title))
+            if cart_item_obj.product_item.amount < 1:
+                print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
                 cart_obj.cart_items.remove(cart_item_obj)
                 cart_obj.save()
                 stock_refresh = True
-        elif cart_item_obj.product_type == 'bidding':
+        else:
             pass
     if stock_refresh:
         return redirect("carts:home")
@@ -346,9 +398,11 @@ def checkout_iamport(request):
     
     cart_items_name = ""
     for cart_item in cart_obj.cart_items.all():
-        cart_items_name = cart_items_name + cart_item.product.title + "_"
-    print('cart_items_name',cart_items_name)
-    print("request.POST", request.POST)
+        if cart_item.product_type == 'ticket':
+            cart_items_name = cart_items_name + "ticket_" + str(cart_item.ticket_item.tickets_type) + "_"
+        else:
+            cart_items_name = cart_items_name + cart_item.product_item.product.title + "_"
+    
     iamport_data = {
                 'pg': "html5_inicis",
                 'pay_method':'card',
@@ -361,72 +415,130 @@ def checkout_iamport(request):
                 'buyer_addr': address,
                 'buyer_postcode': postcode
                 }
-    if request.method == 'POST' and request.is_ajax():
-        get_data = request.POST.get('get_data')
-        print(380, "get_data",get_data)
-        # if not get_data:
-        #     # imaport_data 가져오기 버튼 누름.
-        #     return JsonResponse(iamport_data)
-        # else:
-        #     print(385, ' elif not get_data',get_data)
-        # 결재정보 확인 실행
-        imp_uid = request.POST.get('imp_uid')
-        # // 액세스 토큰(access token) 발급받기
-        data = {
-            "imp_key": IMPORT_REST_API_KEY,
-            "imp_secret": IMPORT_REST_API_SECRET
-        }
-        print(data)
-        response = requests.post('https://api.iamport.kr/users/getToken', data=data)
-        data = response.json()
-        print(data)
-        my_token = data['response']['access_token']
-        print('my_token',my_token)
-        #  // imp_uid로 아임포트 서버에서 결제 정보 조회
-        headers = {"Authorization": my_token}
-        print("imp_uid", imp_uid)
-        print('data',data)
-        print('headers', headers)
-        response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
-        data = response.json()
-        # // DB에서 결제되어야 하는 금액 조회 const
-        order_amount = order_obj.total
-        amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
-        print('amountToBePaid',amountToBePaid)
-        status = data['response']['status']  # 아임포트에서의 상태
-        print('status',status)
-        if order_amount==amountToBePaid:
-            # DB에 결제 정보 저장
-            # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
-            if status == 'ready':
-                # DB에 가상계좌 발급정보 저장
-                print("결재 상태 : ready, vbankIssued")
-                return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
-                                    content_type="application/json")
-            elif status=='paid':
-                print("결재 상태 : paid, success")
+    if request.method == 'POST':
+        # checkout 버튼 눌렸을때 
+        if request.is_ajax():
+            get_data = request.POST.get('get_data')
+            print(380, "get_data",get_data)
+            # if not get_data:
+            #     # imaport_data 가져오기 버튼 누름.
+            #     return JsonResponse(iamport_data)
+            # else:
+            #     print(385, ' elif not get_data',get_data)
+            # 결재정보 확인 실행
+            imp_uid = request.POST.get('imp_uid')
+            # // 액세스 토큰(access token) 발급받기
+            data = {
+                "imp_key": IMPORT_REST_API_KEY,
+                "imp_secret": IMPORT_REST_API_SECRET
+            }
+            print(data)
+            response = requests.post('https://api.iamport.kr/users/getToken', data=data)
+            data = response.json()
+            print(data)
+            my_token = data['response']['access_token']
+            print('my_token',my_token)
+            #  // imp_uid로 아임포트 서버에서 결제 정보 조회
+            headers = {"Authorization": my_token}
+            print("imp_uid", imp_uid)
+            print('data',data)
+            print('headers', headers)
+            response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
+            data = response.json()
+            # // DB에서 결제되어야 하는 금액 조회 const
+            order_amount = order_obj.checkout_total
+            amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
+            print('amountToBePaid',amountToBePaid)
+            status = data['response']['status']  # 아임포트에서의 상태
+            print('status',status)
+            if order_amount==amountToBePaid:
+                # DB에 결제 정보 저장
+                # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
+                if status == 'ready':
+                    # DB에 가상계좌 발급정보 저장
+                    print("결재 상태 : ready, vbankIssued")
+                    return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
+                                        content_type="application/json")
+                elif status=='paid':
+                    print("결재 상태 : paid, success")
 
+                    order_obj.mark_paid()
+                    request.session['cart_items'] = 0
+                    del request.session['cart_id']
+                    
+                    # 사용포인트 차감
+                    if order_obj.point_total > 0:
+                        point_use = (-1) * order_obj.point_total
+                        point_details = '주문번호 {}의 포인트 {}점 사용'.format(order_obj.order_id, point_use)
+                        point_obj = Point.objects.new(user=user, amount=point_use, details=point_details)
+                        messages.success(request, "{}님의 주문번호{}건에 대한 결재가 완료되어 요청하신 포인트 {}점이 사용되었습니다.".format(request.user, order_obj.order_id, point_use))
+
+
+                    # 재고 있는것들에 대해서 아래와 같이 구매한다.
+                    for cart_item_obj in cart_obj.cart_items.all():
+                        if cart_item_obj.product_type == 'normal':
+                            cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                            cart_item_obj.product_item.save()
+                            print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
+                    
+
+                    return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
+                                        content_type="application/json")
+                else:
+                    pass
+            else:
+                print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
+                return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json")
+        
+        # 포인트 사용이 눌렸을때
+        else:
+            post_purpose = request.POST.get('post_purpose')
+
+            if post_purpose == 'use_point':
+                use_point = request.POST.get('use_point')
+                try:
+                    order_obj.point_total = int(use_point)
+                    order_obj.checkout_total = order_obj.total - int(use_point)
+                    order_obj.save()
+                    redirect("carts:checkout-iamport")
+                except:
+                    messages.error(request, "사용하려는 POINT를 다시 입력해주세요.")
+                    redirect("carts:checkout-iamport")
+            elif post_purpose == 'checkout_0':
                 order_obj.mark_paid()
                 request.session['cart_items'] = 0
                 del request.session['cart_id']
+                
+                # 사용포인트 차감
+                if order_obj.point_total > 0:
+                    point_use = (-1) * order_obj.point_total
+                    point_details = '주문번호 {}의 포인트 {}점 사용'.format(order_obj.order_id, point_use)
+                    point_obj = Point.objects.new(user=user, amount=order_obj.point_total, details=point_details)
+                    messages.success(request, "{}님의 주문번호{}건에 대한 결재가 완료되어 요청하신 포인트 {}점이 사용되었습니다.".format(request.user, order_obj.order_id, point_use))
+                
                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
                 for cart_item_obj in cart_obj.cart_items.all():
                     if cart_item_obj.product_type == 'normal':
-                        cart_item_obj.product.amount_always_on = cart_item_obj.product.amount_always_on - 1
-                        cart_item_obj.product.save()
-                        print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product.title, cart_item_obj.product.amount_always_on))
+                        cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                        cart_item_obj.product_item.save()
+                        print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))                 
+                return render(request, 'carts/checkout-done.html', {}) # 
+    
+    # 사용할 수 있는 point를 지정하자.
+    point_available = None
+    order_normal_total = 0
+    for cart_item in order_obj.cart.cart_items.all():
+        if cart_item.product_type == 'normal':
+            order_normal_total = order_normal_total + cart_item.subtotal
+    point_available = round(order_normal_total * 0.1, -2)
+    if point_available >= user.points:
+        point_available = user.points
+    else:
+        pass
+    
+    # if order_obj.total >= user.points:
 
-
-
-                return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
-                                    content_type="application/json")
-            else:
-                pass
-        else:
-            print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
-            return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json")
-        
-
+    
     context = {
         'object':order_obj,
         'billing_profile': billing_profile,
@@ -441,12 +553,14 @@ def checkout_iamport(request):
         'pay_method':'card',
         'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
         'name':cart_items_name,
-        'amount': order_obj.total,
+        'amount': order_obj.checkout_total,
         'buyer_email': billing_profile.email,
         'buyer_name': user.full_name,
         'buyer_tel': user.phone_number,# 얘는 만들어야함. 
         'buyer_addr': address,
-        'buyer_postcode': postcode
+        'buyer_postcode': postcode,
+        # 사용가능 포인트
+        'point_available': point_available
         # 'pg' : 'html5_inicis', 
         # 'pay_method' : 'card',
         # 'merchant_uid' : 'merchant_' + random_string_generator(size=10),
@@ -460,8 +574,6 @@ def checkout_iamport(request):
 
                 }
     
-    # print('♥♥♥♥♥context')
-    # print(context)
     
     return render(request, "carts/checkout-iamport.html", context)
 
@@ -474,8 +586,6 @@ class CheckoutView(generic.TemplateView):
 # @csrf_exempt
 
 def payment_complete(request):
-    print('request', request)
-    print('request.POST', request.POST)
     if request.method == 'POST' and request.is_ajax():
         imp_uid = request.POST.get('imp_uid')
         # // 액세스 토큰(access token) 발급받기

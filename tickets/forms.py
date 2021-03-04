@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Ticket, TicketCart
+from .models import Ticket, TicketItem
 
 class TicketForm(forms.ModelForm):
     
@@ -8,8 +8,8 @@ class TicketForm(forms.ModelForm):
         model = Ticket
         fields = ('ticket_id','user','active','bidding_success',)
 
-class TicketCartForm(forms.ModelForm):
+class TicketItemForm(forms.ModelForm):
     
     class Meta:
-        model = TicketCart
+        model = TicketItem
         fields = ('tickets_type',)

@@ -13,6 +13,7 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import get_template
 from mysite.utils import unique_key_generator
+from points.models import Point
 
 # send_mail(subject, message, from_email, recipient_list, html_message)
 
@@ -74,6 +75,7 @@ class User(AbstractBaseUser):
     staff = models.BooleanField(default=False) # staff user non superuser
     admin = models.BooleanField(default=False) # superuser
     timestamp = models.DateTimeField(auto_now_add=True)
+    points = models.IntegerField(default=0)
     # confirm = models.BooleanField(default=False)
     # confirmed_date = models.DateTimeField(default=False)
 
@@ -111,6 +113,18 @@ class User(AbstractBaseUser):
 
 # class Profile(models.Model):
 #     user = models.OneToOneField(User)
+
+def post_save_point_total(sender, instance, created, *args, **kwargs):
+    if created:
+        point_obj = instance
+        user = point_obj.user
+        qs = User.objects.filter(username=user.username)
+        
+        user.points = user.points + point_obj.amount
+        user.save()
+
+post_save.connect(post_save_point_total, sender=Point)
+
 
 
 class EmailActivationQuerySet(models.query.QuerySet): # EmailActivation.objects.all().confirmable()

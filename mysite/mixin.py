@@ -1,5 +1,6 @@
 from django.utils.http import is_safe_url
-
+from django.contrib.auth.mixins import UserPassesTestMixin
+from django.views import View
 
 class RequestFormAttachMixin(object):
     def get_form_kwargs(self):
@@ -18,3 +19,11 @@ class NextUrlMixIn(object):
         if is_safe_url(redirect_path, request.get_host()):
             return redirect_path
         return self.default_next
+
+
+class StaffRequiredView(UserPassesTestMixin, View):
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return True
+        return False

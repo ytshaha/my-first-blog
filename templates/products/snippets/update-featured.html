@@ -1,0 +1,14 @@
+<form method='POST' action="{% url 'products:featured' %}" data-endpoint="{% url 'products:featured' %}" class="form-product-featured-ajax">
+    {% csrf_token %}
+    <input type="hidden" name='product_item_slug' value='{{ product_item.slug }}' />
+    <span class='submit-span'>
+        {% if product_item.featured %}
+            <button type='submit' class='btn btn-link'>SHOW</button>
+        {% else %}
+            <button type='submit' class='btn btn-success'>HIDE</button>
+        {% endif %}
+    </span>
+</form>
+
+
+

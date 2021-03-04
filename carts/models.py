@@ -3,7 +3,8 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_save, post_save, m2m_changed
 
-from products.models import Product
+from products.models import Product, ProductItem
+from tickets.models import TicketItem
 
 
 User = settings.AUTH_USER_MODEL
@@ -11,31 +12,60 @@ User = settings.AUTH_USER_MODEL
 PRODUCT_TYPE = (
     ('normal','상시상품구매'),
     ('bidding','경매상품구매'),
+    ('ticket','경매티켓구매'),
+    
 )
 
 
-class CartItemManager(models.Manager):
-    def new_or_get(self, request):
+class CartItemManager(models.Manager):#################210303_여기 좀 나중에 수정 필요.....
+    def new_or_get(self, request, temp_id=None):
         user = request.user
-        product_id = request.POST.get('product_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
-        product_type = request.POST.get('product_type') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product_type넣자. 
-        product_obj = Product.objects.get(id=product_id)
-        qs = self.get_queryset().filter(user=user, product=product_obj, product_type=product_type)
+        product_type = request.POST.get('product_type')
+        
+        try:
+            at_cart = request.POST.get('at_cart')
+        except:
+            at_cart = False
+
+        # 카트에서 remove로 호출된 경우
+        if at_cart:
+            cart_item_id = request.POST.get('cart_item_id')
+            cart_item_qs = self.get_queryset().filter(id=cart_item_id)
+            cart_item_obj = cart_item_qs.first()
+            new_obj = False
+            return cart_item_obj, new_obj
+
+        # 티켓구매나 물품구매에서 호출된 경우
+        if product_type == 'bidding' or product_type == 'normal':
+            # product_item_id = request.POST.get('product_item_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
+            product_item_obj = ProductItem.objects.get(id=temp_id)
+            # ticket_item_id = None
+            ticket_item_obj = None
+        elif product_type == 'ticket':
+            # ticket_item_id = request.POST.get('ticket_item_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
+            ticket_item_obj = TicketItem.objects.get(id=temp_id)
+            # product_item_id = None
+            product_item_obj = None
+        else:
+            raise Http404
+
+        qs = self.get_queryset().filter(user=user, product_item=product_item_obj, ticket_item=ticket_item_obj, product_type=product_type)
         if qs.exists():
             new_obj = False
-            cart_item_id = qs.first()
+            cart_item_obj = qs.first()
         else:
-            cart_item_id = self.new(user=user, product=product_obj, product_type=product_type)
+            cart_item_obj = self.new(user=user, product_item=product_item_obj, ticket_item=ticket_item_obj, product_type=product_type)
             new_obj = True
-        return cart_item_id, new_obj
+        return cart_item_obj, new_obj
 
-    def new(self, user, product, product_type):
-        return self.model.objects.create(user=user, product=product, product_type=product_type)
+    def new(self, user, product_item, ticket_item, product_type):
+        return self.model.objects.create(user=user, product_item=product_item, ticket_item=ticket_item, product_type=product_type)
 
 
 class CartItem(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE)
-    product         = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product_item    = models.ForeignKey(ProductItem, blank=True, null=True, on_delete=models.CASCADE)
+    ticket_item     = models.ForeignKey(TicketItem, blank=True, null=True, on_delete=models.CASCADE)
     amount          = models.IntegerField(default=1)
     price           = models.IntegerField(default=0, help_text=u'단가')
     subtotal        = models.IntegerField(default=0, help_text=u'카트총액')
@@ -45,12 +75,20 @@ class CartItem(models.Model):
     objects = CartItemManager()
     
     def __str__(self):
-        return "{}_{}_{}".format(str(self.product.title), str(self.product_type), str(self.user))
+        if self.product_type == 'ticket':
+            return "{}_{}_{}".format(str(self.product_type), str(self.ticket_item.tickets_type), str(self.user))
+        elif self.product_type == 'bidding' or self.product_type == 'normal':
+            return "{}_{}_{}".format(str(self.product_type), str(self.product_item.product.title), str(self.user))
+        else:
+            return self.id
 
 def pre_save_cart_item_receiver(sender, instance, *args, **kwargs):
     instance.subtotal = int(instance.price) * int(instance.amount)
 
 pre_save.connect(pre_save_cart_item_receiver, sender=CartItem)
+
+
+
 
 class CartManager(models.Manager):
 
@@ -60,9 +98,6 @@ class CartManager(models.Manager):
         if qs.count() == 1:
             new_obj = False
             cart_obj = qs.first()
-            if request.user.is_authenticated and cart_obj.user is None: # 비회원으로 들어온 카트를 로긴후에도 사용하기 위해 
-                cart_obj.user = request.user
-                cart_obj.save()
         else:
             cart_obj = self.new(user=request.user)
             new_obj = True
@@ -78,7 +113,6 @@ class CartManager(models.Manager):
 
 class Cart(models.Model):
     user        = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
-    # products    = models.ManyToManyField(Product, blank=True)
     cart_items  = models.ManyToManyField(CartItem, blank=True)
     subtotal    = models.IntegerField(default=0)
     total       = models.IntegerField(default=0)

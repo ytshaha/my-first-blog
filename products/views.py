@@ -1,5 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.urls import reverse
 from django.http import Http404
 from django.contrib.auth.decorators import login_required
 from django.views import generic
@@ -9,65 +11,226 @@ from django.contrib import messages
 from django.forms import modelformset_factory
 from django.utils import timezone
 
-
-from .models import Product, Brand, Category, ProductImage
+from mysite.mixin import StaffRequiredView
+from .models import Product, ProductItem, Brand, Category, ProductImage
 from biddings.models import Bidding
 from orders.models import Order
-from .forms import ProductForm, ProductImageForm
+from .forms import ProductForm, ProductItemForm, ProductImageForm
 from biddings.forms import BiddingForm
 from carts.models import Cart
 
-class ProductFeaturedListView(LoginRequiredMixin, generic.ListView):
+# 노말 물품은 아래것으로 통일
+class ProductNormalListView(LoginRequiredMixin, generic.ListView):
+    '''
+    Featured = True이고 product_type= Noraml인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
+    '''
     template_name = 'products/product_list.html'
-    context_object_name = 'products'
+    context_object_name = 'product_items'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductNormalListView, self).get_context_data(*args, **kwargs)
+        brands = Brand.objects.all()
+        context['brands'] = brands
+        context['is_staff_check'] = False
+
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        # brand 받았나
+        try:
+            brand = self.kwargs['brand']
+        except:
+            brand = None
+        # category 받았나
+        try:
+            category = self.kwargs['category']
+        except:
+            category = None
+        
+        product_item_qs = ProductItem.objects.featured().get_normal()
+        
+        # 필터링
+        if not brand is None:
+            product_item_qs = product_item_qs.filter(product__brand__name=brand).order_by('-updated') # 두개 합친건데 되는지 확인. 
+        elif not category is None:
+            product_item_qs = product_item_qs.filter(product__category__name=category).order_by('-updated') # 두개 합친건데 되는지 확인. 
+        else:
+            product_item_qs = product_item_qs.order_by('-updated') # 두개 합친건데 되는지 확인. 
+
+        # 전체 쿼리셋 저장 및 업데이트
+        for product_item_obj in product_item_qs:
+            product_item_obj.save()
+        
+        return product_item_qs
+
+# 비딩 물품은 아래것으로 통일
+class ProductBiddingListView(LoginRequiredMixin, generic.ListView):
+    '''
+    Featured = True이고 product_type= bidding인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
+    bidding_ready와 bidding 두가지에 대하 queryset을 준비해야함.
+    '''
+    template_name = 'products/product_bidding_list.html'
+    context_object_name = 'product_items'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductBiddingListView, self).get_context_data(*args, **kwargs)
+        brands = Brand.objects.all()
+        context['brands'] = brands
+
+        # brand 받았나
+        try:
+            brand = self.kwargs['brand']
+        except:
+            brand = None
+        # category 받았나
+        try:
+            category = self.kwargs['category']
+        except:
+            category = None
+        product_item_qs = ProductItem.objects.featured().get_bidding()
+        
+
+        # 필터링
+        if not brand is None:
+            product_item_qs = product_item_qs.filter(product__brand__name=brand).order_by('-updated') # 두개 합친건데 되는지 확인. 
+        elif not category is None:
+            product_item_qs = product_item_qs.filter(product__category__name=category).order_by('-updated') # 두개 합친건데 되는지 확인. 
+        else:
+            product_item_qs = product_item_qs.order_by('-updated') # 두개 합친건데 되는지 확인. 
+
+        # 전체 쿼리셋 저장 및 업데이트
+        for product_item_obj in product_item_qs:
+            product_item_obj.save()
+
+        # 바딩준비, 비딩중으로 qs 따로 저장.
+        bidding_item_qs = product_item_qs.filter(bidding_on='bidding')
+        bidding_ready_item_qs = product_item_qs.filter(bidding_on='bidding_ready')
+
+        context['bidding_items'] = bidding_item_qs
+        context['bidding_ready_items'] = bidding_ready_item_qs
+        
+        return context
+    def get_queryset(self, *args, **kwargs):
+        return ProductItem.objects.get_bidding()
+
+
+# 이건 그냥 본인 bidding list 에서만 확인하게 해도 충분할듯.
+class ProductBiddingCompleteListView(LoginRequiredMixin, generic.ListView):
+    '''
+    Featured = True이고 product_type = Bidding인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
+    '''
+    template_name = 'products/product_list.html'
+    context_object_name = 'product_items'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductBiddingListView, self).get_context_data(*args, **kwargs)
+        brands = Brand.objects.all()
+        context['brands'] = brands
+
+        for product_item_obj in ProductItem.objects.all():
+            product_item_obj.save()
+        
+        return context
+            
+    def get_queryset(self, *args, **kwargs):
+        request = self.request
+        return ProductItem.objects.get_bidding().filter(bidding_on='bidding_end').order_by('-updated') # 두개 합친건데 되는지 확인. 
+
+
+# 스탭만 들어갈수있는 mixin을만들자.
+
+# 스탭이 PRODUCT 올리기전에 맞는지 실제 뷰로 확인하고 맞으면 간단한 버튼으로 Featured되게 하는 뷰
+class ProductStaffCheckView(LoginRequiredMixin, StaffRequiredView, generic.ListView):
+    '''
+    Featured = False인 Bidding과 normal 모두를 표시함.
+    직접 detail 들어가보고 괜찮으면 버튼하나 만들어서 해당 물품의 featured를 True로 변하게함.
+    역으로 일반 list 뷰에서도 해당 버튼 누르면 다시 False로 변하게 하여 안보이게 가능.
+    얘도 날짜로 필터링가능하게해야할듯.
+    '''
+    template_name = 'products/product_list.html'
+    context_object_name = 'product_items'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductStaffCheckView, self).get_context_data(*args, **kwargs)
+        brands = Brand.objects.all()
+        context['brands'] = brands
+        context['is_staff_check'] = True
+        normal_product_items_qs = ProductItem.objects.filter(featured=False).filter(product_type='normal')
+        bidding_product_items_qs = ProductItem.objects.filter(featured=False).filter(product_type='bidding')
+
+        for product_item_obj in normal_product_items_qs:
+            product_item_obj.save()
+        for product_item_obj in bidding_product_items_qs:
+            product_item_obj.save()
+        
+        try:
+            select_date = self.kwargs['date']
+        except:
+            context['normal_product_items'] = normal_product_items_qs
+            context['bidding_product_items'] = bidding_product_items_qs
+            return context
+
+        start_date = timezone.now().date()
+        end_date = timezone.now().date() + timezone.timedelta(days=1)
+        start_year, start_month, start_day  = start_date.year, start_date.month, start_date.day
+        end_year, end_month, end_day = end_date.year, end_date.month, end_date.day
+        start_datetime = timezone.make_aware(timezone.datetime(start_year, start_month, start_day, 0, 0, 0))
+        end_datetime = timezone.make_aware(timezone.datetime(end_year, end_month, end_day, 0, 0, 0))
+
+        context['normal_product_items'] = normal_product_items_qs.filter(updated__gte=start_datetime, updated__lt=end_datetime)
+        context['bidding_product_items'] = bidding_product_items_qs.filter(updated__gte=start_datetime, updated__lt=end_datetime)
+        
+
+        return context
 
     def get_queryset(self, *args, **kwargs):
         request = self.request
-        return Product.objects.all().featured()
+        
+        # brand 받았나
+        try:
+            brand = self.kwargs['brand']
+        except:
+            brand = None
+        # category 받았나
+        try:
+            category = self.kwargs['category']
+        except:
+            category = None
+        
+        product_item_qs = ProductItem.objects.filter(featured=False)
+        
+        # 필터링
+        if not brand is None:
+            product_item_qs = product_item_qs.filter(product__brand__name=brand).order_by('-updated') # 두개 합친건데 되는지 확인. 
+        elif not category is None:
+            product_item_qs = product_item_qs.filter(product__category__name=category).order_by('-updated') # 두개 합친건데 되는지 확인. 
+        else:
+            product_item_qs = product_item_qs.order_by('-updated') # 두개 합친건데 되는지 확인. 
 
-class ProductCategoryListView(LoginRequiredMixin, generic.ListView):
-    template_name = 'products/product_list.html'
-    context_object_name = 'products'
+        # 전체 쿼리셋 저장 및 업데이트
+        if product_item_qs.count() == 1:
+            product_item_qs.first().save()
+        elif product_item_qs.count() > 1:
+            for product_item_obj in product_item_qs:
+                product_item_obj.save()
+        else:
+            pass
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductCategoryListView, self).get_context_data(*args, **kwargs)
-        print(context)
-        brands = Brand.objects.all()
-        context['brands'] = brands
-        return context
+        # 날짜받았냐?
+        try:
+            select_date = self.kwargs['date']
+        except:
+            return product_item_qs
+        
+        start_date = timezone.now().date()
+        end_date = timezone.now().date() + timezone.timedelta(days=1)
+        start_year, start_month, start_day  = start_date.year, start_date.month, start_date.day
+        end_year, end_month, end_day = end_date.year, end_date.month, end_date.day
+        start_datetime = timezone.make_aware(timezone.datetime(start_year, start_month, start_day, 0, 0, 0))
+        end_datetime = timezone.make_aware(timezone.datetime(end_year, end_month, end_day, 0, 0, 0))
 
-    def get_queryset(self):
-        print("self.kwargs:", self.kwargs)
-        category = self.kwargs['category']
-        if category is not None:
-            return Product.objects.filter(category__name__icontains=category)
-        return Product.objects.all()
-
-class ProductBrandListView(LoginRequiredMixin, generic.ListView):
-    template_name = 'products/product_list.html'
-    context_object_name = 'products'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductBrandListView, self).get_context_data(*args, **kwargs)
-        print(context)
-        brands = Brand.objects.all()
-        context['brands'] = brands
-
-        for product_obj in Product.objects.all():
-            product_obj.save()
-
-
-        return context
-
-    def get_queryset(self):
-        print("self.kwargs:", self.kwargs)
-        brand = self.kwargs['brand']
-        if brand is not None:
-            # print('brand.name', brand.name)
-            return Product.objects.filter(brand__name__icontains=brand)
-        return Product.objects.all()
-
-
+        return product_item_qs.filter(updated__gte=start_datetime, updated__lt=end_datetime)
+    
 
 class ProductFeaturedDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_featured-detail.html'
@@ -77,29 +240,7 @@ class ProductFeaturedDetailView(LoginRequiredMixin, generic.DetailView):
     #     request = self.request
     #     return Product.objects.all().featured
 
-class ProductListView(LoginRequiredMixin, generic.ListView):
-    template_name = 'products/product_list.html'
-    context_object_name = 'products'
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductListView, self).get_context_data(*args, **kwargs)
-        print(context)
-        brands = Brand.objects.all()
-        context['brands'] = brands
-
-        for product_obj in Product.objects.all():
-            product_obj.save()
-
-        products_bidding = Product.objects.filter(bidding_on='bidding')
-        context['products_bidding'] = products_bidding
-        
-        
-        return context
-
-
-    def get_queryset(self, *args, **kwargs):
-        request = self.request
-        return Product.objects.order_by('-bidding_start_date')
 
 # class UserProductHistoryView(LoginRequiredMixin, generic.ListView):
 #     template_name = 'products/product_list.html'
@@ -120,40 +261,49 @@ class ProductListView(LoginRequiredMixin, generic.ListView):
 # 실질적으로 사용하는 detail View
 class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_detail.html'
-    context_object_name = 'product'
+    context_object_name = 'product_item'
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductDetailSlugView, self).get_context_data(*args, **kwargs)
         request = self.request
         user = request.user
         slug = self.kwargs.get('slug')
+        product_item_obj = ProductItem.objects.get(slug=slug)
+        product_obj = product_item_obj.product
+        product_type = product_item_obj.product_type
         is_stock = True
-        cart_obj, new_obj = Cart.objects.new_or_get(request)
-        product_images_qs = ProductImage.objects.filter(product__title=slug)
-        product_obj = Product.objects.get(slug=slug)
+        cart_obj, new_obj = Cart.objects.new_or_get(request) #??
+        product_images_qs = ProductImage.objects.filter(product=product_obj)
         product_obj.save()
-        bidding_obj_up_to_10 = Bidding.objects.filter(product=product_obj).order_by('-timestamp')[:10]
-        bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')
-        # 경매준비 경매중 경매종료 여부확인
-        now = timezone.now()
-        bidding_on = None
-        if now < product_obj.bidding_start_date:
-            bidding_on = 'bidding_ready' # 경매 준비중
-        elif now >= product_obj.bidding_start_date and now < product_obj.bidding_end_date and product_obj.current_price < product_obj.limit_price:
-            bidding_on = 'bidding'
-        elif now > product_obj.bidding_end_date or product_obj.current_price == product_obj.limit_price:
-            bidding_on = 'bidding_end'
-        else:
+        
+        if product_type == 'bidding':
+            bidding_obj_up_to_10 = Bidding.objects.filter(product=product_obj).order_by('-timestamp')[:10]
+            bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')
+            now = timezone.now()
             bidding_on = None
+            if now < product_item_obj.bidding_start_date:
+                bidding_on = 'bidding_ready' # 경매 준비중
+            elif now >= product_item_obj.bidding_start_date and now < product_item_obj.bidding_end_date and product_item_obj.current_price < product_item_obj.price:
+                bidding_on = 'bidding'
+            elif now > product_item_obj.bidding_end_date or product_item_obj.current_price == product_item_obj.price:
+                bidding_on = 'bidding_end'
+            else:
+                bidding_on = None
+
+        else:
+            bidding_obj_up_to_10 = None
+            bidding_on = None
+
+        # 경매준비 경매중 경매종료 여부확인
         # 상시판매물품 재고여부
-        if product_obj.amount_always_on < 1:
+        if product_item_obj.amount < 1:
             is_stock = False
             amount_select_list = 0
         else:
-            amount_select_list = range(1, product_obj.amount_always_on + 1)
+            amount_select_list = range(1, product_item_obj.amount + 1)
         
-    
-        
+        context['product'] = product_obj
+        context['product_type'] = product_type
         context['amount_select_list'] = amount_select_list
         context['is_stock'] = is_stock
         context['bidding_on'] = bidding_on
@@ -165,13 +315,13 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
     def get_object(self, *args, **kwargs):
         request = self.request
         slug = self.kwargs.get('slug')
-        instance = get_object_or_404(Product, slug=slug, active=True)
+        instance = get_object_or_404(ProductItem, slug=slug, active=True)
         try:
-            instance = Product.objects.get(slug=slug, active=True)
-        except Product.DoesNotExist:
+            instance = ProductItem.objects.get(slug=slug, active=True)
+        except ProductItem.DoesNotExist:
             raise Http404("Not found..")
-        except Product.MultipleObjectsReturned:
-            qs = Product.objects.filter(slug=slub, active=True)
+        except ProductItem.MultipleObjectsReturned:
+            qs = ProductItem.objects.filter(slug=slug, active=True)
             instance = qs.first()
         except:
             raise Http404("Uhmmmmm")
@@ -184,7 +334,6 @@ class ProductDetailView(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
-        print(context)
         return context
 
     def get_queryset(self, *args, **kwargs):
@@ -221,7 +370,7 @@ class ProductDetailView(LoginRequiredMixin, generic.DetailView):
 #     return render(request, 'products/product_detail.html', {'product':product})
 
 # @login_required
-def product_upload(request):
+def upload_product(request):
     # ImageFormSet이 멀티이미지 업로드를 가능하게 해줌. extra는 업로드가능개수. 폼이 완성된 갯수만큼만 업로드 하므로 안심.
     ImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=10)
     if request.method == 'POST':
@@ -244,10 +393,23 @@ def product_upload(request):
     else:
         productform = ProductForm()
         formset = ImageFormSet(queryset=ProductImage.objects.none())
-    return render(request, 'products/product_upload.html', {'productform': productform, 'formset': formset})
+    return render(request, 'products/upload_product.html', {'productform': productform, 'formset': formset})
 
 
+class UploadProductItemView(generic.CreateView):
+    form_class = ProductItemForm
+    template_name = 'products/upload_product_item.html'
+    success_url = reverse_lazy('products:product_list')
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(UploadProductItemView, self).get_context_data(*args, **kwargs)
+        return context
+
+    def form_valid(self, form):
+        if form.instance.product_type == 'bidding':  
+            form.instance.current_price = form.instance.start_price
+        return super().form_valid(form)
+ 
 
 
 class BiddingDetailView(LoginRequiredMixin, generic.DetailView):
@@ -264,6 +426,39 @@ class BiddingDetailView(LoginRequiredMixin, generic.DetailView):
         pk = self.kwargs.get('pk')
         return Product.objects.filter(pk=pk)
 
+
+
+# 그냥 나중에 쓸수도 있는 json이기에 남겨둠.
+def cart_detail_api_view(request):
+    cart_obj, new_obj = Cart.objects.new_or_get(request)
+    cart_items = [{
+            "id": x.id,
+            "url": x.product.get_absolute_url(),
+            "name": x.product.name, 
+            # "price":x.product.current_price,
+            "price":select_price(x),
+            "amount":x.amount
+            } for x in cart_obj.cart_items.all()] # [<object>, <object>, <object>] 그래서 제이슨 형태로 건내줘야힘.
+    cart_data = {"cart_items":cart_items, "subtotal":cart_obj.subtotal, "total":cart_obj.total}
+    return JsonResponse(cart_data)
+
+
+
+def product_item_featured_update_api_view(request):
+    product_item_slug = request.POST.get('product_item_slug')
+    product_item_obj = ProductItem.objects.filter(slug=product_item_slug)
+    if product_item_obj.featured:
+        product_item_obj.featured = False
+        featured = False
+    else:
+        product_item_obj.featured = True
+        featured = True
+    if request.is_ajax(): # Asyncronous JavaScripts ANd XM
+        print("Ajax feature form request")
+        json_data = {
+            "featured": added,
+        }
+        return JsonResponse(json_data, status=200)
 
 # 새로운 비딩을 시작하고 혹은 있는 비딩이 있으면 가격과 timestam[를 업뎃하는 것.]
 # 시간안에 끝났는지를 product의 비딩끝타임으로 확인하여 비딩참여가능한지 홛ㄱ인.
