@@ -1,7 +1,7 @@
-<form method='POST' action="{% url 'carts:update' %}" data-endpoint="{% url 'carts:update' %}" class="form-product-ajax">
+<form method='POST' action="{% url 'carts:update' %}" data-endpoint="{% url 'carts:update' %}">
     {% csrf_token %}
-    <input class='cart-item-product-id' type="hidden" name='product_id' value='{{ product_id }}' />
-    <input class='cart-item-product-type' type="hidden" name='product_type' value='{{ product_type }}' />
-    <input id="product" type="hidden" name="at_cart" value="at_cart">
-    <button type='submit' class='btn btn-link btn-sm'>Remove?</button>
-</form>
+    <input class='cart-item-product-id' type="hidden" name='cart_item_id' value='{{ cart_item.id }}' />
+    <input class='cart-item-product-type' type="hidden" name='product_type' value='{{ cart_item.product_type }}' />
+    <input id="product" type="hidden" name="at_cart" value="True">
+    <button type='submit' class='btn btn-outline-danger btn-sm'>삭제</button>
+  </form>

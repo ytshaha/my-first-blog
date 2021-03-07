@@ -100,36 +100,35 @@ def strfdelta(tdelta, fmt):
     return fmt.format(**d)
 
 class Product(models.Model):
-    number              = models.CharField(max_length=10, blank=True, null=True, unique=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
-    title               = models.CharField(max_length=200, help_text=u'상품명')
-    brand               = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
-    category            = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
+    number                  = models.CharField(max_length=10, blank=True, null=True, unique=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
+    title                   = models.CharField(max_length=200, help_text=u'상품명')
+    brand                   = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
+    category                = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
     
-    # start_price         = models.PositiveIntegerField(default=0, help_text=u'경매시작가격')
-    # limit_price         = models.PositiveIntegerField(default=0, help_text=u'경매한도가격')
-    # current_price       = models.PositiveIntegerField(default=0, help_text=u'경매현재가격')
-    list_price          = models.PositiveIntegerField(default=0, help_text=u'정가')
-    # sale_ratio          = models.DecimalField(default=0, max_digits=100, decimal_places=1, help_text=u'할인율')
-    # price_step          = models.IntegerField(default=5000)
-    info_made_country   = models.CharField(default=0, max_length=30, help_text=u'원산지')
-    info_product_number = models.CharField(default=0, max_length=30, help_text=u'모델명')
-    info_delivery       = models.CharField(default='택배', max_length=30, help_text=u'배송방법')
-    # info_delivery_from  = models.CharField(default='국내', max_length=30, choices=DELIVERY_FROM_CHOICE, help_text=u'배송방법_국내해외')
-    description         = models.TextField(blank=True, null=True, help_text=u'정보')
-    # amount              = models.IntegerField(default=0, help_text=u'경매수량')
-    # amount_always_on    = models.IntegerField(default=0, help_text=u'상시판매수량')
-    created_date        = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
-    # bidding_start_date  = models.DateTimeField(default=timezone.now, help_text=u'경매시작일')
-    # bidding_end_date    = models.DateTimeField(default=timezone.now, help_text=u'경매종료일')
-    # remain_bidding_time = models.CharField(default=0, max_length=200, help_text=u'남은경매시간')
-    # bidding_on          = models.CharField(default=0, max_length=200, choices=BIDDING_STATUS_CHOICE, help_text=u'경매여부')
+    list_price              = models.PositiveIntegerField(default=0, help_text=u'정가')
     
-    image               = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
-    video_link          = models.CharField(max_length=250, blank=True, null=True)
+    info_made_country       = models.CharField(default=0, max_length=30, help_text=u'원산지')
+    info_product_number     = models.CharField(default=0, max_length=30, help_text=u'모델명')
+    info_delivery           = models.CharField(default='택배', max_length=30, help_text=u'배송방법')
+    info_product_kind       = models.CharField(blank=True, null=True, max_length=100, help_text=u'종류_가방에 해당')
+    info_material           = models.CharField(max_length=100, blank=True, null=True, help_text=u'제품소재_의류_섬유의 조성 또는 혼용률을 백분율로 표시, 기능성인 경우 성적서 또는 허가서, 운동화_경우에는 겉감, 안감을 구분하여 표시')
+    info_feature            = models.CharField(max_length=100,  blank=True, null=True, help_text=u'크기/치수/색상_구두/신발의경우_발길이 해외사이즈 표기시 국내사이즈 병행표기(mm), 굽높이:굽재료를 사용하는 여성화에 한함(cm)')
+    info_product_person     = models.CharField(max_length=100,  blank=True, null=True, help_text=u'제조자_수입품인 경우 수입자를 함께 표기(변행수입의 경우 병행수입 여부로 대체 가능)')
+    info_alert              = models.CharField(max_length=100, blank=True, null=True, help_text=u'취급시 주의사항_의류는 세탁방법 및 취급시 주의사항')
+    info_quality_standard   = models.CharField(max_length=100, blank=True, null=True, help_text=u'품질보증기준')
+    info_as                 = models.CharField(max_length=100, blank=True, null=True, help_text=u'A/S 책임자와 전화번호')
     
-    featured            = models.BooleanField(default=False)
-    active              = models.BooleanField(default=True)
-    slug                = models.SlugField(blank=True, unique=True, allow_unicode=True)
+    
+    
+    description             = models.TextField(blank=True, null=True, help_text=u'정보')
+    created_date            = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
+    
+    image                   = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    video_link              = models.CharField(max_length=250, blank=True, null=True)
+    
+    featured                = models.BooleanField(default=False)
+    active                  = models.BooleanField(default=True)
+    slug                    = models.SlugField(blank=True, unique=True, allow_unicode=True)
     
     objects = ProductManager()
 
@@ -254,7 +253,7 @@ class ProductItemManager(models.Manager):
     #     return None
     
     def search(self, query):
-        return self.get_queryset().active().search(query)
+        return self.get_queryset().featured().search(query)
 
 
 class ProductItem(models.Model):
@@ -266,6 +265,9 @@ class ProductItem(models.Model):
     # limit_price         = models.PositiveIntegerField(default=0, help_text=u'가격(일반가격 & 경매한도가)')
     price               = models.PositiveIntegerField(default=0, help_text=u'가격(일반가격 & 경매한도가)') # 기존 limit_price를 price로 개편
     product_type        = models.CharField(max_length=20, default='normal', choices=PRODUCT_TYPE)
+    
+    info_product_date   = models.CharField(max_length=100, blank=True, null=True, help_text=u'제조연월_의류만 해당')
+
     updated             = models.DateTimeField(auto_now_add=True) # 업로드날짜.
     featured            = models.BooleanField(default=False)    # 용도: 보여지게하기
     active              = models.BooleanField(default=True)     # 용도: 구매가능여부결정.(보여져도 구매안되게할 수 있다.)
@@ -315,8 +317,8 @@ def product_item_pre_save_receiver(sender, instance, *args, **kwargs):
     # 할인율
     if instance.product_type == 'normal':
         instance.sale_ratio = (instance.product.list_price - instance.price) / instance.product.list_price * 100
-    else:
-        instance.sale_ratio = (instance.product.list_price - instance.current_price) / instance.product.list_price * 100
+    elif instance.product_type == 'bidding':
+        instance.sale_ratio = (instance.product.list_price - instance.current_price) / instance.product.list_price * 100 
     # 남은 비딩타임.
     now = timezone.now()
     time_remain = instance.bidding_end_date - now

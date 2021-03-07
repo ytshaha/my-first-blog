@@ -246,12 +246,6 @@ video { width: 100%; }
 
 
 
-
-.btn-outline-success{
-    border-color:black;
-}
-
-
 ul#horizontal-list {
 	list-style: none;
 	padding-top: 20px;
@@ -418,8 +412,8 @@ ul#horizontal-list {
 
 .product-list-image {
     
-    min-height:400px;
-    margin:5px;
+    /* min-height:400px;
+    margin:5px; */
     border-top:1px solid rgb(238, 238, 238);
     border-bottom:2px solid rgb(238, 238, 238);
     border-left:1px solid rgb(238, 238, 238);
@@ -434,7 +428,6 @@ ul#horizontal-list {
     display: block;
     border-style: none;
     padding:0px;
-    object-fit:cover;
 }
 
 .product-card__div {

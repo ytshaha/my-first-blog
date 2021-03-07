@@ -4,6 +4,7 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save, m2m_changed
 
 from products.models import Product, ProductItem
+from biddings.models import Bidding
 from tickets.models import TicketItem
 
 
@@ -71,6 +72,7 @@ class CartItem(models.Model):
     subtotal        = models.IntegerField(default=0, help_text=u'카트총액')
     product_type    = models.CharField(max_length=20, default='bidding', choices=PRODUCT_TYPE)
     timestamp       = models.DateTimeField(auto_now_add=True)
+    sale_ratio      = models.DecimalField(default=0, max_digits=100, decimal_places=1, help_text=u'할인율_자동계산필드')
 
     objects = CartItemManager()
     
@@ -84,6 +86,18 @@ class CartItem(models.Model):
 
 def pre_save_cart_item_receiver(sender, instance, *args, **kwargs):
     instance.subtotal = int(instance.price) * int(instance.amount)
+    
+    # 할인율 계산
+    if instance.product_type == 'normal':
+        instance.sale_ratio = instance.product_item.sale_ratio
+    elif instance.product_type == 'bidding':
+        bidding_qs = Bidding.objects.filter(user=instance.user, product_item=instance.product_item, win=True)
+        if bidding_qs.count() == 1:
+            bidding_obj = bidding_qs.first()
+        instance.sale_ratio = bidding_obj.sale_ratio
+    if instance.product_type == 'ticket':
+        instance.sale_ratio = instance.ticket_item.sale_ratio
+        
 
 pre_save.connect(pre_save_cart_item_receiver, sender=CartItem)
 

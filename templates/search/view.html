@@ -2,6 +2,7 @@
 
 {% block content %}
 {% load static %}
+{% load humanize %}
 <!-- 카테고리의 네브바 -->
 
 
@@ -17,7 +18,7 @@
 </div>  
 
 
-<div class='row mb-3 mx-auto text-center'>
+<div class='row mb-2 mt-2 mx-auto text-center'>
 
     {% if request.GET.q %}
     <div class='col-12'>
@@ -35,46 +36,186 @@
 </div>
 
 
+
+<!-- 기존.....프로덕트 카테고리 선택바 -->
+{% if not is_staff_check %}
+<div class='container-fluid sticky-top-2 text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
+    <div class='container'>
+        <div class="row">
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <p class="" style="font-weight:bold;">Category</p>
+            </div>
+                <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_list' %}"><p class="product-list-category-text">전체</p></a>
+            </div>
+            <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_list' category='woman' %}"><p class="product-list-category-text">여성</p></a>
+            </div>
+            <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_list' category='men' %}"><p class="product-list-category-text">남성</p></a>
+            </div>
+            <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_list' category='shoes' %}"><p class="product-list-category-text">신발</p></a>
+            </div>
+            <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_list' category='acc' %}"><p class="product-list-category-text">패션잡화</p></a>
+            </div>
+            <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_list' category='kid' %}"><p class="product-list-category-text">유아동</p></a>
+            </div>
+        </div>
+        {% if brands.exists %}
+
+        <hr>
+        <div class="row">
+            <div class='col-2 product-list-category' style='padding:0;'>
+                <p class="" style="font-weight:bold;">Brand</p>
+            </div>
+            {% for brand in brands %}
+            <div class='col product-list-category' style='padding:0;'>
+                <a href="{% url 'products:product_list' brand=brand %}"><p class="product-list-category-text">{{ brand|upper }}</p></a>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>   
+</div>
+{% endif %}
+
+
 <!-- 프로덕트 리스트-->
 
 <div class='container' style="width:80%;">
     <div class='row'>
-    {% for product in products %}
+        {% for product_item in product_items %}
         <div class="col-lg-4 col-md-6 col-sm-12">
             <div class="product-list-image">
-                <picture>
-                    {% if product.image %}
-                    <a href="{{ product.get_absolute_url }}"><img src="{{ product.image.url }}" class="product-main-image"></a>   
-                    
-                    {% else %}
-                    <span class="text-muted">No Image</span>
-                    {% endif %}
-
-                {% if product.bidding %}
-                <div class="row product-card__div product-card-on-bidding">
-                {% else %}
-                <div class="row product-card__div">
-                {% endif %}
-                    <div class='col-6 align-self-center'>
-                        <span class="product-card__name">{{ product.brand }}</span></br>
-                        <span class="product-card__name" style="font-weight:bold;font-size:20px;">{{ product.title }}</span></br>
-                        <span class="product-card__price" style="font-weight:bold;font-size:15px;">₩{{ product.start_price }}</span>
-                    </div>
-
-                    <div class='col-6 ml-auto align-self-center product-card__bidding'>
-                        {% if product.bidding %}
-                        <p class="product-card__on-bidding text-right">On Bidding</p>
-                        <p class="text-right">2hr 10min left</p>
+                <div class='product-image-div'>
+                    <picture>
+                        {% if product_item.product.image %}
+                        <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.image.url }}" class="product-main-image"></a>   
                         
                         {% else %}
-                        <p class="text-right">START BIDDING AT</p>
-                        <p class="text-right">{{ product.bidding_date|date:"Y/m/d f" }}</p>
+                        <span class="text-muted">No Image</span>
                         {% endif %}
+                    </picture>
+                </div>
+                <div class="row product-card__div product-card-on-bidding">
+                    <div class='col-12 align-self-center product-infos'>
+                        {% if product_item.featured %}
+                        <p class="product-card__on-bidding text-left" style='font-size:medium;margin-bottom:5px;'>On Sale</p>                            
+                        {% else %}
+                        <p class="product-card__on-bidding text-left" style='font-size:medium;margin-bottom:5px;color:black;'>판매준비중</p>                            
+                        {% endif %}
+                        <p class="product-card__name" style='margin-bottom: 5px;'>{{ product_item.product.brand }}</p>
+                        <p class="product-card__name" style="font-weight:bold;font-size:20px;margin-bottom:5px;">{{ product_item.product.title }} </p>
+                        <span class="product-card__price" style="font-weight:bold;font-size:20px;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:gray;'><del>{{ product_item.product.list_price|intcomma }}원</del></span><br>
+                        <p class="product-card__name text" style="font-size:15px;font-weight:normal;margin-bottom:5px;">재고수량 {{ product_item.amount }}EA</p>
+                        <div class='row'>
+                            <div class='col'>
+                                <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
+                                {% if product_item.info_delivery_from == 'overseas' %}
+                                <div id='count' style='color:red;font-weight:bold;display:inline;'></div><span id='count-comment' style='color:red;font-weight:bold;font-size:small;'> 안에 구매가능</span>
+                                {% endif %}
+                            </div>
+                            <div class='col'>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;">{{ product_item.get_info_delivery_from_display }}</p>
+                            </div>
+                        </div>
+                        <div class='col mr-auto' style='display:none;'>
+                            <!-- 나중에 featured 버튼을 넣기위한 공간. -->
+                        </div>
+
+                        <!-- 해외배송이면 이걸 계산하게 해야한다. -->
+                        <div style='display:none;' id='bidding_end_date_year'>{{ product_item.bidding_end_date|date:'Y' }}</div>
+                        <div style='display:none;' id='bidding_end_date_month'>{{ product_item.bidding_end_date|date:'n' }}</div>
+                        <div style='display:none;' id='bidding_end_date_day'>{{ product_item.bidding_end_date|date:'j' }}</div>
+                        <div style='display:none;' id='bidding_end_date_hour'>{{ product_item.bidding_end_date|date:'G' }}</div>
+                        <div style='display:none;' id='bidding_end_date_minute'>{{ product_item.bidding_end_date|date:'i' }}</div>
+                        <div style='display:none;' id='bidding_end_date_second'>{{ product_item.bidding_end_date|date:'s' }}</div>
+                        <div style='display:none;' id='product_type'>{{ product_item.product_type }}</div>
+                        
                     </div>
                 </div>
             </div>
         </div>
-    {% endfor %}
-    </div>    
+        {% endfor %}
+    </div>
 </div>
+
+
+<div id="count"></div>
+
+<script>
+    // 일반 페이지에는 그냥 그날 4시까지 남은시간을 게산해서 넣어주자.
+    // 3시가 넘어가면 시간이 아닌 구매불가로 뜨게 하고 링크들어가면 거기에도 구매불가로 뜨게하자.
+    // 즉이 이 jquery는 재활용이 필요한 상황.
+setInterval(function(){
+    $('.product-infos').each(function(i, obj) {
+        var $this = $(this)
+        console.log($this)
+        var temp_end_date = $this.find(".bidding_end_date")
+        console.log(temp_end_date)
+        var year = $this.find("#bidding_end_date_year").text()
+        var month = $this.find("#bidding_end_date_month").text()
+        var day = $this.find("#bidding_end_date_day").text()
+        var hour = $this.find("#bidding_end_date_hour").text()
+        var minute = $this.find("#bidding_end_date_minute").text()
+        var second = $this.find("#bidding_end_date_second").text()
+        var product_type = $this.find("#product_type").text()
+
+        console.log(year, month, day, hour, minute, second)
+        var today = new Date().getTime();
+        if (product_type == 'bidding' ){
+            var dday = new Date(year, month-1, day, hour, minute, second, 0).getTime();
+        } else { 
+            var today2 = new Date()
+            var year = today2.getFullYear()
+            var month = today2.getMonth() + 1
+            var day = today2.getDate()
+            var dday = new Date(year, month-1, day, 16, 0, 0, 0).getTime();
+        }
+        
+        
+        console.log(dday)
+        
+        console.log(dday, today)
+        
+
+        // var gap = 0;
+        var gap = dday - today2;
+        
+        var calcHour = Math.ceil((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) ;
+        if(calcHour<10){
+            calcHour = "0" + (calcHour-1)
+        } else {
+            calcHour = calcHour -1
+        }
+        var calcMin = Math.ceil((gap % (1000 * 60 * 60)) / (1000 * 60)) ;
+        if(calcMin<10){
+            calcMin = "0" + (calcMin-1)
+        } else {
+            calcMin = calcMin -1
+        }
+        var calcSec = Math.ceil((gap % (1000 * 60)) / 1000 ) ;
+        if(calcSec<10){
+            calcSec = "0" + (calcSec-1)
+        } else {
+            calcSec = calcSec -1
+        }
+        console.log(calcHour, calcMin, calcSec)
+
+        if (gap>0){
+            $this.find("#count").text(calcHour + ":" + calcMin + ":" + calcSec)
+        
+        } else{
+            $this.find("#count").text("SOLD OUT")
+            $this.find("#count-comment").text("")
+            
+        }
+    });
+}, 1000)
+
+</script>
 {% endblock %}

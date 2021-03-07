@@ -16,7 +16,7 @@
         <div class='col-lg-12 col-md-12 col-sm-12 mx-auto'> 
             <form method="post" action="{% url 'products:bidding_new' slug=slug %}">
                 {% csrf_token %}
-                <input type="hidden" name='product' id="id_product" value='{{ product_obj.id }}'>
+                <input type="hidden" name='product_item' id="id_product_item" value='{{ product_item_obj.id }}'>
                 <table class="table text-center">
                     <thead>
                     <tr>
@@ -28,8 +28,8 @@
                     </thead>
                     <tbody>
                     <tr>
-                        <td>{{ product_obj.title }}</td>
-                        <td>{{ product_obj.price_step }}</td>
+                        <td>{{ product_item_obj.product.title }}</td>
+                        <td>{{ product_item_obj.price_step }}</td>
 
                         <td>
                             <select name="bidding_price" id="id_bidding_price" >

@@ -1,119 +1,342 @@
 {% extends 'shop/base.html' %}
 
+{% block header %}
+<style>
+
+/* .container {
+  background-color: #f2f2f2;
+  padding: 5px 20px 15px 20px;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+} */
+
+input[type=text] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+.icon-container {
+  margin-bottom: 20px;
+  padding: 7px 0;
+  font-size: 24px;
+}
+
+
+span.price {
+  float: right;
+  color: grey;
+}
+
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
 {% block content %}
 {% load humanize %}
+{% load humanize %}
+
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center">CHECKOUT(결제)</h2>
+          <hr class="index-title-divider">
+      </div>
+  </div>
+</div>  
+
 <div class='container'>
-    {% if not object.shipping_address %}
-        <div class='row'>
-            <div class='col-12'>
-                <p class='lead'>Shipping Address</p>
-                <hr/>
-            </div>
-    
-            <div class='col-6'>
-                {% url "checkout_address_create" as checkout_address_create %}
-                {% include 'addresses/form.html' with form=address_form next_url=request.build_absolute_uri action_url=checkout_address_create address_type='shipping' %}
-            </div>
-            <div class='col-6'>
-                {% url "checkout_address_reuse" as checkout_address_reuse %}
-                {% include 'addresses/prev_addresses.html' with address_qs=address_qs address_type='shipping' action_url=checkout_address_reuse %}
-            </div>
-        </div>
-    {% elif not object.billing_address %}
-        <div class='row'>
-            <div class='col-12'>
-                <p class='lead'>Billing Address</p>
-                <hr/>
-            </div>
-            <div class='col-6'>
-                {% url "checkout_address_create" as checkout_address_create %}
-                {% include 'addresses/form.html' with form=address_form next_url=request.build_absolute_uri action_url=checkout_address_create address_type='billing' %}
-            </div>
-            <div class='col-6'>
-                {% url "checkout_address_reuse" as checkout_address_reuse %}
-                {% include 'addresses/prev_addresses.html' with address_qs=address_qs address_type='billing' action_url=checkout_address_reuse %}
-            </div>
-        </div>
-    {% else %}
-        <h1>Finalize Checkout</h1>
-        <p>Cart Items: {% for cart_item in object.cart.cart_items.all %}{{ cart_item.product }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
-        <p>Shipping Address: {{ object.shipping_address.get_address }}</p>
-        <p>Billing Address: {{ object.billing_address.get_address }}</p>
-        <p>총 금액 : {{ object.total|intcomma }} 원</p>
-        {% if object.point_total > 0 %}
-        <p>Point 사용: {{ object.point_total|intcomma }} POINT</p>
-        {% endif %}
-        <p>결재 금액 : {{ object.checkout_total|intcomma }} 원</p>
-        {{ object }}
-
-        <!-- 여기 폼에다가 수량 감소관련 정보를 POST할 수 있게 해줘야겠다.ㄴ -->
-        <div>
-            <h1 class="check-out-complete-text">Checkout Ready</h1>
-        </div>
-
-        <div class='row'>
-            <form method="post" action="" class='form-get-checkout-data'>
-                {% csrf_token  %}
-                <input type="hidden" name='post_purpose' value='use_point'>
-                <label for="quantity">Point 사용 :</label>
-                <input type="number" id="quantity" name="use_point" min=0 max="{{ point_available }}">
-                <button class='btn btnprimary' type="submit">포인트사용</button><span>최대 사용가능 Point : {{ point_available|intcomma }}</span>
-            </form>
-        </div>
-        
-        <div>
-            <p>포인트는 일반 판매 물품의 10%까지 사용할 수 있습니다. </p>
-            <p>경매용 티켓과 경매당첨물품은 제외한 금액의 10%입니다. </p>
-        </div>
-
-
-            <!-- 체크아웃정보 -->
-            <div class='row'>
-            <form action="" class='form-get-data' style='display:none;'>
-                
-                <input type="hidden" class='pg' name='pg' value='{{ pg }}'/>
-                <input type="hidden" class='pay_method' name='pay_method' value='{{ pay_method }}'/>
-                <input type="hidden" class='merchant_uid' name='merchant_uid' value='{{ merchant_uid }}'/>
-                <input type="hidden" class='name'name='name' value='{{ name }}'/>
-                <input type="hidden" class='amount' name='amount' value='{{ amount }}'/>
-                <input type="hidden" class='buyer_email' value='{{ buyer_email }}'/>
-                <input type="hidden" class='buyer_email' name='buyer_name' value='{{ buyer_name }}'/>
-                <input type="hidden" class='buyer_tel' name='buyer_tel' value='{{ buyer_tel }}'/>
-                <input type="hidden" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
-                <input type="hidden" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
-            </form>
-        </div>
-
-        <form action="" class='' style=''>
-            <input type="button" class='pg' name='pg' value='{{ pg }}'/>
-            <input type="button" class='pay_method' name='pay_method' value='{{ pay_method }}'/>
-            <input type="button" class='merchant_uid' name='merchant_uid' value='{{ merchant_uid }}'/>
-            <input type="button" class='name'name='name' value='{{ name }}'/>
-            <input type="button" class='amount' name='amount' value='{{ amount }}'/>
-            <input type="button" class='buyer_email' value='{{ buyer_email }}'/>
-            <input type="button" class='buyer_email' name='buyer_name' value='{{ buyer_name }}'/>
-            <input type="button" class='buyer_tel' name='buyer_tel' value='{{ buyer_tel }}'/>
-            <input type="button" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
-            <input type="button" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
-        </form>
-
-        <!-- 체크아웃버튼 -->
-        <div class="row">
-            <div class='col'>
-                {% if amount == 0 %}
+    <!-- 마지막 체크아웃 부트스트랩 버전-->
+    <div class="row">
+        {% if not shipping_address_obj %}
+        <div class="col-lg-7 col-md-6 col-sm-12 mb-5">
+            <div class="container">
                 <form method='post' action="{% url 'carts:checkout-iamport' %}">
                     {% csrf_token %}
-                    <input type="hidden" name='post_purpose' value='checkout_0'>
-                    <button type='submit' class='btn btn-success'>CHECKOUT 0원</button>
+                    <div class="row">
+                        <div class='col-12 pl-0 pr-3 text-left'>
+                            <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보</p>
+                            <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                        </div>
+                        <div class='row' style='width:100%'>
+                            <div class='col-6'>
+                                <label for="fname"><i class="fa fa-user"></i> 수령인</label>
+                                <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
+                                <p>{{ user.full_name }}</p>
+                            </div>
+                            <div class='col-6'>
+                                <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                                <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
+                                <p>{{ user.email }}</p>
+                            </div>
+                        </div>
+                        <div class='row' style='width:100%'>
+                            <div class='col-12'>
+                                <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처(- 기호 제외하여 입력)</label>
+                                <input type="text" id="phone_number" name="phone_number" placeholder="01012345678">
+                                
+                                <label for="address_line_1"><i class="fa fa-institution"></i> 주소</label>
+                                <input type="text" id="city" name="address_line_1" placeholder="">
+                                <label for="postal_code"><i class="fa fa-institution"></i> 우편번호</label>
+                                <input type="text" id="postal_code" name="postal_code" placeholder="">
+                                <label for="address_line_2"><i class="fa fa-address-card-o"></i> 상세주소</label>
+                                <input type="text" id="adr" name="address_line_2" placeholder="">
+                                <label for="order_memo"><i class="far fa-sticky-note"></i> 배송메모</label>
+                                <input type="text" id="memo" name="order_memo" placeholder="요청사항을 직접 입력합니다.">
+                                <input type="hidden" name='post_purpose' value='change_or_add_address'>
+                            </div>
+                        </div>
+                        <div class='col-12'>
+                            <button class='btn btn-dark btn-block' method='post' action="{% url 'carts:checkout-iamport' %}">배송지 정보 저장</button>
+                        </div>
+                    </div>
                 </form>
-                {% else %}
-                <div class='check-out-div' style='visibility:hidden;'>
-                    <input type='button' class='btn btn-primary' id='check-out-button' value='CHECKOUT(IMPORT)'>
-                </div>
-                {% endif %}
             </div>
         </div>
+        {% else %}
+        <div class="col-lg-7 col-md-6 col-sm-12 mb-5">
+            <div class="container">
+                <form method='post' action="{% url 'carts:checkout-iamport' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class='col-12 pl-0 pr-3 text-left'>
+                            <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보</p>
+                            <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                        </div>
+                        <div class='row' style='width:100%'>
+                            <div class='col-6'>
+                                <label for="fname"><i class="fa fa-user"></i> 수령인</label>
+                                <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
+                                <p>{{ user.full_name }}</p>
+                            </div>
+                            <div class='col-6'>
+                                <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                                <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
+                                <p>{{ user.email }}</p>
+                            </div>
+                        </div>
+                        <div class='row' style='width:100%'>
+                            <div class='col-12'>
+                                <label for="phone"><i class="fas fa-mobile-alt"></i> 연락처(- 기호 제외하여 입력)</label>
+                                <input type="text" id="phone_number" name="phone_number" placeholder="{{ shipping_address_obj.phone_number }}">
+                                <label for="address_line_1"><i class="fa fa-institution"></i> 주소</label>
+                                <input type="text" id="city" name="address_line_1" placeholder="{{ shipping_address_obj.address_line_1 }}">
+                                <label for="address_line_2"><i class="fa fa-address-card-o"></i> 상세주소</label>
+                                <input type="text" id="adr" name="address_line_2" placeholder="{{ shipping_address_obj.address_line_2 }}">
+                                <label for="order_memo"><i class="far fa-sticky-note"></i> 배송메모</label>
+                                <input type="text" id="memo" name="order_memo" placeholder="요청사항을 직접 입력합니다.">
+                                <input type="hidden" name='post_purpose' value='change_or_add_address'>
+                            </div>
+                        </div>
+                    </div>
+                    <div class='col-12'>
+                        <button class='btn btn-dark btn-block' method='post' action="{% url 'carts:checkout-iamport' %}">배송지 정보 수정 저장</button>
+                    </div>
+                    <!-- <label>
+                        <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
+                    </label>
+                    <input type="submit" value="Continue to checkout" class="btn"> -->
+                </form>
+            </div>
+        </div>
+
+        {% endif %}
+        <div class="col-lg-5 col-md-6 col-sm-12">
+            <div class="container mb-5">
+                <div class="row" style='width:100%'>
+                    <div class='col-12 pl-0 pr-3 text-left'>
+                        <p class='mb-1' style='font-weight:bold;font-size:large;'>장바구니</p>
+                        <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                    </div>
+                    {% for cart_item in object.cart.cart_items.all %}
+                    <div class='row' style='width:100%'>
+                        <div class='col-6'>
+                            {% if cart_item.product_type == 'ticket' %}
+                            <p class='mb-1' style='font-size:medium;'>TICKET {{ cart_item.ticket_item.tickets_type }}개</p>
+                            {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
+                            <p class='mb-1' style='font-size:medium;'>{{ cart_item.product_item.product.title }}</p>
+                            {% else %}
+                            <p class='mb-1' style='font-size:medium;font-weight:bold;'>물품명잘못지정됨</p>
+                            {% endif %}
+                        </div>
+                        <div class='col-6 text-right'>
+                            <p style='font-size:smediummall;'>{{ cart_item.subtotal|intcomma }} 원</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    <div class="col-12 m-0 p-0">
+                        <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
+                    </div>
+                    <div class='row' style='width:100%'>
+                        <div class='col-6'>
+                            <p style='font-size:medium;'>주문 금액</p>
+                        </div>
+                        <div class='col-6 text-right'>
+                            <p style='font-size:medium;'>{{ object.total|intcomma }} 원</p>
+                        </div>
+                    </div>
+                    <div class='row' style='width:100%'>
+                        <div class='col-6'>
+                            <p style='font-size:medium;'>포인트 사용</p>
+                        </div>
+                        <div class='col-6 text-right'>
+                            <p style='font-size:medium;'>{% if object.point_total == 0 %}0 원{% else %}-{{ object.point_total|intcomma }} 원{% endif %}</p>
+                        </div>
+                    </div>
+                    <div class="col-12 m-0 p-0">
+                        <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
+                    </div>
+                    <div class='row' style='width:100%'>
+                        <div class='col-6'>
+                            <p style='font-size:large;font-weight:bold;'>결제 금액</p>
+                        </div>
+                        <div class='col-6 text-right'>
+                            <p style='font-size:large;font-weight:bold;'>{{ object.checkout_total|intcomma }} 원</p>
+                        </div>
+                    </div>
+                    <div class='col-12 p-0'>
+                        <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                    </div>
+                    <div class="row" style='width:100%;'>
+                        <div class='col-12'>
+                            {% if not shipping_address_obj %}
+                            <button class='btn btn-outline-secondary btn-block'>배송지 정보를 완료해주세요</button>
+                            {% elif amount == 0 %}
+                            <form method='post' action="{% url 'carts:checkout-iamport' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name='post_purpose' value='checkout_0'>
+                                <button type='submit' class='btn btn-dark btn-block'>결제하기</button>
+                            </form>
+                            {% else %}
+                            <div class='check-out-div' style='visibility:hidden;'>
+                                <input type='button' class='btn btn-dark btn-block' id='check-out-button' value='결제하기'>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="container">
+                <div class="row" style='width:100%'>
+                    <form method="post" action="" class='form-get-checkout-data' style='width:100%;'>
+                        {% csrf_token  %}
+                        <div class='col-12 pl-0 pr-3 text-left'>
+                            <p class='mb-1' style='font-weight:bold;font-size:large;'>포인트</p>
+                            <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                        </div>
+                        <div class='row' style='width:100%'>
+                            <div class='col-8'>
+                                <p style='font-size:medium;'>포인트 사용</p>
+                            </div>
+                            <div class='col-4 text-right'>
+                                <input type="hidden" name='post_purpose' value='use_point'>
+                                <input type="number" id="quantity" name="use_point" min=0 max="{{ point_available }}" style='width:100%;'>
+                                
+                            </div> 
+                        </div>
+                        <div class='row'>
+                            <div class='col-12 text-right'>
+                                <p style='font-size:small;'>* 최대 사용가능 Point : {{ point_available|floatformat:"0" }}</p>
+                                <button type='submit' class='btn btn-dark btn-block'>포인트적용</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <h1>Finalize Checkout</h1>
+    <p>Cart Items: {% for cart_item in object.cart.cart_items.all %}{{ cart_item.product }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
+    <p>Shipping Address: {{ object.shipping_address.get_address }}</p>
+    <p>Billing Address: {{ object.billing_address.get_address }}</p>
+    <p>총 금액 : {{ object.total|intcomma }} 원</p>
+    {% if object.point_total > 0 %}
+    <p>Point 사용: {{ object.point_total|intcomma }} POINT</p>
     {% endif %}
+    <p>결재 금액 : {{ object.checkout_total|intcomma }} 원</p>
+    {{ object }}
+
+    <!-- 여기 폼에다가 수량 감소관련 정보를 POST할 수 있게 해줘야겠다.ㄴ -->
+    <div>
+        <h1 class="check-out-complete-text">Checkout Ready</h1>
+    </div>
+
+    <div class='row'>
+        <form method="post" action="" class='form-get-checkout-data'>
+            {% csrf_token  %}
+            <input type="hidden" name='post_purpose' value='use_point'>
+            <label for="quantity">Point 사용 :</label>
+            <input type="number" id="quantity" name="use_point" min=0 max="{{ point_available }}">
+            <button class='btn btnprimary' type="submit">포인트사용</button><span>최대 사용가능 Point : {{ point_available|intcomma }}</span>
+        </form>
+    </div>
+    
+    <div>
+        <p>포인트는 일반 판매 물품의 10%까지 사용할 수 있습니다. </p>
+        <p>경매용 티켓과 경매당첨물품은 제외한 금액의 10%입니다. </p>
+    </div>
+
+
+        <!-- 체크아웃정보 -->
+        <div class='row'>
+        <form action="" class='form-get-data' style='display:none;'>
+            
+            <input type="hidden" class='pg' name='pg' value='{{ pg }}'/>
+            <input type="hidden" class='pay_method' name='pay_method' value='{{ pay_method }}'/>
+            <input type="hidden" class='merchant_uid' name='merchant_uid' value='{{ merchant_uid }}'/>
+            <input type="hidden" class='name'name='name' value='{{ name }}'/>
+            <input type="hidden" class='amount' name='amount' value='{{ amount }}'/>
+            <input type="hidden" class='buyer_email' value='{{ buyer_email }}'/>
+            <input type="hidden" class='buyer_name' name='buyer_name' value='{{ buyer_name }}'/>
+            <input type="hidden" class='buyer_tel' name='buyer_tel' value='{{ buyer_tel }}'/>
+            <input type="hidden" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
+            <input type="hidden" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
+        </form>
+    </div>
+
+    <form action="" class='' style=''>
+        <input type="button" class='pg' name='pg' value='{{ pg }}'/>
+        <input type="button" class='pay_method' name='pay_method' value='{{ pay_method }}'/>
+        <input type="button" class='merchant_uid' name='merchant_uid' value='{{ merchant_uid }}'/>
+        <input type="button" class='name'name='name' value='{{ name }}'/>
+        <input type="button" class='amount' name='amount' value='{{ amount }}'/>
+        <input type="button" class='buyer_email' value='{{ buyer_email }}'/>
+        <input type="button" class='buyer_name' name='buyer_name' value='{{ buyer_name }}'/>
+        <input type="button" class='buyer_tel' name='buyer_tel' value='{{ buyer_tel }}'/>
+        <input type="button" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
+        <input type="button" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
+    </form>
+
+    <!-- 체크아웃버튼 -->
+    <div class="row">
+        <div class='col'>
+            {% if amount == 0 %}
+            <form method='post' action="{% url 'carts:checkout-iamport' %}">
+                {% csrf_token %}
+                <input type="hidden" name='post_purpose' value='checkout_0'>
+                <button type='submit' class='btn btn-success'>CHECKOUT 0원</button>
+            </form>
+            {% else %}
+            <div class='check-out-div' style='visibility:hidden;'>
+                <input type='button' class='btn btn-primary' id='check-out-button' value='CHECKOUT(IMPORT)'>
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 
@@ -152,7 +375,9 @@ $(document).ready(function(){
             url: "{% url 'carts:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
             type: 'POST',
             dataType: 'json',
-            data: {get_data: "True"},
+            data: {get_data: "True",
+                   post_purpose: "fianl_checkout"
+                },
             
             success: function(data){
                 // success start

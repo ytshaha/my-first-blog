@@ -7,14 +7,14 @@
 <!-- 동영상인덱스부분 -->
 <div>
     <div class="jb-box">
-        <video muted autoplay loop>
+        <video muted autoplay loop playsinline>
             <source src="{% static 'shop/home.mp4' %}" type="video/mp4">
         </video>
         <div class="jb-text">
             <div class="index-container-1">
                 <div class='index-container-2'>   
-                    <h1 class="style-title">우리나라의 유일한 병행수입명품 경매사이트</h1>
-                    <h1 class="style-title style-title-large">MOUM EIGHTY-EIGHT</h1>
+                    <h1 class="style-title">대한민국 최고 병행수입명품 사이트</h1>
+                    <h1 class="style-title style-title-large">MOUM8</h1>
                     <!-- {% if user.is_authenticated %}                 -->
                     <a href="{% url 'products:product_list' %}"><button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button></a>
                     <!-- {% else %} -->

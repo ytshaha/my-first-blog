@@ -1,11 +1,11 @@
 
 from django.shortcuts import render
 from django.views import generic
-from products.models import Product
+from products.models import ProductItem
 
 class SearchProductListView(generic.ListView):
     template_name = 'search/view.html'
-    context_object_name = 'products'
+    context_object_name = 'product_items'
     
     def get_context_data(self, *args, **kwargs):
         context = super(SearchProductListView, self).get_context_data(*args, **kwargs)
@@ -19,5 +19,5 @@ class SearchProductListView(generic.ListView):
         print(request.GET)
         query = request.GET.get('q')
         if query is not None:
-            return Product.objects.search(query)
-        return Product.objects.none()
+            return ProductItem.objects.search(query)
+        return ProductItem.objects.none()

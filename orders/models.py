@@ -78,9 +78,10 @@ class Order(models.Model):
     point_total         = models.IntegerField(default=0) # 포인트로 결재한 금액
     checkout_total      = models.IntegerField(default=0) # 실제 결재한 금액
     total               = models.IntegerField(default=0) # 총 포인트 + 결재 금액(물품가치)
+    customer_request    = models.CharField(max_length=250, blank=True, null=True, help_text=u'고객요청사항')
     active              = models.BooleanField(default=True)
-    updated     = models.DateTimeField(auto_now_add=True)
-    timestamp   = models.DateTimeField(auto_now_add=True)
+    updated             = models.DateTimeField(auto_now_add=True)
+    timestamp           = models.DateTimeField(auto_now_add=True)
 
     objects = OrderManager()
 

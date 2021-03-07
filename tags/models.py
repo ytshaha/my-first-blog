@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.urls import reverse
 
-from products.models import Product
+from products.models import ProductItem
 from mysite.utils import unique_slug_generator
 
 class Tag(models.Model):
@@ -10,7 +10,7 @@ class Tag(models.Model):
     slug        = models.SlugField()
     timestamp   = models.DateTimeField(auto_now_add=True)
     active      = models.BooleanField(default=True)
-    products    = models.ManyToManyField(Product, blank=True)
+    products    = models.ManyToManyField(ProductItem, blank=True)
 
     def __str__(self):
         return self.title

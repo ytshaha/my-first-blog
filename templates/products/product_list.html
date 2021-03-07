@@ -1,5 +1,18 @@
 {% extends 'shop/base.html' %}
 
+{% block header %}
+<style>
+.add-border{
+    border-top:1px solid rgb(238, 238, 238);
+    border-bottom:2px solid rgb(238, 238, 238);
+    border-left:1px solid rgb(238, 238, 238);
+    border-right:2px solid rgb(238, 238, 238);
+}
+
+    
+</style>
+{% endblock %}
+
 {% block content %}
 {% load static %}
 {% load humanize %}
@@ -16,7 +29,7 @@
             <hr class="index-title-divider">
         </div>
     </div>
-</div>  
+</div>
 
 <!-- 프로덕트 카테고리 선택바 -->
 {% if not is_staff_check %}
@@ -36,18 +49,18 @@
                 <a href="{% url 'products:product_list' category='men' %}"><p class="product-list-category-text">남성</p></a>
             </div>
             <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='shoes' %}"><p class="product-list-category-text">신발</p></a>
+                <a href="{% url 'products:product_list' category='shoes' %}"><p class="product-list-category-text">슈즈</p></a>
             </div>
             <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='acc' %}"><p class="product-list-category-text">패션잡화</p></a>
+                <a href="{% url 'products:product_list' category='acc' %}"><p class="product-list-category-text">명품잡화</p></a>
             </div>
             <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='kid' %}"><p class="product-list-category-text">유아동</p></a>
+                <a href="{% url 'products:product_list' category='kid' %}"><p class="product-list-category-text">키즈</p></a>
             </div>
         </div>
         {% if brands.exists %}
 
-        <hr>
+        <hr class='mt-0 mb-1'>
         <div class="row">
             <div class='col-2 product-list-category' style='padding:0;'>
                 <p class="" style="font-weight:bold;">Brand</p>
@@ -65,12 +78,10 @@
 
 
 <!-- 프로덕트 리스트-->
-
-<div class='container' style="width:80%;">
+<div class=container>
     <div class='row'>
         {% for product_item in product_items %}
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="product-list-image">
+        <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
                     <picture>
                         {% if product_item.product.image %}
@@ -84,24 +95,31 @@
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
-                        {% if product_item.featured %}
-                        <p class="product-card__on-bidding text-left" style='font-size:medium;margin-bottom:5px;'>On Sale</p>                            
-                        {% else %}
-                        <p class="product-card__on-bidding text-left" style='font-size:medium;margin-bottom:5px;color:black;'>판매준비중</p>                            
-                        {% endif %}
-                        <p class="product-card__name" style='margin-bottom: 5px;'>{{ product_item.product.brand }}</p>
-                        <p class="product-card__name" style="font-weight:bold;font-size:20px;margin-bottom:5px;">{{ product_item.product.title }} </p>
-                        <span class="product-card__price" style="font-weight:bold;font-size:20px;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:gray;'><del>{{ product_item.product.list_price|intcomma }}원</del></span><br>
-                        <p class="product-card__name text" style="font-size:15px;font-weight:normal;margin-bottom:5px;">재고수량 {{ product_item.amount }}EA</p>
                         <div class='row'>
                             <div class='col'>
+                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
+                            </div>
+                            <div class='col text-right'>
+                                {% if product_item.featured %}
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>On Sale</p>                            
+                                {% else %}
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;color:black;'>판매준비중</p>                            
+                                {% endif %}        
+                            </div> 
+                        </div>
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
+                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
+                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
+                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <div class='row'>
+                            <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
                                 {% if product_item.info_delivery_from == 'overseas' %}
-                                <div id='count' style='color:red;font-weight:bold;display:inline;'></div><span id='count-comment' style='color:red;font-weight:bold;font-size:small;'> 안에 구매가능</span>
+                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 까지 구매</span>
                                 {% endif %}
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>
@@ -119,16 +137,28 @@
                         
                     </div>
                 </div>
-            </div>
         </div>
         {% endfor %}
+
     </div>
 </div>
 
 
 <div id="count"></div>
 
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+  
 <script>
+$(document).ready(function(){
+    $('.product-image-div').each(function(i, obj) {
+        var $this = $(this)
+        console.log($this.css('width'))
+        var width = $this.css('width')
+        $this.css('height', width)
+        
+    });
+});
     // 일반 페이지에는 그냥 그날 4시까지 남은시간을 게산해서 넣어주자.
     // 3시가 넘어가면 시간이 아닌 구매불가로 뜨게 하고 링크들어가면 거기에도 구매불가로 뜨게하자.
     // 즉이 이 jquery는 재활용이 필요한 상황.
@@ -197,6 +227,9 @@ setInterval(function(){
         }
     });
 }, 1000)
+</script>
+  
+<script>
 
 </script>
 {% endblock %}

@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 
-from products.models import Product
+from products.models import Product, ProductItem
 from tickets.models import Ticket
 from orders.models import Order
 from .models import Bidding
@@ -27,49 +27,51 @@ def bidding_new(request, slug):
 
     
     # 티켓이 activate일때 아래 항목 발동. 모델에서 티켓검증은 뺀다.
-    products = Product.objects.all()
-    product_obj = Product.objects.get(slug=slug)
+    product_item_obj = ProductItem.objects.get(slug=slug)
 
 
     # 비딩참여후 1분안에 재참여 불가. 
-    recent_bidding_qs = Bidding.objects.filter(user=user, product=product_obj, active=True)
+    recent_bidding_qs = Bidding.objects.filter(user=user, product_item=product_item_obj, active=True)
     if recent_bidding_qs.count() == 1:
         recent_bidding_obj = recent_bidding_qs.first()
         if recent_bidding_obj.timestamp + timezone.timedelta(minutes=1) > timezone.now():
             messages.success(request, "경매에 재참가 하기 위해서는 1분의 대기시간이 필요합니다.")
-            return redirect("products:product_detail_slug", slug=product_obj.slug)
-
+            return redirect("products:product_detail", slug=product_item_obj.slug)
+        else:
+            pass # 1분지났다.
+    else:
+        pass # 1이상이든 0이든 둘중하나일텐데 아마 0개일것이다.
 
     price_step = range(
-                       product_obj.current_price + product_obj.price_step, 
-                       product_obj.limit_price + product_obj.price_step, 
-                       product_obj.price_step
+                       product_item_obj.current_price + product_item_obj.price_step, 
+                       product_item_obj.limit_price + product_item_obj.price_step, 
+                       product_item_obj.price_step
                        )
-    print(product_obj.current_price)
+    print(product_item_obj.current_price)
     print(price_step)
     # product_slug = request.session.get('slug')
     if request.method == 'POST':
         form = BiddingForm(request.POST)
         if form.is_valid():
             bidding_obj, updated = Bidding.objects.new_and_update(request, slug=slug)
-            product_id = request.POST.get('product', None)
+            product_item_id = request.POST.get('product_item', None)
             bidding_price = request.POST.get('bidding_price', None)
             bidding_price = int(bidding_price)
-            product_obj = Product.objects.get(id=product_id)
+            product_item_obj = ProductItem.objects.get(id=product_item_id)
             bidding_obj.bidding_price = bidding_price
-            product_obj.current_price = bidding_price
-            bidding_obj.product = product_obj
+            product_item_obj.current_price = bidding_price
+            bidding_obj.product_item = product_item_obj
             bidding_obj.timestamp = timezone.now()
             bidding_obj.save()
-            product_obj.save()
-            return redirect('products:product_detail_slug', slug=slug)
+            product_item_obj.save()
+            return redirect('products:product_detail', slug=slug)
     
     # POST가 아니거나 POST더라도 form이 안채워졌을때..
     form = BiddingForm()
     context = {
         'price_step': price_step,
-        'products':products,
-        'product_obj':product_obj,
+        # 'products':products,
+        'product_item_obj':product_item_obj,
         'form': form,
         'slug': slug
         }
@@ -93,12 +95,12 @@ def bidding_result(request, slug):
     scheduling이라는 개념이 들어가고 celery라고 하는 모듈의필요성이 느껴진다.
     일단 결과뽑는건 아래 shell에서 한걸로 하믄 되니까 해보자.
     '''
-    product_obj = Product.objects.get(slug=slug)
-    bidding_end_date = product_obj.bidding_end_date
-    product_amount = product_obj.amount 
+    product_item_obj = ProductItem.objects.get(slug=slug)
+    bidding_end_date = product_item_obj.bidding_end_date
+    product_amount = product_item_obj.amount 
     user = request.user
 
-    qs = Bidding.objects.filter(product=product_obj, active=True)
+    qs = Bidding.objects.filter(product_item=product_item_obj, active=True)
     bidding_count = qs.count()
     if bidding_count > product_amount:
         win = product_amount
@@ -110,15 +112,15 @@ def bidding_result(request, slug):
     is_bidding_winner = qs.filter(user=user).exists()
     buying_activate = False
     bidding_order_paid_exists = Order.objects.filter(
-                                                cart__cart_items__product=product_obj, 
-                                                cart__cart_items__product_type='bidding', 
+                                                cart__cart_items__product_item=product_item_obj, 
+                                                cart__cart_items__product_item__product_type='bidding', 
                                                 billing_profile__user=user,
                                                 status='paid'
                                                 ).exists()
     if is_bidding_winner and not bidding_order_paid_exists:
         buying_activate = True
     context = {
-            'product': product_obj,
+            'product_item': product_item_obj,
             'biddings': qs_win,
             'slug': slug,
             'form': BiddingBuyForm,

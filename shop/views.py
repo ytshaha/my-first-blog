@@ -9,11 +9,18 @@ from django.core.files.storage import FileSystemStorage
 from products.models import Product, ProductItem
 
 def index(request):
-    product_items = ProductItem.objects.get_normal().filter(featured=True)
+    product_items_normal = ProductItem.objects.get_normal().filter(featured=True)[:6]
+    product_items_bidding = ProductItem.objects.get_bidding().filter(featured=True)[:6]
+    
     print("Current request.session.")
     for key, value in request.session.items():
         print('{} => {}'.format(key, value))
-    return render(request, 'shop/index.html', {'product_items':product_items})
+
+    context = {
+        'product_items_normal': product_items_normal,
+        'product_items_bidding': product_items_bidding
+    }
+    return render(request, 'shop/index.html', context)
 
 def introduction(request):
     return render(request, 'shop/introduction.html', {})

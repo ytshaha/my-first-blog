@@ -1,46 +1,155 @@
 {% extends 'shop/base.html' %}
-
-{% block content %}
 {% load static %}
 {% load humanize %}
+
+{% block header %}
+<style>
+.center {
+    display: cover;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+.carousel-caption{
+    text-align: left;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    width:392px;
+}
+
+.add-border{
+    border-top:1px solid rgb(238, 238, 238);
+    border-bottom:2px solid rgb(238, 238, 238);
+    border-left:1px solid rgb(238, 238, 238);
+    border-right:2px solid rgb(238, 238, 238);
+}
+
+/* Bottom right text */
+
+
+/* When you mouse over the container, fade in the overlay title */
+.container-index:hover .overlay {
+  opacity: 1;
+}
+.add-text-stroke{
+    -webkit-text-stroke: 2px black; /* width and color */
+}
+
+.add-text-stroke-thin{
+    -webkit-text-stroke: 1px black; /* width and color */
+}
+</style>
+{% endblock %}
+
+
+{% block content %}
+
 {% if user.is_authenticated %}
-<!-- 동영상인덱스부분 -->
-<div>
-    <div class="jb-box">
-        <video muted autoplay loop playsinline>
-            <source src="{% static 'shop/home.mp4' %}" type="video/mp4">
-        </video>
-        <div class="jb-text">
-            <div class="index-container-1">
-                <div class='index-container-2'>   
-                    <h1 class="style-title">대한민국 최고 병행수입명품 사이트</h1>
-                    <h1 class="style-title style-title-large">MOUM8</h1>
-                    <!-- {% if user.is_authenticated %}                 -->
-                    <a href="{% url 'products:product_list' %}"><button type="button" class="btn btn-warning style-button-joining">JOIN BIDDING</button></a>
-                    <!-- {% else %} -->
-                    <!-- <button type="button" class="btn btn-warning style-button-joining">JOIN SITE</button> -->
-                    <!-- {% endif %} -->
-                </div>
-            </div>
+
+
+<!-- 사진슬라이드 부분 -->
+
+<div id="demo" class="carousel slide" data-ride="carousel" data-interval="3000">
+
+    <!-- Indicators -->
+    <ul class="carousel-indicators">
+      <li data-target="#demo" data-slide-to="0" class="active"></li>
+      <li data-target="#demo" data-slide-to="1"></li>
+      <li data-target="#demo" data-slide-to="2"></li>
+      <li data-target="#demo" data-slide-to="3"></li>
+      <li data-target="#demo" data-slide-to="4"></li>
+      <li data-target="#demo" data-slide-to="5"></li>
+      <li data-target="#demo" data-slide-to="6"></li>
+    </ul>
+  
+    <!-- The slideshow -->
+    <div class="carousel-inner" style='max-height:600px;'>
+      <div class="carousel-item active">
+        <img src="{% static 'shop/index_slide_image/city.jpg' %}" alt="Los Angeles" class='center'>
+        <div class="carousel-caption" >
+            <h1 class='add-text-stroke' style='font-size:100px;font-weight:bolder;'>MOUM8</h1>
+            <h3 class='add-text-stroke-thin' style='font-size:40px;font-weight:bolder;'>PRIVATE LUXURY GOODS</h3>
+            
         </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'shop/index_slide_image/bag.jpg' %}" alt="Chicago" class='center'>
+        <div class="carousel-caption" >
+            <h1 class='add-text-stroke' style='font-size:100px;font-weight:bolder;'>MOUM8</h1>
+            <h3 class='add-text-stroke-thin' style='font-size:40px;font-weight:bolder;'>SHOPPING AND BIDDING</h3>
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'shop/index_slide_image/fashion.jpg' %}" alt="New York" class='center'>
+        <div class="carousel-caption" >
+            <h1 class='add-text-stroke' style='font-size:100px;font-weight:bolder;'>MOUM8</h1>
+            <h3 class='add-text-stroke-thin' style='font-size:40px;font-weight:bolder;'>VERY SELECTED GOODS</h3>        
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'shop/index_slide_image/interview.jpg' %}" alt="Chicago" class='center'>
+        <div class="carousel-caption" >
+            <h1 class='add-text-stroke' style='font-size:100px;font-weight:bolder;'>MOUM8</h1>
+            <h3 class='add-text-stroke-thin' style='font-size:40px;font-weight:bolder;'>MOU CONTRACTS WITH ITALYSTORES</h3>        
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'shop/index_slide_image/louis-vuitton.jpg' %}" alt="New York" class='center'>
+        <div class="carousel-caption" >
+            <h1 class='add-text-stroke' style='font-size:100px;font-weight:bolder;'>MOUM8</h1>
+            <h3 class='add-text-stroke-thin' style='font-size:40px;font-weight:bolder;'>ONLY GENUINE GOODS</h3>        
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'shop/index_slide_image/royal-interior.jpg' %}" alt="Chicago" class='center'>
+        <div class="carousel-caption" >
+            <h1 class='add-text-stroke' style='font-size:100px;font-weight:bolder;'>MOUM8</h1>
+            <h3 class='add-text-stroke-thin' style='font-size:40px;font-weight:bolder;'>100% A/S SYSTEM</h3>        
+        </div>
+      </div>
+      <div class="carousel-item">
+        <img src="{% static 'shop/index_slide_image/style.jpg' %}" alt="New York" class='center'>
+        <div class="carousel-caption" >
+            <h1 class='add-text-stroke' style='font-size:100px;font-weight:bolder;'>MOUM8</h1>
+            <h3 class='add-text-stroke-thin' style='font-size:40px;font-weight:bolder;'>HIGH SALE RATIO WITH BEST QUALITY</h3>        
+        </div>
+      </div>
     </div>
+  
+    <!-- Left and right controls -->
+    <a class="carousel-control-prev" href="#demo" data-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#demo" data-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </a>
+  
 </div>
 
-<!-- 최근아이템 3개 -->
+
+<!-- 최근아이템_경매상품 -->
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto ">
-            <h2 class="index-title-index text-center">RECENT UPDATED ITEM</h2>
+            <h2 class="index-title-index text-center">NEW ARRIVAL</h2>
+            <p class='text-center'>경매물품</p>
             <hr class="index-title-divider">
         </div>
     </div>
 </div>  
 
-<div class='container' style="width:80%;">
+<div class='container'>
     <div class='row'>
-        {% for product_item in product_items %}
-        <div class="col-lg-4 col-md-6 col-sm-12">
-            <div class="product-list-image">
+        <div class='col-6 ml-auto text-right'>
+            <a href="{% url 'products:product_bidding_list' %}"><p style='color:gray;'>SHOW MORE <i class="fas fa-angle-double-right "></i></p></a>
+        </div>
+    </div>
+    <div class='row'>
+        {% for product_item in product_items_bidding %}
+        <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
                     <picture>
                         {% if product_item.product.image %}
@@ -54,20 +163,25 @@
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
-                        <p class="product-card__on-bidding text-left" style='font-size:medium;margin-bottom: 5px;'>On Sale</p>                            
-                        <p class="product-card__name" style='margin-bottom: 5px;'>{{ product_item.product.brand }}</p>
-                        <p class="product-card__name" style="font-weight:bold;font-size:20px;margin-bottom:5px;">{{ product_item.product.title }} </p>
-                        <span class="product-card__price" style="font-weight:bold;font-size:20px;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:gray;'><del>{{ product_item.product.list_price|intcomma }}원</del></span><br>
-                        <p class="product-card__name text" style="font-size:15px;font-weight:normal;margin-bottom:5px;">재고수량 {{ product_item.amount }}EA</p>
                         <div class='row'>
                             <div class='col'>
+                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
+                            </div>
+                            <div class='col text-right'>
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>On Bidding</p>                            
+                            </div> 
+                        </div>
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
+                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
+                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
+                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.current_price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <div class='row'>
+                            <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
-                                {% if product_item.info_delivery_from == 'overseas' %}
-                                <div id='count' style='color:red;font-weight:bold;display:inline;'></div><span id='count-comment' style='color:red;font-weight:bold;font-size:small;'> 안에 구매가능</span>
-                                {% endif %}
+                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 뒤에 종료</span>
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>
@@ -85,12 +199,96 @@
                         
                     </div>
                 </div>
-            </div>
         </div>
         {% endfor %}
+
     </div>
 </div>
 
+<hr style="margin: 10px 0px 0px; height: 1px; border: none; background-color: rgb(224, 224, 224);">
+
+
+<!-- 최근아이템_쇼핑상품 -->
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto ">
+            <h2 class="index-title-index text-center">NEW ARRIVAL</h2>
+            <p class='text-center'>쇼핑물품</p>
+
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
+<div class='container'>
+    <div class='row'>
+        <div class='col-6 ml-auto text-right'>
+            <a href="{% url 'products:product_list' %}"><p style='color:gray;'>SHOW MORE <i class="fas fa-angle-double-right "></i></p></a>
+        </div>
+    </div>
+    <div class='row'>
+        {% for product_item in product_items_normal %}
+        <div class="col-6 col-lg-4 col-md-4 add-border">
+                <div class='product-image-div'>
+                    <picture>
+                        {% if product_item.product.image %}
+                        <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.image.url }}" class="product-main-image"></a>   
+                        
+                        {% else %}
+                        <span class="text-muted">No Image</span>
+                        {% endif %}
+                    </picture>
+                </div>
+                <div class="row product-card__div product-card-on-bidding">
+                    <div class='col-12 align-self-center product-infos'>
+                        <div class='row'>
+                            <div class='col'>
+                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
+                            </div>
+                            <div class='col text-right'>
+                                {% if product_item.featured %}
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>On Sale</p>                            
+                                {% else %}
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;color:black;'>판매준비중</p>                            
+                                {% endif %}        
+                            </div> 
+                        </div>
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
+                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
+                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
+                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <div class='row'>
+                            <div class='col-7 pr-0'>
+                                <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
+                                {% if product_item.info_delivery_from == 'overseas' %}
+                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 까지 구매</span>
+                                {% endif %}
+                            </div>
+                            <div class='col'>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
+                            </div>
+                        </div>
+                        <div class='col mr-auto' style='display:none;'>
+                            <!-- 나중에 featured 버튼을 넣기위한 공간. -->
+                        </div>
+
+                        <!-- 해외배송이면 이걸 계산하게 해야한다. -->
+                        <div style='display:none;' id='bidding_end_date_year'>{{ product_item.bidding_end_date|date:'Y' }}</div>
+                        <div style='display:none;' id='bidding_end_date_month'>{{ product_item.bidding_end_date|date:'n' }}</div>
+                        <div style='display:none;' id='bidding_end_date_day'>{{ product_item.bidding_end_date|date:'j' }}</div>
+                        <div style='display:none;' id='bidding_end_date_hour'>{{ product_item.bidding_end_date|date:'G' }}</div>
+                        <div style='display:none;' id='bidding_end_date_minute'>{{ product_item.bidding_end_date|date:'i' }}</div>
+                        <div style='display:none;' id='bidding_end_date_second'>{{ product_item.bidding_end_date|date:'s' }}</div>
+                        <div style='display:none;' id='product_type'>{{ product_item.product_type }}</div>
+                        
+                    </div>
+                </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
 
 
 
@@ -208,8 +406,10 @@
       </div>
     </div>
 {% endif %}
+{% endblock %}
 
 <!-- JavaScript 영역 -->
-
-
+{% block javascript %}
 {% endblock %}
+
+

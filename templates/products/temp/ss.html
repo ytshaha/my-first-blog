@@ -1,0 +1,43 @@
+<div class="row product-card__div product-card-on-bidding">
+    <div class='col-12 align-self-center product-infos'>
+        <div class='row'>
+            <div class='col'>
+                <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.brand }}</p>
+            </div>
+            <div class='col text-right'>
+                {% if product_item.featured %}
+                <p class="product-card__on-bidding mb-0" style='font-size:medium;'>On Sale</p>                            
+                {% else %}
+                <p class="product-card__on-bidding mb-0" style='font-size:medium;color:black;'>판매준비중</p>                            
+                {% endif %}        
+            </div> 
+        </div>
+        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
+        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
+        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+        <div class='row'>
+            <div class='col-8'>
+                <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
+                {% if product_item.info_delivery_from == 'overseas' %}
+                <div id='count' style='color:orange;font-weight:bold;display:inline;font-size:small;'></div><span id='count-comment' style='color:orange;font-weight:bold;font-size:small;'> 안에 구매가능</span>
+                {% endif %}
+            </div>
+            <div class='col'>
+                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;">{{ product_item.get_info_delivery_from_display }}</p>
+            </div>
+        </div>
+        <div class='col mr-auto' style='display:none;'>
+            <!-- 나중에 featured 버튼을 넣기위한 공간. -->
+        </div>
+
+        <!-- 해외배송이면 이걸 계산하게 해야한다. -->
+        <div style='display:none;' id='bidding_end_date_year'>{{ product_item.bidding_end_date|date:'Y' }}</div>
+        <div style='display:none;' id='bidding_end_date_month'>{{ product_item.bidding_end_date|date:'n' }}</div>
+        <div style='display:none;' id='bidding_end_date_day'>{{ product_item.bidding_end_date|date:'j' }}</div>
+        <div style='display:none;' id='bidding_end_date_hour'>{{ product_item.bidding_end_date|date:'G' }}</div>
+        <div style='display:none;' id='bidding_end_date_minute'>{{ product_item.bidding_end_date|date:'i' }}</div>
+        <div style='display:none;' id='bidding_end_date_second'>{{ product_item.bidding_end_date|date:'s' }}</div>
+        <div style='display:none;' id='product_type'>{{ product_item.product_type }}</div>
+        
+    </div>
+</div>

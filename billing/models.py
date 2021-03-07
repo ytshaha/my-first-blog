@@ -37,6 +37,10 @@ class BillingProfileManager(models.Manager):
 class BillingProfile(models.Model):
     user        = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     email       = models.EmailField()
+
+    full_name       = models.CharField(max_length=255, blank=True, null=True)
+    phone_number    = models.CharField(max_length=255, blank=True, null=True)
+    
     active      = models.BooleanField(default=True)
     update      = models.DateTimeField(auto_now=True)
     timestamp   = models.DateTimeField(auto_now_add=True)

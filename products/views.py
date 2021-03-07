@@ -119,17 +119,19 @@ class ProductBiddingCompleteListView(LoginRequiredMixin, generic.ListView):
     '''
     Featured = True이고 product_type = Bidding인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
     '''
-    template_name = 'products/product_list.html'
+    template_name = 'products/product_bidding_list.html'
     context_object_name = 'product_items'
 
     def get_context_data(self, *args, **kwargs):
-        context = super(ProductBiddingListView, self).get_context_data(*args, **kwargs)
-        brands = Brand.objects.all()
-        context['brands'] = brands
+        context = super(ProductBiddingCompleteListView, self).get_context_data(*args, **kwargs)
 
-        for product_item_obj in ProductItem.objects.all():
+        product_item_qs = ProductItem.objects.featured().get_bidding().filter(bidding_on='bidding_end')
+
+        for product_item_obj in product_item_qs:
             product_item_obj.save()
         
+        context['bidding_end_items'] = product_item_qs
+
         return context
             
     def get_queryset(self, *args, **kwargs):
@@ -277,8 +279,8 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         product_obj.save()
         
         if product_type == 'bidding':
-            bidding_obj_up_to_10 = Bidding.objects.filter(product=product_obj).order_by('-timestamp')[:10]
-            bidding_obj = Bidding.objects.filter(product=product_obj).order_by('-timestamp')
+            bidding_obj_up_to_10 = Bidding.objects.filter(product_item=product_item_obj).order_by('-timestamp')[:10]
+            bidding_obj = Bidding.objects.filter(product_item=product_item_obj).order_by('-timestamp')
             now = timezone.now()
             bidding_on = None
             if now < product_item_obj.bidding_start_date:
@@ -299,10 +301,12 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         if product_item_obj.amount < 1:
             is_stock = False
             amount_select_list = 0
+        elif product_item_obj.amount > 10:
+            amount_select_list = range(1, 11)
         else:
             amount_select_list = range(1, product_item_obj.amount + 1)
         
-        context['product'] = product_obj
+        context['product_item'] = product_item_obj
         context['product_type'] = product_type
         context['amount_select_list'] = amount_select_list
         context['is_stock'] = is_stock
@@ -327,21 +331,6 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
             raise Http404("Uhmmmmm")
         return instance
 
-# 사용안함.
-class ProductDetailView(LoginRequiredMixin, generic.DetailView):
-    template_name = 'products/product_detail.html'
-    context_object_name = 'product'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(ProductDetailView, self).get_context_data(*args, **kwargs)
-        return context
-
-    def get_queryset(self, *args, **kwargs):
-        request = self.request
-        pk = self.kwargs.get('pk')
-        product_obj = Product.objects.filter(pk=pk)
-        request.session['product_number'] = product_obj.number
-        return product_obj
 
         
     # def get_object(self, *args, **kwargs):

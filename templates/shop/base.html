@@ -19,8 +19,9 @@
     <link rel="stylesheet" href="{% static 'css/stripe-custom-style.css' %}">
     
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
-
-    <title>MOUM, 시작</title>
+    {% block header %}
+    {% endblock %}
+    <title>MOUM8, 시작</title>
   </head> 
   
   <body>
@@ -41,7 +42,7 @@
 
           <!-- 일반물품 Dropdiwn -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">쇼핑물품</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
               <div class="dropdown-divider"></div>
@@ -49,13 +50,13 @@
               <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
               <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">신발</a>
               <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">패션잡화</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">유아동</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
             </div>
           </li>
 
           <!-- 경매물품 Dropdown -->
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">BIDDING</a>
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">경매물품</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' %}">전체</a>
               <div class="dropdown-divider"></div>
@@ -65,8 +66,10 @@
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='acc' %}">패션잡화</a>
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}">유아동</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">경매 결과</a>
-              <a class="dropdown-item" href="{% url 'tickets:home' %}">TICKET</a>
+              <a class="dropdown-item" href="{% url 'tickets:home' %}">경매참여티켓</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_end_list' %}">경매 결과</a>
+              
             </div>
           </li>
 
@@ -238,8 +241,8 @@
                   <p class='mb-2' style='font-size:x-large;font-weight:bold;'>MOUM8</p>
                   <p class='mb-2' style='font-size:large;font-weight:bold;'>© 2021-2025 MOUM International, LLC. All Rights Reserved.</p>
                   <p class='mb-0'>모움 인터내셔널, 경기 파주시 필승로210, 109~112</p>
-                  <p class='mb-0'>담당자 박태현, 010-4784-8878, 사업자등록번호 :</p>
-                  <p class='mb-0'>사업자등록번호 : 515-36-91661(통신판매번호 : 123-1414-1444</p>
+                  <p class='mb-0'>담당자 박태현, 유선번호 010-XXXX-XXXX</p>
+                  <p class='mb-0'>사업자등록번호 : 515-36-91661(통신판매번호 : xxx-xx-Xxxx)</p>
                 </div>
               </div>
             </div>

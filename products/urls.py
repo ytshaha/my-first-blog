@@ -19,7 +19,9 @@ urlpatterns = [
     path('bidding/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)
     path('bidding/category/<category>/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)
     path('bidding/brand/<brand>/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)
+    path('bidding/complete/', views.ProductBiddingCompleteListView.as_view(), name='product_bidding_end_list'), # 전체 물품보기(feature=True)
     
+
     # path('featured/', views.ProductFeaturedListView.as_view(), name='product_featured_list'), #
     path('check/', views.ProductStaffCheckView.as_view(), name='check'), # 스탭이 물품 올리기전 체크
     
