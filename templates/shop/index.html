@@ -410,6 +410,86 @@
 
 <!-- JavaScript 영역 -->
 {% block javascript %}
+<script>
+    $(document).ready(function(){
+        $('.product-image-div').each(function(i, obj) {
+            var $this = $(this)
+            console.log($this.css('width'))
+            var width = $this.css('width')
+            $this.css('height', width)
+            
+        });
+    });
+        // 일반 페이지에는 그냥 그날 4시까지 남은시간을 게산해서 넣어주자.
+        // 3시가 넘어가면 시간이 아닌 구매불가로 뜨게 하고 링크들어가면 거기에도 구매불가로 뜨게하자.
+        // 즉이 이 jquery는 재활용이 필요한 상황.
+    setInterval(function(){
+        $('.product-infos').each(function(i, obj) {
+            var $this = $(this)
+            console.log($this)
+            var temp_end_date = $this.find(".bidding_end_date")
+            console.log(temp_end_date)
+            var year = $this.find("#bidding_end_date_year").text()
+            var month = $this.find("#bidding_end_date_month").text()
+            var day = $this.find("#bidding_end_date_day").text()
+            var hour = $this.find("#bidding_end_date_hour").text()
+            var minute = $this.find("#bidding_end_date_minute").text()
+            var second = $this.find("#bidding_end_date_second").text()
+            var product_type = $this.find("#product_type").text()
+    
+            console.log(year, month, day, hour, minute, second)
+            var today = new Date().getTime();
+            if (product_type == 'bidding' ){
+                var dday = new Date(year, month-1, day, hour, minute, second, 0).getTime();
+            } else { 
+                var today2 = new Date()
+                var year = today2.getFullYear()
+                var month = today2.getMonth() + 1
+                var day = today2.getDate()
+                var dday = new Date(year, month-1, day, 16, 0, 0, 0).getTime();
+            }
+            
+            
+            console.log(dday)
+            
+            console.log(dday, today)
+            
+    
+            // var gap = 0;
+            var gap = dday - today2;
+            
+            var calcHour = Math.ceil((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) ;
+            if(calcHour<10){
+                calcHour = "0" + (calcHour-1)
+            } else {
+                calcHour = calcHour -1
+            }
+            var calcMin = Math.ceil((gap % (1000 * 60 * 60)) / (1000 * 60)) ;
+            if(calcMin<10){
+                calcMin = "0" + (calcMin-1)
+            } else {
+                calcMin = calcMin -1
+            }
+            var calcSec = Math.ceil((gap % (1000 * 60)) / 1000 ) ;
+            if(calcSec<10){
+                calcSec = "0" + (calcSec-1)
+            } else {
+                calcSec = calcSec -1
+            }
+            console.log(calcHour, calcMin, calcSec)
+    
+            if (gap>0){
+                $this.find("#count").text(calcHour + ":" + calcMin + ":" + calcSec)
+            
+            } else{
+                $this.find("#count").text("SOLD OUT")
+                $this.find("#count-comment").text("")
+                
+            }
+        });
+    }, 1000)
+    </script>
+
 {% endblock %}
 
 
