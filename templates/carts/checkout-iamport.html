@@ -258,41 +258,11 @@ span.price {
 
 
 
-
-    <h1>Finalize Checkout</h1>
-    <p>Cart Items: {% for cart_item in object.cart.cart_items.all %}{{ cart_item.product }}{% if not forloop.last %},{% endif %}{% endfor %}</p>
-    <p>Shipping Address: {{ object.shipping_address.get_address }}</p>
-    <p>Billing Address: {{ object.billing_address.get_address }}</p>
-    <p>총 금액 : {{ object.total|intcomma }} 원</p>
-    {% if object.point_total > 0 %}
-    <p>Point 사용: {{ object.point_total|intcomma }} POINT</p>
-    {% endif %}
-    <p>결재 금액 : {{ object.checkout_total|intcomma }} 원</p>
-    {{ object }}
-
     <!-- 여기 폼에다가 수량 감소관련 정보를 POST할 수 있게 해줘야겠다.ㄴ -->
-    <div>
-        <h1 class="check-out-complete-text">Checkout Ready</h1>
-    </div>
-
-    <div class='row'>
-        <form method="post" action="" class='form-get-checkout-data'>
-            {% csrf_token  %}
-            <input type="hidden" name='post_purpose' value='use_point'>
-            <label for="quantity">Point 사용 :</label>
-            <input type="number" id="quantity" name="use_point" min=0 max="{{ point_available }}">
-            <button class='btn btnprimary' type="submit">포인트사용</button><span>최대 사용가능 Point : {{ point_available|intcomma }}</span>
-        </form>
-    </div>
-    
-    <div>
-        <p>포인트는 일반 판매 물품의 10%까지 사용할 수 있습니다. </p>
-        <p>경매용 티켓과 경매당첨물품은 제외한 금액의 10%입니다. </p>
-    </div>
 
 
         <!-- 체크아웃정보 -->
-        <div class='row'>
+    <div class='row'>
         <form action="" class='form-get-data' style='display:none;'>
             
             <input type="hidden" class='pg' name='pg' value='{{ pg }}'/>
@@ -306,36 +276,6 @@ span.price {
             <input type="hidden" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
             <input type="hidden" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
         </form>
-    </div>
-
-    <form action="" class='' style=''>
-        <input type="button" class='pg' name='pg' value='{{ pg }}'/>
-        <input type="button" class='pay_method' name='pay_method' value='{{ pay_method }}'/>
-        <input type="button" class='merchant_uid' name='merchant_uid' value='{{ merchant_uid }}'/>
-        <input type="button" class='name'name='name' value='{{ name }}'/>
-        <input type="button" class='amount' name='amount' value='{{ amount }}'/>
-        <input type="button" class='buyer_email' value='{{ buyer_email }}'/>
-        <input type="button" class='buyer_name' name='buyer_name' value='{{ buyer_name }}'/>
-        <input type="button" class='buyer_tel' name='buyer_tel' value='{{ buyer_tel }}'/>
-        <input type="button" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
-        <input type="button" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
-    </form>
-
-    <!-- 체크아웃버튼 -->
-    <div class="row">
-        <div class='col'>
-            {% if amount == 0 %}
-            <form method='post' action="{% url 'carts:checkout-iamport' %}">
-                {% csrf_token %}
-                <input type="hidden" name='post_purpose' value='checkout_0'>
-                <button type='submit' class='btn btn-success'>CHECKOUT 0원</button>
-            </form>
-            {% else %}
-            <div class='check-out-div' style='visibility:hidden;'>
-                <input type='button' class='btn btn-primary' id='check-out-button' value='CHECKOUT(IMPORT)'>
-            </div>
-            {% endif %}
-        </div>
     </div>
 </div>
 
