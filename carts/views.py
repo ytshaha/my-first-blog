@@ -755,8 +755,9 @@ def checkout_iamport(request):
                         print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
                 
 
-                return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
-                                    content_type="application/json")
+                # return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}), content_type="application/json")
+                return redirect('carts:success')
+
             elif status=='failed' or imp_success == 'false':
                 print("결재 상태 : 결제가 실패하였습니다.")
                 return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
