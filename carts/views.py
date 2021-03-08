@@ -475,6 +475,12 @@ def checkout_iamport(request):
     print('post_purpose', post_purpose)
     # 항상 이것으로 끝나게 하면 안되므로 POST가 아니면 아래와 같이 진행되게 하자. 
     # 주소가 있는경우와 없는경우로 나눠지는데 둘다 이후에는 POST를 누를거기 때문에 이렇게 하면 첫화면 구성은 끝날거같다.
+    
+
+    # 아임포트 토큰 가져오기
+    
+
+    
     if request.method == 'POST' and not post_purpose and not request.is_ajax():
         return render(request, "carts/checkout-iamport.html", context)
     
@@ -483,199 +489,262 @@ def checkout_iamport(request):
     #   2) 포인트사용 눌렀을 떄
     #   3) 최종 결재를 눌렀을 때
     # 단 어떤 경우든 바로 결재가 진행될 수 있어야함. 주소가 없는경우를 따로 가정하지는 말자. 그떄는 버튼을 없에버리면 될듯.
-    elif request.method == 'POST':
-        # 아임포트 토큰 가져오기
-        iamport = Iamport(imp_key=IMPORT_REST_API_KEY, imp_secret=IMPORT_REST_API_SECRET)
-        user = request.user
-
-        post_purpose = request.POST.get('post_purpose', None)
-        
-        # 1) 주소 수정 눌렀을 때
-        if post_purpose == 'change_or_add_address':
-            full_name   = user.full_name
-            email       = user.email
-            phone_number = request.POST.get('phone_number', None)
-            address_line_1 = request.POST.get('address_line_1', None)
-            address_line_2 = request.POST.get('address_line_2', None)
-            postal_code = request.POST.get('postal_code', None)
-            # address_type = request.POST.get('address_type', None)
-            
-            # 폼이 제대로 완성되어있지 않았을 경우
-            print(full_name, email, phone_number, address_line_1, address_line_2, postal_code)
-            if not full_name or not email or not phone_number or not address_line_1 or not address_line_2 or not postal_code:
-                return render(request, "carts/checkout-iamport.html", context)
-            elif not shipping_address_obj:
-                shipping_address_obj = Address.objects.create(billing_profile=billing_profile,
-                                                              address_type='shipping', 
-                                                              full_name=full_name,
-                                                              email=email,
-                                                              phone_number=phone_number,
-                                                              address_line_1=address_line_1,
-                                                              address_line_2=address_line_2,
-                                                              postal_code=postal_code
-                                                              )
-                billing_address_obj = Address.objects.create(billing_profile=billing_profile,
-                                                              address_type='billing', 
-                                                              full_name=full_name,
-                                                              email=email,
-                                                              phone_number=phone_number,
-                                                              address_line_1=address_line_1,
-                                                              address_line_2=address_line_2,
-                                                              postal_code=postal_code
-                                                              )
-                address_changed = True
-                point_changed = False
-                print("Address created.")
-                messages.success(request, "배송지 정보가 만들어졌습니다.")
-            else:
-                shipping_address_obj.phone_number = phone_number
-                shipping_address_obj.address_line_1 = address_line_1
-                shipping_address_obj.address_line_2 = address_line_2
-                shipping_address_obj.postal_code = postal_code
-                shipping_address_obj.save()
-                
-                address_changed = True
-                point_changed = False
-                print("Address changed")
-                messages.success(request, "배송지 정보가 수정되었습니다.")
-
-            
-            context = {
-                'object':order_obj,
-                'billing_profile': billing_profile,
-                'shipping_address_obj': shipping_address_obj,
-                'billing_address_obj': billing_address_obj,
-                'address_qs': address_qs,
-                'has_card': has_card,
-                'address_changed': address_changed,
-                
-
-                # 결재용 context
-                'pg': "html5_inicis",
-                'pay_method':'card',
-                'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
-                'name':cart_items_name,
-                'amount': order_obj.checkout_total,
-                'buyer_email': billing_profile.email,
-                'buyer_name': user.full_name,
-                'buyer_tel': user.phone_number,# 얘는 만들어야함. 
-                'buyer_addr': address,
-                'buyer_postcode': postcode,
-                # 포인트관련
-                'point_changed': point_changed,
-                'point_available': point_available
-                }
-            return render(request, "carts/checkout-iamport.html", context)
     
-        # 2) 포인트사용 버튼 눌렀을 때
-        elif post_purpose == 'use_point':
-                use_point = request.POST.get('use_point')
-                print('usepoint.', use_point)
-                if use_point == '':
-                    use_point = 0
-                # print('포인트사용하려고 하긴한다.', 554, '하지만 문제가 생긴다.')
-                try:
-                    order_obj.point_total = int(use_point)
-                    order_obj.checkout_total = order_obj.total - int(use_point)
-                    order_obj.save()
-                    messages.error(request, "{}POINT 사용이 반영되었습니다.".format(use_point))
-                    return render(request, "carts/checkout-iamport.html", context)
-                except:
-                    messages.error(request, "사용하려는 POINT를 다시 입력해주세요.")
-                    return render(request, "carts/checkout-iamport.html", context)
+    iamport = Iamport(imp_key=IMPORT_REST_API_KEY, imp_secret=IMPORT_REST_API_SECRET)
+    user = request.user
+    # 1) 주소 수정 눌렀을 때
+    if request.method == 'POST' and post_purpose == 'change_or_add_address':
+        full_name   = user.full_name
+        email       = user.email
+        phone_number = request.POST.get('phone_number', None)
+        address_line_1 = request.POST.get('address_line_1', None)
+        address_line_2 = request.POST.get('address_line_2', None)
+        postal_code = request.POST.get('postal_code', None)
+        # address_type = request.POST.get('address_type', None)
+        
+        # 폼이 제대로 완성되어있지 않았을 경우
+        print(full_name, email, phone_number, address_line_1, address_line_2, postal_code)
+        if not full_name or not email or not phone_number or not address_line_1 or not address_line_2 or not postal_code:
+            return render(request, "carts/checkout-iamport.html", context)
+        elif not shipping_address_obj:
+            shipping_address_obj = Address.objects.create(billing_profile=billing_profile,
+                                                            address_type='shipping', 
+                                                            full_name=full_name,
+                                                            email=email,
+                                                            phone_number=phone_number,
+                                                            address_line_1=address_line_1,
+                                                            address_line_2=address_line_2,
+                                                            postal_code=postal_code
+                                                            )
+            billing_address_obj = Address.objects.create(billing_profile=billing_profile,
+                                                            address_type='billing', 
+                                                            full_name=full_name,
+                                                            email=email,
+                                                            phone_number=phone_number,
+                                                            address_line_1=address_line_1,
+                                                            address_line_2=address_line_2,
+                                                            postal_code=postal_code
+                                                            )
+            address_changed = True
+            point_changed = False
+            print("Address created.")
+            messages.success(request, "배송지 정보가 만들어졌습니다.")
+        else:
+            shipping_address_obj.phone_number = phone_number
+            shipping_address_obj.address_line_1 = address_line_1
+            shipping_address_obj.address_line_2 = address_line_2
+            shipping_address_obj.postal_code = postal_code
+            shipping_address_obj.save()
+            
+            address_changed = True
+            point_changed = False
+            print("Address changed")
+            messages.success(request, "배송지 정보가 수정되었습니다.")
 
-                    # return HttpResponse("HTTP respone가 뭐쟈")
+        
+        context = {
+            'object':order_obj,
+            'billing_profile': billing_profile,
+            'shipping_address_obj': shipping_address_obj,
+            'billing_address_obj': billing_address_obj,
+            'address_qs': address_qs,
+            'has_card': has_card,
+            'address_changed': address_changed,
             
+
+            # 결재용 context
+            'pg': "html5_inicis",
+            'pay_method':'card',
+            'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
+            'name':cart_items_name,
+            'amount': order_obj.checkout_total,
+            'buyer_email': billing_profile.email,
+            'buyer_name': user.full_name,
+            'buyer_tel': user.phone_number,# 얘는 만들어야함. 
+            'buyer_addr': address,
+            'buyer_postcode': postcode,
+            # 포인트관련
+            'point_changed': point_changed,
+            'point_available': point_available
+            }
+        return render(request, "carts/checkout-iamport.html", context)
+    
+    # 2) 포인트사용 버튼 눌렀을 때
+    elif request.method == 'POST' and post_purpose == 'use_point':
+
+        use_point = request.POST.get('use_point')
+        print('usepoint.', use_point)
+        if use_point == '':
+            use_point = 0
+        # print('포인트사용하려고 하긴한다.', 554, '하지만 문제가 생긴다.')
+        try:
+            order_obj.point_total = int(use_point)
+            order_obj.checkout_total = order_obj.total - int(use_point)
+            order_obj.save()
+            messages.error(request, "{}POINT 사용이 반영되었습니다.".format(use_point))
+            return render(request, "carts/checkout-iamport.html", context)
+        except:
+            messages.error(request, "사용하려는 POINT를 다시 입력해주세요.")
+            return render(request, "carts/checkout-iamport.html", context)
+
+            # return HttpResponse("HTTP respone가 뭐쟈")
+        
         # 3) 결재할 금액이 포인트로 다 대체 되었을 경우
-        elif post_purpose == 'checkout_0':
-            order_obj.mark_paid()
-            request.session['cart_items'] = 0
-            del request.session['cart_id']
-            
-            # 사용포인트 차감
-            if order_obj.point_total > 0:
-                point_use = (-1) * order_obj.point_total
-                point_obj = Point.objects.new(user=user, amount=order_obj.point_total, details=point_details)
-            # 재고 있는것들에 대해서 아래와 같이 구매한다.
-            for cart_item_obj in cart_obj.cart_items.all():
-                if cart_item_obj.product_type == 'normal':
-                    cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
-                    cart_item_obj.product_item.save()
-                    print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))                 
-            return render(request, 'carts/checkout-done.html', {})
+        
+    elif request.method == 'POST' and post_purpose == 'checkout_0':
+        order_obj.mark_paid()
+        request.session['cart_items'] = 0
+        del request.session['cart_id']
+        
+        # 사용포인트 차감
+        if order_obj.point_total > 0:
+            point_use = (-1) * order_obj.point_total
+            point_obj = Point.objects.new(user=user, amount=order_obj.point_total, details=point_details)
+        # 재고 있는것들에 대해서 아래와 같이 구매한다.
+        for cart_item_obj in cart_obj.cart_items.all():
+            if cart_item_obj.product_type == 'normal':
+                cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                cart_item_obj.product_item.save()
+                print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))                 
+        return render(request, 'carts/checkout-done.html', {})
         
         # 4) 마지막으로 결재버튼이 눌렸을 경우
-        elif request.is_ajax():
-            print('Ajax requested', post_purpose)
-            get_data = request.POST.get('get_data')
-            print(380, "get_data",get_data)
-            # if not get_data:
-            #     # imaport_data 가져오기 버튼 누름.
-            #     return JsonResponse(iamport_data)
-            # else:
-            #     print(385, ' elif not get_data',get_data)
-            # 결재정보 확인 실행
-            imp_uid = request.POST.get('imp_uid')
-            # // 액세스 토큰(access token) 발급받기
-            data = {
-                "imp_key": IMPORT_REST_API_KEY,
-                "imp_secret": IMPORT_REST_API_SECRET
-            }
-            print(data)
-            response = requests.post('https://api.iamport.kr/users/getToken', data=data)
-            data = response.json()
-            print(data)
-            my_token = data['response']['access_token']
-            print('my_token',my_token)
-            #  // imp_uid로 아임포트 서버에서 결제 정보 조회
-            headers = {"Authorization": my_token}
-            print("imp_uid", imp_uid)
-            print('data',data)
-            print('headers', headers)
-            response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
-            data = response.json()
-            # // DB에서 결제되어야 하는 금액 조회 const
-            order_amount = order_obj.checkout_total
-            amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
-            print('amountToBePaid',amountToBePaid)
-            status = data['response']['status']  # 아임포트에서의 상태
-            print('status',status)
-            if order_amount==amountToBePaid:
-                # DB에 결제 정보 저장
-                # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
-                if status == 'ready':
-                    # DB에 가상계좌 발급정보 저장
-                    print("결재 상태 : ready, vbankIssued")
-                    return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
-                                        content_type="application/json")
-                elif status=='paid':
-                    print("결재 상태 : paid, success")
+    elif request.method == 'POST' and request.is_ajax():
+        print('Ajax requested', post_purpose)
+        get_data = request.POST.get('get_data')
+        print(380, "get_data",get_data)
+        # if not get_data:
+        #     # imaport_data 가져오기 버튼 누름.
+        #     return JsonResponse(iamport_data)
+        # else:
+        #     print(385, ' elif not get_data',get_data)
+        # 결재정보 확인 실행
+        imp_uid = request.POST.get('imp_uid')
+        # // 액세스 토큰(access token) 발급받기
+        data = {
+            "imp_key": IMPORT_REST_API_KEY,
+            "imp_secret": IMPORT_REST_API_SECRET
+        }
+        print(data)
+        response = requests.post('https://api.iamport.kr/users/getToken', data=data)
+        data = response.json()
+        print(data)
+        my_token = data['response']['access_token']
+        print('my_token',my_token)
+        #  // imp_uid로 아임포트 서버에서 결제 정보 조회
+        headers = {"Authorization": my_token}
+        print("imp_uid", imp_uid)
+        print('data',data)
+        print('headers', headers)
+        response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
+        data = response.json()
+        # // DB에서 결제되어야 하는 금액 조회 const
+        order_amount = order_obj.checkout_total
+        amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
+        print('amountToBePaid',amountToBePaid)
+        status = data['response']['status']  # 아임포트에서의 상태
+        print('status',status)
+        if order_amount==amountToBePaid:
+            # DB에 결제 정보 저장
+            # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
+            if status == 'ready':
+                # DB에 가상계좌 발급정보 저장
+                print("결재 상태 : ready, vbankIssued")
+                return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
+                                    content_type="application/json")
+            elif status=='paid':
+                print("결재 상태 : paid, success")
 
-                    order_obj.mark_paid()
-                    request.session['cart_items'] = 0
-                    del request.session['cart_id']
-                    
-                    # 사용포인트 차감
-                    if order_obj.point_total > 0:
-                        point_use = (-1) * order_obj.point_total
-                        point_obj = Point.objects.new(user=user, amount=point_use, details=point_details)
+                order_obj.mark_paid()
+                request.session['cart_items'] = 0
+                del request.session['cart_id']
+                
+                # 사용포인트 차감
+                if order_obj.point_total > 0:
+                    point_use = (-1) * order_obj.point_total
+                    point_obj = Point.objects.new(user=user, amount=point_use, details=point_details)
 
 
-                    # 재고 있는것들에 대해서 아래와 같이 구매한다.
-                    for cart_item_obj in cart_obj.cart_items.all():
-                        if cart_item_obj.product_type == 'normal':
-                            cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
-                            cart_item_obj.product_item.save()
-                            print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
-                    
+                # 재고 있는것들에 대해서 아래와 같이 구매한다.
+                for cart_item_obj in cart_obj.cart_items.all():
+                    if cart_item_obj.product_type == 'normal':
+                        cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                        cart_item_obj.product_item.save()
+                        print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
+                
 
-                    return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
-                                        content_type="application/json")
-                else:
-                    pass
+                return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
+                                    content_type="application/json")
             else:
-                print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
-                return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json") 
+                print("결재 상태 : 결제가 실패하였습니다.")
+                return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+        else:
+            print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
+            return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json") 
+    
+    # 모바일 checkout suceess 후 redirectino 일때...
+    elif request.method == 'GET':
+        print("모바일 Checkout requested")
+        
+        imp_uid = request.GET.get('imp_uid')
+        merchant_uid = request.GET.get('merchant_uid')
+        imp_success = request.GET.get('imp_success')
+        print('imp_uid', imp_uid)
+        print('merchant_uid', merchant_uid)
+        print('imp_success', imp_success)
+        
+        response = requests.get('https://api.iamport.kr/payments/find'+merchant_uid)
+
+        data = response.json()
+        # // DB에서 결제되어야 하는 금액 조회 const
+        order_amount = order_obj.checkout_total
+        amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
+        print('amountToBePaid',amountToBePaid)
+
+        status = data['response']['status']
+        print('status',status)
+
+
+        if order_amount==amountToBePaid:
+            # DB에 결제 정보 저장
+            # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
+            if status == 'ready' and imp_success == True:
+                # DB에 가상계좌 발급정보 저장
+                print("결재 상태 : ready, vbankIssued")
+                return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
+                                    content_type="application/json")
+            elif status=='paid' and imp_success == True:
+                print("결재 상태 : paid, success")
+
+                order_obj.mark_paid()
+                request.session['cart_items'] = 0
+                del request.session['cart_id']
+                
+                # 사용포인트 차감
+                if order_obj.point_total > 0:
+                    point_use = (-1) * order_obj.point_total
+                    point_obj = Point.objects.new(user=user, amount=point_use, details=point_details)
+
+
+                # 재고 있는것들에 대해서 아래와 같이 구매한다.
+                for cart_item_obj in cart_obj.cart_items.all():
+                    if cart_item_obj.product_type == 'normal':
+                        cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                        cart_item_obj.product_item.save()
+                        print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
+                
+
+                return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
+                                    content_type="application/json")
+            elif status=='failed' or imp_success == false:
+                print("결재 상태 : 결제가 실패하였습니다.")
+                return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+        else:
+            print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
+            return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json") 
+
+
+
 # billing_profile = models.ForeignKey(BillingProfile, on_delete=models.CASCADE)
 # email           = models.EmailField(max_length=255, unique=True)
 # phone_number    = models.CharField(max_length=255, blank=True, null=True)
