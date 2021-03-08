@@ -693,12 +693,33 @@ def checkout_iamport(request):
         print('merchant_uid', merchant_uid)
         print('imp_success', imp_success)
         
-        response = requests.get('https://api.iamport.kr/payments/find'+merchant_uid)
-
+        data = {
+            "imp_key": IMPORT_REST_API_KEY,
+            "imp_secret": IMPORT_REST_API_SECRET
+        }
+        print(data)
+        response = requests.post('https://api.iamport.kr/users/getToken', data=data)
+        data = response.json()
+        print(data)
+        my_token = data['response']['access_token']
+        print('my_token',my_token)
+        #  // imp_uid로 아임포트 서버에서 결제 정보 조회
+        headers = {"Authorization": my_token}
+        print("imp_uid", imp_uid)
+        print('data',data)
+        print('headers', headers)
+        response = requests.get('https://api.iamport.kr/payments/'+imp_uid, data=data, headers = headers)
         data = response.json()
         # // DB에서 결제되어야 하는 금액 조회 const
         order_amount = order_obj.checkout_total
         amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
+
+        # response = requests.get('https://api.iamport.kr/payments/find'+merchant_uid)
+
+        # data = response.json()
+        # # // DB에서 결제되어야 하는 금액 조회 const
+        # order_amount = order_obj.checkout_total
+        # amountToBePaid = data['response']['amount']  # 아임포트에서 결제후 실제 결제라고 인지 된 금액
         print('amountToBePaid',amountToBePaid)
 
         status = data['response']['status']
@@ -708,12 +729,12 @@ def checkout_iamport(request):
         if order_amount==amountToBePaid:
             # DB에 결제 정보 저장
             # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
-            if status == 'ready' and imp_success == True:
+            if status == 'ready' and imp_success == 'true':
                 # DB에 가상계좌 발급정보 저장
                 print("결재 상태 : ready, vbankIssued")
                 return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
                                     content_type="application/json")
-            elif status=='paid' and imp_success == True:
+            elif status=='paid' and imp_success == 'true':
                 print("결재 상태 : paid, success")
 
                 order_obj.mark_paid()
@@ -736,7 +757,7 @@ def checkout_iamport(request):
 
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
                                     content_type="application/json")
-            elif status=='failed' or imp_success == false:
+            elif status=='failed' or imp_success == 'false':
                 print("결재 상태 : 결제가 실패하였습니다.")
                 return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
         else:
