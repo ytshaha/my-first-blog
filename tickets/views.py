@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 import datetime
 from django.contrib import messages
+from django.utils import timezone
 
 
 from accounts.forms import LoginForm, GuestForm
@@ -115,7 +116,9 @@ def ticket_home(request):
                 return render(request, "tickets/ticket_home.html", context)
             if ticket_qs.count() == 1:
                 ticket_obj = ticket_qs.first()
-                ticket_obj.timestamp = datetime.datetime.now()
+                ticket_obj.timestamp = timezone.now()
+                ticket_obj.limit_date = timezone.now() + timezone.timedelta(days=1)
+                
                 ticket_obj.status = 'activate'
                 ticket_obj.save()
                 request.session['ticket_activate'] = True

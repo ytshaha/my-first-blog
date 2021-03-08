@@ -34,8 +34,6 @@
     
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-          {% if user.is_authenticated %}
-          
           <li class="nav-item">
             <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
           </li>
@@ -79,31 +77,32 @@
 
 
           <li class="nav-item"></li>
-            <a class="nav-link" href="{% url 'reviews:home' %}">REVIEW</a>
+            <a class="nav-link" href="{% url 'reviews:home' %}">리뷰</a>
           </li>
 
           
-
+          {% if user.is_authenticated %}
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">ACCOUNT</a>
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'accounts:home' %}">Home</a>
+              <a class="dropdown-item" href="{% url 'accounts:home' %}">마이페이지 홈</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="">Billing</a>
               <a class="dropdown-item" href="">Preference</a>
               <a class="dropdown-item" href="">History</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'logout' %}">Logout</a>
               <a class="dropdown-item" href=""></a>
             </div>
           </li>
-
+          <li class="nav-item"></li>
+            <a class="nav-link" href="{% url 'logout' %}">로그아웃</a>
+          </li>
           {% else %}
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">LOGIN</a>
+            <a class="nav-link" href="{% url 'login' %}">로그인</a>
           </li>  
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'register' %}">REGISTER</a>
+            <a class="nav-link" href="{% url 'register' %}">회원가입</a>
           </li>  
           {% endif %}
 
@@ -113,16 +112,16 @@
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'accounts:home' %}">HOME</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:upload_product_item' %}">UPLOAD PRODUCT ITEM</a>
-              <a class="dropdown-item" href="{% url 'products:upload_product' %}">UPLOAD PRODUCT</a>
-              <a class="dropdown-item" href="{% url 'products:check' %}">CHECK PRODUCT</a> 
+              <a class="dropdown-item" href="{% url 'products:upload_product_item' %}">상품아이템 업로드</a>
+              <a class="dropdown-item" href="{% url 'products:upload_product' %}">상품 어보드</a>
+              <a class="dropdown-item" href="{% url 'products:check' %}">상품 체크</a> 
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">CHANGE ORDER STATUS</a>
-              <a class="dropdown-item" href="">CHANGE PRODUCT STATUS</a>
+              <a class="dropdown-item" href="">주문상태 확인</a>
+              <a class="dropdown-item" href="">상품 상태 변경</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">STATICS</a>
+              <a class="dropdown-item" href="">통계분석</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">MAKE REGISTER TICKET</a>
+              <a class="dropdown-item" href="">회원가입 티켓만들기</a>
             </div>
           </li>
           {% endif %}
@@ -239,7 +238,7 @@
               <div cols="4" rows="1" style="position: relative; display: block; height: 100%; overflow: hidden;">
                 <div class="text-center">
                   <p class='mb-2' style='font-size:x-large;font-weight:bold;'>MOUM8</p>
-                  <p class='mb-2' style='font-size:large;font-weight:bold;'>© 2021-2025 MOUM International, LLC. All Rights Reserved.</p>
+                  <p class='mb-2' style='font-size:large;font-weight:bold;'>© 2021 MOUM International, All Rights Reserved.</p>
                   <p class='mb-0'>모움 인터내셔널, 경기 파주시 필승로210, 109~112</p>
                   <p class='mb-0'>담당자 박태현, 유선번호 031-945-8832</p>
                   <p class='mb-0'>사업자등록번호 : 515-36-91661</p>

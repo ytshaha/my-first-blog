@@ -155,7 +155,7 @@
                         <tr>
                             <th scope="row">{{ forloop.counter }}</th>
                             <td>{{ bidding.user.username|slice:":2" }}*****</td>
-                            <td>{{ bidding.bidding_price }} 원</td>
+                            <td>{{ bidding.bidding_price|intcomma }} 원</td>
                             <td>{{ bidding.timestamp|date:"Y-m-d H:i:s" }}</td>
                         </tr>
                         {% endfor %}

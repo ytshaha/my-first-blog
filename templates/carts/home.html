@@ -135,13 +135,15 @@
         </span>
         <p class='mt-3' style='font-size:large;'>장바구니가 비어있습니다.</p>
       </div>
-      <div class='col-5 mx-auto text-center mt-3'>
-        <a href="{% url 'products:product_list' %}"><button type='submit' class='btn btn-outline-success btn-block'>쇼핑 계속하기</button></a>
+      <div class='col-5 mx-auto text-center mt-5'>
+        <a href="{% url 'products:product_list' %}"><button type='submit' class='btn btn-outline-dark btn-block'>쇼핑 계속하기</button></a>
       </div>
     </div>
     
     {% endif %}
 
+
+    {% if cart.cart_items.exists %}
     <div class='col-12 my-5 px-5 rounded' style='background-color:#423F3B;'>
       <div class='col pt-4 pb-4 text-center'>
           <span style="font-size: 0.6em; color: #ffe5a9;">
@@ -164,6 +166,7 @@
       </div>
       <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
     </div>
+    {% endif %}
 </div>
 
 

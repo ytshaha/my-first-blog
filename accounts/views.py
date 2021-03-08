@@ -126,6 +126,7 @@ class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
     form_class = LoginForm
     success_url = '/shop/'
     template_name = "accounts/login.html"
+    
     default_next = '/shop/'
    
     def form_valid(self, form):

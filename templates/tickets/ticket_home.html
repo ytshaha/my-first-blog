@@ -14,6 +14,13 @@
 
 <div class='container'>
     <div class='row'>
+        <div class='col mx-auto text-center'>
+            <span style="font-size: 1.5em; color: #423f3b;">
+                <i class="fas fa-ticket-alt fa-5x"></i>
+            </span>
+        </div>
+    </div>
+    <div class='row'>
         <div class='col-9 mr-auto text-left'>
             <p class="product-detail-bidding-header mb-3" style="font-weight:bold;font-size:1.2rem;">- 사용가능 Ticket List -</p>
         </div>
@@ -26,6 +33,7 @@
         <h1>{{ message }}</h1>
         {% endif %}
     </div>
+    
     <div class='row'>
         <div class='col-12 mx-auto'>
             {% if tickets.exists %}

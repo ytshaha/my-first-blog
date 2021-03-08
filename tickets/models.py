@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+
 from django.db.models.signals import pre_save, post_save
 from decimal import Decimal
 import datetime
@@ -66,6 +68,7 @@ class Ticket(models.Model):
     # biddings        = models.ForeignKey(Bidding, on_delete=models.CASCADE, blank=True, null=True)# 참여한 Bidding들이다. 
     update          = models.DateTimeField(auto_now=True)
     timestamp       = models.DateTimeField(auto_now_add=True)
+    limit_date      = models.DateTimeField(auto_now_add=True)
     
     # 사용여부.., 이것은 티켓홈에서 사용하게 한다
     # 사용하면 사용한 날을 표기한다(update나 timestamp로 해야겠지.)
@@ -85,8 +88,8 @@ def pre_save_create_ticket_id(sender, instance, *args, **kwargs):
         instance.ticket_id = unique_ticket_id_generator(instance)
     
     # 사용되지 않은것 제외하고 오늘보다 timestamp가 작은 user의 ticket은 active False만들어라.
-    today = datetime.datetime.now().date()
-    qs = Ticket.objects.filter(user=instance.user, timestamp__lt=today).exclude(status='unused')
+    now = timezone.now()
+    qs = Ticket.objects.filter(user=instance.user, limit_date__lt=now).exclude(status='unused')
     if qs.exists():
         qs.update(active=False)
         qs.update(status='used')

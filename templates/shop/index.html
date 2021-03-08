@@ -47,7 +47,6 @@
 
 {% block content %}
 
-{% if user.is_authenticated %}
 
 
 <!-- 사진슬라이드 부분 -->
@@ -62,7 +61,7 @@
       <li data-target="#demo" data-slide-to="3"></li>
       <li data-target="#demo" data-slide-to="4"></li>
       <li data-target="#demo" data-slide-to="5"></li>
-      <li data-target="#demo" data-slide-to="6"></li>
+      <!-- <li data-target="#demo" data-slide-to="6"></li> -->
     </ul>
   
     <!-- The slideshow -->
@@ -103,13 +102,13 @@
             <h3 class='add-text-stroke-thin' style='font-size:30px;font-weight:bolder;'>ONLY GENUINE GOODS</h3>        
         </div>
       </div>
-      <div class="carousel-item">
+      <!-- <div class="carousel-item">
         <img src="{% static 'shop/index_slide_image/royal-interior.jpg' %}" alt="Chicago" class='center'>
         <div class="carousel-caption" >
             <h1 class='add-text-stroke' style='font-size:80px;font-weight:bolder;'>MOUM8</h1>
             <h3 class='add-text-stroke-thin' style='font-size:30px;font-weight:bolder;'>100% A/S SYSTEM</h3>        
         </div>
-      </div>
+      </div> -->
       <div class="carousel-item">
         <img src="{% static 'shop/index_slide_image/style.jpg' %}" alt="New York" class='center'>
         <div class="carousel-caption" >
@@ -384,28 +383,7 @@
     </div>
 </div>
 
-<!-- 로긴되어있지 않다면 -->
-{% else %}
-    <div style='height:1200px;'>
-      <div class="jb-box first-page">
-          <img src="{% static 'shop/first_page_image.jpg' %}" style="width:100%;height:50%;object-fit:cover;">
-          <div class="jb-text">
-              <div class="index-container-1">
-                  <div class='index-container-2'>   
-                      <h1 class="style-title">우리나라의 유일한 병행수입명품 경매사이트</h1>
-                      <h1 class="style-title style-title-large">MOUM International</h1>
-                      <div class="style-title-desc">
-                        <p class="first-page-account">처음 오신분이라면 가입티켓을 통한 가입</p>
-                        <p class="first-page-account">기존 고객이시라면 로그인</p>
-                      </div>
-                      <a href="{% url 'login' %}"><button type="button" class="btn btn-warning style-button-joining">SIGN IN(LOGIN)</button></a>
-                      <a href=""><button type="button" class="btn btn-warning style-button-joining" style="margin-left:20px;">SIGN UP(JOIN)</button></a>
-                  </div>
-              </div>
-          </div>
-      </div>
-    </div>
-{% endif %}
+
 {% endblock %}
 
 <!-- JavaScript 영역 -->
