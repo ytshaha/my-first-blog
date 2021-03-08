@@ -50,9 +50,9 @@
               {% endif %}
 
               {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
-              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal }} 원</span><span style='color:gray;'><small><del> {{ cart_item.product_item.product.list_price }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio }} %</small></span></p>
+              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.product_item.product.list_price|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
               {% elif cart_item.product_type == 'ticket' %}
-              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal }} 원</span><span style='color:gray;'><small><del> {{ cart_item.ticket_item.subtotal }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio }} %</small></span></p>
+              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.ticket_item.subtotal|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
               {% endif %}
               <p class='mb-1' style='font-size:small;'>옵션: 없음</p>
               {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
@@ -60,7 +60,7 @@
               <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
               {% endif %}
 
-              <p class='mb-1' style='font-size:small;'>물품종류: {{ cart_item.get_product_type_display }}</p>
+              <p class='mb-1' style='font-size:small;'>물품종류: {{ cart_item.get_product_type_display }}$$$$$$지울지말지 경매와구분떄문에 논의필요</p>
               <p class='mb-2' style='font-size:small;'>수량 : {{ cart_item.amount }} 개</p>
               <div class='col'>
                 <div class='row'>
@@ -70,6 +70,11 @@
                   <div class='ml-1'>
                     {% include 'carts/snippets/remove-product.html' %}
                   </div>
+                  <div class='ml-1'>
+                    <a href="{{ cart_item.product_item.get_absolute_url }}"><button class='btn btn-outline-success btn-sm'>인증서추가(+20,000원)</button></a>
+                  --> 정품이라는 인증서관련,,, 아래 주의사항에 코맨트 추가바람.
+                  </div>
+                  
                 </div>
               </div>
             </div>

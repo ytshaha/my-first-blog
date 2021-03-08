@@ -101,7 +101,8 @@
                             </div>
                             <div class='col text-right'>
                                 {% if product_item.featured %}
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>On Sale</p>                            
+                                <!-- 온세일 삭제함. 210309 -->
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;'></p>                            
                                 {% else %}
                                 <p class="product-card__on-bidding mb-0" style='font-size:small;color:black;'>판매준비중</p>                            
                                 {% endif %}        
@@ -110,7 +111,7 @@
                         <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
                         <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
                         <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
-                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
@@ -119,7 +120,8 @@
                                 {% endif %}
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <!-- 국내배송여부 삭제 210309 -->
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>

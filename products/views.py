@@ -20,7 +20,7 @@ from biddings.forms import BiddingForm
 from carts.models import Cart
 
 # 노말 물품은 아래것으로 통일
-class ProductNormalListView(LoginRequiredMixin, generic.ListView):
+class ProductNormalListView(generic.ListView):
     '''
     Featured = True이고 product_type= Noraml인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
     '''
@@ -64,7 +64,7 @@ class ProductNormalListView(LoginRequiredMixin, generic.ListView):
         return product_item_qs
 
 # 비딩 물품은 아래것으로 통일
-class ProductBiddingListView(LoginRequiredMixin, generic.ListView):
+class ProductBiddingListView(generic.ListView):
     '''
     Featured = True이고 product_type= bidding인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
     bidding_ready와 bidding 두가지에 대하 queryset을 준비해야함.
@@ -234,7 +234,7 @@ class ProductStaffCheckView(LoginRequiredMixin, StaffRequiredView, generic.ListV
         return product_item_qs.filter(updated__gte=start_datetime, updated__lt=end_datetime)
     
 
-class ProductFeaturedDetailView(LoginRequiredMixin, generic.DetailView):
+class ProductFeaturedDetailView(generic.DetailView):
     template_name = 'products/product_featured-detail.html'
     context_object_name = 'product'
 
@@ -261,7 +261,7 @@ class ProductFeaturedDetailView(LoginRequiredMixin, generic.DetailView):
 
 
 # 실질적으로 사용하는 detail View
-class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
+class ProductDetailSlugView(generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product_item'
 

@@ -70,33 +70,40 @@
                     <div class='my-2'>
                         <span style="font-size:large;font-weight:bold;">경매 현재가격</span>
                         <p><span style="font-weight:bold;font-size:x-large;">{{ product_item.current_price|intcomma }} 원</span>
-                        <span style='color:gray;'><del>{{ product_item.product.list_price }} 원</del></span>
-                        <span style='color:red;font-size:large;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <span style='color:gray;'><del>{{ product_item.product.list_price|intcomma }} 원</del></span>
+                        <span style='color:red;font-size:large;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                     </div>
                     {% else %}
                     <div class='my-2'>
                         <span style="font-size:large;font-weight:bold;">가격</span>
                         <p><span style="font-weight:bold;font-size:x-large;">{{ product_item.price|intcomma }} 원</span>
-                        <span style='color:gray;'><del>₩ {{ product_item.product.list_price }}</del></span>
-                        <span style='color:red;font-size:large;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <span style='color:gray;'><del>₩ {{ product_item.product.list_price|intcomma }}</del></span>
+                        <span style='color:red;font-size:large;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                     </div>
                     {% endif %}
                 </div>
                 <!-- 기타정보 -->
                 <div class='mt-2 mb-4 '>
-                    {% if product_type == 'bidding' %}
-                    <p class='mb-2' style="font-size:medium;">경매수량 : {{ product_item.amount|intcomma }} EA</p>
+                    {% if product_item.amount > 0 %}
+                    <p class='mb-0' style="font-size:medium;font-weight:bold;">재고 보유</p>
+                        {% if product_item.info_delivery_from == 'overseas' %}
+                        <p class='mb-2' style="font-size:small;color:gray;">7~8일 이내에 발송 가능한 상품입니다.</p>
+                        {% elif product_item.info_delivery_from == 'domestic' %}
+                        <p class='mb-2' style="font-size:small;color:gray;">1~2일 이내에 발송 가능한 상품입니다.</p>
+                        {% endif %}
                     {% else %}
-                    <p class='mb-2' style="font-size:medium;">재고수량 : {{ product_item.amount|intcomma }} EA</p>
+                    <p class='mb-2' style="font-size:medium;">재고 없음</p>
                     {% endif %}
                     <p class='mb-2' style="font-size:medium;">원산지 : {{ product_item.product.made_info_made_country }}</p>
                     <p class='mb-2' style="font-size:medium;">모델명 : {{ product_item.product.info_product_number }}</p>
-                    <p class='mb-2' style="font-size:medium;">배송정보 : {{ product_item.product.info_delivery }}</p>
-                    {% if product_item.info_delivery_from == 'overseas' %}
-                    <p class='mb-2' style="font-size:large;">국내·해외배송 : {{ product_item.get_info_delivery_from_display }}(7일이상 소요)</p>
-                    {% elif product_item.info_delivery_from == 'domestic' %}
-                    <p class='mb-2' style="font-size:medium;">국내·해외배송 : {{ product_item.get_info_delivery_from_display }}(당일 배송)</p>
-                    {% endif %}
+
+                    <!-- <p class='mb-2' style="font-size:medium;">배송정보 : {{ product_item.product.info_delivery }</p> -->
+
+                    <!-- {% if product_item.info_delivery_from == 'overseas' %
+                    <p class='mb-2' style="font-size:large;">국내·해외배송 : {{ product_item.get_info_delivery_from_display }(7일이상 소요)</p>
+                    {% elif product_item.info_delivery_from == 'domestic' %
+                    <p class='mb-2' style="font-size:medium;">국내·해외배송 : {{ product_item.get_info_delivery_from_display }(당일 배송)</p>
+                    {% endif % -->
                 </div>
                 <!-- 상품정보 끝 -->
                 <hr>
@@ -204,8 +211,8 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="align-middle table-bidding-info">{{ product_item.current_price|intcomma }} 원</td>
-                        <td class="align-middle table-bidding-info"  style="font-size:large;font-weight:bold;color:red;">{{ product_item.start_price|intcomma }} 원</td>
+                        <td class="align-middle table-bidding-info">{{ product_item.start_price|intcomma }} 원</td>
+                        <td class="align-middle table-bidding-info"  style="font-size:large;font-weight:bold;color:red;">{{ product_item.current_price|intcomma }} 원</td>
                         <td class="align-middle table-bidding-info">{{ product_item.remain_bidding_time }}</td>
                         <td class="align-middle table-bidding-info">{{ product_item.price_step|intcomma }} 원</td>
                         <td class="align-middle table-bidding-info">{{ product_item.amount }}EA</td>
