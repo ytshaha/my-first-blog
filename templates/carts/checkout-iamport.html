@@ -374,7 +374,7 @@ function requestPay() {
         buyer_tel : $(".buyer_tel").val(),
         buyer_addr : $(".buyer_addr").val(),
         buyer_postcode : $(".buyer_postcode").val(),
-        m_redirect_url : "{% url 'carts:checkout-iamport' %}"
+        m_redirect_url : "{% url 'carts:success' %}"
     }, function (rsp) {
         if (rsp.success) {
             //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
