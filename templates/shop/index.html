@@ -136,7 +136,7 @@
                                 <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
                             </div>
                             <div class='col text-right'>
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>On Bidding</p>                            
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;'></p>                            
                             </div> 
                         </div>
                         <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
@@ -146,10 +146,10 @@
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
-                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 뒤에 종료</span>
+                                <span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'>남은 시간 : </span><div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>
@@ -214,9 +214,9 @@
                             </div>
                             <div class='col text-right'>
                                 {% if product_item.featured %}
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>On Sale</p>                            
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;'></p>                            
                                 {% else %}
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;color:black;'>판매준비중</p>                            
+                                <p class="product-card__on-bidding mb-0" style='font-size:small;color:black;'></p>                            
                                 {% endif %}        
                             </div> 
                         </div>
@@ -228,11 +228,11 @@
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
                                 {% if product_item.info_delivery_from == 'overseas' %}
-                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 까지 구매</span>
+                                <span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'>남은 시간 : </span></span><div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
                                 {% endif %}
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>
