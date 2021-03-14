@@ -28,6 +28,12 @@
                             </span>
                             <p class='mt-4' style='font-size:large;font-weight:bold;'>WELCOME TO MOUM8</p>
                         </div>
+                        <div class='col-12'>
+                            {% if form.errors %}
+                               <p class='text-center' style='background-color:#423f3b;color:white'>이름과 비밀번호가 일치하지 않습니다. 다시 시도해주세요.</p>
+                               <br/>
+                            {% endif %}
+                        </div>
                         <div class='row' style='width:100%'>
                             <div class='col-8 mx-auto mb-4'>
                                 <input class="form-control" type="text" name="username" required="" id="id_username" placeholder="USERNAME">

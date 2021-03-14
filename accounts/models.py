@@ -13,7 +13,23 @@ from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import get_template
 from mysite.utils import unique_key_generator
+from mysite.gmail import send_email
+# from mysite.gmail import get_credentials, create_message_and_send, create_message_without_attachment, create_Message_with_attachment, send_Message_without_attachement, send_Message_with_attachement
 from points.models import Point
+
+
+
+def main():
+    to = email
+    sender = "snowman"
+    subject = "hello"
+    message_text_html  = r'hello<br/> <b>감사합니다</b>'
+    message_text_plain = "Hi\n"
+    attached_file = r'C:\Users\Me\Desktop\audio.m4a'
+    create_message_and_send(sender, to, subject, message_text_plain, message_text_html, attached_file)
+
+
+
 
 # send_mail(subject, message, from_email, recipient_list, html_message)
 
@@ -197,7 +213,7 @@ class EmailActivation(models.Model):
     def send_activation(self):
         if not self.activated and not self.forced_expired:
             if self.key:
-                base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com/')
+                base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com')
                 key_path = reverse("accounts:email-activate", kwargs={'key':self.key}) # use reverse
                 path = "{base}{path}".format(base=base_url, path=key_path)
                 context = {
@@ -206,18 +222,23 @@ class EmailActivation(models.Model):
                 }
                 txt_ = get_template("registration/emails/verify.txt").render(context)
                 html_ = get_template("registration/emails/verify.html").render(context)
-                subject = '1-Click Email Verification'
+                subject = '명품 병행수입 쇼핑몰_MOUM8_가입 계정활성화 메일_Activation mail for MOUM8'
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [self.email]
-                sent_mail = send_mail(
-                            subject,
-                            txt_,
-                            from_email,
-                            recipient_list,
-                            html_message=html_,
-                            fail_silently=False,
-                            )
-                return sent_mail
+
+                send_mail = send_email(
+                                        emailMsg=txt_, 
+                                        to=self.email, 
+                                        subject=subject)
+                # sent_mail = send_mail(
+                #             subject,
+                #             txt_,
+                #             from_email,
+                #             recipient_list,
+                #             html_message=html_,
+                #             fail_silently=False,
+                #             )
+                return send_mail
         return False
         
 def pre_save_email_activation(sender, instance, *args, **kwrags):

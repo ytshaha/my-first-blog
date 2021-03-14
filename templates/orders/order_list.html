@@ -1,35 +1,63 @@
 {% extends 'shop/base.html' %}
 
 {% block content %}
-
-
-
-<div class='row'>
-    <div class='col-12'>
-        <h1>Orders</h1>
+{% load humanize %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">주문현황</h2>
+            <hr class="index-title-divider">
+        </div>
     </div>
-</div>
-<div class='row'>
-    <div class='col'>
-        <table class='table'>
-            <thead>
-                <th>Order ID</th>
-                <th>Shipping Status</th>
-                <th>Total</th>
-            </thead>
-            
-            <tbody>
-                {% for object in object_list %}
-                <tr>
-                    <td><a href="{{ object.get_absolute_url }}">{{ object.order_id }}</a></td>
-                    <td>{% if object.get_shipping_status == 'shipped'%}Shipped{% else %}Shipping Soon{% endif %}</td>
-                    <td>{{ object.total }}</td>
-                </tr>
-                {% empty %}
-                <tr><td colspan="3"><p class='lead'>No orders yet.</p></td></tr>
-                {% endfor %}
-            </tbody>
-        </table>
+</div>  
+<hr/>
+
+<div class='container'>
+    <div class='row'>
+        <div class='col-4 ml-auto text-right'>
+            <a href="{% url 'accounts:home' %}"><button class='btn btn-outline-dark btn-sm'>마이페이지 홈 돌아가기</button></a>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col'>
+            <table class='table text-center'>
+                <colgroup>
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 40%;">
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 10%;">
+                    
+                </colgroup>
+                <thead>
+                    <th>번호</th>
+                    <th>구매물품</th>
+                    <th>주문현황</th>
+                    <th>비용</th>
+                </thead>
+                
+                <tbody>
+                    {% for object in object_list %}
+                    <tr>
+                        <td><a href="{{ object.get_absolute_url }}" style='color:black;'>{{ object.order_id }}</a></td>
+                        <td>
+                            <a href="{{ object.get_absolute_url }}" style='color:black;'>{% for cart_item in object.cart.cart_items.all %}{{ cart_item.product_item.product.title }}{% if not forloop.last %},{% endif %}{% endfor %}</a></td>
+                        <td>
+                            {% if object.status == 'shipped' %}
+                            <p>배송</p>  
+                            {% elif object.status == 'paid' %}
+                            <p>결재완료</p> 
+                            {% elif object.status == 'refunded' %}
+                            <p>환불완료</p> 
+                            {% endif %}
+                        </td>
+                        <td>{{ object.total|intcomma }} 원</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3"><p class='lead'>No orders yet.</p></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

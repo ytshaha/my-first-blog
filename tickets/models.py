@@ -158,7 +158,14 @@ class TicketItem(models.Model):
     objects = TicketItemManager()
 
     def __str__(self):
-        return str(self.id)
+        timestamp = self.timestamp
+        year = timestamp.year
+        month = timestamp.month
+        day = timestamp.day
+        # formmated_timestamp = str(year) + str(month) + str(day)
+        formmated_timestamp = "{:04d}{:02d}{:02d}".format(year, month, day)
+
+        return "{}_ticket_{}EA".format(formmated_timestamp, self.tickets_type)
 
 
 def pre_save_ticket_item_receiver(sender, instance, *args, **kwargs):

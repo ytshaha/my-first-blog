@@ -16,7 +16,7 @@ from django.utils.safestring import mark_safe
 
 from mysite.mixin import NextUrlMixIn, RequestFormAttachMixin
 from mysite.utils import check_ticket_activate
-from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, UserDetailChangeForm
+from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, UserDetailChangeForm, PasswordChangeForm
 from .models import GuestEmail, EmailActivation
 from .signals import user_logged_in
 from tickets.models import Ticket
@@ -141,6 +141,9 @@ class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
             print('{} => {}'.format(key, value))
         return redirect(next_path)
 
+    
+    
+
 class RegisterView(CreateView):
     form_class = RegisterForm
     template_name = 'accounts/register.html'
@@ -176,6 +179,19 @@ class UserDetailUpdateView(LoginRequiredMixin, UpdateView):
         context = super(UserDetailUpdateView, self).get_context_data(*args, **kwargs)
         context['title'] = 'Change Your Account Details'
         return context
+
+    def get_success_url(self):
+        request = self.request
+        messages.success(request, "개인정보가 성공적으로 변경되었습니다.")
+        return reverse("accounts:home")
+
+
+class PasswordChangeView(LoginRequiredMixin, UpdateView):
+    form_class = PasswordChangeForm
+    template_name = 'registration/password_change_form.html'
+    
+    def get_object(self):
+        return self.request.user
 
     def get_success_url(self):
         return reverse("accounts:home")

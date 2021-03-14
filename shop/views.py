@@ -25,6 +25,9 @@ def index(request):
 def introduction(request):
     return render(request, 'shop/introduction.html', {})
 
+def faq(request):
+    return render(request, 'shop/faq.html', {})
+
 
 
 @login_required

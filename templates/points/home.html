@@ -1,0 +1,55 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+{% load humanize %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">{{ user }}님의 포인트 현황</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+<hr/>
+
+<div class='container'>
+    <div class='row'>
+        <div class='col'>
+            <p>현재 남은 포인트 : {{ user.points }} 포인트</p>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col'>
+            <table class='table text-center'>
+                <colgroup>
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 40%;">
+                    <col span="1" style="width: 20%;">
+                    
+                </colgroup>
+                <thead>
+                    <th>번호</th>
+                    <th>포인트</th>
+                    <th>내용</th>
+                    <th>포인트변동시각</th>
+                </thead>
+                
+                <tbody>
+                    {% for point in points %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{% if point.amount > 0 %}+{{ point.amount }} 포인트{% else %}{{ point.amount }} 포인트{% endif %}</td>
+                        <td>{{ point.details }}</td>
+                        <td>{{ point.timestamp|date:'Y-m-d H:i:s' }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3"><p class='lead'>포인트가 없습니다.</p></td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

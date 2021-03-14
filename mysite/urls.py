@@ -13,7 +13,7 @@ from django.contrib.auth.views import LogoutView
 from addresses.views import checkout_address_create_view, checkout_address_reuse_view
 from billing.views import payment_method_view, payment_method_createview
 from carts.views import cart_detail_api_view
-from shop.views import index
+from shop.views import index, faq
 
 urlpatterns = [
     path('', index, name='home'),
@@ -40,18 +40,21 @@ urlpatterns = [
 
     path('logout/', LogoutView.as_view(next_page='/product/'), name='logout'),
     path('shop/', include('shop.urls')),
+    path('faq/', faq, name='faq'),
     # path('accounts/', include('accounts.urls')),
     url(r'^review/', include('reviews.urls')),
     url(r'^product/', include('products.urls')),
     url(r'^search/', include('search.urls')),
     url(r'^cart/', include('carts.urls')),
     url(r'^order/', include('orders.urls')),
+    url(r'^point/', include('points.urls')),
     
     url(r'^account/', include('accounts.urls')),
     url(r'^accounts/', include('accounts.passwords.urls')),
     
     url(r'^ticket/', include('tickets.urls')),
     url(r'^api/cart/$', cart_detail_api_view, name='api-cart'),   
+    
 
 
 ]

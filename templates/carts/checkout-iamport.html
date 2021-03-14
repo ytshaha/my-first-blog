@@ -36,11 +36,9 @@ span.price {
 }
 
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block content %}
-{% load humanize %}
 {% load humanize %}
 
 <div class="container">
@@ -285,27 +283,19 @@ span.price {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- jQuery -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
 <!-- iamport.payment.js -->
 <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
 
-<!-- 아임포트 CUSTOM js -->
+
+
+
 
 <script type="text/javascript">
+
 $(document).ready(function(){
     // Auto Search
     var getForm = $(".form-get-checkout-data")
@@ -352,6 +342,8 @@ $(document).ready(function(){
         console.log("클릭됐쪄염")
         requestPay()
     })
+
+
 })
 
 // 그냥 펑션 바깥에 꺼냈다. 나중에 실행만하자.

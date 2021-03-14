@@ -10,7 +10,6 @@ urlpatterns = [
     # url(r'^email/confirm/(?P<key>[0-9A-Za-z]+)/%', views.AccountEmailActivateView.as_view(), name='email-activate'),
     path('email/confirm/<key>/', views.AccountEmailActivateView.as_view(), name='email-activate'),
     path('email/resend-activation/', views.AccountEmailActivateView.as_view(), name='resend-activation'),
-
     ]
 
 

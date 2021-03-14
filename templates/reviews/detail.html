@@ -13,17 +13,119 @@
 <div class="container">
     <div class='row'>
         <div class="col-12">
-            <p>ID : {{ review.user }}</p>
-            <p>물품 : {{ review.product_item.product_item.product }}</p>
-            <p>구매타입 : {{ review.product_item.product_item.product_type }}</p>
-            <p>제목 : {{ review.title }}</p>
-            <p>작성일 : {{ review.created_date|date:'Y-m-d H:i:s' }}</p>
-            <p>내용<br>{{ review.text|linebreaks }}</p>
+            {% if user == review.user %}
+            {% endif %}
+            <div class='row'>
+                <div class='col mr-auto text-left'>
+                    <a class="btn btn-default mx-0 px-0" href="{% url 'reviews:edit' pk=review.pk %}">
+                        <button class='btn btn-outline-dark btn-sm btn-block mx-1' style='min-width:70px;'>수정</button>
+                    </a>
+                    <a class="btn btn-default mx-0 px-0" href="{% url 'reviews:home' %}">
+                        <button class='btn btn-outline-primary btn-sm btn-block mx-1' style='min-width:70px;'>목록으로</button>
+                    </a>
+                </div>
+                <div class='col-3 mr-auto text-left'>
+                    
+                </div>
+                
+            </div>
+            <p class='' style='font-size:x-large;font-weight:bold;'>{% if review.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}[{{ review.product_item.product_item.product }}] {{ review.title }}</p>
             
+            <p class='' style=''>작성자 : {{ review.user }}</p>
+            <p>{{ review.created_date|date:'Y-m-d H:i:s' }}</p>
             
-            <hr class="index-title-divider">
+            <hr>
+            <p>{{ review.text|linebreaks }}</p>
+
+            <!-- 리뷰이미지들.. -->
+            <div class="row">
+                {% if review.image2 %}
+                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                    <picture>
+                        <img class="detail-image detail-image-sub" src="{{ review.image1.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
+                    </picture>
+                </div>
+                {% endif %}
+                {% if review.image2 %}
+                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                    <picture>
+                        <img class="detail-image detail-image-sub" src="{{ review.image2.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
+                    </picture>
+                </div>
+                {% endif %}
+                {% if review.image3 %}
+                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                    <picture>
+                        <img class="detail-image detail-image-sub" src="{{ review.image3.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
+                    </picture>
+                </div>
+                {% endif %}
+                {% if review.image4 %}
+                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                    <picture>
+                        <img class="detail-image detail-image-sub" src="{{ review.image4.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
+                    </picture>
+                </div>
+                {% endif %}
+                {% if review.image5 %}
+                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                    <picture>
+                        <img class="detail-image detail-image-sub" src="{{ review.image5.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
+                    </picture>
+                </div>
+                {% endif %}
+            </div>
+            <hr>
+            <div class='row'>
+                <div class='col'>
+                    <a class="btn btn-default mx-0 px-0" href="{% url 'reviews:add_comment_to_review' pk=review.pk %}">
+                        <button class='btn btn-outline-dark btn-sm btn-block mx-1' style='min-width:70px;'>댓글쓰기</button>
+                    </a>
+                </div>
+            </div>
+            <hr>
+
+            {% for comment in comments.all %}
+            {% if user.is_authenticated or comment.approved_comment %}
+            <div class='row'>
+                <div class='col-8'>
+                    <p class='my-0'><strong>{{ comment.user }}</strong></p>
+                    <p class='my-0'>{{ comment.created_date }}</p>
+                </div>
+                <div class='col'>
+                    <div class='row'>
+                        {% if not comment.approved_comment %}
+                        <div>
+                            <form method="POST" action="{% url 'reviews:comment_remove' pk=comment.pk %}">
+                                {% csrf_token %}<input class='btn btn-outline-danger btn-sm mx-1' type="submit" value="DELETE">
+                            </form>
+                        </div>
+                        <div>
+                            <a class="btn btn-default mx-0 py-0 px-0" href="{% url 'reviews:comment_edit' pk=comment.pk %}">
+                                <button class='btn btn-outline-dark btn-sm btn-block mx-1' style='min-width:70px;'>댓글수정</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                    {% endif %}
+                <div class='col-12 text-left'>
+                    <p>{{ comment.text|linebreaks }}</p>
+                </div>
+                
+            </div>
+            {% endif %}
+            {% empty %}
+            <div class='row'>
+                <div class='col'>
+                    <p style='font-size:medium;'>아직댓글이 없습니다.</p>
+                </div>
+            </div>
+            {% endfor %}
+            </div>
         </div>
     </div>
 </div>  
+
+
 
 {% endblock %}

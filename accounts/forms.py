@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import authenticate, login, get_user_model
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
+
 
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -56,12 +58,20 @@ class UserAdminCreationForm(forms.ModelForm):
 
 
 class UserDetailChangeForm(forms.ModelForm):
-    full_name = forms.CharField(label='Name', required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
-    phoe_number = forms.CharField(label='Phone', required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
+    full_name = forms.CharField(label='이름', required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
+    phoe_number = forms.CharField(label='전화번호', required=False, widget=forms.TextInput(attrs={'class':'form-control'}))
 
     class Meta:
         model = User
         fields = ['full_name', 'phoe_number']
+
+class PasswordChangeForm(PasswordChangeForm):
+    password1 = forms.CharField(label='비밀번호', required=True, widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(label='비밀번호 확인', required=True, widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    class Meta:
+        model = User
+        fields = ['password1', 'password2']
+
 
 class UserAdminChangeForm(forms.ModelForm):
     """A form for updating users. Includes all the fields on
@@ -117,8 +127,10 @@ class LoginForm(forms.Form):
         data = self.cleaned_data
         username  = data.get("username")
         password  = data.get("password")
-        email = User.objects.get(username=username).email
-        
+        try:
+            email = User.objects.get(username=username).email
+        except:
+            email = None    
         qs = User.objects.filter(username=username)
         if qs.exists():
             # user email is registered, check active.
@@ -238,5 +250,7 @@ class RegisterForm(forms.ModelForm):
 #         if password2 != password:
 #             raise forms.ValidationError("Passwords must match")
 #         return data
+
+
 
 

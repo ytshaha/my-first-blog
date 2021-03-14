@@ -1,0 +1,31 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">REVIEW EDIT</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>   
+
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <form method="POST" class='post-form'>
+                <input type="hidden" name='cart_item_id' value='{{ cart_item.id }}'>
+                <p>상품 : {{ cart_item }}xxx</p>
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class=row>
+                    <div class='col-lg-8 col-md-6 col-sm-12 mx-auto'>
+                        <button type="submit" class="save btn btn-dark btn-block">리뷰 업데이트</button>
+                    </div>
+                </div>
+            </form>            
+        </div>
+    </div>
+</div>  
+
+{% endblock %}

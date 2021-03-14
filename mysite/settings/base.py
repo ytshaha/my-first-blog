@@ -33,13 +33,16 @@ EMAIL_HOST_PASSWORD = 'yourpassword'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <taesun.yoo@gmail.com?>'
-BASE_URL = '127.0.0.1:8000'
+BASE_URL = 'http://127.0.0.1:8000'
 
 MANAGERS = (
     ("TAESUN YOO", "taesun.yoo@gmail.com"),
 )
 
 ADMIN = MANAGERS
+
+
+GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client.json')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -88,7 +91,8 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates'),
+                 os.path.join(BASE_DIR, 'widgets')], 
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -100,6 +104,8 @@ TEMPLATES = [
         },
     },
 ]
+
+
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 

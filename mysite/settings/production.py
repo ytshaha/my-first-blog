@@ -43,10 +43,12 @@ MANAGERS = (
 
 ADMIN = MANAGERS
 
+
 IAMPORT_CODE = os.environ.get('IAMPORT_CODE')
 IMPORT_REST_API_KEY = os.environ.get('IMPORT_REST_API_KEY')
 IMPORT_REST_API_SECRET = os.environ.get('IMPORT_REST_API_SECRET')
 
+GMAIL_API_CREDENTIAL_DIRS =  os.path.join(BASE_DIR, "static_my_proj", "json", 'credentials.json')
 # Application definition
 
 INSTALLED_APPS = [

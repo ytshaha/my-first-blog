@@ -8,9 +8,9 @@ from billing.models import BillingProfile
 from .models import Order
 
 class OrderListView(LoginRequiredMixin, ListView):
-
     def get_queryset(self):
         return Order.objects.by_request(self.request).not_created()
+        
 
 class OrderDetailView(LoginRequiredMixin, DetailView):
 

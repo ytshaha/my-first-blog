@@ -25,8 +25,15 @@ BIDDING_STATUS_CHOICE = (
 )
 
 PRODUCT_TYPE = (
-    ('normal','상시상품구매'),
-    ('bidding','경매상품구매'),
+    ('normal','일반물품'),
+    ('bidding','경매물품'),
+)
+
+PRICE_STEP_CHOICE = (
+    (1000,'1,000 원'),
+    (5000,'5,000 원'),
+    (10000,'10,000 원'),
+    
 )
 
 
@@ -261,6 +268,9 @@ class ProductItem(models.Model):
     product             = models.ForeignKey(Product, on_delete=models.CASCADE)
     info_delivery_from  = models.CharField(default='domestic', max_length=30, choices=DELIVERY_FROM_CHOICE, help_text=u'배송방법_국내해외')
     amount              = models.IntegerField(default=0, help_text=u'판매수량(경매 or 일반)')
+    option              = models.BooleanField(default=False, help_text=u'옵션유무여부')    # 용도: 보여지게하기
+    # size_option         = models.ForeignKey(SizeOption, blank=True, null=True, on_delete=models.CASCADE)
+    
     sale_ratio          = models.DecimalField(default=0, max_digits=100, decimal_places=1, help_text=u'할인율')
     # limit_price         = models.PositiveIntegerField(default=0, help_text=u'가격(일반가격 & 경매한도가)')
     price               = models.PositiveIntegerField(default=0, help_text=u'가격(일반가격 & 경매한도가)') # 기존 limit_price를 price로 개편
@@ -275,7 +285,7 @@ class ProductItem(models.Model):
     
     # 경매항목(product-type = bidding 시 필수로 입력되게 나중에 업로드 폼 짤 것.)
     start_price         = models.PositiveIntegerField(blank=True, null=True, help_text=u'경매시작가격')
-    price_step          = models.IntegerField(default=5000, blank=True, null=True, help_text=u'경매가격상승단위')
+    price_step          = models.IntegerField(default=5000, blank=True, null=True, choices=PRICE_STEP_CHOICE, help_text=u'경매가격상승단위')
     current_price       = models.PositiveIntegerField(default=0,  blank=True, null=True, help_text=u'경매현재가격')  # 경매현재가격은 맨처음 만들어질떄 product_type검사해서 있다면 start랑 동일하게 하자. blank 가능.
     bidding_start_date  = models.DateTimeField(default=timezone.now,  blank=True, null=True, help_text=u'경매시작일')
     bidding_end_date    = models.DateTimeField(default=timezone.now,  blank=True, null=True, help_text=u'경매종료일')
@@ -288,10 +298,10 @@ class ProductItem(models.Model):
     def __str__(self):
         updated = self.updated
         year = updated.year
-        month = updated.year
+        month = updated.month
         day = updated.day
-        formmated_updated = str(year) + str(month) + str(day)
-        return "{}_{}_{}".format(self.product.title, self.product_type, formmated_updated)
+        formmated_updated = "{:04d}{:02d}{:02d}".format(year, month, day)
+        return "{}_{}_{}".format(formmated_updated, self.product_type, self.product.title)
 
     def get_absolute_url(self):
         # return "products/{slug}".format(slug=self.slug)
@@ -340,3 +350,13 @@ def product_item_pre_save_receiver(sender, instance, *args, **kwargs):
     instance.bidding_on = bidding_on
 
 pre_save.connect(product_item_pre_save_receiver, sender=ProductItem)
+
+
+
+class SizeOption(models.Model):
+    product_item    = models.ForeignKey(ProductItem, on_delete=models.CASCADE)
+    size            = models.IntegerField(default=0, help_text=u'사이즈')
+    amount          = models.IntegerField(default=0, help_text=u'사이즈별수량')
+
+    def __str__(self):
+        return "{}_{}".format(self.product_item, self.size)

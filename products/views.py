@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
@@ -10,9 +12,11 @@ from django.template.defaultfilters import slugify
 from django.contrib import messages
 from django.forms import modelformset_factory
 from django.utils import timezone
+from django.http import JsonResponse
+
 
 from mysite.mixin import StaffRequiredView
-from .models import Product, ProductItem, Brand, Category, ProductImage
+from .models import Product, ProductItem, Brand, Category, ProductImage, SizeOption
 from biddings.models import Bidding
 from orders.models import Order
 from .forms import ProductForm, ProductItemForm, ProductImageForm
@@ -273,7 +277,7 @@ class ProductDetailSlugView(generic.DetailView):
         product_item_obj = ProductItem.objects.get(slug=slug)
         product_obj = product_item_obj.product
         product_type = product_item_obj.product_type
-        is_stock = True
+        
         cart_obj, new_obj = Cart.objects.new_or_get(request) #??
         product_images_qs = ProductImage.objects.filter(product=product_obj)
         product_obj.save()
@@ -297,15 +301,57 @@ class ProductDetailSlugView(generic.DetailView):
             bidding_on = None
 
         # 경매준비 경매중 경매종료 여부확인
-        # 상시판매물품 재고여부
-        if product_item_obj.amount < 1:
-            is_stock = False
-            amount_select_list = 0
-        elif product_item_obj.amount > 10:
-            amount_select_list = range(1, 11)
-        else:
-            amount_select_list = range(1, product_item_obj.amount + 1)
         
+        # 재고여부
+        # 1) 옵션없을 경우 - amount select list도 생성
+        # 2) 옵션있는 경우 - size_option.. 아 근데 amount select list 도 jquery로 변경시켜줘야겠네...
+        is_stock = None
+        size_option = None
+        if product_item_obj.option:
+            # 사이즈옵션있는경우
+            is_stock = False
+            size_option = SizeOption.objects.filter(product_item=product_item_obj)
+            amount_select_list = None
+            for size in size_option:
+                if size.amount > 0:
+                    is_stock = True
+        else:
+            # 사이즈 옵션 없는경우
+            is_stock = True
+            if product_item_obj.amount < 1:
+                is_stock = False
+                amount_select_list = 0
+            elif product_item_obj.amount > 10:
+                amount_select_list = range(1, 11)
+            else:
+                amount_select_list = range(1, product_item_obj.amount + 1)
+                    
+        # if request.method == 'POST':
+        #     if post_purpose == 'size_changed':
+        #         size = request.POST.get('size')
+        #         print('size:',size)
+        #         if not size:
+
+        #             json_data = {
+        #                 'amount_select_list': None
+        #                 }
+        #             JsonResponse(json_data, statis=200)
+        #         size_obj = SizeOption.objects.get(product_item=product_item_obj, size=size)
+        #         size_amount = size_obj.amount
+        #         if size_amount > 10:
+        #             amount_select_list = range(1, 11)
+        #         else:
+        #             amount_select_list = range(1, size_amount + 1)
+                
+        #         print("Ajax_Size change request")
+        #         json_data = {
+        #             'amount_select_list': amount_select_list
+        #         }
+        #         JsonResponse(json_data, statis=200)
+        #     else:
+        #         pass
+
+        context['size_option'] = size_option
         context['product_item'] = product_item_obj
         context['product_type'] = product_type
         context['amount_select_list'] = amount_select_list
@@ -330,6 +376,57 @@ class ProductDetailSlugView(generic.DetailView):
         except:
             raise Http404("Uhmmmmm")
         return instance
+
+    def post(self, request, *args, **kwargs):
+        # context = self.get_context_data(object=self.object)
+        # context = super(ProductDetailSlugView, self).get_context_data(*args, **kwargs)
+        request = self.request
+        user = request.user
+        slug = self.kwargs.get('slug')
+        product_item_obj = ProductItem.objects.get(slug=slug)
+        post_purpose = request.POST.get('post_purpose')
+        
+
+        if request.method == 'POST' and request.is_ajax():
+            if post_purpose == 'size_changed':
+                size = request.POST.get('size', None)
+                print('size:',size, type(size))
+                try:
+                    size = int(size)
+                except:
+                    print('SIZE를 인트화하지 못했다ㅃ!!!')
+                    json_data = {
+                        'amount_select_list': None,
+                    'amount_value': None
+                        }
+                    return JsonResponse(json_data)
+                    # print("사이즈가 None으로 선택되었다.")
+                    # return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+                print('그냥 넘어갔다. 일반 숫자가 돼었다.')
+                size_obj = SizeOption.objects.get(product_item=product_item_obj, size=size)
+                size_amount = size_obj.amount
+                if size_amount == 0:
+                    amount_select_list = ['---']
+                    amount_value = 0
+                elif size_amount > 10:
+                    amount_select_list = list(range(1, 11))
+                    amount_value = 10
+                else:
+                    amount_select_list = list(range(1, size_amount + 1))
+                    amount_value = size_amount
+                    
+                amount_select_list_json = json.dumps(amount_select_list)
+
+                
+                print("Ajax_Size change request")
+                json_data = {
+                    'amount_select_list': amount_select_list_json,
+                    'amount_value': amount_value
+                }
+                return JsonResponse(json_data)
+            else:
+                pass
+        return self.object
 
 
         

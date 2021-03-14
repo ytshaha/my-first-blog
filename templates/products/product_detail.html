@@ -84,7 +84,7 @@
                 </div>
                 <!-- 기타정보 -->
                 <div class='mt-2 mb-4 '>
-                    {% if product_item.amount > 0 %}
+                    {% if is_stock %}
                     <p class='mb-0' style="font-size:medium;font-weight:bold;">재고 보유</p>
                         {% if product_item.info_delivery_from == 'overseas' %}
                         <p class='mb-2' style="font-size:small;color:gray;">7~8일 이내에 발송 가능한 상품입니다.</p>
@@ -94,6 +94,7 @@
                     {% else %}
                     <p class='mb-2' style="font-size:medium;">재고 없음</p>
                     {% endif %}
+
                     <p class='mb-2' style="font-size:medium;">원산지 : {{ product_item.product.made_info_made_country }}</p>
                     <p class='mb-2' style="font-size:medium;">모델명 : {{ product_item.product.info_product_number }}</p>
 
@@ -109,26 +110,58 @@
                 <hr>
                 <!-- 구매버튼 조건문 -->
                 {% if product_type == 'normal' %}
-                    {% if is_stock %}
-                    <div class='col p-0' style="margin-top:20px;">
-                        <form method="post" action="{% url 'carts:update' %}">{% csrf_token %}
-                            <input id="id_product_item" type="hidden" name="product_item_id" value="{{ product_item.id }}">
-                            <input id="id_product_type" type="hidden" name="product_type" value="normal">
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend col-8 p-0">
-                                    <button class="btn btn-block btn-dark" type="submit">물품 구매</button>
+                    {% if user.is_authenticated %}
+                        {% if is_stock %}
+                        <div class='col p-0' style="margin-top:20px;">
+                            <form method="post" action="{% url 'carts:update' %}" class='buy-form'>{% csrf_token %}
+                                <input id="id_product_item" type="hidden" name="product_item_id" value="{{ product_item.id }}">
+                                <input id="id_product_type" type="hidden" name="product_type" value="normal">
+
+                                <!-- 사이즈옵션이 있는경우의 구매버튼 구성 -->
+                                {% if product_item.option %}
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend col-8 p-0">
+                                        <input type='button' class="btn btn-block btn-outline-dark" value='사이즈 선택'></button>
+                                    </div>
+                                    <select class="custom-select col-4" id="inputGroupSelectSize" name="size">
+                                        <option value="">---</option>
+                                        {% for size in size_option %}
+                                            <option value="{{ size.size }}">{{ size.size }}</option>
+                                        {% endfor %}
+                                    </select>
                                 </div>
-                                <select class="custom-select col-4" id="inputGroupSelect03" name="amount">
-                                    {% for amount in amount_select_list %}
-                                        <option value="{{ amount }}">{{ amount }}EA</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                        </form>    
-                    </div>
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend col-8 p-0">
+                                        <button class="btn btn-block btn-dark" type="submit">물품 구매</button>
+                                    </div>
+                                    <select class="custom-select col-4" id="inputGroupSelectAmount" name="amount">
+                                        <option value="---">---</option>
+                                    </select>
+                                </div>
+
+                                <!-- 사이즈 옵션이 없는 경우의 구매버튼 구성 -->
+                                {% else %}
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend col-8 p-0">
+                                        <button class="btn btn-block btn-dark" type="submit">물품 구매</button>
+                                    </div>
+                                    <select class="custom-select col-4" id="inputGroupSelectAmount" name="amount">
+                                        {% for amount in amount_select_list %}
+                                            <option value="{{ amount }}">{{ amount }}EA</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                {% endif %}
+                            </form>    
+                        </div>
+                        {% else %}
+                        <div class='col-lg-12 col-md-12 col-sm-12 mx-auto'>
+                            <button type="button" class="btn btn-outline-secondary btn-block" style="margin-top:20px;" title="재고없음">상시상품 재고없음</button></a>
+                        </div>
+                        {% endif %}
                     {% else %}
-                    <div class='col-lg-6 col-md-6 col-sm-12 mx-auto'>
-                        <button type="button" class="btn btn-outline-secondary btn-block" style="margin-top:20px;" title="재고없음">상시상품 재고없음</button></a>
+                    <div class='col-lg-12 col-md-12 col-sm-12 mx-auto'>
+                        <button type="button" class="btn btn-outline-secondary btn-block" style="margin-top:20px;" title="로그린필요">로그인이 필요합니다</button></a>
                     </div>
                     {% endif %}
                 {% endif %}
@@ -483,12 +516,12 @@
                                 <i class="fas fa-arrow-down fa-2x"></i>
                             </span>
                             
-                            <p class='my-2' style='font-size:medium;font-weight:bold;color: #ffe5a9;'>고객 센터 1544-xxxx를 통해 교환.반품 접수(24시간 내)</p>
+                            <p class='my-2' style='font-size:medium;font-weight:bold;color: #ffe5a9;'>고객 센터 031-945-8832를 통해 교환.반품 접수(24시간 내)</p>
                             <span style="font-size: 1em; color:gray;">
                                 <i class="fas fa-arrow-down fa-2x"></i>
                             </span>
                             <br>
-                            <p class='my-2' style='font-size:medium;font-weight:bold;color: #ffe5a9;'>우체국 택배 수거 후 7일 이내 xxx 도착</p>
+                            <p class='my-2' style='font-size:medium;font-weight:bold;color: #ffe5a9;'>우체국 택배 수거 후 7일 이내 MOUM 도착</p>
                             <span style="font-size: 1em; color: gray;">
                                 <i class="fas fa-arrow-down fa-2x"></i>
                             </span>
@@ -517,9 +550,171 @@
 
 
 
-<!-- 코멘트 시작? -->
+
+{% block javascript %}
+<!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="{% static 'js/csrf.ajax.js' %}"></script> -->
+<script>
+$(document).ready(function(){
+    // Auto Search
+    
+    var buyForm = $(".buy-form")
+    
+    console.log(buyForm)
+    // var searchInput = searchForm.find("[name='q']") // input name='q'
+    var sizeSelect = buyForm.find("#inputGroupSelectSize")
+    var amountList = buyForm.find("#inputGroupSelectAmount")
+
+    // 사이즈가 바뀔경우
+    sizeSelect.change(function(){
+        // alert("The text has been changed.");
+        size = sizeSelect.val()
+        
+        console.log(size)
+        console.log("{{ product_type }}")
+        
+        // ajax 시작
+        $.ajax({
+            url: "{{ product_item.get_absolute_url }}",
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                   post_purpose: "size_changed",
+                   size: size
+                },
+            success: function(data){
+                console.log("성공")
+                
+                console.log(data.amount_select_list)
+                 
+                amount_select_list = data.amount_select_list
+                amount_value = data.amount_value
+                var container = ''
+                container = container + '<option value="{{ size.size }}">---</option>';
+                if (amount_value > 0){
+                    for(var i = 1; i < amount_value; i++) {
+                    console.log(i)
+                    // container.append('<input id="id'+i+'" name="name'+i+'" />');
+                    container = container + '<option value=' + i + '>' + i + '</option>';
+                    }
+                }
+
+                // amount_select_list.each(function(i, value){
+                //     console.log(value)
+                //     container.append('<option value=' + value + '>' + value + '</option>');
+                
+                //     console.log(container)
+                // })
+                amountList.html(container);
 
 
-<!-- 코멘트 끝 -->
+                // var submitSpan = thisForm.find(".submit-span")
+                // if (data.added){
+                //     submitSpan.html("In cart<button type='submit' class='btn btn-link'>Remove?</button>")
+                // } else {
+                //     // submitSpan.html("<button class='btn btn-success'>Add?</button>")
+                // }
+            // var navbarCount = $(".navbar-cart-count")
+            // navbarCount.text(data.cartItemCount)
+            // var currentPath = window.location.href
+
+            // if (currentPath.indexOf("cart") != -1){
+            //     refreshCart()
+            // }
+            },
+            error: function(errorData){
+                console.log("대실패!!!!!!")
+            // $.alert({
+            //     title: "Oops!",
+            //     content: "An error occurred",
+            //     theme: "modern"
+            // })
+            }
+
+        })
+        // ajax 끝
+
+    });
+    
+    // 버튼이 눌렸을 경우
+    amountList.click(function(){
+        var selectedText = sizeSelect.find(':selected').text();
+        var selectedAmount = amountList.find(':selected').text();
+        if (selectedAmount == '') {
+            console.log(selectedText)
+        }
+    });
+
+
+    //     var selectedText = sizeSelect.find(':selected').text();
+    //     var selectedAmount = amountList.find(':selected').text();
+    //     if (selectedAmount != '---'){
+    //         console.log(selectedText)
+    //         $.post(
+    //         url : "{% url 'carts:update' %}",
+    //         type: 'POST',
+    //         dataType: 'json',
+    //         data: {
+    //             product_item_id: "{{ product_item.id }}",
+    //             product_type: 'normal',
+    //             size: selectedText,
+    //             amount: selectedAmount,
+    //             },
+    //         success: function(data, status, xhr){
+    //             //do something with your data
+    //         }
+    //         );
+    //         return false;
+
+    //         }; 
+    // });
+        
+    
+
+
+    // var productForm = $(".form-product-ajax") // #form-product-ajax
+
+    // productForm.submit(function(event){
+    // event.preventDefault()
+    // // console.log("Form is not sending")
+    // var thisForm = $(this)
+    // // var actionEndpoint = thisForm.attr('action')  // API Endpoint
+    // var actionEndpoint = thisForm.attr('data-endpoint')  // API Endpoint
+    // var httpMethod = thisForm.attr('method')
+    // var formData = thisForm.serialize()
+
+    // $.ajax({
+    //     url: actionEndpoint,
+    //     method: httpMethod,
+    //     data: formData,
+    //     success: function(data){
+    //     var submitSpan = thisForm.find(".submit-span")
+    //     if (data.added){
+    //         submitSpan.html("In cart<button type='submit' class='btn btn-link'>Remove?</button>")
+    //     } else {
+    //         submitSpan.html("<button class='btn btn-success'>Add?</button>")
+    //     }
+    //     var navbarCount = $(".navbar-cart-count")
+    //     navbarCount.text(data.cartItemCount)
+    //     var currentPath = window.location.href
+
+    //     if (currentPath.indexOf("cart") != -1){
+    //         refreshCart()
+    //     }
+    //     },
+    //     error: function(errorData){
+    //     $.alert({
+    //         title: "Oops!",
+    //         content: "An error occurred",
+    //         theme: "modern"
+    //     })
+    //     }
+
+    // })
+    // })
+});
+</script>
+{% endblock %}
+
 </div>
 {% endblock %}

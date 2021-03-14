@@ -6,6 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
+
 import requests
 
 from accounts.forms import LoginForm, GuestForm
@@ -71,9 +73,50 @@ def cart_detail_api_view(request):
 
 def cart_home(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
+    if request.method == 'POST':
+        post_purpose = request.POST.get('post_purpose', None)
+        cart_item_id = request.POST.get('cart_item_id', None)
+        add = request.POST.get('add', None)
+        
+        if post_purpose == 'add_certificate':
+            cart_item_qs = CartItem.objects.filter(id=cart_item_id)
+            
+            cart_item_obj = cart_item_qs.first()
+            if add == 'True':
+                print("추가되는거 실행")
+                cart_item_obj.add_certificate = True
+                cart_item_obj.save()
+
+                cart_items = cart_obj.cart_items.all()
+                total = 0
+                for x in cart_items: # x는 개별 cart_items
+                    total += x.total
+                cart_obj.total = total
+                cart_obj.subtotal = total
+                
+                cart_obj.save()
+                print('cart_obj.total',cart_obj.total)
+
+            elif add == 'False':
+                print("제거되는거 실행")
+                cart_item_obj.add_certificate = False
+                cart_item_obj.save()
+
+                cart_items = cart_obj.cart_items.all()
+                total = 0
+                for x in cart_items: # x는 개별 cart_items
+                    total += x.total
+                cart_obj.total = total
+                cart_obj.subtotal = total
+                
+                cart_obj.save()
+                print('cart_obj.total',cart_obj.total)
+
+
+    print('카트홈에 있는 cart_obj',cart_obj, cart_obj.total, cart_obj.subtotal)
     return render(request, "carts/home.html", {'cart':cart_obj})
 
-
+@login_required
 def cart_update(request):
     '''
     원래 강의에서는 물품의 갯수도 상관없고 그냥 바로 제거하는 것으로 되어있음.
@@ -129,6 +172,8 @@ def cart_update(request):
         cart_item_obj, new_item_obj = CartItem.objects.new_or_get(request)
         
         if cart_item_obj in cart_obj.cart_items.all():
+            cart_item_obj.add_certificate = False
+            cart_item_obj.save()
             cart_obj.cart_items.remove(cart_item_obj)
             added = False
             cart_obj.save()
@@ -138,7 +183,6 @@ def cart_update(request):
         else:
             return redirect("carts:home")
     else:
-
         # 2. 물품추가 혹은 티켓구매인경우
         if product_type == 'bidding' or product_type == 'normal':
             product_item_id = request.POST.get('product_item_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
@@ -165,6 +209,11 @@ def cart_update(request):
             amount = 1 # 경매상품일때
         elif product_type == "normal":
             amount = request.POST.get('amount') # 상시상품일때
+            if amount == '' or amount == '---':
+                print("사이즈와 수량이 입력되지 않았다.")
+                # return 
+                messages.error(request, "사이즈와 구매수량을 넣어주세요.")
+                return redirect('products:product_detail', slug=product_item_obj.slug)
         elif product_type == 'ticket':
             amount = 1
 
