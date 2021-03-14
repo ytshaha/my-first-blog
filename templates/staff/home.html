@@ -1,0 +1,173 @@
+{% extends 'shop/base.html' %}
+
+{% block header %}
+<style>
+.my-page-a {
+    background-color: #ddd;
+    border: none;
+    color: black;
+    padding: 16px 32px;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition: 0.3s;
+  }
+  
+.my-page-a:hover {
+    background-color:#00000062;
+    color: white;
+  }
+
+.my-page-icon {
+    color:#423f3b;
+    /* border: none;
+    color: black;
+    padding: 16px 32px;
+    text-align: center;
+    font-size: 16px;
+    margin: 4px 2px; */
+    transition: 0.3s;
+  }
+  
+.my-page-icon:hover {
+    color:white;
+    /* color: white; */
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">MY PAGE</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+<hr/>
+
+<div class='container my-5'>
+    <div class='row'>
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'accounts:user-update' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-user-circle fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>물품 업로드</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'password_change' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-unlock-alt fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>물품아이템 업로드</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'orders:list' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="far fa-credit-card fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>물품 체크</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'points:home' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-plus-circle fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>주문상태 확인</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="far fa-hand-paper fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>상품상태 변경</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-heart fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>회원가입 티켓만들기</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'faq' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="far fa-question-circle fa-5x my-page-icon"></i>
+                        </span>
+                        
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>통계부석</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'shop:introduction' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-building fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>XXX</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

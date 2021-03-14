@@ -53,6 +53,7 @@ urlpatterns = [
     url(r'^accounts/', include('accounts.passwords.urls')),
     
     url(r'^ticket/', include('tickets.urls')),
+    url(r'^staff/', include('staff.urls')),
     url(r'^api/cart/$', cart_detail_api_view, name='api-cart'),   
     
 
