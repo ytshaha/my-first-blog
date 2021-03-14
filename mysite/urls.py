@@ -13,11 +13,15 @@ from django.contrib.auth.views import LogoutView
 from addresses.views import checkout_address_create_view, checkout_address_reuse_view
 from billing.views import payment_method_view, payment_method_createview
 from carts.views import cart_detail_api_view
-from shop.views import index, faq
+from shop.views import index, faq, temp
 
 urlpatterns = [
     path('', index, name='home'),
-    
+
+    # 임시 구글인증용
+    path('google6d21af56577f529f.html', temp, name='temp'),
+
+
     path('admin/', admin.site.urls),
     url(r'^blog/', include('blog.urls')),
     # path('accounts/login/', views.LoginView.as_view(), name='login'),
@@ -36,6 +40,7 @@ urlpatterns = [
     url(r'^billing/payment-method/$', payment_method_view, name='billing-payment-method'),
     url(r'^billing/payment-method/create/$', payment_method_createview, name='billing-payment-method-endpoint'),
     
+    # google6d21af56577f529f.html
 
 
     path('logout/', LogoutView.as_view(next_page='/product/'), name='logout'),

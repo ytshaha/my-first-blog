@@ -25,6 +25,9 @@ def index(request):
 def introduction(request):
     return render(request, 'shop/introduction.html', {})
 
+def temp(request):
+    return render(request, 'shop/google6d21af56577f529f.html', {})
+
 def faq(request):
     return render(request, 'shop/faq.html', {})
 

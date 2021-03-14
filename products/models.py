@@ -107,7 +107,7 @@ def strfdelta(tdelta, fmt):
     return fmt.format(**d)
 
 class Product(models.Model):
-    number                  = models.CharField(max_length=10, blank=True, null=True, unique=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
+    number                  = models.CharField(max_length=40, blank=True, null=True, unique=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
     title                   = models.CharField(max_length=200, help_text=u'상품명')
     brand                   = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
     category                = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
