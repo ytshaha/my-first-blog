@@ -48,7 +48,8 @@ IAMPORT_CODE = os.environ.get('IAMPORT_CODE')
 IMPORT_REST_API_KEY = os.environ.get('IMPORT_REST_API_KEY')
 IMPORT_REST_API_SECRET = os.environ.get('IMPORT_REST_API_SECRET')
 
-GMAIL_API_CREDENTIAL_DIRS =  os.path.join(BASE_DIR, "static_my_proj", "json", 'credentials.json')
+GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client_deploy.json')
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -76,6 +77,7 @@ INSTALLED_APPS = [
     'tickets',
     'points',
     'reviews',
+    'staff',
 ]
 
 AUTH_USER_MODEL = 'accounts.User' #changes the built-in user model.
