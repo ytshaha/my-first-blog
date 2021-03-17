@@ -144,7 +144,7 @@ db_from_env = dj_database_url.config() # postreSQL Database in heroku
 DATABASES['default'].update(db_from_env)
 DATABASES['default']['CONN_MAX_AGE'] = 500
 
-DATABASE_URL = 'postgres://mfnwodhpznhpag:974834453a1cda89c465403699a3861f016776e57897619d00ba6fe2103c98ab@ec2-100-24-139-146.compute-1.amazonaws.com:5432/d1n8i6vn5p0psu'
+DATABASE_URL = 'postgresql://mfnwodhpznhpag:974834453a1cda89c465403699a3861f016776e57897619d00ba6fe2103c98ab@ec2-100-24-139-146.compute-1.amazonaws.com:5432/d1n8i6vn5p0psu'
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
 
