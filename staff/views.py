@@ -50,7 +50,7 @@ from mysite.utils import unique_slug_generator, unique_product_item_slug_generat
 #     slug = slugify(title)
 #     return "products/{product_title}/{slug}_{filename}".format(product_title=title, slug=slug, filename=filename)  
 
-
+DATABASE_URL = getattr(settings, 'DATABASE_URL', 'sqlite://')
 
 @staff_member_required 
 def staff_home(request):
@@ -138,7 +138,7 @@ def upload_product_complete(request):
                 'info_quality_standard', 'info_as', 'description', 'video_link' # 비필수
                 ]
     no_updated_dict = {}
-    engine = create_engine('sqlite://', echo=False)
+    engine = create_engine(DATABASE_URL, echo=False)
     now1 = timezone.now()
     for index, row in df.iterrows():
         data = dict(row)
@@ -214,7 +214,7 @@ def upload_product_item_complete(request):
     option_cols = ['option_1', 'option_2', 'option_3', 'option_4', 'option_5', # 옵션 
                    'option_6', 'option_7', 'option_8', 'option_9', 'option_10']
     no_updated_dict = {}
-    engine = create_engine('sqlite://', echo=False)
+    engine = create_engine(DATABASE_URL, echo=False)
     now1 = timezone.now()
     for index, row in df.iterrows():
         data = dict(row)
