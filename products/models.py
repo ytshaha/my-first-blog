@@ -3,6 +3,7 @@ import random
 import os
 from decimal import Decimal
 import datetime
+import pytz
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -30,11 +31,13 @@ PRODUCT_TYPE = (
 )
 
 PRICE_STEP_CHOICE = (
-    (1000,'1,000 원'),
-    (5000,'5,000 원'),
-    (10000,'10,000 원'),
+    (100, '100 원'),
+    (1000, '1,000 원'),
+    (5000, '5,000 원'),
+    (10000, '10,000 원'),
     
 )
+KST = pytz.timezone('Asia/Seoul')
 
 
 def get_filename_ext(filepath):
@@ -42,14 +45,17 @@ def get_filename_ext(filepath):
     name, ext = os.path.splitext(filepath)
     return name, ext
 
+
 def upload_main_image_path(instance, filename):
+    print("내가 실행된다.models.py의 업로드 메인이미지")
+
     # new_filename = random.randint(1, 39111111)
     # name, ext = get_filename_ext(filename)
     # final_filename = '{new_filename}{ext}'.format(new_filename=new_filename, ext=ext)
     # return "products/{new_filename}/{final_filename}".format(new_filename=new_filename, final_filename=final_filename)
-    title = instance.title
+    title = instance.number
     slug = slugify(title)
-    return "products/{product_title}/{slug}-{filename}".format(product_title=title, slug=slug, filename=filename)  
+    return "products/{product_title}/{filename}".format(product_title=title, filename=filename)  
 
 def upload_image_path(instance, filename):
     # new_filename = random.randint(1, 39111111)
@@ -58,7 +64,7 @@ def upload_image_path(instance, filename):
     # return "products/{new_filename}/{final_filename}".format(new_filename=new_filename, final_filename=final_filename)
     title = instance.product.title
     slug = slugify(title)
-    return "products/{product_title}/{slug}-{filename}".format(product_title=title, slug=slug, filename=filename)  
+    return "products/{product_title}/{filename}".format(product_title=title, filename=filename)  
 
 class ProductQuerySet(models.query.QuerySet):
     def featured(self):
@@ -78,6 +84,53 @@ class ProductQuerySet(models.query.QuerySet):
         return self.filter(lookups).distinct() # distinct 안하면 저위의 lookup들이 중복으로 검색되는 것들을 다 표시하게된다. 그냥 누적하되 중복은안되야하는게 맞을때 하므.
 
 class ProductManager(models.Manager):
+
+    def get_or_new(self, request, number, data):
+        user = request.user
+        
+        qs = self.get_queryset().filter(number=number)
+        if qs.exists(): 
+            obj = qs.first()
+            created = False
+        else:
+            obj, created = self.new(data)
+
+            # new에선 그림을 안넣음(중복우려)
+            # 여기서 그림넣고 save
+            
+        return obj, created
+
+    def new(self, data):
+        created = None
+        # number = data['number']
+        # title = data['title']
+        # brand = data['brand']
+        # brand_obj = Brand.objects.get(name=brand)
+        try:
+            data['brand'] = Brand.objects.get(name=data['brand'])
+        except Brand.DoesNotExist:
+            created = 'Brand DoesNotExist'
+            return None, created
+        # category = data['category']
+        # category_obj = Category.objects.get(name=category)
+        try:
+            data['category'] = Category.objects.get(name=data['category'])
+        except Category.DoesNotExist:
+            created = 'Category DoesNotExist'
+            return None, created
+
+        list_price = data['list_price']
+        # obj = self.model.objects.create(
+        #                             number=number, 
+        #                             title=title, 
+        #                             brand=brand_obj, 
+        #                             category=category_obj,
+        #                             list_price=list_price
+        #                             )
+        data = {k: v for k, v in data.items() if 'image' not in str(k)}
+        obj = self.model.objects.create(**data)
+        created = True
+        return obj, created
 
     def get_queryset(self):
         return ProductQuerySet(self.model, using=self._db)
@@ -107,7 +160,7 @@ def strfdelta(tdelta, fmt):
     return fmt.format(**d)
 
 class Product(models.Model):
-    number                  = models.CharField(max_length=40, blank=True, null=True, unique=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
+    number                  = models.CharField(max_length=40, unique=True, help_text=u'상품관리용코드') # product 네임이 아닌 number로 데이터 베이스관리를 위함.
     title                   = models.CharField(max_length=200, help_text=u'상품명')
     brand                   = models.ForeignKey('Brand', on_delete=models.CASCADE, help_text=u'브랜드명')
     category                = models.ForeignKey('Category', on_delete=models.CASCADE, help_text=u'카테고리')
@@ -130,13 +183,24 @@ class Product(models.Model):
     description             = models.TextField(blank=True, null=True, help_text=u'정보')
     created_date            = models.DateTimeField(default=timezone.now, help_text=u'물품생성일')
     
-    image                   = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    main_image              = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
     video_link              = models.CharField(max_length=250, blank=True, null=True)
     
     featured                = models.BooleanField(default=False)
     active                  = models.BooleanField(default=True)
     slug                    = models.SlugField(blank=True, unique=True, allow_unicode=True)
     
+    image1                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image2                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image3                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image4                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image5                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image6                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image7                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image8                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    image9                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
+    
+
     objects = ProductManager()
 
     def get_absolute_url(self):
@@ -193,13 +257,13 @@ class Brand(models.Model):
     website = models.CharField(blank=True, null=True, max_length=200, help_text=u'홈페이지')
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 class Category(models.Model):
     name = models.CharField(max_length=200, help_text=u'카테고리명')
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class ProductItemQuerySet(models.query.QuerySet):
@@ -234,7 +298,39 @@ class ProductItemManager(models.Manager):
     경매현재가격은 맨처음 만들어질떄 product_type검사해서 있다면 start랑 동일하게 하자. blank 가능.
     '''
     
-    pass
+    def get_or_new(self, request, number, data):
+        
+        qs = self.get_queryset().filter(number=number)
+        if qs.exists(): 
+            obj = qs.first()
+            created = False
+        else:
+            obj, created = self.new(data)
+
+            # new에선 그림을 안넣음(중복우려)
+            # 여기서 그림넣고 save
+            
+        return obj, created
+
+    def new(self, data):
+        data['product'] = Product.objects.get(number=data['product'])
+        if data['product_type'] == 'bidding':
+            data['bidding_start_date'] = KST.localize(data['bidding_start_date']).astimezone(pytz.utc)
+            data['bidding_end_date'] = KST.localize(data['bidding_end_date']).astimezone(pytz.utc)
+            bidding_cols = ["product", "info_delivery_from", "amount", 'option', 'price', 'info_product_date', 'description', 'product_type', 
+                            'start_price', 'price_step', 'bidding_start_date', 'bidding_end_date']
+            data_filtered = {k: v for k, v in data.items() if k in bidding_cols}                
+        elif data['product_type'] == 'normal':
+            normal_cols = ["product", "info_delivery_from", "amount", 'option', 'price', 'info_product_date', 'description', 'product_type']
+            data_filtered = {k: v for k, v in data.items() if k in normal_cols}
+            
+            
+        
+        obj = self.model.objects.create(**data_filtered)
+        created = True
+        return obj, created
+    
+
     def get_queryset(self):
         return ProductItemQuerySet(self.model, using=self._db)
 
@@ -275,6 +371,8 @@ class ProductItem(models.Model):
     # limit_price         = models.PositiveIntegerField(default=0, help_text=u'가격(일반가격 & 경매한도가)')
     price               = models.PositiveIntegerField(default=0, help_text=u'가격(일반가격 & 경매한도가)') # 기존 limit_price를 price로 개편
     product_type        = models.CharField(max_length=20, default='normal', choices=PRODUCT_TYPE)
+    description         = models.TextField(blank=True, null=True, help_text=u'해당 물품아이템에만 있는 추가설명사항 기록(ex 경매면 보유사이즈 등)')
+
     
     info_product_date   = models.CharField(max_length=100, blank=True, null=True, help_text=u'제조연월_의류만 해당')
 
@@ -286,11 +384,11 @@ class ProductItem(models.Model):
     # 경매항목(product-type = bidding 시 필수로 입력되게 나중에 업로드 폼 짤 것.)
     start_price         = models.PositiveIntegerField(blank=True, null=True, help_text=u'경매시작가격')
     price_step          = models.IntegerField(default=5000, blank=True, null=True, choices=PRICE_STEP_CHOICE, help_text=u'경매가격상승단위')
-    current_price       = models.PositiveIntegerField(default=0,  blank=True, null=True, help_text=u'경매현재가격')  # 경매현재가격은 맨처음 만들어질떄 product_type검사해서 있다면 start랑 동일하게 하자. blank 가능.
-    bidding_start_date  = models.DateTimeField(default=timezone.now,  blank=True, null=True, help_text=u'경매시작일')
-    bidding_end_date    = models.DateTimeField(default=timezone.now,  blank=True, null=True, help_text=u'경매종료일')
-    remain_bidding_time = models.CharField(default=0, max_length=200, blank=True, null=True, help_text=u'남은경매시간')
-    bidding_on          = models.CharField(default=0, max_length=200,  blank=True, null=True, choices=BIDDING_STATUS_CHOICE, help_text=u'경매여부')
+    current_price       = models.PositiveIntegerField(blank=True, null=True, help_text=u'경매현재가격')  # 경매현재가격은 맨처음 만들어질떄 product_type검사해서 있다면 start랑 동일하게 하자. blank 가능.
+    bidding_start_date  = models.DateTimeField(blank=True, null=True, help_text=u'경매시작일')
+    bidding_end_date    = models.DateTimeField(blank=True, null=True, help_text=u'경매종료일')
+    remain_bidding_time = models.CharField(max_length=200, blank=True, null=True, help_text=u'남은경매시간')
+    bidding_on          = models.CharField(max_length=200,  blank=True, null=True, choices=BIDDING_STATUS_CHOICE, help_text=u'경매여부')
     
 
     objects = ProductItemManager()
@@ -322,32 +420,30 @@ def product_item_pre_save_receiver(sender, instance, *args, **kwargs):
     if not instance.slug:
         instance.slug = unique_product_item_slug_generator(instance)
     # 기본 current_price 설정
-    if instance.current_price is None:
-        instance.current_price= instance.price
+    if instance.product_type == 'bidding':
+        if instance.current_price is None or instance.current_price == 0:
+            instance.current_price= instance.start_price
     # 할인율
     if instance.product_type == 'normal':
         instance.sale_ratio = (instance.product.list_price - instance.price) / instance.product.list_price * 100
     elif instance.product_type == 'bidding':
         instance.sale_ratio = (instance.product.list_price - instance.current_price) / instance.product.list_price * 100 
-    # 남은 비딩타임.
-    now = timezone.now()
-    time_remain = instance.bidding_end_date - now
-    # print(time_remain, type(time_remain))
-    # instance.remain_bidding_time = "{}시간{}분".format(time_remain.hour, time_remain.minute)
-    instance.remain_bidding_time = strfdelta(time_remain, "{hours}:{minutes}:{seconds}")
-    # instance.remain_bidding_time = strfdelta(time_remain, "{days} days {hours}:{minutes}:{seconds}")
-    # instance.remain_bidding_time = time_remain
+        # 남은 비딩타임.
+        now = timezone.now()
 
-    bidding_on = None
-    if now < instance.bidding_start_date:
-        bidding_on = 'bidding_ready' # 경매 준비중
-    elif now >= instance.bidding_start_date and now < instance.bidding_end_date and instance.current_price < instance.limit_price:
-        bidding_on = 'bidding'
-    elif now > instance.bidding_end_date or instance.current_price == instance.limit_price:
-        bidding_on = 'bidding_end'
-    else:
+        time_remain = instance.bidding_end_date - now
+        instance.remain_bidding_time = strfdelta(time_remain, "{hours}:{minutes}:{seconds}")
+
         bidding_on = None
-    instance.bidding_on = bidding_on
+        if now < instance.bidding_start_date:
+            bidding_on = 'bidding_ready' # 경매 준비중
+        elif now >= instance.bidding_start_date and now < instance.bidding_end_date and instance.current_price < instance.limit_price:
+            bidding_on = 'bidding'
+        elif now > instance.bidding_end_date or instance.current_price == instance.limit_price:
+            bidding_on = 'bidding_end'
+        else:
+            bidding_on = None
+        instance.bidding_on = bidding_on
 
 pre_save.connect(product_item_pre_save_receiver, sender=ProductItem)
 
@@ -355,8 +451,8 @@ pre_save.connect(product_item_pre_save_receiver, sender=ProductItem)
 
 class SizeOption(models.Model):
     product_item    = models.ForeignKey(ProductItem, on_delete=models.CASCADE)
-    size            = models.IntegerField(default=0, help_text=u'사이즈')
-    amount          = models.IntegerField(default=0, help_text=u'사이즈별수량')
+    option          = models.CharField(max_length=20, default=0, help_text=u'옵션')
+    amount          = models.IntegerField(default=0, help_text=u'옵션별수량')
 
     def __str__(self):
-        return "{}_{}".format(self.product_item, self.size)
+        return "{}_{}".format(self.product_item, self.option)

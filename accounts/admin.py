@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from .models import GuestEmail,EmailActivation
+from .models import GuestEmail,EmailActivation, RegisterTicket
 from .forms import UserAdminCreationForm, UserAdminChangeForm
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
@@ -51,3 +51,5 @@ class GuestEmailAdmin(admin.ModelAdmin):
         model = GuestEmail
 
 admin.site.register(GuestEmail, GuestEmailAdmin)
+
+admin.site.register(RegisterTicket)

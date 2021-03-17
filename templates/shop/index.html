@@ -59,28 +59,28 @@
     <!-- The slideshow -->
     <div class="carousel-inner" style='max-height:600px;'>
       <div class="carousel-item active">
-        <a href="{% url 'products:product_bidding_list' %}"><img src="{% static 'shop/index_slide_image/city.jpg' %}" alt="Los Angeles" class='center'></a>
+        <a href="{% url 'products:product_list' %}"><img src="{% static 'shop/index_slide_image/city.jpg' %}" alt="Los Angeles" class='center'></a>
         <div class="carousel-caption" >
             <h1 class='add-text-stroke' style='font-size:80px;font-weight:bolder;'>MOUM8</h1>
             <h3 class='add-text-stroke-thin' style='font-size:30px;font-weight:bolder;'>PRIVATE LUXURY GOODS</h3>
         </div>
       </div>
       <div class="carousel-item">
-        <a href="{% url 'products:product_bidding_list' %}"><img src="{% static 'shop/index_slide_image/bag.jpg' %}" alt="Chicago" class='center'></a>
+        <a href="{% url 'products:product_list' %}"><img src="{% static 'shop/index_slide_image/bag.jpg' %}" alt="Chicago" class='center'></a>
         <div class="carousel-caption" >
             <h1 class='add-text-stroke' style='font-size:80px;font-weight:bolder;'>MOUM8</h1>
             <h3 class='add-text-stroke-thin' style='font-size:30px;font-weight:bolder;'>SHOPPING </h3>
         </div>
       </div>
       <div class="carousel-item">
-        <a href="{% url 'products:product_bidding_list' %}"><img src="{% static 'shop/index_slide_image/interview.jpg' %}" alt="Chicago" class='center'></a>
+        <a href="{% url 'products:product_list' %}"><img src="{% static 'shop/index_slide_image/interview.jpg' %}" alt="Chicago" class='center'></a>
         <div class="carousel-caption" >
             <h1 class='add-text-stroke' style='font-size:80px;font-weight:bolder;'>MOUM8</h1>
             <h3 class='add-text-stroke-thin' style='font-size:30px;font-weight:bolder;'>VERY SELECTED GOODS</h3>        
         </div>
       </div>
       <div class="carousel-item">
-        <a href="{% url 'products:product_bidding_list' %}"><img src="{% static 'shop/index_slide_image/style.jpg' %}" alt="New York" class='center'></a>
+        <a href="{% url 'products:product_list' %}"><img src="{% static 'shop/index_slide_image/style.jpg' %}" alt="New York" class='center'></a>
         <div class="carousel-caption" >
             <h1 class='add-text-stroke' style='font-size:80px;font-weight:bolder;'>MOUM8</h1>
             <h3 class='add-text-stroke-thin' style='font-size:30px;font-weight:bolder;'>HIGH SALE RATIO WITH BEST QUALITY</h3>        
@@ -121,9 +121,9 @@
         <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
                     <picture>
-                        {% if product_item.product.image %}
+                        {% if product_item.product.main_image %}
                         <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
-                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.image.url }}" class="product-main-image"></a>   
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.main_image.url }}" class="product-main-image"></a>   
                         
                         {% else %}
                         <span class="text-muted">No Image</span>
@@ -326,7 +326,7 @@
     
             // var gap = 0;
             var gap = dday - today2;
-            
+            var calcDay = Math.ceil(gap / (1000 * 60 * 60 * 24))-1;
             var calcHour = Math.ceil((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) ;
             if(calcHour<10){
                 calcHour = "0" + (calcHour-1)
@@ -348,7 +348,7 @@
             console.log(calcHour, calcMin, calcSec)
     
             if (gap>0){
-                $this.find("#count").text(calcHour + ":" + calcMin + ":" + calcSec)
+                $this.find("#count").text("남은시간 " + calcDay + "일 " + calcHour + ":" + calcMin + ":" + calcSec)
             
             } else{
                 $this.find("#count").text("SOLD OUT")

@@ -251,3 +251,13 @@ class GuestEmail(models.Model):
 
     def __str__(self):
         return self.email
+
+
+class RegisterTicket(models.Model):
+    user            = models.ForeignKey(User, on_delete=models.CASCADE)         # 일종의 추천인아이디
+    ticket_number   = models.CharField(max_length=120, unique=True)             # 티켓 번호 추천인아이디+숫자.
+    key             = models.CharField(max_length=120, blank=True, null=True)   # 티켓별 키
+    sent_mail       = models.EmailField()                                       # 해당 티켓을 보낸 메일. 한번보내면 이 이메일이외에는 더이상 못보냄.
+    activated       = models.BooleanField(default=False)                        # 사용됨.
+    timestamp       = models.DateTimeField(auto_now_add=True)
+

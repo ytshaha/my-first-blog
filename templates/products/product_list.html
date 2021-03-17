@@ -84,9 +84,9 @@
         <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
                     <picture>
-                        {% if product_item.product.image %}
+                        {% if product_item.product.main_image %}
                         <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
-                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.image.url }}" class="product-main-image"></a>   
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.main_image.url }}" class="product-main-image"></a>   
                         
                         {% else %}
                         <span class="text-muted">No Image</span>
@@ -100,12 +100,30 @@
                                 <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
                             </div>
                             <div class='col text-right'>
-                                {% if product_item.featured %}
-                                <!-- 온세일 삭제함. 210309 -->
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;'></p>                            
-                                {% else %}
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;color:black;'>판매준비중</p>                            
-                                {% endif %}        
+                                {% if user.is_staff %}
+                                    {% if product_item.featured %}
+                                    <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                        <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
+                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                    </form>
+                                    {% else %}
+                                        {% if product_item.product_type == 'bidding' %}
+                                        <form method='post' action="{% url 'products:product_make_featured' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                            <button class='btn btn-sm btn-outline-danger' type='submit'>경매활성화</button>
+                                        </form>
+                                        {% elif product_item.product_type == 'normal' %}
+                                        <form method='post' action="{% url 'products:product_make_featured' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                            <button class='btn btn-sm btn-outline-success' type='submit'>판매활성화</button>
+                                        </form>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}   
                             </div> 
                         </div>
                         <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
@@ -115,8 +133,13 @@
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
-                                {% if product_item.info_delivery_from == 'overseas' %}
-                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 까지 구매</span>
+                                {% if product_item.product_type == 'bidding' %}
+                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
+                                {% elif product_item.product_type == 'normal' %}
+                                    {% if product_item.info_delivery_from == 'overseas' %}
+                                    <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
+                                
+                                    {% endif %}
                                 {% endif %}
                             </div>
                             <div class='col'>
@@ -129,12 +152,12 @@
                         </div>
 
                         <!-- 해외배송이면 이걸 계산하게 해야한다. -->
-                        <div style='display:none;' id='bidding_end_date_year'>{{ product_item.bidding_end_date|date:'Y' }}</div>
-                        <div style='display:none;' id='bidding_end_date_month'>{{ product_item.bidding_end_date|date:'n' }}</div>
-                        <div style='display:none;' id='bidding_end_date_day'>{{ product_item.bidding_end_date|date:'j' }}</div>
-                        <div style='display:none;' id='bidding_end_date_hour'>{{ product_item.bidding_end_date|date:'G' }}</div>
-                        <div style='display:none;' id='bidding_end_date_minute'>{{ product_item.bidding_end_date|date:'i' }}</div>
-                        <div style='display:none;' id='bidding_end_date_second'>{{ product_item.bidding_end_date|date:'s' }}</div>
+                        <div style='display:none;' id='bidding_end_date_year'>{{ product_item.bidding_start_date|date:'Y' }}</div>
+                        <div style='display:none;' id='bidding_end_date_month'>{{ product_item.bidding_start_date|date:'n' }}</div>
+                        <div style='display:none;' id='bidding_end_date_day'>{{ product_item.bidding_start_date|date:'j' }}</div>
+                        <div style='display:none;' id='bidding_end_date_hour'>{{ product_item.bidding_start_date|date:'G' }}</div>
+                        <div style='display:none;' id='bidding_end_date_minute'>{{ product_item.bidding_start_date|date:'i' }}</div>
+                        <div style='display:none;' id='bidding_end_date_second'>{{ product_item.bidding_start_date|date:'s' }}</div>
                         <div style='display:none;' id='product_type'>{{ product_item.product_type }}</div>
                         
                     </div>
@@ -167,9 +190,7 @@ $(document).ready(function(){
 setInterval(function(){
     $('.product-infos').each(function(i, obj) {
         var $this = $(this)
-        console.log($this)
         var temp_end_date = $this.find(".bidding_end_date")
-        console.log(temp_end_date)
         var year = $this.find("#bidding_end_date_year").text()
         var month = $this.find("#bidding_end_date_month").text()
         var day = $this.find("#bidding_end_date_day").text()
@@ -190,15 +211,13 @@ setInterval(function(){
             var dday = new Date(year, month-1, day, 16, 0, 0, 0).getTime();
         }
         
-        
-        console.log(dday)
-        
-        console.log(dday, today)
+        console.log('dday',dday, 'today',today)
         
 
         // var gap = 0;
-        var gap = dday - today2;
+        var gap = dday - today;
         
+        var calcDay = Math.ceil(gap / (1000 * 60 * 60 * 24))-1;
         var calcHour = Math.ceil((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) ;
         if(calcHour<10){
             calcHour = "0" + (calcHour-1)
@@ -220,7 +239,7 @@ setInterval(function(){
         console.log(calcHour, calcMin, calcSec)
 
         if (gap>0){
-            $this.find("#count").text(calcHour + ":" + calcMin + ":" + calcSec)
+            $this.find("#count").text("남은시간 " + calcDay + "일 " + calcHour + ":" + calcMin + ":" + calcSec)
         
         } else{
             $this.find("#count").text("SOLD OUT")

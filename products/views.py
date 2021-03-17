@@ -144,6 +144,29 @@ class ProductBiddingCompleteListView(LoginRequiredMixin, generic.ListView):
 
 
 # 스탭만 들어갈수있는 mixin을만들자.
+def product_make_featured(request):
+    if request.method == 'POST':
+        product_item_id = request.POST.get('product_item_id', None)
+        product_item_obj = ProductItem.objects.get(id=product_item_id)
+        product_item_obj.featured = True
+        print("Product Item {} is featured.".format(product_item_obj.product.title))
+        product_item_obj.save()
+        return redirect('products:check')
+
+def product_make_unfeatured(request):
+    if request.method == 'POST':
+        product_type = request.POST.get('product_type', None)
+        product_item_id = request.POST.get('product_item_id', None)
+        product_item_obj = ProductItem.objects.get(id=product_item_id)
+        product_item_obj.featured = False
+        print("Product Item {} is unfeatured.".format(product_item_obj.product.title))
+        product_item_obj.save()
+        if product_type == 'bidding':
+            return redirect('products:product_bidding_list')
+        elif product_type == 'normal':
+            return redirect('products:product_list')
+        else:
+            raise Http404("직원님...해당물품의 아이디가 이상합니다.")  
 
 # 스탭이 PRODUCT 올리기전에 맞는지 실제 뷰로 확인하고 맞으면 간단한 버튼으로 Featured되게 하는 뷰
 class ProductStaffCheckView(LoginRequiredMixin, StaffRequiredView, generic.ListView):
@@ -279,7 +302,21 @@ class ProductDetailSlugView(generic.DetailView):
         product_type = product_item_obj.product_type
         
         cart_obj, new_obj = Cart.objects.new_or_get(request) #??
-        product_images_qs = ProductImage.objects.filter(product=product_obj)
+        
+        # 이미지들을 리스트로 미리 만들기.
+        images = [product_obj.main_image,
+                  product_obj.image1,
+                  product_obj.image2,
+                  product_obj.image3,
+                  product_obj.image4,
+                  product_obj.image5,
+                  product_obj.image6,
+                  product_obj.image7,
+                  product_obj.image8,
+                  product_obj.image9,
+                  ]
+
+        # product_images_qs = ProductImage.objects.filter(product=product_obj)
         product_obj.save()
         
         if product_type == 'bidding':
@@ -358,7 +395,7 @@ class ProductDetailSlugView(generic.DetailView):
         context['is_stock'] = is_stock
         context['bidding_on'] = bidding_on
         context['cart'] = cart_obj
-        context['images'] = product_images_qs
+        context['images'] = images
         context['bidding_obj_up_to_10'] = bidding_obj_up_to_10
         return context
 
@@ -389,21 +426,21 @@ class ProductDetailSlugView(generic.DetailView):
 
         if request.method == 'POST' and request.is_ajax():
             if post_purpose == 'size_changed':
-                size = request.POST.get('size', None)
-                print('size:',size, type(size))
-                try:
-                    size = int(size)
-                except:
-                    print('SIZE를 인트화하지 못했다ㅃ!!!')
-                    json_data = {
-                        'amount_select_list': None,
-                    'amount_value': None
-                        }
-                    return JsonResponse(json_data)
-                    # print("사이즈가 None으로 선택되었다.")
-                    # return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
-                print('그냥 넘어갔다. 일반 숫자가 돼었다.')
-                size_obj = SizeOption.objects.get(product_item=product_item_obj, size=size)
+                option = request.POST.get('option', None)
+                print('option:',option, type(option))
+                # try:
+                #     option = int(option)
+                # except:
+                #     print('option를 인트화하지 못했다ㅃ!!!')
+                #     json_data = {
+                #         'amount_select_list': None,
+                #     'amount_value': None
+                #         }
+                #     return JsonResponse(json_data)
+                #     # print("사이즈가 None으로 선택되었다.")
+                #     # return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+                # print('그냥 넘어갔다. 일반 숫자가 돼었다.')
+                size_obj = SizeOption.objects.get(product_item=product_item_obj, option=option)
                 size_amount = size_obj.amount
                 if size_amount == 0:
                     amount_select_list = ['---']

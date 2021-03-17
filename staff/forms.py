@@ -9,7 +9,7 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ('number', 'title', 'brand','category', 'list_price',
                   'info_made_country', 'info_product_number', 'info_delivery', 
-                  'description', 'image', 'video_link',)
+                  'description', 'main_image', 'video_link',)
 
 class ProductImageForm(forms.ModelForm):
     image = forms.ImageField(label='Image')    

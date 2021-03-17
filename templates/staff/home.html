@@ -40,7 +40,7 @@
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
-            <h2 class="index-title-index text-center">MY PAGE</h2>
+            <h2 class="index-title-index text-center">STAFF HOME</h2>
             <hr class="index-title-divider">
         </div>
     </div>
@@ -48,13 +48,14 @@
 <hr/>
 
 <div class='container my-5'>
+    <!-- 물품/물품 아이템 업로드 -->
     <div class='row'>
         <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
-            <a class='' href="{% url 'accounts:user-update' %}" style='color:black'>
+            <a class='' href="{% url 'staff:upload_product' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
                         <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="fas fa-user-circle fa-5x my-page-icon"></i>
+                            <i class="fas fa-square-full fa-5x my-page-icon"></i>
                         </span>
                     </div>
                     <div class='text-center my-5'>
@@ -63,20 +64,56 @@
                 </div>
             </a>
         </div>
+        
         <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
-            <a class='' href="{% url 'password_change' %}" style='color:black'>
+            <a class='' href="{% url 'staff:upload_product_by_file' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
                         <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="fas fa-unlock-alt fa-5x my-page-icon"></i>
+                            <i class="fas fa-th-large fa-5x my-page-icon"></i>
                         </span>
                     </div>
                     <div class='text-center my-5'>
-                        <p style='font-size:x-large;font-weight:bold;'>물품아이템 업로드</p>
+                        <p style='font-size:x-large;font-weight:bold;'>물품 업로드(엑셀일괄)</p>
                     </div>
                 </div>
             </a>
         </div>
+
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'staff:upload_product_item' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-cube fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>물품 아이템 업로드</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'staff:upload_product_item_by_file' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-cubes fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>물품 아이템 업로드(엑셀일괄)</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
+
+
+        <!-- 물품 체크 -->
         <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
             <a class='' href="{% url 'orders:list' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>

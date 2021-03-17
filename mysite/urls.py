@@ -55,7 +55,7 @@ urlpatterns = [
     url(r'^point/', include('points.urls')),
     
     url(r'^account/', include('accounts.urls')),
-    url(r'^accounts/', include('accounts.passwords.urls')),
+    url(r'^accounts/password/', include('accounts.passwords.urls')),
     
     url(r'^ticket/', include('tickets.urls')),
     url(r'^staff/', include('staff.urls')),

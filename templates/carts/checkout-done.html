@@ -2,7 +2,15 @@
 
 {% block content %}
 <div class='col-6 mx-auto py-5 text-center'>
-    <h1 class='display-1'>주문이 완료되었습니다.</h1>
-    <h1 class='display-1'>감사합니다.</h1>
+    <p style='font-weight:bold;font-size:xx-large;'>주문이 완료되었습니다.</p>
+    <p style='font-weight:bold;font-size:xx-large;'>감사합니다.</p>
+</div>
+
+<div class='container'>
+    <div class='row'>
+        <div class='col-6 mx-auto'>
+            <a href="{% url 'shop:index' %}"><button class='btn btn-block btn-outline-dark'>홈으로</button></a>
+        </div>
+    </div> 
 </div>
 {% endblock %} 

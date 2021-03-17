@@ -1,0 +1,86 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">UPLOAD RESULT</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+  </div>  
+
+<div class='container'>
+    <div class='row'>
+        <div class='col text-right'>
+            <a class="btn btn-default mx-0 px-0" href="{% url 'staff:home' %}">
+                <button class='btn btn-outline-primary btn-sm btn-block mx-1' style='min-width:70px;'>목록으로</button>
+            </a>
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col'>
+            <table class="table text-center" style='font-size:x-small;'>
+                <!-- <colgroup>
+                    <col span="1" style="width: 13%;">
+                    <col span="1" style="width: 15%;">
+                    <col span="1" style="width: 30%;">
+                    <col span="1" style="width: 8%;">
+                    <col span="1" style="width: 10%;">
+                    <col span="1" style="width: 15%;">
+                    
+                </colgroup> -->
+                <thead>
+                  <tr>
+                    <th scope="col">물품이미지</th>
+                    <th scope="col">물품번호</th>
+                    <th scope="col">물품명</th>
+                    <th scope="col">배송지</th>
+                    <th scope="col">수량</th>
+                    <th scope="col">옵션유무</th>
+                    <th scope="col">정가</th>
+                    <th scope="col">판매가격</th>
+                    <th scope="col">할인율</th>
+                    <th scope="col">제조년월</th>
+                    <th scope="col">판매타입</th>
+                    <th scope="col">경매시작가격</th>
+                    <th scope="col">가격상승단위</th>
+                    <th scope="col">경매시작일시</th>
+                    <th scope="col">경매종료일시</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for obj in qs %}  
+                    <tr>
+                        <td><img src="{{ obj.product.main_image.url }}" alt="" style='max-width:40px;'></td>
+                        <td>{{ obj.product.number }}</td>
+                        <td>{{ obj.product.title }}</td>
+                        <td>{{ obj.info_delivery_from }}</td>
+                        <td>{{ obj.amount }}</td>
+                        <td>{{ obj.option }}</td>
+                        <td>{{ obj.product.list_price }}</td>
+                        <td>{{ obj.price }}</td>
+                        <td>{{ obj.sale_ratio }}</td>
+                        <td>{{ obj.info_product_date }}</td>
+                        <td>{{ obj.product_type }}</td>
+                        {% if obj.product_type == 'bidding' %}
+                        <td>{{ obj.start_price }}</td>
+                        <td>{{ obj.price_step }}</td>
+                        <td>{{ obj.bidding_start_date }}</td>
+                        <td>{{ obj.bidding_end_date }}</td>
+                        {% else %}
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        {% endif %}
+                    </tr>  
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

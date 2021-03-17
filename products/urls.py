@@ -24,6 +24,8 @@ urlpatterns = [
 
     # path('featured/', views.ProductFeaturedListView.as_view(), name='product_featured_list'), #
     path('check/', views.ProductStaffCheckView.as_view(), name='check'), # 스탭이 물품 올리기전 체크
+    path('check/make_featured/', views.product_make_featured, name='product_make_featured'), # 스탭이 물품 올리기전 체크
+    path('check/make_unfeatured/', views.product_make_unfeatured, name='product_make_unfeatured'), # 스탭이 물품 올리기전 체크
     
 
 

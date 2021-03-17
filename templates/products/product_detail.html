@@ -33,7 +33,7 @@
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
             {% if product_type == 'bidding' %}
-            <h2 class="index-title-index text-center">BIDDING DETAIL</h2>
+            <h2 class="index-title-index text-center">AUCTION PRODUCT DETAIL</h2>
             {% else %}
             <h2 class="index-title-index text-center">PRODUCT DETAIL</h2>
             {% endif %}
@@ -49,7 +49,7 @@
         <!-- 사진부분 -->
         <div class='col-lg-6 col-md-8 col-sm-12 mx-auto'style="padding-bottom:10px;">
             <picture>
-                <img class="detail-image detail-image-main" src="{{ product_item.product.image.url }}" alt="메인사진" style="width:100%;height:100%;float:both;">
+                <img class="detail-image detail-image-main" src="{{ product_item.product.main_image.url }}" alt="메인사진" style="width:100%;height:100%;float:both;">
             </picture>
         </div>
         <!-- 설명부분 div1 -->
@@ -123,10 +123,10 @@
                                     <div class="input-group-prepend col-8 p-0">
                                         <input type='button' class="btn btn-block btn-outline-dark" value='사이즈 선택'></button>
                                     </div>
-                                    <select class="custom-select col-4" id="inputGroupSelectSize" name="size">
+                                    <select class="custom-select col-4" id="inputGroupSelectOption" name="option">
                                         <option value="">---</option>
-                                        {% for size in size_option %}
-                                            <option value="{{ size.size }}">{{ size.size }}</option>
+                                        {% for option in size_option %}
+                                            <option value="{{ option.option }}">{{ option.option|floatformat:"0"  }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -293,6 +293,23 @@
     </div>    
     <!-- 물품 설명 끝 -->
     
+    <!-- 물품 추가설명 -->
+    {% if product_item.description %}
+    <hr>
+    <div class='row'>
+        
+        <div class="product-detail-description">
+            
+            <p class="product-detail-description-header"  style="font-weight:bold;font-size:medium;margin-bottom:8px;">-상품 추가설명-</p>
+            <ul>
+                <li>{{ product_item.description|linebreaks }}</li>
+            </ul>
+        </div>
+    </div>
+    {% endif %}
+    <!-- 물품 추가설명 끝 -->
+    
+    
     <hr>
 
     <!-- 전자상거래 등에서의 상품정보제공 고시 -->
@@ -400,25 +417,22 @@
             </div>
 
             <!-- 유튜브동영상 있으면.. -->
-            {% if product_item.video_link %}
+            {% if product_item.product.video_link %}
             <div class='col-12 text-center'>
                 <div class="video-responsive">
-                    <iframe width="420" height="315" src="https://www.youtube.com/embed/tgbNymZ7vqY" frameborder="0" allowfullscreen></iframe>
+                    <iframe width="420" height="315" src="{{ product_item.product.video_link }}" frameborder="0" allowfullscreen></iframe>
                 </div>
             </div>
             {% endif %}
             <!-- 그림부분 맨 처음은 메인이미지. 그다음은 forloop로 돌리는 서브 데테일 이미지들-->
-            <div class='col-lg-8 col-md-8 col-sm-12 mx-auto' style="padding:0px;">
-                <picture>
-                    <img class="detail-image detail-image-sub" src="{{ product_item.product.image.url }}" alt="메인사진" style="width:100%;height:100%;float:both;">
-                </picture>
-            </div>
             {% for image in images %}
-            <div class='col-lg-8 col-md-8 col-sm-12 mx-auto' style="padding:0px;">
-                <picture>
-                    <img class="detail-image detail-image-sub" src="{{ image.image.url }}" alt="서브사진{{ forloop.counter }}" style="width:100%;height:100%;float:both;">
-                </picture>
-            </div>
+                {% if image %}
+                <div class='col-lg-8 col-md-8 col-sm-12 mx-auto' style="padding:0px;">
+                    <picture>
+                        <img class="detail-image detail-image-sub" src="{{ image.url }}" alt="서브사진{{ forloop.counter }}" style="width:100%;height:100%;float:both;">
+                    </picture>
+                </div>
+                {% endif %}
             {% endfor %}
         </div>
     </div>
@@ -446,8 +460,8 @@
                         TIPA에서 실시하는 상품 및 물류 창고의 관리상태확인, 상품의 샘플감정을 주기적으로 진행하고 있으며 분기별 1회 이상 위조품 식별 및 유통예방교육을 받고 있습니다.</p></li>
                         <li><p style='font-size:medium;'><span class="company-text-black">두 번째, 위조품 의심, 상품 상담 및 신고를 받고 있습니다.</span><br>
                         당사는 신고 접수된 정보를 TIPA에 전달하고 TIPA는 해당 상표권자에게 해당 상품의 감정의뢰를 하여 정품 여부를 확인해드립니다. </p></li>
-                        <li><p style='font-size:medium;'><span class="company-text-black">세 번째, 판매한 상품이 위조품으로 판명 시 100% 보상해드립니다.</span><br>    
-                        당사는 SGI 서울보증보험에 가입되어 있으며 구매한 물품이 위조품으로 확인될 경우 가입된 보험에 따라 구매 금액의 100%를 보상해 드립니다.</p></li>
+                        <li><p style='font-size:medium;'><span class="company-text-black">세 번째, 판매한 상품이 위조품으로 판명 시 300% 보상해드립니다.</span><br>    
+                        당사는 SGI 서울보증보험에 가입되어 있으며 구매한 물품이 위조품으로 확인될 경우 가입된 보험에 따라 구매 금액의 300%를 보상해 드립니다.</p></li>
                 </ul>
             </div>
             <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
@@ -562,15 +576,15 @@ $(document).ready(function(){
     
     console.log(buyForm)
     // var searchInput = searchForm.find("[name='q']") // input name='q'
-    var sizeSelect = buyForm.find("#inputGroupSelectSize")
+    var optionSelect = buyForm.find("#inputGroupSelectOption")
     var amountList = buyForm.find("#inputGroupSelectAmount")
 
     // 사이즈가 바뀔경우
-    sizeSelect.change(function(){
+    optionSelect.change(function(){
         // alert("The text has been changed.");
-        size = sizeSelect.val()
+        option = optionSelect.val()
         
-        console.log(size)
+        console.log(option)
         console.log("{{ product_type }}")
         
         // ajax 시작
@@ -580,7 +594,7 @@ $(document).ready(function(){
             dataType: 'json',
             data: {
                    post_purpose: "size_changed",
-                   size: size
+                   option: option
                 },
             success: function(data){
                 console.log("성공")
@@ -590,7 +604,7 @@ $(document).ready(function(){
                 amount_select_list = data.amount_select_list
                 amount_value = data.amount_value
                 var container = ''
-                container = container + '<option value="{{ size.size }}">---</option>';
+                container = container + '<option value="{{ option.option }}">---</option>';
                 if (amount_value > 0){
                     for(var i = 1; i < amount_value; i++) {
                     console.log(i)

@@ -236,3 +236,7 @@ class PasswordChangeView(LoginRequiredMixin, UpdateView):
 
 # def user_home(request): 
 #     return render(request, 'accounts/user_home.html', {})
+
+
+def send_register_ticket(request):
+    return render(request, 'account/send_register_ticket.html', {})

@@ -91,7 +91,7 @@
                     <picture>
                         {% if product_item.product.image %}
                         <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
-                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.image.url }}" class="product-main-image"></a>   
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.main_image.url }}" class="product-main-image"></a>   
                         
                         {% else %}
                         <span class="text-muted">No Image</span>
@@ -118,7 +118,7 @@
                                 <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 뒤에 종료</span>
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>
@@ -162,9 +162,9 @@
         <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
                     <picture>
-                        {% if product_item.product.image %}
+                        {% if product_item.product.main_image %}
                         <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
-                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.image.url }}" class="product-main-image"></a>   
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.main_image.url }}" class="product-main-image"></a>   
                         
                         {% else %}
                         <span class="text-muted">No Image</span>
@@ -178,7 +178,16 @@
                                 <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
                             </div>
                             <div class='col text-right'>
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>경매 준비 중</p>                            
+                                {% if user.is_staff %}
+                                    {% if product_item.featured %}
+                                    <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                        <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
+                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                    </form>
+                                    {% endif %}
+                                {% endif %}
                             </div> 
                         </div>
                         <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
@@ -188,10 +197,10 @@
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
-                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 뒤에 시작</span>
+                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>
@@ -235,9 +244,9 @@
         <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
                     <picture>
-                        {% if product_item.product.image %}
+                        {% if product_item.product.main_image %}
                         <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
-                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.image.url }}" class="product-main-image"></a>   
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.main_image.url }}" class="product-main-image"></a>   
                         
                         {% else %}
                         <span class="text-muted">No Image</span>
@@ -251,7 +260,16 @@
                                 <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
                             </div>
                             <div class='col text-right'>
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>경매 완료</p>                            
+                                {% if user.is_staff %}
+                                    {% if product_item.featured %}
+                                    <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                        <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
+                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                    </form>
+                                    {% endif %}
+                                {% endif %}                          
                             </div> 
                         </div>
                         <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
@@ -260,14 +278,24 @@
                         <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.current_price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
+                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
                             </div>
                             <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;">{{ product_item.get_info_delivery_from_display }}</p>
+                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
                             </div>
                         </div>
                         <div class='col mr-auto' style='display:none;'>
                             <!-- 나중에 featured 버튼을 넣기위한 공간. -->
-                        </div>                        
+                            
+                        </div>     
+                        <!-- 해외배송이면 이걸 계산하게 해야한다. -->
+                        <div style='display:none;' id='bidding_end_date_year'>{{ product_item.bidding_start_date|date:'Y' }}</div>
+                        <div style='display:none;' id='bidding_end_date_month'>{{ product_item.bidding_start_date|date:'n' }}</div>
+                        <div style='display:none;' id='bidding_end_date_day'>{{ product_item.bidding_start_date|date:'j' }}</div>
+                        <div style='display:none;' id='bidding_end_date_hour'>{{ product_item.bidding_start_date|date:'G' }}</div>
+                        <div style='display:none;' id='bidding_end_date_minute'>{{ product_item.bidding_start_date|date:'i' }}</div>
+                        <div style='display:none;' id='bidding_end_date_second'>{{ product_item.bidding_start_date|date:'s' }}</div>
+                        <div style='display:none;' id='product_type'>{{ product_item.product_type }}</div>                   
                     </div>
                 </div>
         </div>
@@ -338,10 +366,10 @@ setInterval(function(){
             calcSec = calcSec -1
         }
         console.log(calcHour, calcMin, calcSec)
-        if (calcDay>0){
-            $this.find("#count").text(calcDay + "일" + calcHour + ":" + calcMin + ":" + calcSec)
+        if (gap>0){
+            $this.find("#count").text("남은시간 " + calcDay + "일 " + calcHour + ":" + calcMin + ":" + calcSec)
         } else {
-            $this.find("#count").text(calcHour + ":" + calcMin + ":" + calcSec)
+            $this.find("#count").text("경매종료")
         }
         
     });

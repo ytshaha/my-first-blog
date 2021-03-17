@@ -77,7 +77,9 @@ def unique_slug_generator(instance, new_slug=None):
         slug = new_slug
     else:
         # slug = slugify(instance.title) #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
-        slug = instance.title #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
+        title = instance.number
+        title = title.replace(" ", "_")
+        slug = title #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
         
     print(instance.title)
     Klass = instance.__class__
@@ -101,7 +103,9 @@ def unique_product_item_slug_generator(instance, new_slug=None):
         slug = new_slug
     else:
         # slug = slugify(instance.title) #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
-        slug = instance.product.title #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
+        title = instance.product.number
+        title = title.replace(" ", "_")
+        slug = title #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
         
     Klass = instance.__class__
     qs_exists = Klass.objects.filter(slug=slug).exists()

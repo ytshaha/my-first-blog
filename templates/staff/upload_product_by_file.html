@@ -1,0 +1,14 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+
+<form method="post" action="{% url 'staff:upload_product_complete' %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="database_file" id="id_database_file">
+    <button type='submit'>UPLOAD</button>
+</form>
+
+<!-- 파일 멀티 업로드 -->
+<!--  <input type="file" id="myfile" name="myfile" multiple><br><br> -->
+
+{% endblock %}
