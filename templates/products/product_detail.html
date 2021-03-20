@@ -606,7 +606,7 @@ $(document).ready(function(){
                 var container = ''
                 container = container + '<option value="{{ option.option }}">---</option>';
                 if (amount_value > 0){
-                    for(var i = 1; i < amount_value; i++) {
+                    for(var i = 1; i <= amount_value; i++) {
                     console.log(i)
                     // container.append('<input id="id'+i+'" name="name'+i+'" />');
                     container = container + '<option value=' + i + '>' + i + '</option>';

@@ -9,7 +9,75 @@
     border-right:2px solid rgb(238, 238, 238);
 }
 
-    
+.sidenav {
+  height: 100%;
+  width: 0;
+  position: fixed;
+  z-index: 3;
+  top: 40px;
+  left: 0;
+  background-color: #423f3b;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 60px;
+}
+
+.sidenav a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: medium;;
+  color: #cbbeb5;
+  display: block;
+  transition: 0.3s;
+}
+.sidenav div {
+  transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: white;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.dropdown-menu-lg{
+    /* position:fixed!important; */
+    /* top:100px!important; */
+    /* left:0px!important; */
+    width:450px;
+    height:500px;
+    padding:10px;
+    /* margin:20px; */
+
+}
+
+.navbar-expand-lg {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-flow: row nowrap;
+    flex-flow: row nowrap;
+    -webkit-box-pack: start;
+    -ms-flex-pack: start;
+    justify-content: flex-start;
+}
+
+#navbarSupportedContentProductList .navbar-collapse {
+    display: flex!important;
+    flex-basis: auto;
+}
+
+
 </style>
 {% endblock %}
 
@@ -17,7 +85,47 @@
 {% load static %}
 {% load humanize %}
 <!-- 프로덕트 리스트 헤더 -->
-
+<nav class='sticky-top-2'style='z-index:3;'>
+    <ul class="navbar-nav navbar-expand-lg">
+        <li class="nav-item dropdown mx-2">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='color:gray;'>
+            카테고리
+            </a>
+            <div class="dropdown-menu dropdown-menu-right" style='padding:10px;'>
+                <div class='row'>
+                    <div class='col-12'>
+                        <p style='font-size:large;'>카테고리</p>
+                    </div>
+                    <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
+                    <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
+                    <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
+                    <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
+                    <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
+                </div>
+            </div>
+        </li>
+        <li class="nav-item dropdown mx-2">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style='color:gray;'>
+            브랜드
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg" aria-labelledby="navbarDropdown">
+            <div class='row'>
+                <div class='col-12'>
+                    <p style='font-size:large;'>브랜드</p>
+                </div>
+                {% for brand in brands %}
+                <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                    <a class="dropdown-item" href="{% url 'products:product_list' brand=brand %}" style='font-size:small;'>{{ brand|upper }}</a>
+                </div>    
+                {% endfor %}
+                </div>
+            </div>
+        </li>
+    </ul>
+</nav>
+  
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
@@ -33,7 +141,7 @@
 
 <!-- 프로덕트 카테고리 선택바 -->
 {% if not is_staff_check %}
-<div class='container-fluid sticky-top-2 text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
+<div class='container-fluid text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
     <div class='container'>
         <div class="row">
             <div class='col-2 product-list-category' style='padding:0;'>
@@ -58,18 +166,28 @@
                 <a href="{% url 'products:product_list' category='kid' %}"><p class="product-list-category-text">키즈</p></a>
             </div>
         </div>
+    </div>
+</div>
+
+<div class='container-fluid text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
+    <div class='container'>
         {% if brands.exists %}
 
-        <hr class='mt-0 mb-1'>
         <div class="row">
             <div class='col-2 product-list-category' style='padding:0;'>
-                <p class="" style="font-weight:bold;">Brand</p>
+                <p class="" style="font-weight:bold;padding:0;">Brand</p>
             </div>
-            {% for brand in brands %}
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' brand=brand %}"><p class="product-list-category-text">{{ brand|upper }}</p></a>
+            <div class='col'>
+                <div class='row'>
+                    {% for brand in brands %}
+                        <div class='col-2 product-list-category' style='padding:0;'>
+                            <a href="{% url 'products:product_list' brand=brand %}"><p class="product-list-category-text">{{ brand|upper }}</p></a>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-            {% endfor %}
+            
+
         </div>
         {% endif %}
     </div>   
@@ -249,8 +367,14 @@ setInterval(function(){
     });
 }, 1000)
 </script>
-  
-<script>
 
+<script>
+function openNavBrand() {
+  document.getElementById("mySidenav").style.width = "250px";
+}
+
+function closeNavBrand() {
+  document.getElementById("mySidenav").style.width = "0";
+}
 </script>
 {% endblock %}

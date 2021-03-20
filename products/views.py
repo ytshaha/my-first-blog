@@ -37,6 +37,22 @@ class ProductNormalListView(generic.ListView):
         context['brands'] = brands
         context['is_staff_check'] = False
 
+        try: 
+            context['brand'] = self.kwargs['brand']
+        except:
+            pass
+        try:
+            context['category'] = self.kwargs['category']
+        except:
+            pass    
+
+        # if self.request.method == 'GET':
+        #     brand = self.request.GET.get('brand', None)
+        #     category = self.request.GET.get('category', None)
+        # context['brand'] = brand
+        # context['category'] = category
+        
+        
         return context
 
     def get_queryset(self, *args, **kwargs):

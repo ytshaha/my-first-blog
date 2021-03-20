@@ -21,17 +21,242 @@
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
     {% block header %}
     {% endblock %}
+    <style>
+      .add-border{
+          border-top:1px solid rgb(238, 238, 238);
+          border-bottom:2px solid rgb(238, 238, 238);
+          border-left:1px solid rgb(238, 238, 238);
+          border-right:2px solid rgb(238, 238, 238);
+      }
+      
+      .sidenav-home {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 3;
+        top: 40px;
+        right: 0;
+        background-color: white;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+      }
+      
+      .sidenav-home a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: medium;;
+        color: gray;
+        display: block;
+        transition: 0.3s;
+      }
+      
+      .sidenav-home a:hover {
+        color: rgb(41, 41, 41);
+      }
+      
+      .sidenav-home .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+      }
+      
+      @media screen and (max-height: 450px) {
+        .sidenav-home {padding-top: 15px;}
+        .sidenav-home a {font-size: 18px;}
+      }
+
+      .main-sidebar { 
+        display: none; 
+      }
+      
+      @media (max-width: 992px) {
+          .main-sidebar {
+            display:inline;
+          }
+          .main-sidebar-close { 
+            display: none; 
+          }
+          .navbar-toggler{
+            display:none;
+          }
+      }
+      </style>
     <title>MOUM8, 시작</title>
   </head> 
   
   <body>
     <!-- Navbar -->
+    <div id="mySidenav-home" class="sidenav-home">
+      <div class='text-left'>
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+      </div>
+      <div class='px-3'>
+        <ul class="navbar-nav mr-auto text-right">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
+          </li>
+
+          <!-- 일반물품 Dropdiwn -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
+            </div>
+          </li>
+
+          <!-- 경매물품 Dropdown -->
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">AUCTION</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'products:product_bidding_list' %}">전체</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='woman' %}">여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='men' %}">남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='shoes' %}">슈즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='acc' %}">ACC</a>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}">키즈</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'tickets:home' %}">경매참여티켓</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_end_list' %}">경매 결과</a>
+              
+            </div>
+          </li> -->
+
+          <li class="nav-item">
+            <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i> </a> 
+          </li>
+
+
+          <li class="nav-item"></li>
+            <a class="nav-link" href="{% url 'reviews:home' %}">리뷰</a>
+          </li>
+
+          
+          {% if user.is_authenticated %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'accounts:home' %}">마이페이지 홈</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'accounts:user-update' %}">개인정보변경</a>
+              <a class="dropdown-item" href="{% url 'password_change' %}">비밀번호변경</a>
+              <a class="dropdown-item" href="{% url 'orders:list' %}">주문/배송</a>
+              <a class="dropdown-item" href="{% url 'points:home' %}">보유포인트</a>
+              <a class="dropdown-item" href="">구매결과</a>
+              <a class="dropdown-item" href="">관심리스트</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href=""></a>
+            </div>
+          </li>
+          <li class="nav-item"></li>
+            <a class="nav-link" href="{% url 'logout' %}">로그아웃</a>
+          </li>
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">로그인</a>
+          </li>  
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">회원가입</a>
+          </li>  
+          {% endif %}
+
+          {% if user.is_staff %}
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">STAFF</a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'staff:home' %}">HOME</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'products:upload_product_item' %}">상품아이템 업로드</a>
+              <a class="dropdown-item" href="{% url 'products:upload_product' %}">상품 어보드</a>
+              <a class="dropdown-item" href="{% url 'products:check' %}">상품 체크</a> 
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="">주문상태 확인</a>
+              <a class="dropdown-item" href="">상품 상태 변경</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="">통계분석</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="">회원가입 티켓만들기</a>
+            </div>
+          </li>
+          {% endif %}
+
+          {% if user.is_admin %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
+          </li>
+        
+
+          {% endif %}      
+              
+
+          <!-- <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Dropdown
+            </a>  
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="#">Action</a>
+              <a class="dropdown-item" href="#">Another action</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">Something else here</a>
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#">Disabled</a>
+          </li>
+        </ul> -->
+
+        <!-- 메세지 부분 -->
+        
+        
+
+
+
+        {% if user.is_authenticated %}
+          {% include 'search/snippets/search-form.html' %}
+        {% endif %}
+        </ul>
+      </div>
+    </div>
+    
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <nav class="navbar sticky-top navbar-expand-lg" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255); padding: 6px 24px 0px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
       <a class="navbar-brand" href="{% url 'shop:index' %}"><bold>MOUM8<small>_모움8</small></bold></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <img src="{% static 'shop/open-iconic/svg/menu.svg' %}" alt="아이콘" style="width:12px;">
       </button>
-    
+      <div class='main-sidebar ml-auto' id='id_main-sidebar'>
+        <span style="font-size:medium;cursor:pointer" onclick="openNav()">&#9776; MENU</span>
+      </div>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
@@ -133,7 +358,7 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
           </li>
-          
+        
 
           {% endif %}      
               
@@ -163,6 +388,7 @@
         {% if user.is_authenticated %}
           {% include 'search/snippets/search-form.html' %}
         {% endif %}
+        </ul>
       </div>
     </nav>
     
@@ -417,6 +643,18 @@
       })
 
     </script>
+    <script>
+      function openNav() {
+        document.getElementById("mySidenav-home").style.width = "250px";
+        $("#id_main-sidebar").html('<span style="font-size:medium;cursor:pointer" onclick="closeNav()">&#9776; MENU</span>')
+      }
+      
+      function closeNav() {
+        document.getElementById("mySidenav-home").style.width = "0";
+        $("#id_main-sidebar").html('<span style="font-size:medium;cursor:pointer" onclick="openNav()">&#9776; MENU</span>')
+      }
+
+      </script>
   {% block javascript %}
   {% endblock %}
   </body>
