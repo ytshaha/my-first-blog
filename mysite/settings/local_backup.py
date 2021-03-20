@@ -28,7 +28,7 @@ SECRET_KEY = '30gkclf)zp_aa8*_@otx!)3q=z1@&9leo$klr_htq278r^w^++'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', '0.0.0.0']
+ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', '0.0.0.0', 'localhost']
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'taesun.yoo@gmail.com' 
@@ -36,7 +36,7 @@ EMAIL_HOST_PASSWORD = 'Stock1holm3#'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <taesun.yoo@gmail.com>'
-BASE_URL = '127.0.0.1:8000'
+BASE_URL = 'http://127.0.0.1:8000'
 # 쥐메일생일 1986.1.15
 # 임시계정 moum8.mailing@gmail.com
 # 비번 : moum8admin3#
@@ -46,6 +46,8 @@ MANAGERS = (
 
 ADMIN = MANAGERS
 
+
+
 IAMPORT_CODE = 'imp30832141'
 IMPORT_REST_API_KEY = '8306112827056798'
 IMPORT_REST_API_SECRET = 'WmAHFCAyZFfaMy10g6xRPvFawuuJAVPxiqfY2Pw2uMcgkegAlOsak7kQCOzdKpK2PZ0RPxTjj6AEkQfF'
@@ -53,6 +55,9 @@ IMPORT_REST_API_SECRET = 'WmAHFCAyZFfaMy10g6xRPvFawuuJAVPxiqfY2Pw2uMcgkegAlOsak7
 COOLSMS_REST_API_KEY = 'NCSCDHWYHXRIKCM7'
 COOLSMS_REST_API_SECRET = 'TX8TJ7GOHWBKI6BAZNCSXGAJ4CBAVZFO'
 
+
+
+GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client.json')
 # Application definition
 
 INSTALLED_APPS = [
@@ -78,6 +83,9 @@ INSTALLED_APPS = [
     'addresses',
     'biddings',
     'tickets',
+    'points',
+    'reviews',
+    'staff',
 ]
 
 AUTH_USER_MODEL = 'accounts.User' #changes the built-in user model.
@@ -97,6 +105,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+FILE_UPLOAD_HANDLERS = ("django_excel.ExcelMemoryFileUploadHandler",
+                        "django_excel.TemporaryExcelFileUploadHandler")
 
 ROOT_URLCONF = 'mysite.urls'
 
