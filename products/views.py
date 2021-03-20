@@ -23,6 +23,15 @@ from .forms import ProductForm, ProductItemForm, ProductImageForm
 from biddings.forms import BiddingForm
 from carts.models import Cart
 
+CATEGORY_CHOICES = (
+    ('woman', '여성의류'),
+    ('man', '남성의류'),
+    ('shoes', '신발'),
+    ('bag', '가방'),
+    ('acc', '명품잡화'),
+    ('kid', '키즈'),
+)
+
 # 노말 물품은 아래것으로 통일
 class ProductNormalListView(generic.ListView):
     '''
@@ -46,6 +55,7 @@ class ProductNormalListView(generic.ListView):
         except:
             pass    
 
+        context['category_qs'] = CATEGORY_CHOICES
         # if self.request.method == 'GET':
         #     brand = self.request.GET.get('brand', None)
         #     category = self.request.GET.get('category', None)
@@ -56,31 +66,62 @@ class ProductNormalListView(generic.ListView):
         return context
 
     def get_queryset(self, *args, **kwargs):
-        # brand 받았나
-        try:
-            brand = self.kwargs['brand']
-        except:
-            brand = None
-        # category 받았나
-        try:
-            category = self.kwargs['category']
-        except:
-            category = None
-        
-        product_item_qs = ProductItem.objects.featured().get_normal()
-        
-        # 필터링
-        if not brand is None:
-            product_item_qs = product_item_qs.filter(product__brand__name=brand).order_by('-updated') # 두개 합친건데 되는지 확인. 
-        elif not category is None:
-            product_item_qs = product_item_qs.filter(product__category__name=category).order_by('-updated') # 두개 합친건데 되는지 확인. 
-        else:
-            product_item_qs = product_item_qs.order_by('-updated') # 두개 합친건데 되는지 확인. 
+        request = self.request
 
+        product_item_qs = ProductItem.objects.featured().get_normal()
+
+        #정렬기준을 세션에 저장했으면 그기준. 아니면 아닌걸로.    
+        
+        
+        if request.method == 'GET':
+            post_purpose = request.GET.get('post_purpose', None)
+            if post_purpose == 'filter_product':
+                category_selected = request.GET.getlist('category_selected', None)
+                brand_selected = request.GET.getlist('brand_selected', None)
+                product_item_qs = product_item_qs.filter(product__category__name__in=category_selected).filter(product__brand__name__in=brand_selected)           
+            elif post_purpose =='ordering_method':
+                request.session['ordering'] = request.GET.get('ordering', None)
+        # product_item_obj = ProductItem.objects.get(slug=slug)
+        
+        try:
+            ordering = request.session['ordering']
+            print('ordering', ordering)
+        except:
+            ordering = None
+
+        else:
+            # brand 받았나
+            try:
+                brand = self.kwargs['brand']
+            except:
+                brand = None
+            # category 받았나
+            try:
+                category = self.kwargs['category']
+            except:
+                category = None
+            
+            # 필터링
+            if not brand is None:
+                product_item_qs = product_item_qs.filter(product__brand__name=brand) # 두개 합친건데 되는지 확인. 
+            elif not category is None:
+                product_item_qs = product_item_qs.filter(product__category__name=category) # 두개 합친건데 되는지 확인. 
         # 전체 쿼리셋 저장 및 업데이트
         for product_item_obj in product_item_qs:
             product_item_obj.save()
-        
+
+        if ordering is not None:
+            product_item_qs = product_item_qs.order_by(ordering)
+        # if ordering is not None:
+        #     if ordering == '-price':
+        #         product_item_qs = product_item_qs.order_by(ordering)
+        #     elif ordering == 'price':
+        #         product_item_qs = product_item_qs.order_by(ordering)
+        #     elif ordering == '-updated':
+        #         product_item_qs = product_item_qs.order_by(ordering)
+        #     else:
+        #         pass
+
         return product_item_qs
 
 # 비딩 물품은 아래것으로 통일
@@ -94,41 +135,63 @@ class ProductBiddingListView(generic.ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductBiddingListView, self).get_context_data(*args, **kwargs)
+        request = self.request
         brands = Brand.objects.all()
         context['brands'] = brands
+        context['is_staff_check'] = False
 
-        # brand 받았나
-        try:
-            brand = self.kwargs['brand']
-        except:
-            brand = None
-        # category 받았나
-        try:
-            category = self.kwargs['category']
-        except:
-            category = None
         product_item_qs = ProductItem.objects.featured().get_bidding()
-        
 
-        # 필터링
-        if not brand is None:
-            product_item_qs = product_item_qs.filter(product__brand__name=brand).order_by('-updated') # 두개 합친건데 되는지 확인. 
-        elif not category is None:
-            product_item_qs = product_item_qs.filter(product__category__name=category).order_by('-updated') # 두개 합친건데 되는지 확인. 
+        #정렬기준을 세션에 저장했으면 그기준. 아니면 아닌걸로.    
+        
+        if request.method == 'GET':
+            post_purpose = request.GET.get('post_purpose', None)
+            if post_purpose == 'filter_product':
+                category_selected = request.GET.getlist('category_selected', None)
+                brand_selected = request.GET.getlist('brand_selected', None)
+                product_item_qs = product_item_qs.filter(product__category__in=category_selected).filter(product__brand__in=brand_selected)           
+            elif post_purpose =='ordering_method':
+                request.session['ordering'] = request.GET.get('ordering', None)
+        # product_item_obj = ProductItem.objects.get(slug=slug)
+
+        try:
+            ordering = request.session['ordering']
+        except:
+            ordering = None
+
+
         else:
-            product_item_qs = product_item_qs.order_by('-updated') # 두개 합친건데 되는지 확인. 
+            # brand 받았나
+            try:
+                brand = self.kwargs['brand']
+            except:
+                brand = None
+            # category 받았나
+            try:
+                category = self.kwargs['category']
+            except:
+                category = None
+           
+            # 필터링
+            if not brand is None:
+                product_item_qs = product_item_qs.filter(product__brand__name=brand) # 두개 합친건데 되는지 확인. 
+            elif not category is None:
+                product_item_qs = product_item_qs.filter(product__category__name=category) # 두개 합친건데 되는지 확인. 
 
         # 전체 쿼리셋 저장 및 업데이트
         for product_item_obj in product_item_qs:
             product_item_obj.save()
 
+        if ordering is not None:
+            product_item_qs = product_item_qs.order_by(ordering)
+        
         # 바딩준비, 비딩중으로 qs 따로 저장.
         bidding_item_qs = product_item_qs.filter(bidding_on='bidding')
         bidding_ready_item_qs = product_item_qs.filter(bidding_on='bidding_ready')
 
         context['bidding_items'] = bidding_item_qs
         context['bidding_ready_items'] = bidding_ready_item_qs
-        
+        context['category_qs'] = CATEGORY_CHOICES
         return context
     def get_queryset(self, *args, **kwargs):
         return ProductItem.objects.get_bidding()
@@ -157,6 +220,7 @@ class ProductBiddingCompleteListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self, *args, **kwargs):
         request = self.request
         return ProductItem.objects.get_bidding().filter(bidding_on='bidding_end').order_by('-updated') # 두개 합친건데 되는지 확인. 
+
 
 
 # 스탭만 들어갈수있는 mixin을만들자.

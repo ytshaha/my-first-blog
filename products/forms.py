@@ -1,7 +1,10 @@
 from django import forms
 
-from .models import Product, ProductItem, ProductImage
+from .models import Product, Brand, Category, ProductItem, ProductImage
 from shop.widgets import XDSoftDateTimePickerInput
+
+
+
 
 class ProductForm(forms.ModelForm):
     
@@ -35,6 +38,3 @@ class ProductItemForm(forms.ModelForm):
         model = ProductItem
         fields = ('product','info_delivery_from','amount','price','product_type',
                   'price_step','bidding_start_date','bidding_end_date',)
-
-
-    

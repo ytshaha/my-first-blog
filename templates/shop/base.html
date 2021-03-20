@@ -108,6 +108,7 @@
               <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
               <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
               <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}">가방</a>
               <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
               <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
             </div>
@@ -122,6 +123,7 @@
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='woman' %}">여성의류</a>
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='men' %}">남성의류</a>
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='shoes' %}">슈즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='bag' %}">가방</a>
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='acc' %}">ACC</a>
               <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}">키즈</a>
               <div class="dropdown-divider"></div>
@@ -176,12 +178,14 @@
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'staff:home' %}">HOME</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:upload_product_item' %}">상품아이템 업로드</a>
-              <a class="dropdown-item" href="{% url 'products:upload_product' %}">상품 어보드</a>
-              <a class="dropdown-item" href="{% url 'products:check' %}">상품 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:upload_product' %}">물품 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'products:check' %}">물품 체크</a> 
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="">주문상태 확인</a>
-              <a class="dropdown-item" href="">상품 상태 변경</a>
+              <a class="dropdown-item " href="">상품 상태 변경</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="">통계분석</a>
               <div class="dropdown-divider"></div>

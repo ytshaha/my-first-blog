@@ -55,7 +55,7 @@
     /* position:fixed!important; */
     /* top:100px!important; */
     /* left:0px!important; */
-    width:450px;
+    width:480px;
     height:500px;
     padding:10px;
     /* margin:20px; */
@@ -84,48 +84,165 @@
 {% block content %}
 {% load static %}
 {% load humanize %}
-<!-- 프로덕트 리스트 헤더 -->
-<nav class='sticky-top-2'style='z-index:3;'>
+<!-- 프로덕트 리스트 네브바 -->
+<nav class='sticky-top-2'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
     <ul class="navbar-nav navbar-expand-lg">
-        <li class="nav-item dropdown mx-2">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style='color:gray;'>
-            카테고리
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+              카테고리 <i class="fas fa-chevron-down"></i>
             </a>
-            <div class="dropdown-menu dropdown-menu-right" style='padding:10px;'>
+        </li>
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+              브랜드 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+              필터 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+              정렬기준 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+    </ul>
+</nav>
+
+<div class="collapse" id="collapseCategory">
+    <div class="card card-body">
+        <div class='row'>
+            <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
                 <div class='row'>
                     <div class='col-12'>
-                        <p style='font-size:large;'>카테고리</p>
+                        <p style='font-size:large;font-weight:bold;'>카테고리</p>
                     </div>
-                    <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
-                    <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
-                    <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
-                    <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
-                    <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
+                    <div class='col-12'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
+                        <hr>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}">키즈</a>
+                    </div>
                 </div>
             </div>
-        </li>
-        <li class="nav-item dropdown mx-2">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style='color:gray;'>
-            브랜드
-            </a>
-            <div class="dropdown-menu dropdown-menu-lg" aria-labelledby="navbarDropdown">
+        </div>
+    </div>
+</div>
+<div class="collapse" id="collapseBrand">
+    <div class="card card-body">
+        <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
             <div class='row'>
                 <div class='col-12'>
-                    <p style='font-size:large;'>브랜드</p>
+                    <p style='font-size:large;font-weight:bold;'>브랜드</p>
                 </div>
                 {% for brand in brands %}
                 <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
                     <a class="dropdown-item" href="{% url 'products:product_list' brand=brand %}" style='font-size:small;'>{{ brand|upper }}</a>
                 </div>    
                 {% endfor %}
+            </div>
+        </div>  
+    </div>
+</div>
+<div class="collapse" id="collapseFilter">
+    <div class="card card-body">
+        <div class='row'>
+            
+            <form method='GET' action="{% url 'products:product_list' %}" style='width:100%;'>
+                <input type="hidden" name='post_purpose' value='filter_product'>
+                <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                    <div class='col-12 text-left'>
+                        <p style='font-size:large;font-weight:bold;'>필터</p>
+                    </div>
+                    <div class='col-12 text-left'>
+                        <p style='font-size:large;'>카테고리</p>
+                    </div>
+                    <div class='row pl-4'>
+                        <div class='col-12'>
+                            <p><input type="checkbox" onClick="toggleCategory(this)"/> 전체</p>
+                        </div>
+                        <hr>
+                        {% for category in category_qs %}
+                        <div class='col-3'>
+                            <p><input type="checkbox" name="category_selected" value="{{ category.0 }}" /> {{ category.1 }}</p>                    
+                        </div> 
+                        {% endfor %}
+                    </div>
+                    <hr>
+                </div>
+                <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                    <div class='col-12 text-left'>
+                        <p style='font-size:large;'>브랜드</p>
+                    </div>
+                    <div class='row pl-4'>
+                        <div class='col-12'>
+                            <p><input type="checkbox" onClick="toggleBrand(this)"/> 전체</p>
+                        </div>
+                        
+                        {% for brand in brands %}
+                        <div class='col-4 col-lg-3 col-md-4 col-sm-4'>
+                            <p style='font-size:small;'><input type="checkbox" name="brand_selected" value="{{ brand }}" /> {{ brand }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <hr>
+                </div>
+                <div class='col-12 col-lg-8 col-mg-8 col-sm-12 mx-auto'>
+                    <button class='btn btn-outline-dark btn-block' type='submit'>선택 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="collapse" id="collapseOrderby">
+    <div class="card card-body">
+        <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+            <div class='row'>
+                <div class='col-12'>
+                    <p style='font-size:large;font-weight:bold;'>정렬기준</p>
+                </div>
+                <div class='col-4'>
+                    <form action="{% url 'products:product_list' %}">
+                        <input type="hidden" name='post_purpose' value='ordering_method'>
+                        <input type="hidden" name="ordering" value="-price" />
+                        <button class='btn btn-outline-dark' type='submit'>높은가격순서</button>
+                    </form>
+                </div>
+                <div class='col-4'>
+                    <form action="{% url 'products:product_list' %}">
+                        <input type="hidden" name='post_purpose' value='ordering_method'>
+                        <input type="hidden" name="ordering" value="price" />
+                        <button class='btn btn-outline-dark' type='submit'>낮은가격순서</button>
+                    </form>
+                </div>
+                <div class='col-4'>
+                    <form action="{% url 'products:product_list' %}">
+                        <input type="hidden" name='post_purpose' value='ordering_method'>
+                        <input type="hidden" name="ordering" value="-updated" />
+                        <button class='btn btn-outline-dark' type='submit'>업데이트날짜순서</button>
+                    </form>
                 </div>
             </div>
-        </li>
-    </ul>
-</nav>
-  
+        </div>  
+    </div>
+</div>
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
@@ -139,60 +256,6 @@
     </div>
 </div>
 
-<!-- 프로덕트 카테고리 선택바 -->
-{% if not is_staff_check %}
-<div class='container-fluid text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
-    <div class='container'>
-        <div class="row">
-            <div class='col-2 product-list-category' style='padding:0;'>
-                <p class="" style="font-weight:bold;">Category</p>
-            </div>
-                <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' %}"><p class="product-list-category-text">전체</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='woman' %}"><p class="product-list-category-text">여성의류</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='men' %}"><p class="product-list-category-text">남성의류</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='shoes' %}"><p class="product-list-category-text">슈즈</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='acc' %}"><p class="product-list-category-text">ACC</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='kid' %}"><p class="product-list-category-text">키즈</p></a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class='container-fluid text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
-    <div class='container'>
-        {% if brands.exists %}
-
-        <div class="row">
-            <div class='col-2 product-list-category' style='padding:0;'>
-                <p class="" style="font-weight:bold;padding:0;">Brand</p>
-            </div>
-            <div class='col'>
-                <div class='row'>
-                    {% for brand in brands %}
-                        <div class='col-2 product-list-category' style='padding:0;'>
-                            <a href="{% url 'products:product_list' brand=brand %}"><p class="product-list-category-text">{{ brand|upper }}</p></a>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            
-
-        </div>
-        {% endif %}
-    </div>   
-</div>
-{% endif %}
 
 
 <!-- 프로덕트 리스트-->
@@ -368,13 +431,23 @@ setInterval(function(){
 }, 1000)
 </script>
 
-<script>
-function openNavBrand() {
-  document.getElementById("mySidenav").style.width = "250px";
+
+<script language="JavaScript">
+
+function toggleBrand(source) {
+    console.log('toggleBrand 이 실행되었다')
+    brandCheckboxes = document.getElementsByName('brand_selected');
+    for(var i=0, n=brandCheckboxes.length;i<n;i++) {
+        brandCheckboxes[i].checked = source.checked;
+    }
+}
+function toggleCategory(source) {
+    console.log('toggleCategory 이 실행되었다')
+    categoryCheckboxes = document.getElementsByName('category_selected');
+    for(var i=0, n=categoryCheckboxes.length;i<n;i++) {
+        categoryCheckboxes[i].checked = source.checked;
+    }
 }
 
-function closeNavBrand() {
-  document.getElementById("mySidenav").style.width = "0";
-}
 </script>
 {% endblock %}

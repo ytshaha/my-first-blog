@@ -155,10 +155,11 @@ def upload_product_complete(request):
 
         image_cols = ['main_image', 'image1', 'image2', 'image3', 'image4', 'image5', 
                       'image6', 'image7', 'image8', 'image9']
-        obj_images = [obj.main_image, obj.image1, obj.image2, obj.image3, obj.image4, obj.image5, 
-                      obj.image6, obj.image7, obj.image8, obj.image9]
+        
                     
-        if created:
+        if created == True:
+            obj_images = [obj.main_image, obj.image1, obj.image2, obj.image3, obj.image4, obj.image5, 
+                          obj.image6, obj.image7, obj.image8, obj.image9]
             for i, col in enumerate(image_cols):
                 if data[col] is not None:
                     try:

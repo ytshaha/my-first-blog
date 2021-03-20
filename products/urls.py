@@ -13,6 +13,8 @@ app_name = 'products'
 urlpatterns = [
     # 일반물품 URL
     path('', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
+    # path('filter/', views.ProductFilterListView.as_view(), name='product_filter_list'), # 전체 물품보기(feature=True)
+    
     path('category/<category>/', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
     path('brand/<brand>/', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
     # 경매물품 URL
