@@ -291,14 +291,6 @@ from googleapiclient.http import MediaFileUpload
 from google.auth.transport.requests import Request
 
 
-import logging
-from oauth2client.client import flow_from_clientsecrets
-from oauth2client.client import FlowExchangeError
-from apiclient.discovery import build
-
-from django.conf import settings
-# ...
-
 def Create_Service2(client_secret_file, api_name, api_version, *scopes):
     print(client_secret_file, api_name, api_version, scopes, sep='-')
     CLIENT_SECRET_FILE = client_secret_file
@@ -320,15 +312,8 @@ def Create_Service2(client_secret_file, api_name, api_version, *scopes):
         if cred and cred.expired and cred.refresh_token:
             cred.refresh(Request())
         else:
-            # flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
-            flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, ' '.join(SCOPES))
-            flow.redirect_uri = REDIRECT_URI
-            # try:
-            #     credentials = flow.step2_exchange(authorization_code)
-            # except FlowExchangeError:
-            #     logging.error('An error occurred: %s', error)
-            #     raise CodeExchangeException(None)
-            # cred = flow.run_console()
+            flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+            # flow = flow_from_clientsecrets(CLIENTSECRETS_LOCATION, ' '.join(SCOPES))
             cred = flow.run_local_server(host=REDIRECT_URI)
             
 
