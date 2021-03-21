@@ -214,18 +214,18 @@ class EmailActivation(models.Model):
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [self.email]
 
-                send_mail = send_email(
-                                        emailMsg=txt_, 
-                                        to=self.email, 
-                                        subject=subject)
-                # sent_mail = send_mail(
-                #             subject,
-                #             txt_,
-                #             from_email,
-                #             recipient_list,
-                #             html_message=html_,
-                #             fail_silently=False,
-                #             )
+                # send_mail = send_email(
+                #                         emailMsg=txt_, 
+                #                         to=self.email, 
+                #                         subject=subject)
+                sent_mail = send_mail(
+                            subject,
+                            txt_,
+                            from_email,
+                            recipient_list,
+                            html_message=html_,
+                            fail_silently=False,
+                            )
                 return send_mail
         return False
         

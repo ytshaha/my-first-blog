@@ -7,7 +7,7 @@ from django.views import generic
 # from .forms import PostForm, CommentForm
 from django.core.files.storage import FileSystemStorage
 from products.models import Product, ProductItem
-from mysite import Google, gmail
+# from mysite import Google, gmail
 
 
 def index(request):
