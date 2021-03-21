@@ -23,9 +23,9 @@ def index(request):
         'product_items_bidding': product_items_bidding
     }
 
-    gmail.send_email('aaa', 'ytshaha@naver.com','subject')
-    # credentials = Google.get_credentials(authorization_code=False, state=False)
-    # Google.build_service(credentials)
+    # gmail.send_email('aaa', 'ytshaha@naver.com','subject')
+    # # credentials = Google.get_credentials(authorization_code=False, state=False)
+    # # Google.build_service(credentials)
 
 
     return render(request, 'shop/index.html', context)
