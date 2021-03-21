@@ -329,7 +329,8 @@ def Create_Service2(client_secret_file, api_name, api_version, *scopes):
             #     logging.error('An error occurred: %s', error)
             #     raise CodeExchangeException(None)
             # cred = flow.run_console()
-            cred = flow.run_local_server(host='REDIRECT_URI')
+            cred = flow.run_local_server(host=REDIRECT_URI)
+            
 
         with open(pickle_file, 'wb') as token:
             pickle.dump(credentials, token)
