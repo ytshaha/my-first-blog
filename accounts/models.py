@@ -12,7 +12,7 @@ from django.urls import reverse # from django.core.urlresolvers import reverse -
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.template.loader import get_template
-from mysite.utils import unique_key_generator
+from mysite.utils import unique_key_generator, random_string_generator
 # from mysite.gmail import send_email
 # from mysite.gmail import get_credentials, create_message_and_send, create_message_without_attachment, create_Message_with_attachment, send_Message_without_attachement, send_Message_with_attachement
 from points.models import Point
@@ -258,6 +258,14 @@ class RegisterTicket(models.Model):
     ticket_number   = models.CharField(max_length=120, unique=True)             # 티켓 번호 추천인아이디+숫자.
     key             = models.CharField(max_length=120, blank=True, null=True)   # 티켓별 키
     sent_mail       = models.EmailField()                                       # 해당 티켓을 보낸 메일. 한번보내면 이 이메일이외에는 더이상 못보냄.
-    activated       = models.BooleanField(default=False)                        # 사용됨.
+    shared          = models.BooleanField(default=False)                        # 메일로 공유됨
+    used            = models.BooleanField(default=False)                        # 가입시 사용됨..
     timestamp       = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return self.ticket_number
+def pre_save_register_ticket(sender, instance, *args, **kwrags):
+    if instance.key is None:
+        instance.key = random_string_generator(size=20)
+
+pre_save.connect(pre_save_register_ticket, sender=RegisterTicket)

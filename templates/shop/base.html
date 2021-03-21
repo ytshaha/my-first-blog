@@ -33,10 +33,10 @@
         height: 100%;
         width: 0;
         position: fixed;
-        z-index: 3;
+        z-index: 4;
         top: 40px;
         right: 0;
-        background-color: white;
+        background-color: #423f3b;
         overflow-x: hidden;
         transition: 0.5s;
         padding-top: 60px;
@@ -46,13 +46,13 @@
         padding: 8px 8px 8px 32px;
         text-decoration: none;
         font-size: medium;;
-        color: gray;
+        color: #cbbeb5;
         display: block;
         transition: 0.3s;
       }
       
       .sidenav-home a:hover {
-        color: rgb(41, 41, 41);
+        color: white;
       }
       
       .sidenav-home .closebtn {
@@ -83,13 +83,21 @@
             display:none;
           }
       }
+
+      .dropdown-item{
+        color: gray!important;
+      }
+      .dropdown-item a:hover {
+        color: black!important;
+        background-color: gray;
+      }
       </style>
     <title>MOUM8, 시작</title>
   </head> 
   
   <body>
     <!-- Navbar -->
-    <div id="mySidenav-home" class="sidenav-home">
+    <div id="mySidenav-home" class="sidenav-home" style='border-left:1px solid gray;'>
       <div class='text-left'>
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
       </div>
@@ -103,14 +111,14 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' %}" style='font-size:small;'>전체</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}">가방</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}" style='font-size:small;'>여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}" style='font-size:small;'>남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}" style='font-size:small;'>가방</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}" style='font-size:small;'>ACC</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}" style='font-size:small;'>키즈</a>
             </div>
           </li>
 
@@ -148,14 +156,14 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'accounts:home' %}">마이페이지 홈</a>
+              <a class="dropdown-item" href="{% url 'accounts:home' %}" style='font-size:small;'>마이페이지 홈</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'accounts:user-update' %}">개인정보변경</a>
-              <a class="dropdown-item" href="{% url 'password_change' %}">비밀번호변경</a>
-              <a class="dropdown-item" href="{% url 'orders:list' %}">주문/배송</a>
-              <a class="dropdown-item" href="{% url 'points:home' %}">보유포인트</a>
-              <a class="dropdown-item" href="">구매결과</a>
-              <a class="dropdown-item" href="">관심리스트</a>
+              <a class="dropdown-item" href="{% url 'accounts:user-update' %}" style='font-size:small;'>개인정보변경</a>
+              <a class="dropdown-item" href="{% url 'password_change' %}" style='font-size:small;'>비밀번호변경</a>
+              <a class="dropdown-item" href="{% url 'orders:list' %}" style='font-size:small;'>주문/배송</a>
+              <a class="dropdown-item" href="{% url 'points:home' %}" style='font-size:small;'>보유포인트</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>구매결과</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>관심리스트</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href=""></a>
             </div>
@@ -168,7 +176,7 @@
             <a class="nav-link" href="{% url 'login' %}">로그인</a>
           </li>  
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'register' %}">회원가입</a>
+            <a class="nav-link" href="{% url 'register_ticket_confirm' %}">회원가입</a>
           </li>  
           {% endif %}
 
@@ -176,20 +184,20 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">STAFF</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'staff:home' %}">HOME</a>
+              <a class="dropdown-item" href="{% url 'staff:home' %}" style='font-size:small;'>HOME</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'staff:upload_product' %}">물품 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'products:check' %}">물품 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:upload_product' %}" style='font-size:small;'>물품 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}" style='font-size:small;'>물품 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}" style='font-size:small;'>물품 아이템 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}" style='font-size:small;'>물품 아이템 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'products:check' %}" style='font-size:small;'>물품 체크</a> 
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">주문상태 확인</a>
-              <a class="dropdown-item " href="">물품 상태 변경</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>주문상태 확인</a>
+              <a class="dropdown-item " href="" style='font-size:small;'>물품 상태 변경</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">통계분석</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>통계분석</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">회원가입 티켓만들기</a>
+              <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}" style='font-size:small;'>회원가입 티켓만들기</a>
             </div>
           </li>
           {% endif %}
@@ -198,60 +206,13 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
           </li>
-        
-
           {% endif %}      
-              
-
-          <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown
-            </a>  
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-        </ul> -->
-
-        <!-- 메세지 부분 -->
-        
-        
-
-
-
-        {% if user.is_authenticated %}
-          {% include 'search/snippets/search-form.html' %}
-        {% endif %}
         </ul>
       </div>
     </div>
     
 
     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     <nav class="navbar sticky-top navbar-expand-lg" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255); padding: 6px 24px 0px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
       <a class="navbar-brand" href="{% url 'shop:index' %}"><bold>MOUM8<small>_모움8</small></bold></a>
@@ -273,11 +234,12 @@
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}" style='font-size:small;'>여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}" style='font-size:small;'>남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}" style='font-size:small;'>가방</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}" style='font-size:small;'>ACC</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}" style='font-size:small;'>키즈</a>
             </div>
           </li>
 
@@ -314,14 +276,14 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'accounts:home' %}">마이페이지 홈</a>
+              <a class="dropdown-item" href="{% url 'accounts:home' %}" style='font-size:small;'>마이페이지 홈</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'accounts:user-update' %}">개인정보변경</a>
-              <a class="dropdown-item" href="{% url 'password_change' %}">비밀번호변경</a>
-              <a class="dropdown-item" href="{% url 'orders:list' %}">주문/배송</a>
-              <a class="dropdown-item" href="{% url 'points:home' %}">보유포인트</a>
-              <a class="dropdown-item" href="">구매결과</a>
-              <a class="dropdown-item" href="">관심리스트</a>
+              <a class="dropdown-item" href="{% url 'accounts:user-update' %}" style='font-size:small;'>개인정보변경</a>
+              <a class="dropdown-item" href="{% url 'password_change' %}" style='font-size:small;'>비밀번호변경</a>
+              <a class="dropdown-item" href="{% url 'orders:list' %}" style='font-size:small;'>주문/배송</a>
+              <a class="dropdown-item" href="{% url 'points:home' %}" style='font-size:small;'>보유포인트</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>구매결과</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>관심리스트</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href=""></a>
             </div>
@@ -334,7 +296,7 @@
             <a class="nav-link" href="{% url 'login' %}">로그인</a>
           </li>  
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'register' %}">회원가입</a>
+            <a class="nav-link" href="{% url 'register_ticket_confirm' %}">회원가입</a>
           </li>  
           {% endif %}
 
@@ -342,20 +304,20 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">STAFF</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'staff:home' %}">HOME</a>
+              <a class="dropdown-item" href="{% url 'staff:home' %}" style='font-size:small;'>HOME</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'staff:upload_product' %}">물품 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'products:check' %}">물품 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:upload_product' %}"> style='font-size:small;'물품 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}" style='font-size:small;'>물품 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}" style='font-size:small;'>물품 아이템 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}" style='font-size:small;'>물품 아이템 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'products:check' %}" style='font-size:small;'>물품 체크</a> 
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">주문상태 확인</a>
-              <a class="dropdown-item " href="">물품 상태 변경</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>주문상태 확인</a>
+              <a class="dropdown-item " href="" style='font-size:small;'>물품 상태 변경</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">통계분석</a>
+              <a class="dropdown-item" href="" style='font-size:small;'>통계분석</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">회원가입 티켓만들기</a>
+              <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}" style='font-size:small;'>회원가입 티켓만들기</a>
             </div>
           </li>
           {% endif %}
@@ -364,34 +326,8 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
           </li>
-        
-
           {% endif %}      
-              
 
-          <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Dropdown
-            </a>  
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-        </ul> -->
-
-        <!-- 메세지 부분 -->
-        
-        
-
-
-
-        
         </ul>
       </div>
     </nav>
@@ -498,7 +434,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     
     <!-- Stripe JS -->
-    <script src="https://js.stripe.com/v3/"></script> 
+    <!-- <script src="https://js.stripe.com/v3/"></script>  -->
 
     <!-- CSRF for ajax JS -->
     <script src="{% static 'js/csrf.ajax.js' %}"></script>
@@ -649,7 +585,7 @@
     </script>
     <script>
       function openNav() {
-        document.getElementById("mySidenav-home").style.width = "250px";
+        document.getElementById("mySidenav-home").style.width = "200px";
         $("#id_main-sidebar").html('<span style="font-size:medium;cursor:pointer" onclick="closeNav()">&#9776; MENU</span>')
       }
       

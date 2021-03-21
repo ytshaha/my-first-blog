@@ -11,5 +11,31 @@
   </div>  
 
   
+<div class="container">
+    <div class='row'>
+        <div class='col-6 mx-auto'>
+            <form method='POST' action="{% url 'accounts:send_register_ticket_success' %}"> 
+                {% csrf_token %}
+                <div class='col-12 mb-3'>
+                    <p>EMAIL</p>
+                    <input class='form-control' type="email" name='email'>
+                </div>
+                <div class='col-12'>
+                    <p>가입티켓선택</p>
+                    <select class="custom-select col-12 form-control" id="inputGroupSelectAmount" name="ticket_number">
+                        {% for obj in register_ticket_qs %}
+                            <option value="{{ obj.ticket_number }}">{{ obj.ticket_number }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+                <div class='col-12'>
+                    <button type='submit' class='btn btn-dark btn-block my-3'>가입티켓 보내기</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
 
 {% endblock %}

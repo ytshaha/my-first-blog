@@ -10,7 +10,11 @@ urlpatterns = [
     # url(r'^email/confirm/(?P<key>[0-9A-Za-z]+)/%', views.AccountEmailActivateView.as_view(), name='email-activate'),
     path('email/confirm/<key>/', views.AccountEmailActivateView.as_view(), name='email-activate'),
     path('email/resend-activation/', views.AccountEmailActivateView.as_view(), name='resend-activation'),
-    path('send_register_ticket/', views.send_register_ticket, name='send_register_ticket'),
+    path('register_ticket/make/', views.make_register_ticket, name='make_register_ticket'),
+    path('register_ticket/make/success/', views.make_register_ticket_success, name='make_register_ticket_success'),
+    path('register_ticket/send/', views.send_register_ticket, name='send_register_ticket'),
+    path('register_ticket/send/success/', views.send_register_ticket_success, name='send_register_ticket_success'),
+    
     ]
 
 

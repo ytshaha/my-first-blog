@@ -71,7 +71,7 @@ class ProductNormalListView(generic.ListView):
         product_item_qs = ProductItem.objects.featured().get_normal()
 
         #정렬기준을 세션에 저장했으면 그기준. 아니면 아닌걸로.    
-        
+        print(request.method, '요청됨.')
         
         if request.method == 'GET':
             post_purpose = request.GET.get('post_purpose', None)
@@ -89,7 +89,7 @@ class ProductNormalListView(generic.ListView):
         except:
             ordering = None
 
-        else:
+        if post_purpose is None:
             # brand 받았나
             try:
                 brand = self.kwargs['brand']

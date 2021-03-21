@@ -1,0 +1,39 @@
+{% extends "shop/base.html" %}
+
+
+{% block content %}
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center">가입티켓만들기(Staff 용)</h2>
+          <hr class="index-title-divider">
+      </div>
+  </div>
+</div>  
+
+
+<div class="container">
+    <div class='row'>
+        <div class='col-6 mx-auto'>
+          <hr/>
+            <form method='POST' action=''> 
+                {% csrf_token %}
+                <div class='col-12'>
+                    <p>ID</p>
+                    <input class='form-control' type="text" name='username'>
+                </div>
+                <div class='col-12'>
+                    <p>갯수</p>
+                    <input class='form-control' type="number" name='amount'>
+                </div>
+                <div class='col-12'>
+                    <button type='submit' class='btn btn-dark btn-block my-3'>저장</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

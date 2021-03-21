@@ -1,0 +1,40 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">회원가입 티켓 보내기</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+  </div>  
+
+  
+<div class="container">
+    <div class='row'>
+        <div class='col-6 mx-auto'>
+            <p style='font-size:large;'>{{ email }}로 가입티켓({{ ticket_number }})이 보내졌습니다.</p>
+        </div>
+    </div>
+
+    <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
+        <div class='col pt-4 pb-4 text-center'>
+            <span style="font-size: 0.6em; color: #ffe5a9;">
+                <i class="fas fa-user-alt fa-5x"></i>
+            </span>
+        </div>
+        <div class="store-card-header">
+            <p class='text-center' style='color:white;font-weight:bold;font-size:xx-large;'>가입티켓 안내</p>
+        </div>
+        <div class="info-card-description mb-5 text-left">
+            <ul style='color:white;'>
+                <p style='font-size:medium;color: #ffe5a9;'><bold>해당 가입티켓은 위의 메일로 송부되면 더이상 재송부가 불가합니다.</bold> </p>
+                <p style='font-size:medium;'>원하는 사용자에게 다시 보내려면 갖고 계신 다른 가입티켓을 송부하기 바랍니다.</p>
+            </ul>
+        </div>
+        <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+    </div>
+</div>
+
+{% endblock %}

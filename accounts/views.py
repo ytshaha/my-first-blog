@@ -9,15 +9,18 @@ from django.urls import reverse # from django.core.urlresolvers import reverse -
 from django.utils.decorators import method_decorator
 from django.views.generic import CreateView, FormView, DetailView, View, UpdateView
 from django.views.generic.edit import FormMixin
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render,redirect
 from django.utils.http import is_safe_url
 from django.utils.safestring import mark_safe
+from django.conf import settings
+from django.core.mail import send_mail
+from django.template.loader import get_template
 
 from mysite.mixin import NextUrlMixIn, RequestFormAttachMixin
 from mysite.utils import check_ticket_activate
-from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, UserDetailChangeForm, PasswordChangeForm
-from .models import GuestEmail, EmailActivation
+from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, UserDetailChangeForm, PasswordChangeForm, RegisterTicketForm
+from .models import GuestEmail, EmailActivation, RegisterTicket
 from .signals import user_logged_in
 from tickets.models import Ticket
 User = get_user_model()
@@ -32,6 +35,15 @@ class AccountHomeView(LoginRequiredMixin, DetailView):
 
     def get_object(self):
         return self.request.user
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AccountHomeView, self).get_context_data(*args, **kwargs)
+        user = self.request.user
+        register_ticket_qs = RegisterTicket.objects.filter(user=user)
+        context['register_ticket_qs'] = register_ticket_qs
+        return context
+
+
 
 class AccountEmailActivateView(FormMixin, View):
     success_url = '/login/'
@@ -142,14 +154,55 @@ class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
         return redirect(next_path)
 
     
-    
+def register_ticket_confirm(request):
+    # form_class = RegisterTicketForm
+    # success_url = '/register/'
+    # template_name = "accounts/register_ticket_confirm.html"
+
+    # default_next = 'register_ticket_confirm'
+    if request.method == "POST":
+        ticket_number = request.POST.get("ticket_number", None)
+        key = request.POST.get("key", None)
+        register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number, used=False)
+        if register_ticket_qs.count() == 1:
+            register_ticket_obj = register_ticket_qs.first()
+            if register_ticket_obj.key == key:
+                register_ticket_confirm = True
+                request.session['register_ticket_number'] = ticket_number
+            else:
+                messages.success(request, "가입티켓 키가 틀립니다.")
+                return redirect('register_ticket_confirm')
+        else:
+            messages.success(request, "가입티켓 번호가 틀립니다.")
+            return redirect('register_ticket_confirm')
+        return redirect('register')
+    return render(request, 'accounts/register_ticket_confirm.html', {}) 
 
 class RegisterView(CreateView):
     form_class = RegisterForm
     template_name = 'accounts/register.html'
     success_url = '/register/success/'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(RegisterView, self).get_context_data(*args, **kwargs)
+        # context['register_ticket_form'] = RegisterTicketForm
+        request = self.request
+        post_purpose = request.POST.get('post_purpose', None)
+        register_ticket_confirm = False
+        register_ticket_number = request.session.get('register_ticket_number', None)
+        if register_ticket_number is not None:
+            register_ticket_confirm = True
+        context['register_ticket_confirm'] = register_ticket_confirm
+        
+        return context
+
+
 def register_success(request):
+    register_ticket_number = request.session.get('register_ticket_number')
+    register_ticket_obj = RegisterTicket.objects.get(ticket_number=register_ticket_number)
+    register_ticket_obj.used = True
+    register_ticket_obj.save()
+    del request.session['register_ticket_number']
     return render(request, "accounts/register_success.html", {})
     
 # class ProductDetailView(LoginRequiredMixin, generic.DetailView):
@@ -237,6 +290,86 @@ class PasswordChangeView(LoginRequiredMixin, UpdateView):
 # def user_home(request): 
 #     return render(request, 'accounts/user_home.html', {})
 
+def make_register_ticket(request):
+    if request.method == 'POST':
+        username = request.POST.get('username', None)
+        user_qs = User.objects.filter(username=username)
+        amount = request.POST.get('amount', None)
+        if user_qs.count() == 0:
+            messages.success(request, 'ID를 잘못입력했습니다.')
+            return redirect('accounts:make_register_ticket')
+        if amount is None or amount == 0:
+            messages.success(request, '만들려고 가입티켓 갯수가 잘못됐습니다.')
+            return redirect('accounts:make_register_ticket')
+        
+        user_obj = user_qs.first()
+        register_ticket_count = RegisterTicket.objects.filter(user=user_obj).count()
+        
+        for i in range(1, int(amount)+1):
+            RegisterTicket.objects.create(user=user_obj, ticket_number='{}_{}'.format(username, register_ticket_count + i))
+
+
+        return redirect('accounts:make_register_ticket_success')
+
+    return render(request, 'accounts/make_register_ticket.html', {})
+    
+def make_register_ticket_success(request):
+    return render(request, 'accounts/make_register_ticket_success.html', {})
 
 def send_register_ticket(request):
-    return render(request, 'account/send_register_ticket.html', {})
+    user = request.user
+    register_ticket_qs = RegisterTicket.objects.filter(user=user, shared=False)
+
+    context = {
+        'register_ticket_qs' : register_ticket_qs
+    }
+    return render(request, 'accounts/send_register_ticket.html', context)
+
+def send_register_ticket_success(request):
+    
+    if request.method == 'POST':
+        email = request.POST.get('email', None)
+        ticket_number = request.POST.get('ticket_number', None)
+        if User.objects.filter(email=email).exists():
+            messages.success(request, '이미 회원인 이메일주소로 보내려고 합니다. 다른 이메일로 보내십시오.')
+            return redirect('accounts:send_register_ticket')
+        # 가입티켓 상태변경(보내짐으로 바꾸고 메일주소도 넣기.)
+        register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)
+        register_ticket_obj = register_ticket_qs.first()
+        register_ticket_obj.shared = True
+        register_ticket_obj.sent_mail = email
+        register_ticket_obj.save()
+
+        #메일 보내기
+        base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com')
+        path = "{base}{path}".format(base=base_url, path='/register/')
+        context = {
+            'path':path,
+            'email': email,
+            'ticket_number': register_ticket_obj.ticket_number,
+            'key': register_ticket_obj.key
+        }
+        txt_ = get_template("registration/emails/send_register_ticket.txt").render(context)
+        html_ = get_template("registration/emails/send_register_ticket.html").render(context)
+        subject = '명품 병행수입 쇼핑몰_MOUM8_가입티켓을 보내드립니다.'
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [email]
+
+        # send_mail = send_email(
+        #                         emailMsg=txt_, 
+        #                         to=self.email, 
+        #                         subject=subject)
+        sent_mail = send_mail(
+                    subject,
+                    txt_,
+                    from_email,
+                    recipient_list,
+                    html_message=html_,
+                    fail_silently=False,
+                    )
+        print("{}로 가입티켓 메일을 송부하였습니다.티켓번호:{}, 키:{}".format(email, register_ticket_obj.ticket_number, register_ticket_obj.key))
+
+
+
+    return render(request, 'accounts/send_register_ticket_success.html', context)
+

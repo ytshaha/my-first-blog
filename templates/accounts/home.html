@@ -168,6 +168,23 @@ a:hover{
                 </div>
             </a>
         </div>
+        {% if register_ticket_qs.count > 0 %}
+        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+            <a class='' href="{% url 'accounts:send_register_ticket' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="fas fa-paper-plane fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>SEND REGISTER TICKET</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% endif %}
+
     </div>
 </div>
 

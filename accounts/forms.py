@@ -7,7 +7,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from .models import EmailActivation, GuestEmail
+from .models import EmailActivation, GuestEmail, RegisterTicket
 from .signals import user_logged_in
 
 
@@ -115,7 +115,7 @@ class GuestForm(forms.ModelForm):
     
 
 class LoginForm(forms.Form):
-    username = forms.CharField(label='Username')
+    username = forms.CharField(label='ID')
     password = forms.CharField(widget=forms.PasswordInput)
 
     def __init__(self, request, *args, **kwargs):
@@ -191,15 +191,20 @@ class LoginForm(forms.Form):
     #             return redirect(redirect_path)
     #         else:
     #             return redirect("shop:index")
-    #     return super(LoginView, self).form_valid(form)
+    #     return super(LoginView, self).form_valid(form
+        # obj = EmailActivation.create(user=instance))
 
 class RegisterForm(forms.ModelForm):
     """
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
     """
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Password confirmation', widget=forms.PasswordInput)
+    username = forms.CharField(label='*ID', min_length=4, max_length=30, required=True, error_messages={'required': '4~30글자로 작성바랍니다.'}, widget=forms.TextInput(attrs={'class':'form-control'}))
+    email    = forms.EmailField(label='*이메일주소', required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
+    full_name = forms.CharField(label='*이름', required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    phone_number = forms.CharField(label='*전화번호', required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    password1 = forms.CharField(label='*비밀번호', widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(label='*비밀번호 확인', widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     class Meta:
         model = User
@@ -210,7 +215,7 @@ class RegisterForm(forms.ModelForm):
         password1 = self.cleaned_data.get("password1")
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError("Passwords don't match")
+            raise forms.ValidationError("패스워드가 일치하지 않습니다.")
         return password2
 
     def save(self, commit=True):
@@ -218,11 +223,37 @@ class RegisterForm(forms.ModelForm):
         user = super(RegisterForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
         user.is_active = False # send confirmation email via signals
-        # obj = EmailActivation.create(user=instance)
         # obj.send_activation()
         if commit:
             user.save()
         return user
+
+    
+class RegisterTicketForm(forms.ModelForm):
+    ticket_number = forms.CharField(label='*가입티켓 번호', max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+    key = forms.CharField(label='*가입티켓 키', max_length=50, required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
+
+
+    class Meta:
+        model = RegisterTicket
+        fields = ('ticket_number', 'key',)
+
+    def clean_register_ticket(self):
+        # Check that the two password entries match
+        print('clean_register_ticket소환')
+        ticket_number = self.cleaned_data.get("ticket_number")
+        key = self.cleaned_data.get("key")
+        register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)
+        if register_ticket_qs.count() == 1:
+            register_ticket_obj = register_ticket_qs.first()
+            if register_ticket_obj.key == key:
+                return key
+            else:
+                raise forms.ValidationError("키가 옳바르지 않습니다.")
+        else:
+            raise forms.ValidationError("가입티켓번호가 틀립니다.")
+
+
 # class RegisterForm(forms.Form):
 #     username = forms.CharField()
 #     email = forms.EmailField() 
@@ -250,7 +281,3 @@ class RegisterForm(forms.ModelForm):
 #         if password2 != password:
 #             raise forms.ValidationError("Passwords must match")
 #         return data
-
-
-
-
