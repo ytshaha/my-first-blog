@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 import requests
 
 from accounts.forms import LoginForm, GuestForm
@@ -58,6 +58,7 @@ def select_price(cart_item):
     elif product_type == "ticket":
         return cart_item.ticket_item.total
 
+@login_required
 def cart_detail_api_view(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
     cart_items = [{
@@ -71,6 +72,7 @@ def cart_detail_api_view(request):
     cart_data = {"cart_items":cart_items, "subtotal":cart_obj.subtotal, "total":cart_obj.total}
     return JsonResponse(cart_data)
 
+@login_required
 def cart_home(request):
     cart_obj, new_obj = Cart.objects.new_or_get(request)
     if request.method == 'POST':
@@ -267,6 +269,7 @@ def cart_update(request):
 
         return redirect("carts:home")
 
+@login_required
 def checkout_home(request):
     cart_obj, cart_created = Cart.objects.new_or_get(request)
     order_obj = None
@@ -353,6 +356,7 @@ def checkout_home(request):
     
     return render(request, "carts/checkout.html", context)
 
+@login_required
 def checkout_done_view(request):
     '''
      여기에 product 수량감소시키는 스크립트 작성.
@@ -377,7 +381,7 @@ def checkout_done_view(request):
 
 #############아임포트로 체크아웃 재구현###################
 
-
+@login_required
 def checkout_iamport(request):
     '''
     크게 보면 체크아웃절차는 아래와 같이 이루어짐
@@ -992,13 +996,11 @@ def checkout_iamport(request):
     # return render(request, "carts/checkout-iamport.html", context)
 
     
-
 class CheckoutView(generic.TemplateView):
     template_name='carts/payment_test.html'
     
 
-# @csrf_exempt
-
+@login_required
 def payment_complete(request):
     if request.method == 'POST' and request.is_ajax():
         imp_uid = request.POST.get('imp_uid')
@@ -1042,8 +1044,10 @@ def payment_complete(request):
         print("Not post or Not Ajax requested.")
         return render(request, 'carts/payment_complete.html')   #수정 필요
 
+@login_required
 def payment_fail(request):
     return render(request, 'carts/payment_fail.html', {})
 
+@login_required
 def payment_success(request):
     return render(request, 'carts/payment_success.html', {})

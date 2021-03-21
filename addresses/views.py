@@ -1,10 +1,13 @@
 from django.shortcuts import render, redirect
 from django.utils.http import is_safe_url
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from billing.models import BillingProfile
 from .forms import AddressForm
 from .models import Address
 
+@login_required
 def checkout_address_create_view(request):
     form = AddressForm(request.POST or None)
     is_ticket = request.session.get('is_ticket')
@@ -40,6 +43,7 @@ def checkout_address_create_view(request):
                 return redirect("carts:checkout-iamport")
     return redirect("carts:checkout-iamport")
 
+@login_required
 def checkout_address_reuse_view(request):
     is_ticket = request.session.get('is_ticket')
     if request.user.is_authenticated:

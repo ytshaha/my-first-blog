@@ -125,7 +125,7 @@ class ProductNormalListView(generic.ListView):
         return product_item_qs
 
 # 비딩 물품은 아래것으로 통일
-class ProductBiddingListView(generic.ListView):
+class ProductBiddingListView(LoginRequiredMixin, generic.ListView):
     '''
     Featured = True이고 product_type= bidding인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
     bidding_ready와 bidding 두가지에 대하 queryset을 준비해야함.

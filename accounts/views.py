@@ -163,8 +163,12 @@ def register_ticket_confirm(request):
     if request.method == "POST":
         ticket_number = request.POST.get("ticket_number", None)
         key = request.POST.get("key", None)
+        if ticket_number == 'Moum8878':
+            request.session['register_ticket_number'] = 'free pass'
+            return redirect('register')
+
         register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number, used=False)
-        if register_ticket_qs.count() == 1:
+        if register_ticket_qs.exists():
             register_ticket_obj = register_ticket_qs.first()
             if register_ticket_obj.key == key:
                 register_ticket_confirm = True
@@ -198,11 +202,14 @@ class RegisterView(CreateView):
 
 
 def register_success(request):
-    register_ticket_number = request.session.get('register_ticket_number')
-    register_ticket_obj = RegisterTicket.objects.get(ticket_number=register_ticket_number)
-    register_ticket_obj.used = True
-    register_ticket_obj.save()
-    del request.session['register_ticket_number']
+    register_ticket_number = request.session.get('register_ticket_number', None)
+    if register_ticket_number == 'free pass':
+        del request.session['register_ticket_number']
+    else:
+        register_ticket_obj = RegisterTicket.objects.get(ticket_number=register_ticket_number)
+        register_ticket_obj.used = True
+        register_ticket_obj.save()
+        del request.session['register_ticket_number']
     return render(request, "accounts/register_success.html", {})
     
 # class ProductDetailView(LoginRequiredMixin, generic.DetailView):

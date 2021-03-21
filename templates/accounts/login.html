@@ -13,7 +13,7 @@
 
 <div class='container'>
     <div class="row">
-        <div class="col-lg-8 col-md-8 col-sm-12 mb-5 mx-auto">
+        <div class="col-lg-6 col-md-8 col-sm-12 mb-5 mx-auto">
             <div class="container">
                 <form method="POST">
                     {% csrf_token %}
@@ -44,8 +44,8 @@
                             </div>
                         </div>
                         <div class='row' style='width:100%'>
-                            <div class="col-4 mr-auto text-right">
-                                <a href="{% url 'register' %}">회원가입</a>
+                            <div class="col-4 mr-auto text-left">
+                                <a href="{% url 'register_ticket_confirm' %}">회원가입</a>
                             </div>
                             <div class="col-4 ml-auto text-right">
                                 <a href="{% url 'password_reset' %}">비밀번호 찾기</a>
