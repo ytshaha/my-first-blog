@@ -7,6 +7,8 @@ from django.views import generic
 # from .forms import PostForm, CommentForm
 from django.core.files.storage import FileSystemStorage
 from products.models import Product, ProductItem
+from mysite import Google, gmail
+
 
 def index(request):
     product_items_normal = ProductItem.objects.get_normal().filter(featured=True)[:6]
@@ -20,6 +22,12 @@ def index(request):
         'product_items_normal': product_items_normal,
         'product_items_bidding': product_items_bidding
     }
+
+    gmail.send_email('aaa', 'ytshaha@naver.com','subject')
+    # credentials = Google.get_credentials(authorization_code=False, state=False)
+    # Google.build_service(credentials)
+
+
     return render(request, 'shop/index.html', context)
 
 def introduction(request):

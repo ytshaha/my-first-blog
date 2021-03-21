@@ -88,24 +88,29 @@
 <nav class='sticky-top-2'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
     <ul class="navbar-nav navbar-expand-lg">
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               카테고리 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               브랜드 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               필터 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='color:gray;'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               정렬기준 <i class="fas fa-chevron-down"></i>
             </a>
+        </li>
+        <li>
+            {% if user.is_authenticated %}
+              {% include 'search/snippets/search-form.html' %}
+            {% endif %}
         </li>
     </ul>
 </nav>
@@ -120,26 +125,26 @@
                         <p style='font-size:large;font-weight:bold;'>카테고리</p>
                     </div>
                     <div class='col-12'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' %}">전체</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' %}" style='font-size:small;'>전체</a>
                         <hr>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='woman' %}">여성의류</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='woman' %}" style='font-size:small;'>여성의류</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='men' %}">남성의류</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='men' %}" style='font-size:small;'>남성의류</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='shoes' %}">슈즈</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='acc' %}">ACC</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='acc' %}" style='font-size:small;'>ACC</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}">키즈</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}" style='font-size:small;'>키즈</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='bag' %}">키즈</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='bag' %}" style='font-size:small;'>키즈</a>
                     </div>
                 </div>
             </div>
@@ -177,12 +182,12 @@
                     </div>
                     <div class='row pl-4'>
                         <div class='col-12'>
-                            <p><input type="checkbox" onClick="toggleCategory(this)"/> 전체</p>
+                            <p style='font-size:small;'><input type="checkbox" onClick="toggleCategory(this)" style='font-size:small;'> 전체</p>
                         </div>
                         <hr>
                         {% for category in category_qs %}
                         <div class='col-3'>
-                        <p><input type="checkbox" name="category_selected" value="{{ category.0 }}" /> {{ category.1 }}</p>                    
+                        <p style='font-size:small;'><input type="checkbox" name="category_selected" value="{{ category.0 }}"> {{ category.1 }}</p>                    
                         </div> 
                         {% endfor %}
                     </div>
@@ -194,11 +199,11 @@
                     </div>
                     <div class='row pl-4'>
                         <div class='col-12'>
-                            <p><input type="checkbox" onClick="toggleBrand(this)"/> 전체</p>
+                            <p style='font-size:small;'><input type="checkbox" onClick="toggleBrand(this)" style='font-size:small;'> 전체</p>
                         </div>
                         {% for brand in brands %}
                         <div class='col-4 col-lg-3 col-md-4 col-sm-4'>
-                            <p style='font-size:small;'><input type="checkbox" name="brand_selected" value="{{ brand }}" /> {{ brand }}</p>
+                            <p style='font-size:small;'><input type="checkbox" name="brand_selected" value="{{ brand }}" style='font-size:small;'> {{ brand }}</p>
                         </div>
                         {% endfor %}
                     </div>
