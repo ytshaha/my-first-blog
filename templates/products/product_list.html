@@ -183,10 +183,10 @@
                     <div class='row pl-4'>
                         <div class='col-12'>
                             <p style='font-size:small;'><input type="checkbox" onClick="toggleCategory(this)"> 전체</p>
+                            <hr>
                         </div>
-                        <hr>
                         {% for category in category_qs %}
-                        <div class='col-3'>
+                        <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
                             <p style='font-size:small;'><input type="checkbox" name="category_selected" value="{{ category.0 }}"> {{ category.1 }}</p>                    
                         </div> 
                         {% endfor %}
@@ -199,11 +199,12 @@
                     </div>
                     <div class='row pl-4'>
                         <div class='col-12'>
-                            <p><input type="checkbox" onClick="toggleBrand(this)" style='font-size:small;'> 전체</p>
+                            <p style='font-size:small;'><input type="checkbox" onClick="toggleBrand(this)"> 전체</p>
+                            <hr>
                         </div>
                         
                         {% for brand in brands %}
-                        <div class='col-4 col-lg-3 col-md-4 col-sm-4'>
+                        <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
                             <p style='font-size:small;'><input type="checkbox" name="brand_selected" value="{{ brand }}" style='font-size:small;'> {{ brand }}</p>
                         </div>
                         {% endfor %}
@@ -224,25 +225,25 @@
                 <div class='col-12'>
                     <p style='font-size:large;font-weight:bold;'>정렬기준</p>
                 </div>
-                <div class='col-4'>
+                <div class='col-12 mb-2'>
                     <form action="{% url 'products:product_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="-price" />
-                        <button class='btn btn-outline-dark' type='submit'>높은가격순서</button>
+                        <button class='btn btn-outline-dark btn-sm' type='submit'>높은가격순서</button>
                     </form>
                 </div>
-                <div class='col-4'>
+                <div class='col-12 mb-2'>
                     <form action="{% url 'products:product_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="price" />
-                        <button class='btn btn-outline-dark' type='submit'>낮은가격순서</button>
+                        <button class='btn btn-outline-dark btn-sm' type='submit'>낮은가격순서</button>
                     </form>
                 </div>
-                <div class='col-4'>
+                <div class='col-12 mb-2'>
                     <form action="{% url 'products:product_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="-updated" />
-                        <button class='btn btn-outline-dark' type='submit'>업데이트날짜순서</button>
+                        <button class='btn btn-outline-dark btn-sm' type='submit'>업데이트날짜순서</button>
                     </form>
                 </div>
             </div>
