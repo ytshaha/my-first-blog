@@ -1,5 +1,5 @@
 
-from mysite.Google import Create_Service
+from mysite.Google import Create_Service2
 import base64
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -11,7 +11,7 @@ API_NAME = 'gmail'
 API_VERSION = 'v1'
 SCOPES = ['https://mail.google.com/']
 
-service = Create_Service(GMAIL_API_CREDENTIAL_DIRS, API_NAME, API_VERSION, SCOPES)
+service = Create_Service2(GMAIL_API_CREDENTIAL_DIRS, API_NAME, API_VERSION, SCOPES)
 
 def send_email(emailMsg, to, subject):
     mimeMessage = MIMEMultipart()
