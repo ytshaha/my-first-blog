@@ -558,6 +558,15 @@ def checkout_iamport(request):
         # 폼이 제대로 완성되어있지 않았을 경우
         print(full_name, email, phone_number, address_line_1, address_line_2, postal_code)
         if not full_name or not email or not phone_number or not address_line_1 or not address_line_2 or not postal_code:
+            if phone_number is None or phone_number == '':
+                messages.success(request, '전화번호가 입력되지 않았습니다.')
+            elif address_line_1 is None or address_line_1 == '':
+                messages.success(request, '주소가 입력되지 않았습니다.')
+            elif address_line_2 is None or address_line_2 == '':
+                print('address_line_2',address_line_2)
+                messages.success(request, '상세주소가 입력되지 않았습니다.')
+            elif postal_code is None or postal_code == '':
+                messages.success(request, '우편번호가 입력되지 않았습니다.')
             return render(request, "carts/checkout-iamport.html", context)
         elif not shipping_address_obj:
             shipping_address_obj = Address.objects.create(billing_profile=billing_profile,
@@ -621,6 +630,36 @@ def checkout_iamport(request):
             'point_available': point_available
             }
         return render(request, "carts/checkout-iamport.html", context)
+    elif request.method == 'POST' and post_purpose == 'change_address':
+        address_changed = False
+        point_changed = False
+        context = {
+            'object':order_obj,
+            'billing_profile': billing_profile,
+            'shipping_address_obj': shipping_address_obj,
+            'billing_address_obj': billing_address_obj,
+            'address_qs': address_qs,
+            'has_card': has_card,
+            'address_changed': address_changed,
+            'change_address': True,
+
+            # 결재용 context
+            'pg': "html5_inicis",
+            'pay_method':'card',
+            'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
+            'name':cart_items_name,
+            'amount': order_obj.checkout_total,
+            'buyer_email': billing_profile.email,
+            'buyer_name': user.full_name,
+            'buyer_tel': user.phone_number,# 얘는 만들어야함. 
+            'buyer_addr': address,
+            'buyer_postcode': postcode,
+            # 포인트관련
+            'point_changed': point_changed,
+            'point_available': point_available
+            }
+        return render(request, "carts/checkout-iamport.html", context)    
+
     
     # 2) 포인트사용 버튼 눌렀을 때
     elif request.method == 'POST' and post_purpose == 'use_point':

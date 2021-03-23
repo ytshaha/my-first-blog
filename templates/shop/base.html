@@ -141,18 +141,14 @@
               
             </div>
           </li> -->
-
+          
+          {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i> </a> 
           </li>
-
-
           <li class="nav-item"></li>
             <a class="nav-link" href="{% url 'reviews:home' %}">리뷰</a>
           </li>
-
-          
-          {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
             <div class="dropdown-menu">
@@ -232,7 +228,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' %}" style='font-size:small;'>전체</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}" style='font-size:small;'>여성의류</a>
               <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}" style='font-size:small;'>남성의류</a>
@@ -261,18 +257,13 @@
               
             </div>
           </li> -->
-
+          {% if user.is_authenticated %}
           <li class="nav-item">
             <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i> </a> 
           </li>
-
-
           <li class="nav-item"></li>
             <a class="nav-link" href="{% url 'reviews:home' %}">리뷰</a>
           </li>
-
-          
-          {% if user.is_authenticated %}
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
             <div class="dropdown-menu">
