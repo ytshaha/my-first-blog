@@ -199,8 +199,8 @@ class RegisterForm(forms.ModelForm):
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
     """
-    password1 = forms.CharField(label='*비밀번호', widget=forms.PasswordInput())
-    password2 = forms.CharField(label='*비밀번호 확인', widget=forms.PasswordInput())
+    password1 = forms.CharField(label='*비밀번호', widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password2 = forms.CharField(label='*비밀번호 확인', widget=forms.PasswordInput(attrs={'class':'form-control'}))
 
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
@@ -217,8 +217,8 @@ class RegisterForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class':'form-control'}),
             'full_name': forms.TextInput(attrs={'class':'form-control'}),
             'phone_number': forms.TextInput(attrs={'class':'form-control'}),
-            'password1': forms.PasswordInput(attrs={'class':'form-control'}),
-            'password2': forms.PasswordInput(attrs={'class':'form-control'}),
+            # 'password1': forms.PasswordInput(attrs={'class':'form-control'}),
+            # 'password2': forms.PasswordInput(attrs={'class':'form-control'}),
         }
         labels = {
             'username':  ('*ID'),

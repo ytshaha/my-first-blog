@@ -730,17 +730,18 @@ def checkout_iamport(request):
         # 사용포인트 차감
         if order_obj.point_total > 0:
             point_use = (-1) * order_obj.point_total
+            point_details = "주문번호 {} 구매를 위한 포인트 {} 사용".format(order_obj, point_use)
             point_obj = Point.objects.new(user=user, amount=order_obj.point_total, details=point_details)
         # 재고 있는것들에 대해서 아래와 같이 구매한다.
         for cart_item_obj in cart_obj.cart_items.all():
             if cart_item_obj.product_type == 'normal':
                 if cart_item_obj.option is not None:
                     option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
-                    option_obj.amount = option_obj.amount - 1
+                    option_obj.amount = option_obj.amount - cart_item_obj.amount
                     option_obj.save()
                     print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 
                 else:
-                    cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                    cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - cart_item_obj.amount
                     cart_item_obj.product_item.save()
                     print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
         context = {
@@ -825,6 +826,7 @@ def checkout_iamport(request):
                 # 사용포인트 차감
                 if order_obj.point_total > 0:
                     point_use = (-1) * order_obj.point_total
+                    point_details = "주문번호 {} 구매를 위한 포인트 {} 사용".format(order_obj, point_use)
                     point_obj = Point.objects.new(user=user, amount=point_use, details=point_details)
 
 
@@ -833,11 +835,11 @@ def checkout_iamport(request):
                     if cart_item_obj.product_type == 'normal':
                         if cart_item_obj.option is not None:
                             option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
-                            option_obj.amount = option_obj.amount - 1
+                            option_obj.amount = option_obj.amount - cart_item_obj.amount
                             option_obj.save()
                             print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 
                         else:
-                            cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                            cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - cart_item_obj.amount
                             cart_item_obj.product_item.save()
                             print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
@@ -918,11 +920,11 @@ def checkout_iamport(request):
                 for cart_item_obj in cart_obj.cart_items.all():
                     if cart_item.obj.option is not None:
                         option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=option)
-                        option_obj.amount = option_obj.amount - 1
+                        option_obj.amount = option_obj.amount - cart_item_obj.amount
                         option_obj.save()
                         print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 
                     else:
-                        cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                        cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - cart_item_obj.amount
                         cart_item_obj.product_item.save()
                         print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
 

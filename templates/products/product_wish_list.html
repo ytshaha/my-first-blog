@@ -140,26 +140,26 @@ a.wish-link-added {
                         <p style='font-size:large;font-weight:bold;'>카테고리</p>
                     </div>
                     <div class='col-12'>
-                        <a class="dropdown-item" href="{% url 'products:product_list' %}" style='font-size:small;'>전체</a>
+                        <a class="dropdown-item" href="{% url 'products:product_wish_list' %}" style='font-size:small;'>전체</a>
                         <hr>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}" style='font-size:small;'>여성의류</a>
+                        <a class="dropdown-item" href="{% url 'products:product_wish_list' category='woman' %}" style='font-size:small;'>여성의류</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}" style='font-size:small;'>남성의류</a>
+                        <a class="dropdown-item" href="{% url 'products:product_wish_list' category='men' %}" style='font-size:small;'>남성의류</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
+                        <a class="dropdown-item" href="{% url 'products:product_wish_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}" style='font-size:small;'>ACC</a>
+                        <a class="dropdown-item" href="{% url 'products:product_wish_list' category='acc' %}" style='font-size:small;'>ACC</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}" style='font-size:small;'>키즈</a>
+                        <a class="dropdown-item" href="{% url 'products:product_wish_list' category='kid' %}" style='font-size:small;'>키즈</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}" style='font-size:small;'>키즈</a>
+                        <a class="dropdown-item" href="{% url 'products:product_wish_list' category='bag' %}" style='font-size:small;'>키즈</a>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@ a.wish-link-added {
                 </div>
                 {% for brand in brands %}
                 <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                    <a class="dropdown-item" href="{% url 'products:product_list' brand=brand %}" style='font-size:small;'>{{ brand|upper }}</a>
+                    <a class="dropdown-item" href="{% url 'products:product_wish_list' brand=brand %}" style='font-size:small;'>{{ brand|upper }}</a>
                 </div>    
                 {% endfor %}
             </div>
@@ -186,7 +186,7 @@ a.wish-link-added {
     <div class="card card-body">
         <div class='row'>
             
-            <form method='GET' action="{% url 'products:product_list' %}" style='width:100%;'>
+            <form method='GET' action="{% url 'products:product_wish_list' %}" style='width:100%;'>
                 <input type="hidden" name='post_purpose' value='filter_product'>
                 <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
                     <div class='col-12 text-left'>
@@ -241,21 +241,21 @@ a.wish-link-added {
                     <p style='font-size:large;font-weight:bold;'>정렬기준</p>
                 </div>
                 <div class='col-12 mb-2'>
-                    <form action="{% url 'products:product_list' %}">
+                    <form action="{% url 'products:product_wish_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="-price" />
                         <button class='btn btn-outline-dark btn-sm' type='submit'>높은가격순서</button>
                     </form>
                 </div>
                 <div class='col-12 mb-2'>
-                    <form action="{% url 'products:product_list' %}">
+                    <form action="{% url 'products:product_wish_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="price" />
                         <button class='btn btn-outline-dark btn-sm' type='submit'>낮은가격순서</button>
                     </form>
                 </div>
                 <div class='col-12 mb-2'>
-                    <form action="{% url 'products:product_list' %}">
+                    <form action="{% url 'products:product_wish_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="-updated" />
                         <button class='btn btn-outline-dark btn-sm' type='submit'>업데이트날짜순서</button>
@@ -268,11 +268,7 @@ a.wish-link-added {
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
-            {% if is_staff_check %}
-            <h2 class="index-title-index text-center">STAFF PRODUCT CHECK LIST</h2>
-            {% else %}
-            <h2 class="index-title-index text-center">PRODUCT LIST</h2>
-            {% endif %}
+            <h2 class="index-title-index text-center">WISH LIST</h2>
             <hr class="index-title-divider">
         </div>
     </div>

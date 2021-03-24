@@ -172,7 +172,7 @@ class Cart(models.Model):
         self.subtotal = total
         self.total = total
         self.save()
-        print('z카트의 업데이트토탈 실행.과 새이브')
+        print('카트의 업데이트토탈 실행.과 새이브')
         print("저장된 카트의 토탈",self.subtotal, self.total)
         print('self의 정채성', self)
         return self.total

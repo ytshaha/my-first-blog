@@ -17,6 +17,9 @@ urlpatterns = [
     
     path('category/<category>/', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
     path('brand/<brand>/', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
+    path('wishlist/', views.ProductWishListView.as_view(), name='product_wish_list'), # 전체 물품보기(feature=True)
+    path('wishlist/category/<category>/', views.ProductWishListView.as_view(), name='product_wish_list'), # 전체 물품보기(feature=True)
+    path('wishlist/brand/<brand>/', views.ProductWishListView.as_view(), name='product_wish_list'), # 전체 물품보기(feature=True)
     # 경매물품 URL
     path('bidding/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)
     path('bidding/category/<category>/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)

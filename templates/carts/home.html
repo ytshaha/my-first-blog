@@ -42,31 +42,33 @@
             <div class='col'>
               <!-- 물품명 -->
               {% if cart_item.product_type == 'ticket' %}
-              <p class='mb-1' style='font-size:medium;font-weight:bold;'>경매티켓 {{ cart_item.ticket_item.tickets_type }}개</p>
+                <p class='mb-1' style='font-size:medium;font-weight:bold;'>경매티켓 {{ cart_item.ticket_item.tickets_type }}개</p>
               {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
-              <p class='mb-1' style='font-size:medium;font-weight:bold;'>{% if cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ cart_item.product_item.product.title }}</p>
+                <p class='mb-1' style='font-size:medium;font-weight:bold;'>{% if cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ cart_item.product_item.product.title }}</p>
               {% else %}
-              <p class='mb-1' style='font-size:medium;font-weight:bold;'>물품명잘못지정됨</p>
+                <p class='mb-1' style='font-size:medium;font-weight:bold;'>물품명잘못지정됨</p>
               {% endif %}
 
               {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
-              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.product_item.product.list_price|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
+                <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.product_item.product.list_price|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
               {% elif cart_item.product_type == 'ticket' %}
-              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.ticket_item.subtotal|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
+                <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.ticket_item.subtotal|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
               {% endif %}
+              
               {% if cart_item.add_certificate %}
-              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.total|intcomma }} 원</span><span style='color:gray;'><small> 정품보증서(+20,000 원)</small></span>
-
-              <p class='mb-2' style='font-size:small;'>정품보증서 : 포함(+20,000 원)</p>
+                <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.total|intcomma }} 원</span><span style='color:gray;'><small> 정품보증서(+20,000 원)</small></span>
+                <p class='mb-2' style='font-size:small;'>정품보증서 : 포함</p>
               {% endif %}
+              
               {% if cart_item.product_item.option %}
-              <p class='mb-1' style='font-size:small;'>옵션: {{ cart_item.option|floatformat:"0" }}</p>
+                <p class='mb-1' style='font-size:small;'>옵션: {{ cart_item.option|floatformat:"0" }}</p>
               {% else %}
-              <p class='mb-1' style='font-size:small;'>옵션: 없음</p>
+                <p class='mb-1' style='font-size:small;'>옵션: 없음</p>
               {% endif %}
+              
               {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
-              <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
-              <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
+                <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
+                <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
               {% endif %}
 
               <p class='mb-2' style='font-size:small;'>수량 : {{ cart_item.amount }} 개</p>

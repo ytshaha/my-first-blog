@@ -17,9 +17,22 @@ from mysite.utils import unique_key_generator, random_string_generator
 # from mysite.gmail import get_credentials, create_message_and_send, create_message_without_attachment, create_Message_with_attachment, send_Message_without_attachement, send_Message_with_attachement
 from points.models import Point
 
+from django.contrib.auth.models import User
+from django.contrib.auth.validators import UnicodeUsernameValidator
+from django.core.validators import MinLengthValidator, RegexValidator
+
 
 
 # send_mail(subject, message, from_email, recipient_list, html_message)
+
+username_length_validator = MinLengthValidator(4, "길이가 너무 짧습니다.(4글자이상)")
+username_regex_validator = RegexValidator(
+                                    regex='^(?=.{4,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$',
+                                    message='''아이디가 유효하지 않습니다.  
+                                    4~20자까지 가능합니다. 
+                                    특수문자는 . _만 가능합니다. 
+                                    특수문자로 끝나거나 시작할수 없습니다. 
+                                    특수문자는 2번 연속 사용할 수 없습니다.''')
 
 DEFAULT_ACTIVATION_DAYS = getattr(settings, 'DEFAULT_ACTIVATION_DAYS', 7)
 
@@ -70,7 +83,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=20, unique=True, help_text='4~20글자 사이로 지정하십시오.')
+    username = models.CharField(max_length=20, unique=True, help_text='4~20글자 사이로 지정하십시오.', validators=[username_length_validator, username_regex_validator])
     email = models.EmailField(max_length=255, unique=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     phone_number = models.CharField(max_length=255, blank=True, null=True)
