@@ -59,7 +59,11 @@
 
               <p class='mb-2' style='font-size:small;'>정품보증서 : 포함(+20,000 원)</p>
               {% endif %}
+              {% if cart_item.product_item.option %}
+              <p class='mb-1' style='font-size:small;'>옵션: {{ cart_item.option|floatformat:"0" }}</p>
+              {% else %}
               <p class='mb-1' style='font-size:small;'>옵션: 없음</p>
+              {% endif %}
               {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
               <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
               <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
