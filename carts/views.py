@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
+from django.http import Http404
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -25,12 +25,12 @@ from tickets.models import Ticket, TicketItem
 from points.models import Point
 from mysite.utils import random_string_generator
 
-import stripe
+# import stripe
 
-STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM")
-STRIPE_PUB_KEY = getattr(settings, "STRIPE_PUB_KEY", "pk_test_51IKQwOCVFucPeMu3FS46t1eZG8bfs5elOnEvuL878YygdQmsR485txEKT2bL0qd5LXdV1Qs0eKuMkPdPRcWH6GRR00DNZK6kv0")
+# STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM")
+# STRIPE_PUB_KEY = getattr(settings, "STRIPE_PUB_KEY", "pk_test_51IKQwOCVFucPeMu3FS46t1eZG8bfs5elOnEvuL878YygdQmsR485txEKT2bL0qd5LXdV1Qs0eKuMkPdPRcWH6GRR00DNZK6kv0")
 
-stripe.api_key = STRIPE_SECRET_KEY
+# stripe.api_key = STRIPE_SECRET_KEY
 
 from mysite.client import Iamport
 
@@ -202,7 +202,7 @@ def cart_update(request):
 
             product_item_id = None
         else:
-            raise Http404
+            raise Http404("직원님...해당물품의 아이디가 이상합니다.") 
 
 
         # 추가수량에 대해 POST로 오면 업뎃
@@ -349,7 +349,7 @@ def checkout_home(request):
         'address_form': address_form,
         'address_qs': address_qs,
         'has_card': has_card,
-        'publish_key': STRIPE_PUB_KEY
+        # 'publish_key': STRIPE_PUB_KEY
     }
     print('♥♥♥♥♥context')
     print(context)

@@ -292,7 +292,7 @@
           {% endif %}
 
           {% if user.is_staff %}
-          <li class="nav-item dropdown">
+          <li class="nav-item dropdown"></li>
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">STAFF</a>
             <div class="dropdown-menu">
               <a class="dropdown-item" href="{% url 'staff:home' %}" style='font-size:small;'>HOME</a>
@@ -355,10 +355,10 @@
     <footer style='background-color:#423f3b'>    
       <div class="container" style="padding-top:30px;color:#cbbeb5;">
         <div class="row">
-          <div class="col-lg-3 col-sm-12 mr-auto mb-2">
+          <div class="col-lg-3 col-sm-12 mr-auto mb-5">
             <!-- <div class="alert alert-secondary"> -->
               <div class="footer-social text-center">
-                <p class='mb-2' style='font-size:large;font-weight:bold;'>Connect With Us</p>
+                <p class='mb-2' style='font-size:large;font-weight:bold;'>CONNECT WITH US</p>
                 <ul class='list-inline'>
                   <li class="list-inline-item">
                     <a href="">
@@ -390,9 +390,8 @@
                   </li>
                 </ul>
                 <div class='col-12'>
-                  
-                    
-                    <p class='mb-2' style='font-size:large;font-weight:bold;'>CUSTOMER CENTER</p>
+                  <hr style='border-top:1px solid#cbbeb5;width:40px;'>
+                  <p class='mb-2' style='font-size:large;font-weight:bold;'>CUSTOMER CENTER</p>
                     <span style="font-size: 0.5em; color: #ffe5a9;">
                       <i class="fas fa-phone-square-alt fa-3x"></i></span>
                       <span style='font-size:large;font-weight:bold;'>  031-945-8832</span>

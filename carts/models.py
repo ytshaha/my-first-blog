@@ -26,16 +26,13 @@ CART_ITEM_STATUS_CHOICES = (
 class CartItemManager(models.Manager):#################210303_여기 좀 나중에 수정 필요.....
     def new_or_get(self, request, temp_id=None):
         user = request.user
-        product_type = request.POST.get('product_type')
-        
-        try:
-            at_cart = request.POST.get('at_cart')
-        except:
-            at_cart = False
+        product_type = request.POST.get('product_type', None)
+        option = request.POST.get('option', None)
+        at_cart = request.POST.get('at_cart', None)
 
         # 카트에서 remove로 호출된 경우
         if at_cart:
-            cart_item_id = request.POST.get('cart_item_id')
+            cart_item_id = request.POST.get('cart_item_id', None)
             cart_item_qs = self.get_queryset().filter(id=cart_item_id)
             cart_item_obj = cart_item_qs.first()
             new_obj = False
@@ -59,19 +56,22 @@ class CartItemManager(models.Manager):#################210303_여기 좀 나중�
         if qs.exists():
             new_obj = False
             cart_item_obj = qs.first()
+            cart_item_obj.option = option
+            cart_item_obj.save()
         else:
-            cart_item_obj = self.new(user=user, product_item=product_item_obj, ticket_item=ticket_item_obj, product_type=product_type)
+            cart_item_obj = self.new(user=user, product_item=product_item_obj, ticket_item=ticket_item_obj, product_type=product_type, option=option)
             new_obj = True
         return cart_item_obj, new_obj
 
-    def new(self, user, product_item, ticket_item, product_type):
-        return self.model.objects.create(user=user, product_item=product_item, ticket_item=ticket_item, product_type=product_type)
+    def new(self, user, product_item, ticket_item, product_type, option):
+        return self.model.objects.create(user=user, product_item=product_item, ticket_item=ticket_item, product_type=product_type, option=option)
 
 
 class CartItem(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE)
     product_item    = models.ForeignKey(ProductItem, blank=True, null=True, on_delete=models.CASCADE)
     ticket_item     = models.ForeignKey(TicketItem, blank=True, null=True, on_delete=models.CASCADE)
+    option          = models.CharField(max_length=20, default=0, blank=True, null=True, help_text=u'옵션')
     amount          = models.IntegerField(default=1)
     price           = models.IntegerField(default=0, help_text=u'단가')
     subtotal        = models.IntegerField(default=0, help_text=u'물품 총액')
