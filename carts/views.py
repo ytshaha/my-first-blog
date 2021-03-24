@@ -6,6 +6,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import Http404
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib import messages
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 import requests
@@ -20,7 +22,7 @@ from billing.models import BillingProfile
 from orders.models import Order
 from .models import Cart, CartItem
 from biddings.models import Bidding
-from products.models import Product, ProductItem
+from products.models import Product, ProductItem, SizeOption
 from tickets.models import Ticket, TicketItem
 from points.models import Point
 from mysite.utils import random_string_generator
@@ -179,6 +181,7 @@ def cart_update(request):
             cart_obj.cart_items.remove(cart_item_obj)
             added = False
             cart_obj.save()
+            cart_item_obj.delete()
             # 부득이하게 여기에 cart_item계산을 한번 더 넣는다... jquery잘하게 되면 다시 구현하자.
             request.session['cart_items'] = cart_obj.cart_items.count()
             return redirect("carts:home")
@@ -417,11 +420,21 @@ def checkout_iamport(request):
     for cart_item_obj in cart_obj.cart_items.all():
         print("Stock Check...product.title")
         if cart_item_obj.product_type == 'normal':
-            if cart_item_obj.product_item.amount < 1:
-                print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
-                cart_obj.cart_items.remove(cart_item_obj)
-                cart_obj.save()
-                stock_refresh = True
+            if cart_item_obj.option is not None:
+                option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
+                if option_obj.amount < 1:
+                    print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
+                    cart_obj.cart_items.remove(cart_item_obj)
+                    cart_obj.save()
+                    cart_item_obj.delete()
+                    stock_refresh = True
+            else:
+                if cart_item_obj.product_item.amount < 1:
+                    print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
+                    cart_obj.cart_items.remove(cart_item_obj)
+                    cart_obj.save()
+                    cart_item_obj.delete()
+                    stock_refresh = True
         else:
             pass
     if stock_refresh:
@@ -458,7 +471,8 @@ def checkout_iamport(request):
         else:
             billing_address_obj = None
 
-        order_obj.save()
+        order_obj.update_total()
+
         has_card = billing_profile.has_card
     
     
@@ -672,8 +686,34 @@ def checkout_iamport(request):
         try:
             order_obj.point_total = int(use_point)
             order_obj.checkout_total = order_obj.total - int(use_point)
+            order_obj.update_total()
             order_obj.save()
             messages.error(request, "{}POINT 사용이 반영되었습니다.".format(use_point))
+            context = {
+                'object':order_obj,
+                'billing_profile': billing_profile,
+                'shipping_address_obj': shipping_address_obj,
+                'billing_address_obj': billing_address_obj,
+                'address_qs': address_qs,
+                'has_card': has_card,
+                'address_changed': False,
+
+                # 결재용 context
+                'pg': "html5_inicis",
+                'pay_method':'card',
+                'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
+                'name':cart_items_name,
+                'amount': order_obj.checkout_total,
+                'buyer_email': billing_profile.email,
+                'buyer_name': user.full_name,
+                'buyer_tel': user.phone_number,# 얘는 만들어야함. 
+                'buyer_addr': address,
+                'buyer_postcode': postcode,
+                # 포인트관련 
+                'point_changed': False,
+                'point_available': point_available
+
+                }
             return render(request, "carts/checkout-iamport.html", context)
         except:
             messages.error(request, "사용하려는 POINT를 다시 입력해주세요.")
@@ -681,8 +721,7 @@ def checkout_iamport(request):
 
             # return HttpResponse("HTTP respone가 뭐쟈")
         
-        # 3) 결재할 금액이 포인트로 다 대체 되었을 경우
-        
+    # 3) 결재할 금액이 포인트로 다 대체 되었을 경우
     elif request.method == 'POST' and post_purpose == 'checkout_0':
         order_obj.mark_paid()
         request.session['cart_items'] = 0
@@ -695,9 +734,41 @@ def checkout_iamport(request):
         # 재고 있는것들에 대해서 아래와 같이 구매한다.
         for cart_item_obj in cart_obj.cart_items.all():
             if cart_item_obj.product_type == 'normal':
-                cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
-                cart_item_obj.product_item.save()
-                print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))                 
+                if cart_item_obj.option is not None:
+                    option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
+                    option_obj.amount = option_obj.amount - 1
+                    option_obj.save()
+                    print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 
+                else:
+                    cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                    cart_item_obj.product_item.save()
+                    print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
+        context = {
+        'object':order_obj,
+        'billing_profile': billing_profile,
+        'shipping_address_obj': shipping_address_obj,
+        'billing_address_obj': billing_address_obj,
+        'address_qs': address_qs,
+        'has_card': has_card,
+        'address_changed': False,
+
+        # 결재용 context
+        'pg': "html5_inicis",
+        'pay_method':'card',
+        'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
+        'name':cart_items_name,
+        'amount': order_obj.checkout_total,
+        'buyer_email': billing_profile.email,
+        'buyer_name': user.full_name,
+        'buyer_tel': user.phone_number,# 얘는 만들어야함. 
+        'buyer_addr': address,
+        'buyer_postcode': postcode,
+        # 포인트관련 
+        'point_changed': False,
+        'point_available': point_available
+
+        }
+
         return render(request, 'carts/checkout-done.html', {})
         
         # 4) 마지막으로 결재버튼이 눌렸을 경우
@@ -760,11 +831,15 @@ def checkout_iamport(request):
                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
                 for cart_item_obj in cart_obj.cart_items.all():
                     if cart_item_obj.product_type == 'normal':
-                        cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
-                        cart_item_obj.product_item.save()
-                        print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
-                
-
+                        if cart_item_obj.option is not None:
+                            option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
+                            option_obj.amount = option_obj.amount - 1
+                            option_obj.save()
+                            print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 
+                        else:
+                            cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
+                            cart_item_obj.product_item.save()
+                            print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
                                     content_type="application/json")
             else:
@@ -841,11 +916,15 @@ def checkout_iamport(request):
 
                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
                 for cart_item_obj in cart_obj.cart_items.all():
-                    if cart_item_obj.product_type == 'normal':
+                    if cart_item.obj.option is not None:
+                        option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=option)
+                        option_obj.amount = option_obj.amount - 1
+                        option_obj.save()
+                        print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 
+                    else:
                         cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - 1
                         cart_item_obj.product_item.save()
                         print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
-                
 
                 # return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}), content_type="application/json")
                 return redirect('carts:success')
