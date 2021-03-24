@@ -199,16 +199,35 @@ class RegisterForm(forms.ModelForm):
     A form for creating new users. Includes all the required
     fields, plus a repeated password.
     """
-    username = forms.CharField(label='*ID', min_length=4, max_length=30, required=True, error_messages={'required': '4~30글자로 작성바랍니다.'}, widget=forms.TextInput(attrs={'class':'form-control'}))
-    email    = forms.EmailField(label='*이메일주소', required=True, widget=forms.EmailInput(attrs={'class':'form-control'}))
-    full_name = forms.CharField(label='*이름', required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    phone_number = forms.CharField(label='*전화번호', required=True, widget=forms.TextInput(attrs={'class':'form-control'}))
-    password1 = forms.CharField(label='*비밀번호', widget=forms.PasswordInput(attrs={'class':'form-control'}))
-    password2 = forms.CharField(label='*비밀번호 확인', widget=forms.PasswordInput(attrs={'class':'form-control'}))
+    password1 = forms.CharField(label='*비밀번호', widget=forms.PasswordInput())
+    password2 = forms.CharField(label='*비밀번호 확인', widget=forms.PasswordInput())
+
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.required = True
+            if field_name == 'username':
+                field.min_length = 4
 
     class Meta:
         model = User
         fields = ('username','email','full_name', 'phone_number')
+        widgets = {
+            'username': forms.TextInput(attrs={'class':'form-control'}),
+            'email': forms.EmailInput(attrs={'class':'form-control'}),
+            'full_name': forms.TextInput(attrs={'class':'form-control'}),
+            'phone_number': forms.TextInput(attrs={'class':'form-control'}),
+            'password1': forms.PasswordInput(attrs={'class':'form-control'}),
+            'password2': forms.PasswordInput(attrs={'class':'form-control'}),
+        }
+        labels = {
+            'username':  ('*ID'),
+            'email':  ('*이메일주소'),
+            'full_name':  ('*이름'),
+            'phone_number':  ('*전화번호'),
+            'password1':  ('*비밀번호'),
+            'password2':  ('*비밀번호 확인'),
+        }
 
     def clean_password2(self):
         # Check that the two password entries match
@@ -216,6 +235,9 @@ class RegisterForm(forms.ModelForm):
         password2 = self.cleaned_data.get("password2")
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError("패스워드가 일치하지 않습니다.")
+        if len(password1) < 8:
+            raise forms.ValidationError("패스워드가 너무 짧습니다.(8글자이상)")
+            
         return password2
 
     def save(self, commit=True):
