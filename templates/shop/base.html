@@ -47,7 +47,7 @@
         text-decoration: none;
         font-size: medium;;
         color: #cbbeb5;
-        display: block;
+        display:block;
         transition: 0.3s;
       }
       
@@ -108,11 +108,11 @@
   
   <body>
     <!-- Navbar -->
-    <div id="mySidenav-home" class="sidenav-home" >
-      <div class='text-left'>
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div id="mySidenav-home" class="sidenav-home">
+      <div class='text-center'>
+        <a href="javascript:void(0)" class="closebtn px-0 mx-0" onclick="closeNav()" style='right:40%;'>&times;</a>
       </div>
-      <div class='px-3'>
+      <div class='px-3' style='width:200px;'>
         <ul class="navbar-nav mr-auto text-center">
           <li class="nav-item">
             <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
@@ -276,14 +276,14 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'products:product_list' %}" style='font-size:small;'>전체</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}" style='font-size:small;'>여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}" style='font-size:small;'>남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}" style='font-size:small;'>가방</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}" style='font-size:small;'>ACC</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}" style='font-size:small;'>키즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}">가방</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
+              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
             </div>
           </li>
 
@@ -318,14 +318,14 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'accounts:home' %}" style='font-size:small;'>마이페이지 홈</a>
+              <a class="dropdown-item" href="{% url 'accounts:home' %}">마이페이지 홈</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'accounts:user-update' %}" style='font-size:small;'>개인정보변경</a>
-              <a class="dropdown-item" href="{% url 'password_change' %}" style='font-size:small;'>비밀번호변경</a>
-              <a class="dropdown-item" href="{% url 'orders:list' %}" style='font-size:small;'>주문/배송</a>
-              <a class="dropdown-item" href="{% url 'points:home' %}" style='font-size:small;'>보유포인트</a>
-              <a class="dropdown-item" href="" style='font-size:small;'>구매결과</a>
-              <a class="dropdown-item" href="" style='font-size:small;'>관심리스트</a>
+              <a class="dropdown-item" href="{% url 'accounts:user-update' %}">개인정보변경</a>
+              <a class="dropdown-item" href="{% url 'password_change' %}">비밀번호변경</a>
+              <a class="dropdown-item" href="{% url 'orders:list' %}">주문/배송</a>
+              <a class="dropdown-item" href="{% url 'points:home' %}">보유포인트</a>
+              <a class="dropdown-item" href="">구매결과</a>
+              <a class="dropdown-item" href="">관심리스트</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href=""></a>
             </div>
@@ -346,20 +346,20 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">STAFF</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'staff:home' %}" style='font-size:small;'>HOME</a>
+              <a class="dropdown-item" href="{% url 'staff:home' %}">HOME</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'staff:upload_product' %}" style='font-size:small;'>물품 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}" style='font-size:small;'>물품 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}" style='font-size:small;'>물품 아이템 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}" style='font-size:small;'>물품 아이템 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'products:check' %}" style='font-size:small;'>물품 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:upload_product' %}">물품 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
+              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
+              <a class="dropdown-item" href="{% url 'products:check' %}">물품 체크</a> 
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="" style='font-size:small;'>주문상태 확인</a>
-              <a class="dropdown-item " href="" style='font-size:small;'>물품 상태 변경</a>
+              <a class="dropdown-item" href="">주문상태 확인</a>
+              <a class="dropdown-item " href="">물품 상태 변경</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="" style='font-size:small;'>통계분석</a>
+              <a class="dropdown-item" href="">통계분석</a>
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}" style='font-size:small;'>회원가입 티켓만들기</a>
+              <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}">회원가입 티켓만들기</a>
             </div>
           </li>
           {% endif %}
@@ -409,43 +409,42 @@
           <div class="col-lg-3 col-sm-12 mr-auto mb-5">
             <!-- <div class="alert alert-secondary"> -->
               <div class="footer-social text-center">
-                <p class='mb-2' style='font-size:large;font-weight:bold;'>CONNECT WITH US</p>
+                <p class='mb-2' style='font-size:medium;font-weight:bold;'>CONNECT WITH US</p>
                 <ul class='list-inline'>
                   <li class="list-inline-item">
                     <a href="">
                       <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fab fa-instagram fa-5x"></i>
+                        <i class="fab fa-instagram fa-3x"></i>
                       </span>
                     </a>
                   </li>
                   <li class="list-inline-item">
                     <a href="">
                       <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fab fa-youtube fa-5x"></i>
+                        <i class="fab fa-youtube fa-3x"></i>
                       </span>
                     </a>
                   </li>
                   <li class="list-inline-item">
                     <a href="">
                       <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fas fa-envelope fa-5x"></i>
+                        <i class="fas fa-envelope fa-3x"></i>
                       </span>
                     </a>
                   </li>
                   <li class="list-inline-item">
                     <a href="">
                       <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fab fa-facebook fa-5x"></i>
+                        <i class="fab fa-facebook fa-3x"></i>
                       </span>
                     </a>
                   </li>
                 </ul>
                 <div class='col-12'>
-                  <hr style='border-top:1px solid#cbbeb5;width:40px;'>
-                  <p class='mb-2' style='font-size:large;font-weight:bold;'>CUSTOMER CENTER</p>
+                  <p class='mb-2' style='font-size:medium;font-weight:bold;'>CUSTOMER CENTER</p>
                     <span style="font-size: 0.5em; color: #ffe5a9;">
-                      <i class="fas fa-phone-square-alt fa-3x"></i></span>
-                      <span style='font-size:large;font-weight:bold;'>  031-945-8832</span>
+                      <i class="fas fa-phone-square-alt fa-2x"></i></span>
+                      <span style='font-size:small;font-weight:bold;'>  031-945-8832</span>
                 </div>
               </div>
             </div>
@@ -455,18 +454,18 @@
             <div style="box-sizing: border-box; padding: 0px; width: 100%;">
               <div cols="4" rows="1" style="position: relative; display: block; height: 100%; overflow: hidden;">
                 <div class="text-center">
-                  <p class='mb-2' style='font-size:x-large;font-weight:bold;'>MOUM8</p>
-                  <p class='mb-2' style='font-size:large;font-weight:bold;'>© 2021 MOUM International, All Rights Reserved.</p>
-                  <p class='mb-0'>모움 인터내셔널, 경기 파주시 탄현면 필승로210, 109~112</p>
-                  <p class='mb-0'>대표 박태현, 유선번호 031-945-8832</p>
-                  <p class='mb-0'>사업자등록번호 : 515-36-91661</p>
+                  <p class='mb-2' style='font-size:large;font-weight:bold;'>MOUM8</p>
+                  <p class='mb-2' style='font-size:medium;font-weight:bold;'>© 2021 MOUM International, All Rights Reserved.</p>
+                  <p class='mb-0' style='font-size:small;'>모움 인터내셔널, 경기 파주시 탄현면 필승로210, 109~112</p>
+                  <p class='mb-0' style='font-size:small;'>대표 박태현, 유선번호 031-945-8832</p>
+                  <p class='mb-0' style='font-size:small;'>사업자등록번호 : 515-36-91661</p>
                     <!-- (통신판매번호 : xxx-xx-Xxxx)</p> -->
                 </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-3 col-sm-12 text-center" style='height:300px;'>
-            <p class='mb-2' style='font-size:large;font-weight:bold;'>사이트 정책</p>
+          <div class="col-lg-3 col-sm-12 text-center">
+            <p class='mb-2' style='font-size:medium;font-weight:bold;'>사이트 정책</p>
             <ul class="list-unstyled">
               <li><a href="/terms-of-service" style='color:#cbbeb5;'>Terms of Service</a></li>
               <li><a href="/copyright-policy" style='color:#cbbeb5;'>Copyright Policy</a></li>
