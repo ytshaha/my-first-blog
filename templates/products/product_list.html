@@ -414,6 +414,14 @@ $(document).ready(function(){
         $this.css('height', width)
         
     });
+
+    $('.wish-link').click(function(){
+        $.alert("위시리스트에 추가되었습니다.")
+    })
+    $('.wish-link-added').click(function(){
+        $.alert("위시리스트에서 제외되었습니다.")
+    })
+    
 });
     // 일반 페이지에는 그냥 그날 4시까지 남은시간을 게산해서 넣어주자.
     // 3시가 넘어가면 시간이 아닌 구매불가로 뜨게 하고 링크들어가면 거기에도 구매불가로 뜨게하자.
