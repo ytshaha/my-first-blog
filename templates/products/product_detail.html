@@ -98,7 +98,7 @@
                     <p class='mb-2' style="font-size:medium;">원산지 : {{ product_item.product.made_info_made_country }}</p>
                     <p class='mb-2' style="font-size:medium;">모델명 : {{ product_item.product.info_product_number }}</p>
 
-                    <!-- <p class='mb-2' style="font-size:medium;">배송정보 : {{ product_item.product.info_delivery }</p> -->
+                    <p class='mb-2' style="font-size:medium;">배송정보 : {{ product_item.product.info_delivery }}{% if product_item.product.combined_delivery %}(합배송 가능){% else %}(합배송 불가){% endif %}</p>
 
                     <!-- {% if product_item.info_delivery_from == 'overseas' %
                     <p class='mb-2' style="font-size:large;">국내·해외배송 : {{ product_item.get_info_delivery_from_display }(7일이상 소요)</p>
