@@ -14,12 +14,12 @@ PRODUCT_TYPE = (
 )
 
 RATING_CHOICES = (
-    (0, 0),
-    (1, 1),
-    (2, 2),
-    (3, 3),
-    (4, 4),
-    (5, 5),
+    (0, '☆☆☆☆☆'),
+    (1, '★☆☆☆☆'),
+    (2, '★★☆☆☆'),
+    (3, '★★★☆☆'),
+    (4, '★★★★☆'),
+    (5, '★★★★★'),
 )
 
 def get_image_filename(instance, filename):
@@ -31,7 +31,7 @@ def get_image_filename(instance, filename):
 
 class Review(models.Model):
     user            = models.ForeignKey(User, on_delete=models.CASCADE)
-    product_item    = models.ForeignKey(CartItem, on_delete=models.CASCADE, verbose_name= '구매물품')
+    cart_item    = models.ForeignKey(CartItem, on_delete=models.CASCADE, verbose_name= '구매물품')
     title           = models.CharField(max_length=200, verbose_name= '제목')
     text            = models.TextField(max_length=200, blank=True, null=True, verbose_name= '내용')
     rating          = models.IntegerField(default=5, choices=RATING_CHOICES, verbose_name= '평점')

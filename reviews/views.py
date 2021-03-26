@@ -70,7 +70,7 @@ class ReviewUploadView(generic.CreateView):
             cart_item_obj = cart_item_qs.first()
 
         form.instance.user = self.request.user
-        form.instance.product_item = cart_item_obj
+        form.instance.cart_item = cart_item_obj
         form.instance.save()
         return super().form_valid(form)
 
@@ -128,6 +128,8 @@ class ReviewEditView(UpdateView):
     model = Review
     # fields = ['title','text', 'image1', 'image2', 'image3', 'image4', 'image5']
     template_name = 'reviews/update.html'
+    context_object_name = 'review'
+
 
     def get_success_url(self):
         return reverse('reviews:detail', args=(self.object.pk,))

@@ -12,11 +12,6 @@
 
 <div class='container'>
     <div class='row'>
-        <div class='col text-right'>
-            <a href="{% url 'reviews:upload' %}"><button>리뷰업로드</button></a>
-        </div>
-    </div>
-    <div class='row'>
         <div class='col'>
             <table class="table text-center" style='font-size:medium;'>
                 <colgroup>
@@ -42,9 +37,9 @@
                   {% for review in reviews %}  
                   <tr>
                     <td>
-                        <img src="{{ review.product_item.product_item.product.image.url }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'>
+                        <img src="{{ review.cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'>
                     </td>
-                    <td class="text-left align-middle"><p>{% if review.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ review.product_item.product_item.product }}</td>
+                    <td class="text-left align-middle"><p>{% if review.cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ review.cart_item.product_item.product }}</td>
                     <td class="align-middle"><a href="{% url 'reviews:detail' pk=review.pk %}" style='color:black;'>{{ review.title }}</p></a></td>
                     
                     <td class="align-middle" style='font-size:small'>{{ review.user.username|slice:":2" }}*****</td>

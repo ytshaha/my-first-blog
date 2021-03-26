@@ -40,7 +40,7 @@
                     <tr>
                         <td><a href="{{ object.get_absolute_url }}" style='color:black;'>{{ object.order_id }}</a></td>
                         <td>
-                            <a href="{{ object.get_absolute_url }}" style='color:black;'>{% for cart_item in object.cart.cart_items.all %}{{ cart_item.product_item.product.title }}{% if not forloop.last %},{% endif %}{% endfor %}</a></td>
+                            <a href="{{ object.get_absolute_url }}" style='color:black;'>{% for cart_item in object.cart.cart_items.all %}{{ cart_item.product_item.product.title }}{% if not forloop.last %}<br/>{% endif %}{% endfor %}</a></td>
                         <td>
                             {% if object.status == 'shipped' %}
                             <p>배송</p>  

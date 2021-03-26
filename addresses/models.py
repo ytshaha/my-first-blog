@@ -23,7 +23,7 @@ class Address(models.Model):
         return str(self.billing_profile)
     
     def get_address(self):
-        return "{line1} {line2} , {postal} ".format(
+        return "{line1} {line2}({postal})".format(
             line1 = self.address_line_1,
             line2 = self.address_line_2,
             postal = self.postal_code
