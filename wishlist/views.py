@@ -19,8 +19,10 @@ def remove_wishlist(request):
         user = request.user
         product_item = request.POST.get('product_item')
         product_item_obj = ProductItem.objects.get(slug=product_item)
-        wish_obj = Wish.objects.get(user=user, product_item=product_item_obj)
-        wish_obj.delete()
+        wish_qs = Wish.objects.filter(user=user, product_item=product_item_obj)
+        if wish_qs.exist():
+            wish_obj = wish_qs.first()
+            wish_obj.delete()
         next_url = request.POST.get('next', '/')
         return redirect(next_url)
     
