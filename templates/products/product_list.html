@@ -330,32 +330,32 @@ a.wish-link-added {
                             <div class='col'>
                                 <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
                             </div>
+                            {% if user.is_staff %}
                             <div class='col text-right'>
-                                {% if user.is_staff %}
-                                    {% if product_item.featured %}
-                                    <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                {% if product_item.featured %}
+                                <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                    <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
+                                    <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                </form>
+                                {% else %}
+                                    {% if product_item.product_type == 'bidding' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                        <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
-                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                        <button class='btn btn-sm btn-outline-danger' type='submit'>경매활성화</button>
                                     </form>
-                                    {% else %}
-                                        {% if product_item.product_type == 'bidding' %}
-                                        <form method='post' action="{% url 'products:product_make_featured' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                            <button class='btn btn-sm btn-outline-danger' type='submit'>경매활성화</button>
-                                        </form>
-                                        {% elif product_item.product_type == 'normal' %}
-                                        <form method='post' action="{% url 'products:product_make_featured' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                            <button class='btn btn-sm btn-outline-success' type='submit'>판매활성화</button>
-                                        </form>
-                                        {% endif %}
+                                    {% elif product_item.product_type == 'normal' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매활성화</button>
+                                    </form>
                                     {% endif %}
-                                {% endif %}   
-                            </div> 
+                                {% endif %}
+                            </div>
+                            {% endif %} 
                         </div>
                         <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
                         <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
