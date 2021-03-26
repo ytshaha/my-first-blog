@@ -357,7 +357,7 @@ a.wish-link-added {
                             </div>
                             {% endif %} 
                         </div>
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
                         <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
                         <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
