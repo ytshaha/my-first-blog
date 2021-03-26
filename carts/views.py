@@ -918,7 +918,7 @@ def checkout_iamport(request):
 
                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
                 for cart_item_obj in cart_obj.cart_items.all():
-                    if cart_item.obj.option is not None:
+                    if cart_item_obj.option is not None:
                         option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=option)
                         option_obj.amount = option_obj.amount - cart_item_obj.amount
                         option_obj.save()
