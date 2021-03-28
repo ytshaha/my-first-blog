@@ -1,5 +1,99 @@
 {% extends 'shop/base.html' %}
-
+{% block header %}
+<style>
+    .add-border{
+        border-top:1px solid rgb(238, 238, 238);
+        border-bottom:2px solid rgb(238, 238, 238);
+        border-left:1px solid rgb(238, 238, 238);
+        border-right:2px solid rgb(238, 238, 238);
+    }
+    
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 3;
+      top: 40px;
+      left: 0;
+      background-color: #423f3b;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+    
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: medium;;
+      color: #cbbeb5;
+      display: block;
+      transition: 0.3s;
+    }
+    .sidenav div {
+      transition: 0.3s;
+    }
+    
+    .sidenav a:hover {
+      color: white;
+    }
+    
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+    
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
+    
+    .dropdown-menu-lg{
+        /* position:fixed!important; */
+        /* top:100px!important; */
+        /* left:0px!important; */
+        width:480px;
+        height:500px;
+        padding:10px;
+        /* margin:20px; */
+    
+    }
+    
+    .navbar-expand-lg {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-flow: row nowrap;
+        flex-flow: row nowrap;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+    }
+    
+    #navbarSupportedContentProductList .navbar-collapse {
+        display: flex!important;
+        flex-basis: auto;
+    }
+    
+    
+    a.wish-link {
+        color:rgb(190, 190, 190);
+        transition: 0.3s;
+    }
+    
+    a.wish-link:hover {
+        color:black;
+        transition: 0.3s;
+    }
+    
+    a.wish-link-added {
+        color:black;
+        transition: 0.3s;
+    }
+    
+    </style>
+{% endblock %}
 {% block content %}
 {% load static %}
 {% load humanize %}
