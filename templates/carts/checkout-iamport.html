@@ -142,18 +142,12 @@ span.price {
                             <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처(- 기호 제외하여 입력)</label>
                             <!-- <input type="text" id="phone_number" name="phone_number" placeholder="" readonly="readonly"> -->
                             <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.phone_number }}</p>
-                            <div class='row' >
-                                <div class='col-8 pr-2'>
-                                    <label for="address_line_1"><i class="fas fa-address-book"></i> 주소</label>
-                                    <!-- <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="{{ shipping_address_obj.address_line_1 }}" readonly="readonly"> -->
-                                    <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_1 }}</p>
-                                </div>
-                                <div class='col-4 px-2'>
-                                    <label for="postal_code"><i class="fas fa-university"></i> 우편번호</label>
-                                    <!-- <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="{{ shipping_address_obj.postal_code }}" readonly="readonly"> -->
-                                    <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.postal_code }}</p>
-                                </div>
-                            </div>
+                            <label for="address_line_1"><i class="fas fa-address-book"></i> 주소</label>
+                            <!-- <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="{{ shipping_address_obj.address_line_1 }}" readonly="readonly"> -->
+                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_1 }}</p>
+                            <label for="postal_code"><i class="fas fa-university"></i> 우편번호</label>
+                            <!-- <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="{{ shipping_address_obj.postal_code }}" readonly="readonly"> -->
+                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.postal_code }}</p>
                             <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소</label>
                             <!-- <input type="text" id="adr" name="address_line_2" class="postcodify_details" placeholder="{{ shipping_address_obj.address_line_2 }}" readonly="readonly"> -->
                             <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_2 }}</p>
@@ -194,7 +188,9 @@ span.price {
                                 {% if not shipping_address_obj or change_address %}
                                 <input class='btn btn-outline-secondary btn-block' value='배송지 정보를 완료해주세요'>
                                 {% else %}
-                                <button type='submit' class='btn btn-dark btn-block'>포인트적용</button>
+                                <div class='col-12'>
+                                    <button type='submit' class='btn btn-dark btn-block'>포인트적용</button>
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -210,7 +206,7 @@ span.price {
                     </div>
                     {% for cart_item in object.cart.cart_items.all %}
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
+                        <div class='col-8'>
                             {% if cart_item.product_type == 'ticket' %}
                             <p class='mb-1' style='font-size:small;'>TICKET {{ cart_item.ticket_item.tickets_type }}개</p>
                             {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
@@ -219,7 +215,7 @@ span.price {
                             <p class='mb-1' style='font-size:small;font-weight:bold;'>물품명잘못지정됨</p>
                             {% endif %}
                         </div>
-                        <div class='col-6 text-right'>
+                        <div class='col-4 text-right'>
                             <p style='font-size:small;'>{{ cart_item.subtotal|intcomma }} 원</p>
                         </div>
                     </div>
@@ -228,18 +224,18 @@ span.price {
                         <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
                     </div>
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
+                        <div class='col-8'>
                             <p style='font-size:small;'>주문 금액</p>
                         </div>
-                        <div class='col-6 text-right'>
+                        <div class='col-4 text-right'>
                             <p style='font-size:small;'>{{ object.total|intcomma }} 원</p>
                         </div>
                     </div>
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
+                        <div class='col-8'>
                             <p style='font-size:small;'>포인트 사용</p>
                         </div>
-                        <div class='col-6 text-right'>
+                        <div class='col-4 text-right'>
                             <p style='font-size:small;'>{% if object.point_total == 0 %}0 원{% else %}-{{ object.point_total|intcomma }} 원{% endif %}</p>
                         </div>
                     </div>
@@ -247,10 +243,10 @@ span.price {
                         <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
                     </div>
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
+                        <div class='col-8'>
                             <p style='font-size:medium;font-weight:bold;'>결제 금액</p>
                         </div>
-                        <div class='col-6 text-right'>
+                        <div class='col-4 text-right'>
                             <p style='font-size:large;font-weight:bold;'>{{ object.checkout_total|intcomma }} 원</p>
                         </div>
                     </div>
@@ -260,7 +256,9 @@ span.price {
                     <div class="row" style='width:100%;'>
                         <div class='col-12'>
                             {% if not shipping_address_obj or change_address %}
-                            <button class='btn btn-outline-secondary btn-block'>배송지 정보를 완료해주세요</button>
+                            <div class='col-12'>
+                                <button class='btn btn-outline-secondary btn-block'>배송지 정보를 완료해주세요</button>
+                            </div>
                             {% elif amount == 0 %}
                             <form method='post' action="{% url 'carts:checkout-iamport' %}">
                                 {% csrf_token %}
@@ -268,7 +266,7 @@ span.price {
                                 <button type='submit' class='btn btn-dark btn-block'>결제하기</button>
                             </form>
                             {% else %}
-                            <div class='check-out-div' style='visibility:hidden;'>
+                            <div class='col-12 check-out-div' style='visibility:hidden;'>
                                 <input type='button' class='btn btn-dark btn-block' id='check-out-button' value='결제하기'>
                             </div>
                             {% endif %}
