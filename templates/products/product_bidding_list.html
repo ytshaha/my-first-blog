@@ -93,7 +93,12 @@ a.wish-link-added {
     transition: 0.3s;
 }
 
-
+.sticky-top-3 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 86px;
+    z-index: 2;
+}
 </style>
 {% endblock %}
 
@@ -101,7 +106,7 @@ a.wish-link-added {
 {% load static %}
 {% load humanize %}
 <!-- 프로덕트 비딩 리스트  네브바 -->
-<nav class='sticky-top-2'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
+<nav class='sticky-top-3'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
     <ul class="navbar-nav navbar-expand-lg">
         <li class='nav-item mx-2'>
             <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
@@ -123,10 +128,10 @@ a.wish-link-added {
               정렬기준 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
-        <li>
-            {% if user.is_authenticated %}
-              {% include 'search/snippets/search-form.html' %}
-            {% endif %}
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseSearch" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+              검색 <i class="fas fa-chevron-down"></i>
+            </a>
         </li>
     </ul>
 </nav>
@@ -264,7 +269,22 @@ a.wish-link-added {
         </div>  
     </div>
 </div>
-
+<div class="collapse" id="collapseSearch">
+    <div class="card card-body">
+        <div class='row'>
+            <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                <div class='row'>
+                    <div class='col-12'>
+                        <p style='font-size:large;font-weight:bold;'>검색</p>
+                    </div>
+                    <div class='col-12'>
+                        {% include 'search/snippets/search-form.html' %}
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 프로덕트 리스트 헤더 -->
 <div class="container">
     <div class='row'>
