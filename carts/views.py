@@ -561,8 +561,8 @@ def checkout_iamport(request):
     user = request.user
     # 1) 주소 수정 눌렀을 때
     if request.method == 'POST' and post_purpose == 'change_or_add_address':
-        full_name   = user.full_name
-        email       = user.email
+        full_name   = request.POST.get('full_name', None)
+        email       = request.POST.get('email', None)
         phone_number = request.POST.get('phone_number', None)
         address_line_1 = request.POST.get('address_line_1', None)
         address_line_2 = request.POST.get('address_line_2', None)
@@ -571,8 +571,10 @@ def checkout_iamport(request):
         
         # 폼이 제대로 완성되어있지 않았을 경우
         print(full_name, email, phone_number, address_line_1, address_line_2, postal_code)
-        if not full_name or not email or not phone_number or not address_line_1 or not address_line_2 or not postal_code:
-            if phone_number is None or phone_number == '':
+        if not full_name or not address_line_1 or not address_line_2 or not postal_code:
+            if full_name is None or full_name == '':
+                messages.success(request, '수령인 이름이 입력되지 않았습니다.')
+            elif phone_number is None or phone_number == '':
                 messages.success(request, '전화번호가 입력되지 않았습니다.')
             elif address_line_1 is None or address_line_1 == '':
                 messages.success(request, '주소가 입력되지 않았습니다.')
@@ -582,6 +584,7 @@ def checkout_iamport(request):
             elif postal_code is None or postal_code == '':
                 messages.success(request, '우편번호가 입력되지 않았습니다.')
             return render(request, "carts/checkout-iamport.html", context)
+            # return redirect("carts:checkout-iamport")
         elif not shipping_address_obj:
             shipping_address_obj = Address.objects.create(billing_profile=billing_profile,
                                                             address_type='shipping', 
@@ -606,6 +609,8 @@ def checkout_iamport(request):
             print("Address created.")
             messages.success(request, "배송지 정보가 만들어졌습니다.")
         else:
+            shipping_address_obj.full_name = full_name
+            shipping_address_obj.email = email
             shipping_address_obj.phone_number = phone_number
             shipping_address_obj.address_line_1 = address_line_1
             shipping_address_obj.address_line_2 = address_line_2

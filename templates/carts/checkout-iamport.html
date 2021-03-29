@@ -60,40 +60,39 @@ span.price {
                     {% csrf_token %}
                     <div class="row">
                         <div class='col-12 pl-0 pr-3 text-left'>
-                            <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보</p>
+                            <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보 (* 항목은 필수항목입니다.)</p>
                             <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
                         </div>
                         <div class='row' style='width:100%'>
                             <div class='col-6'>
-                                <label for="fname"><i class="fa fa-user"></i> 수령인</label>
-                                <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
-                                <p>{{ user.full_name }}</p>
+                                <label for="fname"><i class="fa fa-user"></i> 수령인 *</label>
+                                <input type="text" id="fname" name="full_name" placeholder="수령인 이름">  
+                                <!-- <p>{{ user.full_name }}</p> -->
                             </div>
                             <div class='col-6'>
                                 <label for="email"><i class="fa fa-envelope"></i> Email</label>
-                                <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
-                                <p>{{ user.email }}</p>
+                                <input type="text" id="email" name="email" placeholder="수령인 이메일">
+                                <!-- <p>{{ user.email }}</p> -->
                             </div>
                         </div>
                         <div class='row' style='width:100%'>
                             <div class='col-12'>
-                                <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처(- 기호 제외하여 입력)</label>
-                                <input type="text" id="phone_number" name="phone_number" placeholder="">
+                                <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처 * (- 기호 제외하여 입력)</label>
+                                <input type="text" id="phone_number" name="phone_number" placeholder="받으실 분의 연락처를 입력해주세요.">
                                 <div class='row'>
-                                    <div class='col-7 pr-2'>
-                                        <label for="address_line_1"><i class="fas fa-address-book"></i> 주소</label>
+                                    <div class='col-9 pr-2'>
+                                        <label for="address_line_1"><i class="fas fa-address-book"></i> 주소 *</label>
                                         <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="검색버튼을 눌러주세요." readonly="readonly">
                                     </div>
-                                    <div class='col-3 px-2'>
-                                        <label for="postal_code"><i class="fas fa-university"></i> 우편번호</label>
-                                        <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="" readonly="readonly">
-                                    </div>
-                                    <div class='col-2 pl-2'>
+                                   
+                                    <div class='col-3 pl-2'>
                                         <label for="postal_code" style='color:white;'><small>주소검색</small></label>
                                         <input class='btn btn-dark btn-block' id="postcodify_search_button" style='height:48px;' value='검색'>
                                     </div>
                                 </div>
-                                <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소</label>
+                                <label for="postal_code"><i class="fas fa-university"></i> 우편번호 *</label>
+                                <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="주소 검색 후 상세주소를 입력해주세요." readonly="readonly">
+                                <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소 *</label>
                                 <input type="text" id="adr" name="address_line_2" class="postcodify_details" placeholder="주소 검색 후 상세주소를 입력해주세요.">
                                 <label for="order_memo"><i class="far fa-sticky-note"></i> 배송메모</label>
                                 <input type="text" id="memo" name="order_memo" placeholder="요청사항을 직접 입력합니다.">
@@ -111,20 +110,31 @@ span.price {
         <div class="col-lg-7 col-md-6 col-sm-12 mb-5">
             <div class="container">
                 <div class="row">
-                    <div class='col-12 pl-0 pr-3 text-left'>
+                    <div class='col pl-0 pr-3 text-left'>
                         <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보</p>
+                        
+                    </div>
+                    <div class='col text-right'>
+                        
+                        <form method='post' action="{% url 'carts:checkout-iamport' %}">{% csrf_token %}
+                            <button class='btn btn-outline-dark'>배송지변경</button>
+                            <input type="hidden" name='post_purpose' value='change_address'>
+                        </form>
+                    </div>
+                    <div class='col-12'>
                         <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                    
                     </div>
                     <div class='row' style='width:100%'>
                         <div class='col-6'>
                             <label for="fname"><i class="fa fa-user"></i> 수령인</label>
                             <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ user.full_name }}</p>
+                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.full_name }}</p>
                         </div>
                         <div class='col-6'>
                             <label for="email"><i class="fa fa-envelope"></i> Email</label>
                             <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ user.email }}</p>
+                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.email }}</p>
                         </div>
                     </div>
                     <div class='row' style='width:100%'>
@@ -154,12 +164,7 @@ span.price {
                         </div>
                     </div>
                 </div>
-                <div class='col-12'>
-                    <form method='post' action="{% url 'carts:checkout-iamport' %}">{% csrf_token %}
-                        <button class='btn btn-dark btn-block'>배송지 수정</button>
-                        <input type="hidden" name='post_purpose' value='change_address'>
-                    </form>
-                </div>
+                
             </div>
         </div>
 

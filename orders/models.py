@@ -13,8 +13,10 @@ from mysite.utils import unique_order_id_generator
 ORDER_STATUS_CHOICES = (
     ('created','Created'),
     ('paid','Paid'),
+    ('shipping','Shipping'),
     ('shipped','Shipped'),
     ('refunded','Refunded'),
+    ('cancel', 'Cancel'),
 )
    
 # class AbstractOrder(models.Model):

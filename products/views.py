@@ -488,6 +488,8 @@ class ProductDetailSlugView(generic.DetailView):
         product_item_obj = ProductItem.objects.get(slug=slug)
         product_obj = product_item_obj.product
         product_type = product_item_obj.product_type
+        wish_list = Wish.objects.filter(user=user).values_list('product_item', flat=True)
+        context['wish_list'] = wish_list
         
         cart_obj, new_obj = Cart.objects.new_or_get(request) #??
         

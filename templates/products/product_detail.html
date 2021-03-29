@@ -16,6 +16,23 @@
     width:100%;
     position:absolute;
 }
+
+
+a.wish-link {
+    color:rgb(190, 190, 190);
+    transition: 0.3s;
+}
+
+a.wish-link:hover {
+    color:black;
+    transition: 0.3s;
+}
+
+a.wish-link-added {
+    color:black;
+    transition: 0.3s;
+}
+
 </style>
 {% endblock %}
 
@@ -56,6 +73,33 @@
         <div class='col-lg-5 col-md-12 col-sm-12 ml-auto mt-5'> 
             <div style="width:100%;height:100%;">
                 <!-- 상품정보 시작 -->
+                {% if product_item.id in wish_list %}
+                <div style='position:absolute;top:1%;right:4%'>
+                    <form method='post' action="{% url 'wishlist:remove_wishlist' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <input type="hidden" name="product_item" value="{{ product_item.slug }}">
+                        <button type='submit' style='padding:0;border: none;background: none;'>
+                            <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
+                                <a class='wish-link-added' href=""><i class="fas fa-heart fa-2x"></i></a>
+                            </span>
+                        </button>
+                    </form>
+                </div>
+                {% else %}
+                <div style='position:absolute;top:1%;right:4%'>
+                    <form method='post' action="{% url 'wishlist:make_wishlist' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <input type="hidden" name="product_item" value="{{ product_item.slug }}">
+                        <button type='submit' style='padding:0;border: none;background: none;'>
+                            <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
+                                <a class='wish-link' href=""><i class="fas fa-heart fa-2x"></i></a>
+                            </span>
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
                 <!-- 상품명 부분 -->
                 <div class="product-detail-head">
                     <span class="product-detail-number" style='font-size:medium;'>{{ product_item.product.info_product_number }}</span>
@@ -132,18 +176,21 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend col-8 p-0">
-                                        <button class="btn btn-block btn-dark" type="submit">물품 구매</button>
+                                        <input type='button' class="btn btn-block btn-outline-dark" value='수량'></button>
                                     </div>
                                     <select class="custom-select col-4" id="inputGroupSelectAmount" name="amount">
                                         <option value="---">---</option>
                                     </select>
+                                    
                                 </div>
-
+                                <div class="input-group-prepend col-12 p-0">
+                                    <button class="btn btn-block btn-dark" type="submit">물품 구매</button>
+                                </div>
                                 <!-- 사이즈 옵션이 없는 경우의 구매버튼 구성 -->
                                 {% else %}
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend col-8 p-0">
-                                        <button class="btn btn-block btn-dark" type="submit">물품 구매</button>
+                                        <input type='button' class="btn btn-block btn-outline-dark" value='수량'></button>
                                     </div>
                                     <select class="custom-select col-4" id="inputGroupSelectAmount" name="amount">
                                         {% for amount in amount_select_list %}
@@ -151,6 +198,10 @@
                                         {% endfor %}
                                     </select>
                                 </div>
+                                <div class="input-group-prepend col-12 p-0">
+                                    <button class="btn btn-block btn-dark" type="submit">물품 구매</button>
+                                </div>
+
                                 {% endif %}
                             </form>    
                         </div>
