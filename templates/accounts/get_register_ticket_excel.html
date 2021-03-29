@@ -1,0 +1,53 @@
+{% extends "shop/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center">TICKET DOWNLOAD(Only for Admin)</h2>
+          <hr class="index-title-divider">
+      </div>
+  </div>
+</div>  
+
+
+<div class="container">
+    <div class='row'>
+        <div class='col-6 mx-auto'>
+          <form method='POST' action="{% url 'accounts:get_register_ticket_excel' %}">{% csrf_token %}
+            <label for="email">ID</label>
+            <input type="text" id='id' name='username' class='form-control'>
+            <button type='submit' class='btn btn-dark btn-block my-3'>엑셀파일만들기</button>
+          </form>
+          {% if qs.exists %}
+          <!-- <button class='btn btn-outline-dark'><a href="{% static 'register_ticket_excel/register_ticket_excel.xlsx' %}">다운로드 파일</a></button>
+           -->
+            <div class='row'>
+                <div class='col'>
+                    <table class='table text-center'>
+                        <thead>
+                            <th>TICKET_NUMBER</th>
+                            <th>KEY</th>
+                        </thead>
+                        
+                        <tbody>
+                            {% for obj in qs %}
+                            <tr>
+                                <td>{{ obj.ticket_number }}</td>
+                                <td>{{ obj.key }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="2"><p class='lead'>No Tickets.</p></td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          {% endif %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

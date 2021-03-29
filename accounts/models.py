@@ -282,3 +282,19 @@ def pre_save_register_ticket(sender, instance, *args, **kwrags):
         instance.key = random_string_generator(size=20)
 
 pre_save.connect(pre_save_register_ticket, sender=RegisterTicket)
+
+
+
+# from uuid import uuid4
+# from datetime import datetime
+
+# def upload_register_ticket_path(instance, filename):
+#     ymd_path = datetime.now().strftime('%Y/%m/%d')
+#     uuid_name = uuid4().hex
+#     return '/'.join(['register_ticket_excel/', ymd_path, uuid_name])
+
+
+# class RegisterTicketExcel(models.Model):
+#     file            = models.FileField(upload_to=upload_register_ticket_path, null=True, blank=True, verbose_name='파일')
+
+

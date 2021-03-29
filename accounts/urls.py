@@ -14,7 +14,7 @@ urlpatterns = [
     path('register_ticket/make/success/', views.make_register_ticket_success, name='make_register_ticket_success'),
     path('register_ticket/send/', views.send_register_ticket, name='send_register_ticket'),
     path('register_ticket/send/success/', views.send_register_ticket_success, name='send_register_ticket_success'),
-    
+    path('register_ticket/download/', views.get_register_ticket_excel, name='get_register_ticket_excel'),
     ]
 
 
