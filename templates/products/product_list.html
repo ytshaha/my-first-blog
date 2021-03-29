@@ -93,6 +93,12 @@ a.wish-link-added {
     transition: 0.3s;
 }
 
+.sticky-top-3 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 73px;
+    z-index: 2;
+}
 </style>
 {% endblock %}
 
@@ -100,7 +106,7 @@ a.wish-link-added {
 {% load static %}
 {% load humanize %}
 <!-- 프로덕트 리스트 네브바 -->
-<nav class='sticky-top-2'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
+<nav class='sticky-top-3'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
     <ul class="navbar-nav navbar-expand-lg">
         <li class='nav-item mx-2'>
             <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>

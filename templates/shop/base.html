@@ -102,6 +102,20 @@
         padding-right: 0!important; */
         
       }
+
+      .navbar2-expand-lg {
+          -webkit-box-orient: horizontal;
+          -webkit-box-direction: normal;
+          /* -ms-flex-flow: row nowrap; */
+          flex-flow: row nowrap;
+          -webkit-box-pack: start;
+          /* -ms-flex-pack: start; */
+          justify-content: flex-start;
+      }
+
+      .nav2 a:active {
+        background-color:transparent;
+        }
       </style>
     <title>MOUM8, 시작</title>
   </head> 
@@ -114,11 +128,11 @@
       </div>
       <div class='px-3' style='width:200px;'>
         <ul class="navbar-nav mr-auto text-center">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
-          </li>
-
           <!-- 일반물품 Dropdiwn -->
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'shop:index' %}"><img src="{% static 'shop/logo/logo_sidebar.png' %}" alt="로고" style="height:40px;"></a> 
+          </li>
+          
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="collapse" href="#collapseProduct" role="button" aria-expanded="false" aria-controls="collapseExample">PRODUCT</a> 
             
@@ -250,7 +264,8 @@
           <li class="nav-item">
             <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
           </li>
-          {% endif %}      
+          {% endif %}
+
         </ul>
       </div>
     </div>
@@ -258,8 +273,12 @@
 
     
 
-    <nav class="navbar sticky-top navbar-expand-lg" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255); padding: 6px 24px 0px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
-      <a class="navbar-brand" href="{% url 'shop:index' %}"><bold>MOUM8<small>_모움8</small></bold></a>
+    <nav class="navbar sticky-top navbar-expand-lg" style="height:46px;-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255); padding: 6px 24px 0px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
+      <!-- <a class="navbar-brand" href="">sss</a> -->
+      <!-- <p class='navbar-brand mb-0 mr-0' style='font-size:medium;color:gray;'><bold>MOUM8<small>_모움8</small></bold></p> -->
+      <div class='col-4' style='left:35%;'>
+        <img src="{% static 'shop/logo/logo.png' %}" alt="로고" style="position:fixed;top:8px;left:10px;height:30px;">
+      </div>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <img src="{% static 'shop/open-iconic/svg/menu.svg' %}" alt="아이콘" style="width:12px;">
       </button>
@@ -268,10 +287,16 @@
       </div>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM</a> 
-          </li>
+          <!-- 일반물품 Dropdiwn -->
+          <li class="nav-item dropdown"></li>
+          <!-- <p style='font-size:xx-large;font-weight:bold;'>MOUM8</p> -->
+          
+          
+        </ul>
+      </div>
 
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto">
           <!-- 일반물품 Dropdiwn -->
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
@@ -369,11 +394,42 @@
             <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
           </li>
           {% endif %}      
-
+          
         </ul>
       </div>
     </nav>
     
+    <nav class='sticky-top-2'style='z-index:3;background-color:white;-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255);box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
+      <div class='container'>
+        <div class='row text-center' style='font-size:small;'>
+          <div class='col'>
+            <a class="dropdown-item px-1" href="{% url 'products:product_list' %}">전체</a>
+          </div>
+          <div class='col'>
+            <a class="dropdown-item nav2 px-1" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
+          </div>
+          <div class='col'>
+            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='men' %}">남성의류</a>
+          </div>
+          <div class='col'>
+            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
+          </div>
+          <div class='col'>
+            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='bag' %}">가방</a>
+          </div>
+          <div class='col'>
+            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='acc' %}">ACC</a>
+          </div>
+          <div class='col'>
+            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='kid' %}">키즈</a>
+          </div>
+        </div>
+      </div>
+  </nav>
+  
+
+
+
     {% if messages %}
         <div class="alert alert-success messages">
             {% for message in messages %}
@@ -388,7 +444,6 @@
     {% block content %}
     {% endblock %} 
   
-
     <!-- Optional JavaScript; choose one of the two! -->
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
@@ -465,6 +520,7 @@
                     <span style="font-size: 0.5em; color: #ffe5a9;">
                       <i class="fas fa-phone-square-alt fa-2x"></i></span>
                       <span style='font-size:small;font-weight:bold;'>  031-945-8832</span></p>
+                <a class="" href="{% url 'shop:introduction' %}"style='color:#ffe5a9;'>ABOUT MOUM8</a> 
                 </div>
               </div>
             </div>
