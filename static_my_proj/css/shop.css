@@ -388,12 +388,7 @@ ul#horizontal-list {
     z-index: 2;
 }
 
-.sticky-top-3 {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 46px;
-    z-index: 2;
-}
+
 
 
 .product-list-cateogory {

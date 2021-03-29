@@ -130,7 +130,7 @@
         <ul class="navbar-nav mr-auto text-center">
           <!-- 일반물품 Dropdiwn -->
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'shop:index' %}"><img src="{% static 'shop/logo/logo_sidebar.png' %}" alt="로고" style="height:40px;"></a> 
+            <a class="nav-link" href="{% url 'shop:index' %}"><img src="{% static 'shop/logo/logo_sidebar.png' %}" alt="로고" style="height:30px;"></a> 
           </li>
           
           <li class="nav-item dropdown">
@@ -277,7 +277,8 @@
       <!-- <a class="navbar-brand" href="">sss</a> -->
       <!-- <p class='navbar-brand mb-0 mr-0' style='font-size:medium;color:gray;'><bold>MOUM8<small>_모움8</small></bold></p> -->
       <div class='col-4' style='left:35%;'>
-        <img src="{% static 'shop/logo/logo.png' %}" alt="로고" style="position:fixed;top:8px;left:10px;height:30px;">
+        <a class="nav-link" href="{% url 'shop:index' %}"><img src="{% static 'shop/logo/logo.png' %}" alt="로고" style="position:fixed;top:8px;left:10px;height:30px;"></a>
+        
       </div>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <img src="{% static 'shop/open-iconic/svg/menu.svg' %}" alt="아이콘" style="width:12px;">
