@@ -19,7 +19,9 @@ def index(request):
     for key, value in request.session.items():
         print('{} => {}'.format(key, value))
     user = request.user
-    wish_list = Wish.objects.filter(user=user).values_list('product_item', flat=True)
+    wish_list = None
+    if not request.user.is_anonymous:
+        wish_list = Wish.objects.filter(user=user).values_list('product_item', flat=True)
         
     context = {
         'product_items_normal': product_items_normal,

@@ -150,32 +150,34 @@ a.wish-link-added {
                         <span class="text-muted">No Image</span>
                         {% endif %}
                     </picture>
-                    {% if product_item.id in wish_list %}
-                    <div style='position:absolute;top:1%;right:4%'>
-                        <form method='post' action="{% url 'wishlist:remove_wishlist' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <input type="hidden" name="product_item" value="{{ product_item.slug }}">
-                            <button type='submit' style='padding:0;border: none;background: none;'>
-                                <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
-                                    <a class='wish-link-added' href=""><i class="fas fa-heart fa-2x"></i></a>
-                                </span>
-                            </button>
-                        </form>
-                    </div>
-                    {% else %}
-                    <div style='position:absolute;top:1%;right:4%'>
-                        <form method='post' action="{% url 'wishlist:make_wishlist' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="next" value="{{ request.path }}">
-                            <input type="hidden" name="product_item" value="{{ product_item.slug }}">
-                            <button type='submit' style='padding:0;border: none;background: none;'>
-                                <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
-                                    <a class='wish-link' href=""><i class="fas fa-heart fa-2x"></i></a>
-                                </span>
-                            </button>
-                        </form>
-                    </div>
+                    {% if user.is_authenticated %}
+                        {% if product_item.id in wish_list %}
+                        <div style='position:absolute;top:1%;right:4%'>
+                            <form method='post' action="{% url 'wishlist:remove_wishlist' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <input type="hidden" name="product_item" value="{{ product_item.slug }}">
+                                <button type='submit' style='padding:0;border: none;background: none;'>
+                                    <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
+                                        <a class='wish-link-added' href=""><i class="fas fa-heart fa-2x"></i></a>
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <div style='position:absolute;top:1%;right:4%'>
+                            <form method='post' action="{% url 'wishlist:make_wishlist' %}">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ request.path }}">
+                                <input type="hidden" name="product_item" value="{{ product_item.slug }}">
+                                <button type='submit' style='padding:0;border: none;background: none;'>
+                                    <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
+                                        <a class='wish-link' href=""><i class="fas fa-heart fa-2x"></i></a>
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
