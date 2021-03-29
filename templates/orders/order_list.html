@@ -74,25 +74,24 @@
           
           <div class='col text-left'>
             {% if object.status == 'shipped' %}
-            <p>배송 중</p>  
+            <p class='pt-3'>배송 중</p>
             {% elif object.status == 'paid' %}
             <form method='post' action="{% url 'orders:cancel' %}">
                 {% csrf_token %}
                 <input type="hidden" name='post_purpose' value='cancel'>
                 <input type="hidden" name='order_id' value='{{ object.id }}'>
                 <input type="hidden" name="next" value="{{ request.path }}">
-                <p><span style='font-size:large;font-weight:bold;color:blue'>배송준비 중  </span><button class='btn btn-outline-dark btn-sm'>취소신청</button></p>
+                <p class='pt-3'><span style='font-size:large;font-weight:bold;color:blue'>배송준비 중  </span><button class='btn btn-outline-dark btn-sm'>취소신청</button></p>
             </form>
             
             {% elif object.status == 'shipping' %}
-            <p>배송 중</p> 
+            <p class='pt-3'>배송 중</p> 
             {% elif object.status == 'refunded' %}
-            <p>환불완료</p> 
+            <p class='pt-3'>환불완료</p> 
             {% endif %}
           </div>
           <div class='col text-right'>
-            <p class='mb-1' style='font-size:small;'>{{ object.timestamp|date:'Y-m-d' }}</p>
-            <p class='mb-1' style='font-size:small;'>{{ object.total|intcomma }} 원</p>
+            <p class='mb-1' style='font-size:small;'><span>{{ object.timestamp|date:'Y-m-d' }}</span></p>
             <a href="{{ object.get_absolute_url }}" style='color:black;'><input class='btn btn-outline-dark btn-sm' type="button" name='post_purpose' value='상세보기'></a>
           </div>
           <div class='col-12'>

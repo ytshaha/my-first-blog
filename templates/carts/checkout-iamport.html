@@ -64,12 +64,12 @@ span.price {
                             <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
                         </div>
                         <div class='row' style='font-size:small;width:100%'>
-                            <div class='col-6'>
+                            <div class='col-12'>
                                 <label for="fname"><i class="fa fa-user"></i> 수령인 *</label>
                                 <input type="text" id="fname" name="full_name" placeholder="수령인 이름">  
                                 <!-- <p>{{ user.full_name }}</p> -->
                             </div>
-                            <div class='col-6'>
+                            <div class='col-12'>
                                 <label for="email"><i class="fa fa-envelope"></i> Email</label>
                                 <input type="text" id="email" name="email" placeholder="수령인 이메일">
                                 <!-- <p>{{ user.email }}</p> -->
@@ -126,16 +126,12 @@ span.price {
                     
                     </div>
                     <div class='row' style='font-size:small;width:100%'>
-                        <div class='col-6'>
-                            <label for="fname"><i class="fa fa-user"></i> 수령인</label>
-                            <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.full_name }}</p>
-                        </div>
-                        <div class='col-6'>
-                            <label for="email"><i class="fa fa-envelope"></i> Email</label>
-                            <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.email }}</p>
-                        </div>
+                        <label for="fname"><i class="fa fa-user"></i> 수령인</label>
+                        <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
+                        <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.full_name }}</p>
+                        <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                        <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
+                        <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.email }}</p>
                     </div>
                     <div class='row' style='font-size:small;width:100%'>
                         <div class='col-12'>
@@ -153,7 +149,7 @@ span.price {
                             <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_2 }}</p>
                             <label for="order_memo"><i class="far fa-sticky-note"></i> 배송메모</label>
                             <!-- <input type="text" id="memo" name="order_memo" placeholder="요청사항을 직접 입력합니다." readonly="readonly"> -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>요청사항을 직접 입력합니다.</p>
+                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{% if object.customer_request %}{{ object.customer_request }}{% else %}배송 요청사항 없음.{% endif %}</p>
                             
                         </div>
                     </div>

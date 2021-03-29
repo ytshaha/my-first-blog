@@ -567,6 +567,7 @@ def checkout_iamport(request):
         address_line_1 = request.POST.get('address_line_1', None)
         address_line_2 = request.POST.get('address_line_2', None)
         postal_code = request.POST.get('postal_code', None)
+        order_memo = request.POST.get('order_memo', None)
         # address_type = request.POST.get('address_type', None)
         
         # 폼이 제대로 완성되어있지 않았을 경우
@@ -615,6 +616,7 @@ def checkout_iamport(request):
             shipping_address_obj.address_line_1 = address_line_1
             shipping_address_obj.address_line_2 = address_line_2
             shipping_address_obj.postal_code = postal_code
+            order_obj.customer_request = order_memo
             shipping_address_obj.save()
             
             address_changed = True
