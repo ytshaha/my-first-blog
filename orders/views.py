@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView
 from django.http import Http404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
 
-from django.shortcuts import render
 
 from billing.models import BillingProfile
 from .models import Order
@@ -24,14 +25,17 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         raise Http404
     
 def cancel_order(request):
-    if request.method=='post':
+    # print("캔슬 실행은 되는건가?")
+    if request.method == 'POST':
+        # print('POST는 드렁온건가?')
         order_id = request.POST.get('order_id', None)
         order_qs = Order.objects.filter(id=order_id)
         next_url = request.POST.get('next', '/')
+        print(order_qs)
         if order_qs.count() == 1:
             order_obj = order_qs.first()
             if order_obj.status == 'paid':
-                order_obj.status == 'cancel'
+                order_obj.status = 'cancel'
                 order_obj.save()
                 messages.success(request, '취소가 요청되었습니다. 담당자 확인 후 환불될 예정입니다.')
                 return redirect(next_url)
@@ -39,4 +43,4 @@ def cancel_order(request):
                 messages.success(request, '이미 출고가 되었습니다. 취소를 위해서는 상담을 요청해주세요.')
                 return redirect(next_url)
     else:
-        redirect('orders:list')
+        return redirect('orders:list')

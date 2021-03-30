@@ -74,20 +74,25 @@
           
           <div class='col text-left'>
             {% if object.status == 'shipped' %}
-            <p class='pt-3'>배송 중</p>
+            <p class='pt-3'>배송 완료</p>
             {% elif object.status == 'paid' %}
             <form method='post' action="{% url 'orders:cancel' %}">
                 {% csrf_token %}
                 <input type="hidden" name='post_purpose' value='cancel'>
                 <input type="hidden" name='order_id' value='{{ object.id }}'>
                 <input type="hidden" name="next" value="{{ request.path }}">
-                <p class='pt-3'><span style='font-size:large;font-weight:bold;color:blue'>배송준비 중  </span><button class='btn btn-outline-dark btn-sm'>취소신청</button></p>
+                <p class='pt-3'><span style='font-size:large;font-weight:bold;color:blue'>배송준비 중  </span><button type='submit' class='btn btn-outline-dark btn-sm'>취소신청</button></p>
             </form>
-            
+
+
+
+
             {% elif object.status == 'shipping' %}
-            <p class='pt-3'>배송 중</p> 
+            <p class='pt-3' style='font-size:large;font-weight:bold;color:blue'>배송 중</p> 
             {% elif object.status == 'refunded' %}
-            <p class='pt-3'>환불완료</p> 
+            <p class='pt-3' style='font-size:large;font-weight:bold;color:black'>환불완료</p>
+            {% elif object.status == 'cancel' %}
+            <p class='pt-3' style='font-size:large;font-weight:bold;color:black'>구매취소(환불준비중)</p> 
             {% endif %}
           </div>
           <div class='col text-right'>

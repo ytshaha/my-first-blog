@@ -449,7 +449,7 @@ class ProductStaffCheckView(LoginRequiredMixin, StaffRequiredView, generic.ListV
         return product_item_qs.filter(updated__gte=start_datetime, updated__lt=end_datetime)
     
 
-class ProductFeaturedDetailView(generic.DetailView):
+class ProductFeaturedDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_featured-detail.html'
     context_object_name = 'product'
 
@@ -476,7 +476,7 @@ class ProductFeaturedDetailView(generic.DetailView):
 
 
 # 실질적으로 사용하는 detail View
-class ProductDetailSlugView(generic.DetailView):
+class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product_item'
 

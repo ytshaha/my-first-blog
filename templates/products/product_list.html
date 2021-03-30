@@ -99,6 +99,13 @@ a.wish-link-added {
     top: 86px;
     z-index: 2;
 }
+
+.sticky-top-4 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 121px;
+    z-index: 2;
+}
 </style>
 {% endblock %}
 
@@ -109,27 +116,27 @@ a.wish-link-added {
 <nav class='sticky-top-3'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
     <ul class="navbar-nav navbar-expand-lg">
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+            <a class="nav-link" data-toggle="collapse" id="collapseCategoryBtn" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               카테고리 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+            <a class="nav-link" data-toggle="collapse" id="collapseBrandBtn" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               브랜드 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+            <a class="nav-link" data-toggle="collapse" id="collapseFilterBtn" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               필터 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+            <a class="nav-link" data-toggle="collapse" id="collapseOrderbyBtn" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               정렬기준 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
         <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" href="#collapseSearch" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+            <a class="nav-link" data-toggle="collapse" id="collapseSearchBtn" href="#collapseSearch" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
               검색 <i class="fas fa-chevron-down"></i>
             </a>
         </li>
@@ -138,7 +145,7 @@ a.wish-link-added {
     </ul>
 </nav>
 
-<div class="collapse" id="collapseCategory">
+<div class="collapse sticky-top-4" id="collapseCategory">
     <div class="card card-body">
         <div class='row'>
             <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
@@ -174,7 +181,7 @@ a.wish-link-added {
     </div>
 </div>
 
-<div class="collapse" id="collapseBrand">
+<div class="collapse sticky-top-4" id="collapseBrand">
     <div class="card card-body">
         <div class='row'>
             <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
@@ -193,7 +200,7 @@ a.wish-link-added {
     </div>
 </div>
 
-<div class="collapse" id="collapseFilter">
+<div class="collapse sticky-top-4" id="collapseFilter">
     <div class="card card-body">
         <div class='row'>
             <form method='GET' action="{% url 'products:product_list' %}" style='width:100%;'>
@@ -244,7 +251,7 @@ a.wish-link-added {
     </div>
 </div>
 
-<div class="collapse" id="collapseOrderby">
+<div class="collapse sticky-top-4" id="collapseOrderby">
     <div class="card card-body">
         <div class='row'>
             <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
@@ -278,7 +285,7 @@ a.wish-link-added {
         </div>
     </div>
 </div>
-<div class="collapse" id="collapseSearch">
+<div class="collapse sticky-top-4" id="collapseSearch">
     <div class="card card-body">
         <div class='row'>
             <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
@@ -337,7 +344,7 @@ a.wish-link-added {
                             <input type="hidden" name="product_item" value="{{ product_item.slug }}">
                             <button type='submit' style='padding:0;border: none;background: none;'>
                                 <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
-                                    <a class='wish-link-added' href=""><i class="fas fa-heart fa-2x"></i></a>
+                                    <a class='wish-link-added' href=""><i class="fas fa-heart fa-3x"></i></a>
                                 </span>
                             </button>
                         </form>
@@ -350,7 +357,7 @@ a.wish-link-added {
                             <input type="hidden" name="product_item" value="{{ product_item.slug }}">
                             <button type='submit' style='padding:0;border: none;background: none;'>
                                 <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
-                                    <a class='wish-link' href=""><i class="fas fa-heart fa-2x"></i></a>
+                                    <a class='wish-link' href=""><i class="fas fa-heart fa-3x"></i></a>
                                 </span>
                             </button>
                         </form>
@@ -456,6 +463,81 @@ $(document).ready(function(){
         $.alert("위시리스트에서 제외되었습니다.")
     })
     
+    
+
+    var collapseCategoryBtn = $("#collapseCategoryBtn")
+    var collapseCategory = $("#collapseCategory")
+    
+    var collapseBrandBtn = $("#collapseBrandBtn")
+    var collapseBrand = $("#collapseBrand")
+    
+    var collapseFilterBtn = $("#collapseFilterBtn")
+    var collapseFilter = $("#collapseFilter")
+    
+    var collapseOrderbyBtn = $("#collapseOrderbyBtn")
+    var collapseOrderby = $("#collapseOrderby")
+    
+    var collapseSearchBtn = $("#collapseSearchBtn")
+    var collapseSearch = $("#collapseSearch")
+
+    var collapseCategoryBtnClicked = collapseCategoryBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseBrandBtnClicked = collapseBrandBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseFilterBtnClicked = collapseFilterBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseOrderbyBtnClicked = collapseOrderbyBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseSearchBtnClicked = collapseSearchBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+
+
+    collapseCategoryBtnClicked.click(function () {
+        if (collapseCategoryBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseBrandBtnClicked.click(function () {
+        if (collapseBrandBtnClicked.is('.clicked')) {
+            collapseCategory.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseFilterBtnClicked.click(function () {
+        if (collapseFilterBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseCategory.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseOrderbyBtnClicked.click(function () {
+        if (collapseOrderbyBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseCategory.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseSearchBtnClicked.click(function () {
+        if (collapseSearchBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseCategory.removeClass("show")
+        } 
+    })
+
 });
     // 일반 페이지에는 그냥 그날 4시까지 남은시간을 게산해서 넣어주자.
     // 3시가 넘어가면 시간이 아닌 구매불가로 뜨게 하고 링크들어가면 거기에도 구매불가로 뜨게하자.
