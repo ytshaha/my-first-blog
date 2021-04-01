@@ -1,3 +1,4 @@
+import requests
 import json
 import pandas as pd
 from django.http import HttpResponse
@@ -360,6 +361,7 @@ def checkout_home(request):
     
     return render(request, "carts/checkout.html", context)
 
+
 @login_required
 def checkout_done_view(request):
     '''
@@ -371,6 +373,7 @@ def checkout_done_view(request):
     지금은 일단 일반 prduct만 한정해서 하자.
     나중에 메모장에 적어둔 cart_item 모델을 따로 만들어서 product_always_on, product_bidding, ticket이라고 따로 카테고리화하면 완성 시키자. 
     '''
+
     # order_obj = request.POST.get('order_obj')
     # for item in order_obj.cart.products.all:
     #     print(item)
@@ -402,6 +405,12 @@ def checkout_iamport(request):
     그럼 진행해보자. 
 
     '''
+    # 카카오톡 메시지 전송 테스트
+    # text = "Hello, This is KaKao Message Test!!"
+
+    # print(sendToMeMessage(text).text)
+    dd()
+
     # 1. 카트만들기.(없으면 만들고 있으면 있는거 갖겨오고 재고 없는것 체크, 없으면 지우기)
     user = request.user
     cart_obj, cart_created = Cart.objects.new_or_get(request)

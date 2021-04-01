@@ -9,59 +9,15 @@
             <hr class="index-title-divider">
         </div>
     </div>
-</div>  
-<hr/>
-
-<div class='container'>
     <div class='row'>
-        <div class='col-4 ml-auto text-right'>
-            <a href="{% url 'accounts:home' %}"><button class='btn btn-outline-dark btn-sm'>마이페이지 홈 돌아가기</button></a>
-        </div>
-    </div>
-    <div class='row'>
-        <div class='col'>
-            <table class='table text-center'>
-                <colgroup>
-                    <col span="1" style="width: 10%;">
-                    <col span="1" style="width: 40%;">
-                    <col span="1" style="width: 10%;">
-                    <col span="1" style="width: 10%;">
-                    
-                </colgroup>
-                <thead>
-                    <th>번호</th>
-                    <th>구매물품</th>
-                    <th>주문현황</th>
-                    <th>비용</th>
-                </thead>
-                
-                <tbody>
-                    {% for object in object_list %}
-                    <tr>
-                        <td><a href="{{ object.get_absolute_url }}" style='color:black;'>{{ object.order_id }}</a></td>
-                        <td>
-                            <a href="{{ object.get_absolute_url }}" style='color:black;'>{% for cart_item in object.cart.cart_items.all %}{{ cart_item.product_item.product.title }}{% if not forloop.last %}<br/>{% endif %}{% endfor %}</a></td>
-                        <td>
-                            {% if object.status == 'shipped' %}
-                            <p>배송완료</p>  
-                            {% elif object.status == 'paid' %}
-                            <p>배송준비 중</p> 
-                            {% elif object.status == 'shipping' %}
-                            <p>배송 중</p> 
-                            {% elif object.status == 'refunded' %}
-                            <p>환불완료</p> 
-                            {% endif %}
-                        </td>
-                        <td>{{ object.total|intcomma }} 원</td>
-                    </tr>
-                    {% empty %}
-                    <tr><td colspan="3"><p class='lead'>No orders yet.</p></td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+      <div class='col-4 ml-auto text-right'>
+          <a href="{% url 'accounts:home' %}"><button class='btn btn-outline-dark btn-sm'>마이페이지 홈 돌아가기</button></a>
+      </div>
     </div>
 </div>
+
+<hr/>
+
 
 <!-- 새로ㅓ운 -->
 <div class='container my-2 py-2'>
@@ -72,7 +28,7 @@
         <div class='row mb-3'>
           <!-- 아이템수 -->
           
-          <div class='col text-left'>
+          <div class='col text-left pl-0'>
             {% if object.status == 'shipped' %}
             <p class='pt-3'>배송 완료</p>
             {% elif object.status == 'paid' %}
@@ -99,7 +55,7 @@
             <p class='mb-1' style='font-size:small;'><span>{{ object.timestamp|date:'Y-m-d' }}</span></p>
             <a href="{{ object.get_absolute_url }}" style='color:black;'><input class='btn btn-outline-dark btn-sm' type="button" name='post_purpose' value='상세보기'></a>
           </div>
-          <div class='col-12'>
+          <div class='col-12 pl-0'>
             <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
           </div>
           

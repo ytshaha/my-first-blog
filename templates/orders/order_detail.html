@@ -129,7 +129,7 @@
                     <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
                     <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
                     {% endif %}
-                    {% if not cart_item.is_reviewed and cart_item.product_type != 'ticket' %}
+                    {% if not cart_item.is_reviewed and cart_item.product_type != 'ticket' and object.status == 'shipped' %}
                     <div class='col'>
                         <form method='post' action="{% url 'reviews:upload' %}">
                             {% csrf_token %}
@@ -137,6 +137,10 @@
                             <input type="hidden" name='cart_item_id' value='{{ cart_item.id }}'>
                             <button type='submit' class='btn btn-outline-dark btn-sm btn-block'>리뷰 작성</button>
                         </form>
+                    </div>
+                    {% else %}
+                    <div class='col'>
+                        <button class='btn btn-outline-dark btn-sm btn-block'>리뷰 작성완료</button>
                     </div>
                     {% endif %}
                     

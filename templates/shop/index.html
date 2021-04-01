@@ -153,29 +153,19 @@ a.wish-link-added {
                     {% if user.is_authenticated %}
                         {% if product_item.id in wish_list %}
                         <div style='position:absolute;top:1%;right:4%'>
-                            <form method='post' action="{% url 'wishlist:remove_wishlist' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="next" value="{{ request.path }}">
-                                <input type="hidden" name="product_item" value="{{ product_item.slug }}">
-                                <button type='submit' style='padding:0;border: none;background: none;'>
-                                    <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
-                                        <a class='wish-link-added' href=""><i class="fas fa-heart fa-3x"></i></a>
-                                    </span>
-                                </button>
-                            </form>
+                            <a class='wish-link' id="{{ product_item.slug }}" tabindex="0">
+                                <span style="font-size: 0.5em;color:rgb(0, 0, 0)">
+                                    <i class="fas fa-heart fa-3x"></i>
+                                </span>
+                            </a>
                         </div>
                         {% else %}
                         <div style='position:absolute;top:1%;right:4%'>
-                            <form method='post' action="{% url 'wishlist:make_wishlist' %}">
-                                {% csrf_token %}
-                                <input type="hidden" name="next" value="{{ request.path }}">
-                                <input type="hidden" name="product_item" value="{{ product_item.slug }}">
-                                <button type='submit' style='padding:0;border: none;background: none;'>
-                                    <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
-                                        <a class='wish-link' href=""><i class="fas fa-heart fa-3x"></i></a>
-                                    </span>
-                                </button>
-                            </form>
+                            <a class='wish-link' id="{{ product_item.slug }}" tabindex="0">
+                                <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
+                                    <i class="fas fa-heart fa-3x"></i>
+                                </span>
+                            </a>
                         </div>
                         {% endif %}
                     {% endif %}
@@ -329,6 +319,44 @@ a.wish-link-added {
 
 <!-- JavaScript 영역 -->
 {% block javascript %}
+
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+$(document).ready(function(){
+
+    $(".wish-link").each(function(i, obj){
+        var wishBtn = $(this)
+        var ProductItem = wishBtn.attr("id")
+        wishBtn.click(function (event){
+        console.log("ProductItem", ProductItem)
+        var promise = $.ajax({
+            url: "{% url 'wishlist:make_wishlist' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+            type: 'POST',
+            dataType: 'json',
+            data: {product_item: ProductItem,
+                },
+            
+            success: function(data){
+                if(data.added == "true"){
+                    wishBtn.children().css('color','rgb(0, 0, 0)')
+                }
+                else{
+                    wishBtn.children().css('color','rgb(197, 197, 197)')
+                }
+
+                }
+            })
+        })
+
+    });
+
+
+});
+
+</script>
+
 <script>
     $(document).ready(function(){
         $('.product-image-div').each(function(i, obj) {

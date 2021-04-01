@@ -23,6 +23,7 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         if qs.count() == 1:
             return qs.first()
         raise Http404
+
     
 def cancel_order(request):
     # print("캔슬 실행은 되는건가?")
