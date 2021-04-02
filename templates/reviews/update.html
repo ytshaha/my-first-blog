@@ -13,9 +13,9 @@
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
-            <form method="POST" class='post-form'>
+            <form method="POST" class='post-form' enctype="multipart/form-data">
                 <input type="hidden" name='cart_item_id' value='{{ cart_item.id }}'>
-                <p>상품 : {{ cart_item }}xxx</p>
+                <p>상품 : {{ review.cart_item.product_item.product.title }}</p>
                 {% csrf_token %}
                 {{ form.as_p }}
                 <div class=row>

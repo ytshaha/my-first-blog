@@ -1,4 +1,6 @@
+import requests
 import json
+import pandas as pd
 from django.http import HttpResponse
 from django.conf import settings
 from django.http import JsonResponse
@@ -40,7 +42,7 @@ IAMPORT_CODE = getattr(settings, "IAMPORT_CODE", 'imp30832141')
 IMPORT_REST_API_KEY = getattr(settings, "IMPORT_REST_API_KEY", '8306112827056798')
 IMPORT_REST_API_SECRET = getattr(settings, "IMPORT_REST_API_SECRET", 'WmAHFCAyZFfaMy10g6xRPvFawuuJAVPxiqfY2Pw2uMcgkegAlOsak7kQCOzdKpK2PZ0RPxTjj6AEkQfF')
 
-
+POSTAL_CODE_INFORMATION_DIRS = getattr(settings, "POSTAL_CODE_INFORMATION_DIRS", None)
 
 
 def select_price(cart_item):
@@ -359,6 +361,7 @@ def checkout_home(request):
     
     return render(request, "carts/checkout.html", context)
 
+
 @login_required
 def checkout_done_view(request):
     '''
@@ -370,6 +373,7 @@ def checkout_done_view(request):
     지금은 일단 일반 prduct만 한정해서 하자.
     나중에 메모장에 적어둔 cart_item 모델을 따로 만들어서 product_always_on, product_bidding, ticket이라고 따로 카테고리화하면 완성 시키자. 
     '''
+
     # order_obj = request.POST.get('order_obj')
     # for item in order_obj.cart.products.all:
     #     print(item)
@@ -401,6 +405,12 @@ def checkout_iamport(request):
     그럼 진행해보자. 
 
     '''
+    # 카카오톡 메시지 전송 테스트
+    # text = "Hello, This is KaKao Message Test!!"
+
+    # print(sendToMeMessage(text).text)
+    dd()
+
     # 1. 카트만들기.(없으면 만들고 있으면 있는거 갖겨오고 재고 없는것 체크, 없으면 지우기)
     user = request.user
     cart_obj, cart_created = Cart.objects.new_or_get(request)
@@ -518,7 +528,7 @@ def checkout_iamport(request):
         'billing_address_obj': billing_address_obj,
         'address_qs': address_qs,
         'has_card': has_card,
-        'address_changed': False,
+        # 'address_changed': False,
 
         # 결재용 context
         'pg': "html5_inicis",
@@ -532,7 +542,7 @@ def checkout_iamport(request):
         'buyer_addr': address,
         'buyer_postcode': postcode,
         # 포인트관련 
-        'point_changed': False,
+        # 'point_changed': False,
         'point_available': point_available
 
         }
@@ -561,18 +571,24 @@ def checkout_iamport(request):
     user = request.user
     # 1) 주소 수정 눌렀을 때
     if request.method == 'POST' and post_purpose == 'change_or_add_address':
-        full_name   = user.full_name
-        email       = user.email
+        full_name   = request.POST.get('full_name', None)
+        email       = request.POST.get('email', None)
+        if email == "":
+            email = user.email
         phone_number = request.POST.get('phone_number', None)
         address_line_1 = request.POST.get('address_line_1', None)
         address_line_2 = request.POST.get('address_line_2', None)
         postal_code = request.POST.get('postal_code', None)
+        order_memo = request.POST.get('order_memo', None)
         # address_type = request.POST.get('address_type', None)
         
         # 폼이 제대로 완성되어있지 않았을 경우
         print(full_name, email, phone_number, address_line_1, address_line_2, postal_code)
-        if not full_name or not email or not phone_number or not address_line_1 or not address_line_2 or not postal_code:
-            if phone_number is None or phone_number == '':
+        if not full_name or not address_line_1 or not address_line_2 or not postal_code:
+            change_address = True
+            if full_name is None or full_name == '':
+                messages.success(request, '수령인 이름이 입력되지 않았습니다.')
+            elif phone_number is None or phone_number == '':
                 messages.success(request, '전화번호가 입력되지 않았습니다.')
             elif address_line_1 is None or address_line_1 == '':
                 messages.success(request, '주소가 입력되지 않았습니다.')
@@ -581,7 +597,8 @@ def checkout_iamport(request):
                 messages.success(request, '상세주소가 입력되지 않았습니다.')
             elif postal_code is None or postal_code == '':
                 messages.success(request, '우편번호가 입력되지 않았습니다.')
-            return render(request, "carts/checkout-iamport.html", context)
+            # return render(request, "carts/checkout-iamport.html", context)
+            # return redirect("carts:checkout-iamport")
         elif not shipping_address_obj:
             shipping_address_obj = Address.objects.create(billing_profile=billing_profile,
                                                             address_type='shipping', 
@@ -601,19 +618,53 @@ def checkout_iamport(request):
                                                             address_line_2=address_line_2,
                                                             postal_code=postal_code
                                                             )
-            address_changed = True
-            point_changed = False
+            # address_changed = True
+            # point_changed = False
+            change_address = False
             print("Address created.")
             messages.success(request, "배송지 정보가 만들어졌습니다.")
         else:
+            shipping_address_obj.full_name = full_name
+            shipping_address_obj.email = email
             shipping_address_obj.phone_number = phone_number
             shipping_address_obj.address_line_1 = address_line_1
             shipping_address_obj.address_line_2 = address_line_2
             shipping_address_obj.postal_code = postal_code
+            
             shipping_address_obj.save()
             
-            address_changed = True
-            point_changed = False
+            # 여기에 postal_code에 따른 배송비용이 추가됨.
+            # 1) 각물품의 갯수를 파악(합배송가능한건 합해서 1, 나머지는 개별 1로 침.)
+            # 2) postal_code가 산지배송이면 * 5000원으로 order_obj의 shipping_cost에 추가.
+            # 3) order_obj의 총 checkout 비용에 shipping_cost 추가.
+            
+            print('배송갯수')
+            df_postal_code  = pd.read_csv(POSTAL_CODE_INFORMATION_DIRS)
+            postal_code_array = df_postal_code.postal_code.values
+            # 배송갯수 세기
+            delivery_count = 0
+            combined_delevery_exist = False
+            for cart_item in cart_obj.cart_items.all():
+                if cart_item.product_type == 'normal' or cart_item.product_type == 'bidding':
+                    if not cart_item.product_item.product.combined_delivery:
+                        delivery_count += 1
+                    else:
+                        combined_delevery_exist = True
+            if combined_delevery_exist:
+                delivery_count += 1
+            order_obj.shipping_count = delivery_count
+                
+            if str(postal_code) in postal_code_array:
+                order_obj.shipping_cost = 3000 * delivery_count
+            else:
+                order_obj.shipping_cost = 0
+            
+            order_obj.update_total()
+            order_obj.customer_request = order_memo
+            
+            change_address = False # 주소변경 완료됐으므로 템플릿에 체인지 하자 안해도됨.
+            # address_changed = True
+            # point_changed = False
             print("Address changed")
             messages.success(request, "배송지 정보가 수정되었습니다.")
 
@@ -625,7 +676,8 @@ def checkout_iamport(request):
             'billing_address_obj': billing_address_obj,
             'address_qs': address_qs,
             'has_card': has_card,
-            'address_changed': address_changed,
+            # 'address_changed': address_changed,
+            'change_address': change_address,
             
 
             # 결재용 context
@@ -640,13 +692,13 @@ def checkout_iamport(request):
             'buyer_addr': address,
             'buyer_postcode': postcode,
             # 포인트관련
-            'point_changed': point_changed,
+            # 'point_changed': point_changed,
             'point_available': point_available
             }
         return render(request, "carts/checkout-iamport.html", context)
-    elif request.method == 'POST' and post_purpose == 'change_address':
-        address_changed = False
-        point_changed = False
+    elif request.method == 'POST' and post_purpose == 'modify_address':
+        # address_changed = False
+        # point_changed = False
         context = {
             'object':order_obj,
             'billing_profile': billing_profile,
@@ -654,7 +706,7 @@ def checkout_iamport(request):
             'billing_address_obj': billing_address_obj,
             'address_qs': address_qs,
             'has_card': has_card,
-            'address_changed': address_changed,
+            # 'address_changed': address_changed,
             'change_address': True,
 
             # 결재용 context
@@ -669,7 +721,7 @@ def checkout_iamport(request):
             'buyer_addr': address,
             'buyer_postcode': postcode,
             # 포인트관련
-            'point_changed': point_changed,
+            # 'point_changed': point_changed,
             'point_available': point_available
             }
         return render(request, "carts/checkout-iamport.html", context)    
@@ -696,7 +748,7 @@ def checkout_iamport(request):
                 'billing_address_obj': billing_address_obj,
                 'address_qs': address_qs,
                 'has_card': has_card,
-                'address_changed': False,
+                # 'address_changed': False,
 
                 # 결재용 context
                 'pg': "html5_inicis",
@@ -710,7 +762,7 @@ def checkout_iamport(request):
                 'buyer_addr': address,
                 'buyer_postcode': postcode,
                 # 포인트관련 
-                'point_changed': False,
+                # 'point_changed': False,
                 'point_available': point_available
 
                 }
@@ -751,7 +803,7 @@ def checkout_iamport(request):
         'billing_address_obj': billing_address_obj,
         'address_qs': address_qs,
         'has_card': has_card,
-        'address_changed': False,
+        # 'address_changed': False,
 
         # 결재용 context
         'pg': "html5_inicis",
@@ -765,7 +817,7 @@ def checkout_iamport(request):
         'buyer_addr': address,
         'buyer_postcode': postcode,
         # 포인트관련 
-        'point_changed': False,
+        # 'point_changed': False,
         'point_available': point_available
 
         }
@@ -918,8 +970,8 @@ def checkout_iamport(request):
 
                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
                 for cart_item_obj in cart_obj.cart_items.all():
-                    if cart_item.obj.option is not None:
-                        option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=option)
+                    if cart_item_obj.option is not None:
+                        option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
                         option_obj.amount = option_obj.amount - cart_item_obj.amount
                         option_obj.save()
                         print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 

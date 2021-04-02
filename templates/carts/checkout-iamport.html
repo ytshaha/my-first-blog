@@ -60,47 +60,46 @@ span.price {
                     {% csrf_token %}
                     <div class="row">
                         <div class='col-12 pl-0 pr-3 text-left'>
-                            <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보</p>
+                            <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보 (* 항목은 필수항목입니다.)</p>
                             <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
                         </div>
-                        <div class='row' style='width:100%'>
-                            <div class='col-6'>
-                                <label for="fname"><i class="fa fa-user"></i> 수령인</label>
-                                <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
-                                <p>{{ user.full_name }}</p>
+                        <div class='row' style='font-size:small;width:100%'>
+                            <div class='col-12'>
+                                <label for="fname"><i class="fa fa-user"></i> 수령인 *<small>필수</small></label>
+                                <input type="text" id="fname" name="full_name" placeholder="수령인 이름" value='{% if change_address %}{{ shipping_address_obj.full_name }}{% endif %}'>  
+                                <!-- <p>{{ user.full_name }}</p> -->
                             </div>
-                            <div class='col-6'>
+                            <div class='col-12'>
                                 <label for="email"><i class="fa fa-envelope"></i> Email</label>
-                                <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
-                                <p>{{ user.email }}</p>
+                                <input type="text" id="email" name="email" placeholder="수령인 이메일" value='{% if change_address %}{{ shipping_address_obj.email }}{% endif %}'>
+                                <!-- <p>{{ user.email }}</p> -->
                             </div>
                         </div>
-                        <div class='row' style='width:100%'>
+                        <div class='row' style='font-size:small;width:100%'>
                             <div class='col-12'>
-                                <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처(- 기호 제외하여 입력)</label>
-                                <input type="text" id="phone_number" name="phone_number" placeholder="">
+                                <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처 (- 기호 제외하여 입력) *<small>필수</small></label>
+                                <input type="text" id="phone_number" name="phone_number" placeholder="받으실 분의 연락처를 입력해주세요." value='{% if change_address %}{{ shipping_address_obj.phone_number }}{% endif %}'>
                                 <div class='row'>
-                                    <div class='col-7 pr-2'>
-                                        <label for="address_line_1"><i class="fas fa-address-book"></i> 주소</label>
-                                        <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="검색버튼을 눌러주세요." readonly="readonly">
+                                    <div class='col-9 pr-2'>
+                                        <label for="address_line_1"><i class="fas fa-address-book"></i> 주소 *<small>필수</small></label>
+                                        <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="검색버튼을 눌러주세요." readonly="readonly" value='{% if change_address %}{{ shipping_address_obj.address_line_1 }}{% endif %}'>
                                     </div>
-                                    <div class='col-3 px-2'>
-                                        <label for="postal_code"><i class="fas fa-university"></i> 우편번호</label>
-                                        <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="" readonly="readonly">
-                                    </div>
-                                    <div class='col-2 pl-2'>
+                                   
+                                    <div class='col-3 pl-2'>
                                         <label for="postal_code" style='color:white;'><small>주소검색</small></label>
-                                        <input class='btn btn-dark btn-block' id="postcodify_search_button" style='height:48px;' value='검색'>
+                                        <input class='btn btn-dark btn-block' id="postcodify_search_button" style='top:10px;height:40px;font-size:small;' value='검색'>
                                     </div>
                                 </div>
-                                <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소</label>
-                                <input type="text" id="adr" name="address_line_2" class="postcodify_details" placeholder="주소 검색 후 상세주소를 입력해주세요.">
+                                <label for="postal_code"><i class="fas fa-university"></i> 우편번호 *<small>필수</small></label>
+                                <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="주소 검색 후 상세주소를 입력해주세요." readonly="readonly" value='{% if change_address %}{{ shipping_address_obj.postal_code }}{% endif %}'>
+                                <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소 *<small>필수</small></label>
+                                <input type="text" id="adr" name="address_line_2" class="postcodify_details" placeholder="주소 검색 후 상세주소를 입력해주세요." value='{% if change_address %}{{ shipping_address_obj.address_line_2 }}{% endif %}'>
                                 <label for="order_memo"><i class="far fa-sticky-note"></i> 배송메모</label>
-                                <input type="text" id="memo" name="order_memo" placeholder="요청사항을 직접 입력합니다.">
+                                <input type="text" id="memo" name="order_memo" placeholder="요청사항을 직접 입력합니다." value='{% if object.customer_request %}{{ object.customer_request }}{% endif %}'>
                                 <input type="hidden" name='post_purpose' value='change_or_add_address'>
                             </div>
                         </div>
-                        <div class='col-12'>
+                        <div class='col-12 ml-0 pl-0'>
                             <button class='btn btn-dark btn-block'>배송지 정보 저장</button>
                         </div>
                     </div>
@@ -111,55 +110,57 @@ span.price {
         <div class="col-lg-7 col-md-6 col-sm-12 mb-5">
             <div class="container">
                 <div class="row">
-                    <div class='col-12 pl-0 pr-3 text-left'>
+                    <div class='col pl-0 pr-3 text-left'>
                         <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보</p>
-                        <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                        
                     </div>
-                    <div class='row' style='width:100%'>
-                        <div class='col-6'>
-                            <label for="fname"><i class="fa fa-user"></i> 수령인</label>
+                    <div class='col text-right'>
+                        
+                        <form method='post' action="{% url 'carts:checkout-iamport' %}">{% csrf_token %}
+                            <button class='btn btn-outline-dark px-2 py-1 mb-1'><small>배송지변경</small></button>
+                            <input type="hidden" name='post_purpose' value='modify_address'>
+                        </form>
+                    </div>
+                    <div class='col-12 px-0'>
+                        <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                    
+                    </div>
+                    <div class='row' style='font-size:small;width:100%'>
+                        <div class='col-12'>
+                            <label for="fname" class='mb-1'><i class="fa fa-user"></i> 수령인</label>
                             <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ user.full_name }}</p>
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.full_name }}</p>
+                                
                         </div>
-                        <div class='col-6'>
+                        <div class='col-12'>
                             <label for="email"><i class="fa fa-envelope"></i> Email</label>
                             <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ user.email }}</p>
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.email }}</p>    
                         </div>
+                        
                     </div>
-                    <div class='row' style='width:100%'>
+                    <div class='row' style='font-size:small;width:100%'>
                         <div class='col-12'>
                             <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처(- 기호 제외하여 입력)</label>
                             <!-- <input type="text" id="phone_number" name="phone_number" placeholder="" readonly="readonly"> -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.phone_number }}</p>
-                            <div class='row' >
-                                <div class='col-8 pr-2'>
-                                    <label for="address_line_1"><i class="fas fa-address-book"></i> 주소</label>
-                                    <!-- <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="{{ shipping_address_obj.address_line_1 }}" readonly="readonly"> -->
-                                    <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_1 }}</p>
-                                </div>
-                                <div class='col-4 px-2'>
-                                    <label for="postal_code"><i class="fas fa-university"></i> 우편번호</label>
-                                    <!-- <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="{{ shipping_address_obj.postal_code }}" readonly="readonly"> -->
-                                    <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.postal_code }}</p>
-                                </div>
-                            </div>
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.phone_number }}</p>
+                            <label for="address_line_1"><i class="fas fa-address-book"></i> 주소</label>
+                            <!-- <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="{{ shipping_address_obj.address_line_1 }}" readonly="readonly"> -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_1 }}</p>
+                            <label for="postal_code"><i class="fas fa-university"></i> 우편번호</label>
+                            <!-- <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="{{ shipping_address_obj.postal_code }}" readonly="readonly"> -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.postal_code }}</p>
                             <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소</label>
                             <!-- <input type="text" id="adr" name="address_line_2" class="postcodify_details" placeholder="{{ shipping_address_obj.address_line_2 }}" readonly="readonly"> -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_2 }}</p>
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_2 }}</p>
                             <label for="order_memo"><i class="far fa-sticky-note"></i> 배송메모</label>
                             <!-- <input type="text" id="memo" name="order_memo" placeholder="요청사항을 직접 입력합니다." readonly="readonly"> -->
-                            <p style='padding:12px;margin-bottom:20px;border-bottom:1px dashed gray;'>요청사항을 직접 입력합니다.</p>
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{% if object.customer_request %}{{ object.customer_request }}{% else %}배송 요청사항 없음.{% endif %}</p>
                             
                         </div>
                     </div>
                 </div>
-                <div class='col-12'>
-                    <form method='post' action="{% url 'carts:checkout-iamport' %}">{% csrf_token %}
-                        <button class='btn btn-dark btn-block'>배송지 수정</button>
-                        <input type="hidden" name='post_purpose' value='change_address'>
-                    </form>
-                </div>
+                
             </div>
         </div>
 
@@ -185,11 +186,13 @@ span.price {
                         </div>
                         <div class='row'>
                             <div class='col-12 mb-5 text-right' >
-                                <p style='font-size:small;'>* 최대 사용가능 Point : {{ point_available|floatformat:"0" }}</p>
+                                <p style='font-size:small;'>* 최대 사용가능 포인트 : {{ point_available|floatformat:"0" }}포인트</p>
                                 {% if not shipping_address_obj or change_address %}
                                 <input class='btn btn-outline-secondary btn-block' value='배송지 정보를 완료해주세요'>
                                 {% else %}
-                                <button type='submit' class='btn btn-dark btn-block'>포인트적용</button>
+                                <div class='col-12'>
+                                    <button type='submit' class='btn btn-dark btn-block'>포인트적용</button>
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -205,17 +208,17 @@ span.price {
                     </div>
                     {% for cart_item in object.cart.cart_items.all %}
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
+                        <div class='col-8'>
                             {% if cart_item.product_type == 'ticket' %}
-                            <p class='mb-1' style='font-size:medium;'>TICKET {{ cart_item.ticket_item.tickets_type }}개</p>
+                            <p class='mb-1' style='font-size:small;'>TICKET {{ cart_item.ticket_item.tickets_type }}개</p>
                             {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
-                            <p class='mb-1' style='font-size:medium;'>{{ cart_item.product_item.product.title }}</p>
+                            <p class='mb-1' style='font-size:small;'>{{ cart_item.product_item.product.title }}</p>
                             {% else %}
-                            <p class='mb-1' style='font-size:medium;font-weight:bold;'>물품명잘못지정됨</p>
+                            <p class='mb-1' style='font-size:small;font-weight:bold;'>물품명잘못지정됨</p>
                             {% endif %}
                         </div>
-                        <div class='col-6 text-right'>
-                            <p style='font-size:smediummall;'>{{ cart_item.subtotal|intcomma }} 원</p>
+                        <div class='col-4 text-right'>
+                            <p style='font-size:small;'>{{ cart_item.total|intcomma }} 원</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -223,29 +226,37 @@ span.price {
                         <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
                     </div>
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
-                            <p style='font-size:medium;'>주문 금액</p>
+                        <div class='col-8'>
+                            <p style='font-size:small;'>주문 금액</p>
                         </div>
-                        <div class='col-6 text-right'>
-                            <p style='font-size:medium;'>{{ object.total|intcomma }} 원</p>
+                        <div class='col-4 text-right'>
+                            <p style='font-size:small;'>{{ object.total|intcomma }} 원</p>
                         </div>
                     </div>
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
-                            <p style='font-size:medium;'>포인트 사용</p>
+                        <div class='col-8'>
+                            <p style='font-size:small;'>배송 비용{% if object.shipping_cost > 0 %}({{ object.shipping_count }}개){% endif %}</p>
                         </div>
-                        <div class='col-6 text-right'>
-                            <p style='font-size:medium;'>{% if object.point_total == 0 %}0 원{% else %}-{{ object.point_total|intcomma }} 원{% endif %}</p>
+                        <div class='col-4 text-right'>
+                            <p style='font-size:small;'>{% if object.shipping_cost %}+{% endif %}{{ object.shipping_cost|intcomma }} 원</p>
+                        </div>
+                    </div>
+                    <div class='row' style='width:100%'>
+                        <div class='col-8'>
+                            <p style='font-size:small;'>포인트</p>
+                        </div>
+                        <div class='col-4 text-right'>
+                            <p style='font-size:small;'>{% if object.point_total == 0 %}0 원{% else %}-{{ object.point_total|intcomma }} 원{% endif %}</p>
                         </div>
                     </div>
                     <div class="col-12 m-0 p-0">
                         <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
                     </div>
                     <div class='row' style='width:100%'>
-                        <div class='col-6'>
-                            <p style='font-size:large;font-weight:bold;'>결제 금액</p>
+                        <div class='col-8'>
+                            <p style='font-size:medium;font-weight:bold;'>결제 금액</p>
                         </div>
-                        <div class='col-6 text-right'>
+                        <div class='col-4 text-right'>
                             <p style='font-size:large;font-weight:bold;'>{{ object.checkout_total|intcomma }} 원</p>
                         </div>
                     </div>
@@ -253,9 +264,11 @@ span.price {
                         <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
                     </div>
                     <div class="row" style='width:100%;'>
-                        <div class='col-12'>
+                        <div class='col-12 mr-0 pr-0'>
                             {% if not shipping_address_obj or change_address %}
-                            <button class='btn btn-outline-secondary btn-block'>배송지 정보를 완료해주세요</button>
+                            <!-- <div class='col-12'> -->
+                                <button class='btn btn-outline-secondary btn-block'>배송지 정보를 완료해주세요</button>
+                            <!-- </div> -->
                             {% elif amount == 0 %}
                             <form method='post' action="{% url 'carts:checkout-iamport' %}">
                                 {% csrf_token %}
@@ -263,7 +276,7 @@ span.price {
                                 <button type='submit' class='btn btn-dark btn-block'>결제하기</button>
                             </form>
                             {% else %}
-                            <div class='check-out-div' style='visibility:hidden;'>
+                            <div class='col-12 check-out-div mr-0 pr-0' style='visibility:hidden;'>
                                 <input type='button' class='btn btn-dark btn-block' id='check-out-button' value='결제하기'>
                             </div>
                             {% endif %}
@@ -290,8 +303,14 @@ span.price {
             <ul style='color:white;'>
                 <p style='font-size:medium;color: #ffe5a9;'><bold>결제 시 배송지를 꼭 확인해주세요.</bold> </p>
                 <p style='font-size:medium;'>첫 주문이면 배송지를 저장해주세요.</p>
-                <p style='font-size:medium;'>기존 주문</p>
+                <p style='font-size:medium;'>기존에 주문한 이력이 있으시면 자동으로 기존 배송지로 입력되어있습니다.(변경 필요시 오른쪽 위 배송지 변경을 눌러 변경 진행해주세요.)</p>
                 <p style='font-size:medium;'>첫 주문이면 배송지를 저장해주세요.</p>
+                배송료는 무료이지만 제주.산간지역은 배송료가 3000원 추가됩니다.<br>
+                여러 상품을 함께 배송할 수 없는 물품에 대해서는 별도로 배송을 해야합니다.(크기/무게로 인해 양해부탁드립니다.)<br>
+                이름, 이메일, 핸드폰, 주소, 우편번호는 필수입니다.(미입력시 고객님의 이메일주소로 저장됩니다.)<br>
+                포인트사용은 상품금액의 10%에서 반올림하여 사용가능합니다.<br>
+                배송관련 안내사항을 이메일과 핸드폰 번호의 카톡(혹은 문자)로 안내됩니다.<br>
+
             </ul>
         </div>
         <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>

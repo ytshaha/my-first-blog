@@ -42,6 +42,23 @@
 .add-text-stroke-thin{
     -webkit-text-stroke: 1px black; /* width and color */
 }
+
+
+
+a.wish-link {
+    color:rgb(190, 190, 190);
+    transition: 0.3s;
+}
+
+a.wish-link:hover {
+    color:black;
+    transition: 0.3s;
+}
+
+a.wish-link-added {
+    color:black;
+    transition: 0.3s;
+}
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
@@ -133,6 +150,25 @@
                         <span class="text-muted">No Image</span>
                         {% endif %}
                     </picture>
+                    {% if user.is_authenticated %}
+                        {% if product_item.id in wish_list %}
+                        <div style='position:absolute;top:1%;right:4%'>
+                            <a class='wish-link' id="{{ product_item.slug }}" tabindex="0">
+                                <span style="font-size: 0.5em;color:rgb(0, 0, 0)">
+                                    <i class="fas fa-heart fa-3x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        {% else %}
+                        <div style='position:absolute;top:1%;right:4%'>
+                            <a class='wish-link' id="{{ product_item.slug }}" tabindex="0">
+                                <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
+                                    <i class="fas fa-heart fa-3x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        {% endif %}
+                    {% endif %}
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
@@ -156,7 +192,7 @@
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
                                 {% if product_item.info_delivery_from == 'overseas' %}
-                                <span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'>남은 시간 : </span></span><div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
+                                <!-- <span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'>남은 시간 : </span></span><div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div> -->
                                 {% endif %}
                             </div>
                             <div class='col'>
@@ -283,6 +319,44 @@
 
 <!-- JavaScript 영역 -->
 {% block javascript %}
+
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script>
+$(document).ready(function(){
+
+    $(".wish-link").each(function(i, obj){
+        var wishBtn = $(this)
+        var ProductItem = wishBtn.attr("id")
+        wishBtn.click(function (event){
+        console.log("ProductItem", ProductItem)
+        var promise = $.ajax({
+            url: "{% url 'wishlist:make_wishlist' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+            type: 'POST',
+            dataType: 'json',
+            data: {product_item: ProductItem,
+                },
+            
+            success: function(data){
+                if(data.added == "true"){
+                    wishBtn.children().css('color','rgb(0, 0, 0)')
+                }
+                else{
+                    wishBtn.children().css('color','rgb(197, 197, 197)')
+                }
+
+                }
+            })
+        })
+
+    });
+
+
+});
+
+</script>
+
 <script>
     $(document).ready(function(){
         $('.product-image-div').each(function(i, obj) {

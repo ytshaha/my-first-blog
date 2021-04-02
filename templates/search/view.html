@@ -1,11 +1,291 @@
 {% extends 'shop/base.html' %}
-
+{% block header %}
+<style>
+    .add-border{
+        border-top:1px solid rgb(238, 238, 238);
+        border-bottom:2px solid rgb(238, 238, 238);
+        border-left:1px solid rgb(238, 238, 238);
+        border-right:2px solid rgb(238, 238, 238);
+    }
+    
+    .sidenav {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 3;
+      top: 40px;
+      left: 0;
+      background-color: #423f3b;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 60px;
+    }
+    
+    .sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: medium;;
+      color: #cbbeb5;
+      display: block;
+      transition: 0.3s;
+    }
+    .sidenav div {
+      transition: 0.3s;
+    }
+    
+    .sidenav a:hover {
+      color: white;
+    }
+    
+    .sidenav .closebtn {
+      position: absolute;
+      top: 0;
+      right: 25px;
+      font-size: 36px;
+      margin-left: 50px;
+    }
+    
+    @media screen and (max-height: 450px) {
+      .sidenav {padding-top: 15px;}
+      .sidenav a {font-size: 18px;}
+    }
+    
+    .dropdown-menu-lg{
+        /* position:fixed!important; */
+        /* top:100px!important; */
+        /* left:0px!important; */
+        width:480px;
+        height:500px;
+        padding:10px;
+        /* margin:20px; */
+    
+    }
+    
+    .navbar-expand-lg {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+        -ms-flex-flow: row nowrap;
+        flex-flow: row nowrap;
+        -webkit-box-pack: start;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+    }
+    
+    #navbarSupportedContentProductList .navbar-collapse {
+        display: flex!important;
+        flex-basis: auto;
+    }
+    
+    
+    a.wish-link {
+        color:rgb(190, 190, 190);
+        transition: 0.3s;
+    }
+    
+    a.wish-link:hover {
+        color:black;
+        transition: 0.3s;
+    }
+    
+    a.wish-link-added {
+        color:black;
+        transition: 0.3s;
+    }
+    
+    </style>
+{% endblock %}
 {% block content %}
 {% load static %}
 {% load humanize %}
-<!-- 카테고리의 네브바 -->
+<!-- 프로덕트 리스트 네브바 -->
+<nav class='sticky-top-2'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
+    <ul class="navbar-nav navbar-expand-lg">
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+              카테고리 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+              브랜드 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+              필터 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+              정렬기준 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+        <li class='nav-item mx-2'>
+            <a class="nav-link" data-toggle="collapse" href="#collapseSearch" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+              검색 <i class="fas fa-chevron-down"></i>
+            </a>
+        </li>
+        
+        
+    </ul>
+</nav>
 
+<div class="collapse" id="collapseCategory">
+    <div class="card card-body">
+        <div class='row'>
+            <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                <div class='row'>
+                    <div class='col-12'>
+                        <p style='font-size:large;font-weight:bold;'>카테고리</p>
+                    </div>
+                    <div class='col-12'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' %}" style='font-size:small;'>전체</a>
+                        <hr>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}" style='font-size:small;'>여성의류</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}" style='font-size:small;'>남성의류</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}" style='font-size:small;'>ACC</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}" style='font-size:small;'>키즈</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}" style='font-size:small;'>가방</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+<div class="collapse" id="collapseBrand">
+    <div class="card card-body">
+        <div class='row'>
+            <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                <div class='row'>
+                    <div class='col-12'>
+                        <p style='font-size:large;font-weight:bold;'>브랜드</p>
+                    </div>
+                    {% for brand in brands %}
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_list' brand=brand %}" style='font-size:small;'>{{ brand|upper }}</a>
+                    </div>    
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="collapse" id="collapseFilter">
+    <div class="card card-body">
+        <div class='row'>
+            <form method='GET' action="{% url 'products:product_list' %}" style='width:100%;'>
+                <input type="hidden" name='post_purpose' value='filter_product'>
+                <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                    <div class='col-12 text-left'>
+                        <p style='font-size:large;font-weight:bold;'>필터</p>
+                    </div>
+                    <div class='col-12 text-left'>
+                        <p style='font-size:large;'>카테고리</p>
+                    </div>
+                    <div class='row pl-4'>
+                        <div class='col-12'>
+                            <p style='font-size:small;'><input type="checkbox" onClick="toggleCategory(this)"> 전체</p>
+                            <hr>
+                        </div>
+                        {% for category in category_qs %}
+                        <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                            <p style='font-size:small;'><input type="checkbox" name="category_selected" value="{{ category.0 }}"> {{ category.1 }}</p>                    
+                        </div> 
+                        {% endfor %}
+                    </div>
+                    <hr>
+                </div>
+                <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                    <div class='col-12 text-left'>
+                        <p style='font-size:large;'>브랜드</p>
+                    </div>
+                    <div class='row pl-4'>
+                        <div class='col-12'>
+                            <p style='font-size:small;'><input type="checkbox" onClick="toggleBrand(this)"> 전체</p>
+                            <hr>
+                        </div>
+                        
+                        {% for brand in brands %}
+                        <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                            <p style='font-size:small;'><input type="checkbox" name="brand_selected" value="{{ brand }}" style='font-size:small;'> {{ brand }}</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <hr>
+                </div>
+                <div class='col-12 col-lg-8 col-mg-8 col-sm-12 mx-auto'>
+                    <button class='btn btn-outline-dark btn-block' type='submit'>선택 완료</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="collapse" id="collapseOrderby">
+    <div class="card card-body">
+        <div class='row'>
+            <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                <div class='row'>
+                    <div class='col-12'>
+                        <p style='font-size:large;font-weight:bold;'>정렬기준</p>
+                    </div>
+                    <div class='col-12 mb-2'>
+                        <form action="{% url 'products:product_list' %}">
+                            <input type="hidden" name='post_purpose' value='ordering_method'>
+                            <input type="hidden" name="ordering" value="-price" />
+                            <button class='btn btn-outline-dark btn-sm' type='submit'>높은가격순서</button>
+                        </form>
+                    </div>
+                    <div class='col-12 mb-2'>
+                        <form action="{% url 'products:product_list' %}">
+                            <input type="hidden" name='post_purpose' value='ordering_method'>
+                            <input type="hidden" name="ordering" value="price" />
+                            <button class='btn btn-outline-dark btn-sm' type='submit'>낮은가격순서</button>
+                        </form>
+                    </div>
+                    <div class='col-12 mb-2'>
+                        <form action="{% url 'products:product_list' %}">
+                            <input type="hidden" name='post_purpose' value='ordering_method'>
+                            <input type="hidden" name="ordering" value="-updated" />
+                            <button class='btn btn-outline-dark btn-sm' type='submit'>업데이트날짜순서</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="collapse" id="collapseSearch">
+    <div class="card card-body">
+        <div class='row'>
+            <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
+                <div class='row'>
+                    <div class='col-12'>
+                        <p style='font-size:large;font-weight:bold;'>검색</p>
+                    </div>
+                    <div class='col-12'>
+                        {% include 'search/snippets/search-form.html' %}
+                    </div>    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 프로덕트 리스트 헤더 -->
 
 <div class="container">
@@ -34,53 +314,6 @@
     </div>
     {% endif %}
 </div>
-
-
-
-<!-- 기존.....프로덕트 카테고리 선택바 -->
-{% if not is_staff_check %}
-<div class='container-fluid sticky-top-2 text-center' style="background-color:white;padding:10px 5px 10px 5px;border-bottom:1px solid rgb(238, 238, 238);">
-    <div class='container'>
-        <div class="row">
-            <div class='col-2 product-list-category' style='padding:0;'>
-                <p class="" style="font-weight:bold;">Category</p>
-            </div>
-                <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' %}"><p class="product-list-category-text">전체</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='woman' %}"><p class="product-list-category-text">여성</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='men' %}"><p class="product-list-category-text">남성</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='shoes' %}"><p class="product-list-category-text">신발</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='acc' %}"><p class="product-list-category-text">패션잡화</p></a>
-            </div>
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' category='kid' %}"><p class="product-list-category-text">유아동</p></a>
-            </div>
-        </div>
-        {% if brands.exists %}
-
-        <hr>
-        <div class="row">
-            <div class='col-2 product-list-category' style='padding:0;'>
-                <p class="" style="font-weight:bold;">Brand</p>
-            </div>
-            {% for brand in brands %}
-            <div class='col product-list-category' style='padding:0;'>
-                <a href="{% url 'products:product_list' brand=brand %}"><p class="product-list-category-text">{{ brand|upper }}</p></a>
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
-    </div>   
-</div>
-{% endif %}
 
 
 <!-- 프로덕트 리스트-->

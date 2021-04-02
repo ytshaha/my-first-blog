@@ -1,4 +1,14 @@
 {% extends 'shop/base.html' %}
+{% block header %}
+<style>
+
+.table td, .table th {
+    padding:5px;
+    
+}
+
+</style>
+{% endblock %}
 {% block content %}
 {% load humanize %}
 <div class="container">
@@ -11,14 +21,14 @@
 </div>  
 <hr/>
 
-<div class='container my-2 py-2' style='min-height:300px;'>
+<div class='container my-2 py-2 px-4' style='min-height:300px;'>
     <div class='row'>
         <div class='col-4 ml-auto text-right'>
             <a href="{% url 'orders:list' %}"><button class='btn btn-outline-dark btn-sm'>주문현황 돌아가기</button></a>
         </div>
     </div>
     <div class='row'>
-        <div class='col-lg-6 col-md-6 col-sm-12'>
+        <div class='col-12 col-lg-6 col-md-12 col-sm-12'>
             <!-- 아이템들 -->
             <div class='row'>
                 <div class='col-12 pl-0 pr-3 text-left'>
@@ -27,11 +37,44 @@
                 </div>
                 <div class='row mb-5' style='width:100%;'>
                     <div class='col'>
-                        <p>고객성명 : {{ object.shipping_address.full_name }}</p>
-                        <p>이메일 : {{ object.shipping_address.email }}</p>
-                        <p>전화번호 : {{ object.shipping_address.phone_number }}</p>
-                        <p>배송지 주소 : {{ object.shipping_address.get_address }}</p>
-                        <p>총 비용 : {{ object.cart.total|intcomma }} 원</p>
+                        <table class="table table-bidding-info text-center align-middle">
+                            <colgroup>
+                                <col span="1" style="width: 30%;">
+                                <col span="1" style="width: 70%;">
+                            </colgroup>
+                            <thead class=>
+                                <th class='align-middle' scope="col" style='font-size:small;'>구분</th>
+                                <th class='align-middle' scope="col" style='font-size:small;'>내용</th>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>고객성명</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.full_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>이메일</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.email }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>전화번호</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.phone_number }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>배송지 주소</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.get_address }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>총 금액</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.cart.total|intcomma }} 원</td>
+                                </tr>
+                                <tr>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>배송 요청사항</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{% if object.cart.customer_request %}{{ object.cart.customer_request }}{% else %}요청사항 없음.{% endif %}</td>
+                                </tr>
+                                
+                            </tbody>
+                        </table>
+
                         <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
                     </div>
                 </div>
@@ -40,7 +83,7 @@
         <div>
             
         </div>
-        <div class='col-lg-6 col-md-6 col-sm-12'>
+        <div class='col-12 col-lg-6 col-md-12 col-sm-12'>
 
             <!-- 아이템수 -->
             <div class='col-12 pl-0 pr-3 text-left'>
@@ -54,7 +97,7 @@
                     <!-- 이미지 -->
                     {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
                     <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
-                    <img src="{{ cart_item.product_item.product.image.url }}" style='max-width:100%;max-height:100%;'>
+                    <img src="{{ cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:100%;'>
                     {% elif cart_item.product_type == 'ticket' %}
                     <p class='text-center align-middle' style='font-size:1.5em; color:#423f3b;margin-top:30px;'>
                         <i class="fas fa-ticket-alt fa-5x"></i>
@@ -86,7 +129,7 @@
                     <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
                     <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
                     {% endif %}
-                    {% if not cart_item.is_reviewed and cart_item.product_type != 'ticket' %}
+                    {% if not cart_item.is_reviewed and cart_item.product_type != 'ticket' and object.status == 'shipped' %}
                     <div class='col'>
                         <form method='post' action="{% url 'reviews:upload' %}">
                             {% csrf_token %}
@@ -94,6 +137,10 @@
                             <input type="hidden" name='cart_item_id' value='{{ cart_item.id }}'>
                             <button type='submit' class='btn btn-outline-dark btn-sm btn-block'>리뷰 작성</button>
                         </form>
+                    </div>
+                    {% else %}
+                    <div class='col'>
+                        <button class='btn btn-outline-dark btn-sm btn-block'>리뷰 작성완료</button>
                     </div>
                     {% endif %}
                     

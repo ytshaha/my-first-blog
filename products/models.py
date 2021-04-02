@@ -177,7 +177,7 @@ class Product(models.Model):
     info_alert              = models.CharField(max_length=100, blank=True, null=True, help_text=u'취급시 주의사항_의류는 세탁방법 및 취급시 주의사항')
     info_quality_standard   = models.CharField(max_length=100, blank=True, null=True, help_text=u'품질보증기준')
     info_as                 = models.CharField(max_length=100, blank=True, null=True, help_text=u'A/S 책임자와 전화번호')
-    
+    combined_delivery       = models.BooleanField(default=True, help_text=u'합배송 여부_기본은 가능')
     
     
     description             = models.TextField(blank=True, null=True, help_text=u'정보')

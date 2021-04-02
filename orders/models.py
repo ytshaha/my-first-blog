@@ -13,8 +13,10 @@ from mysite.utils import unique_order_id_generator
 ORDER_STATUS_CHOICES = (
     ('created','Created'),
     ('paid','Paid'),
+    ('shipping','Shipping'),
     ('shipped','Shipped'),
     ('refunded','Refunded'),
+    ('cancel', 'Cancel'),
 )
    
 # class AbstractOrder(models.Model):
@@ -74,11 +76,12 @@ class Order(models.Model):
     billing_address     = models.ForeignKey(Address, related_name='billing_address', null=True, blank=True, on_delete=models.CASCADE)
     cart                = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True, null=True)
     status              = models.CharField(max_length=120, default='created', choices=ORDER_STATUS_CHOICES)
-    shipping_total      = models.IntegerField(default=0)
+    total               = models.IntegerField(default=0) # 물건값
+    shipping_cost       = models.IntegerField(default=0) # 배송료
     point_total         = models.IntegerField(default=0) # 포인트로 결재한 금액
-    checkout_total      = models.IntegerField(default=0) # 실제 결재한 금액
-    total               = models.IntegerField(default=0) # 총 포인트 + 결재 금액(물품가치)
+    checkout_total      = models.IntegerField(default=0) # 실제 결재할 금액  checkout_total = total + shipping_cost - point_total
     customer_request    = models.CharField(max_length=250, blank=True, null=True, help_text=u'고객요청사항')
+    shipping_count      = models.IntegerField(default=0)
     active              = models.BooleanField(default=True)
     updated             = models.DateTimeField(auto_now_add=True)
     timestamp           = models.DateTimeField(auto_now_add=True)
@@ -107,17 +110,10 @@ class Order(models.Model):
         1. cart.total 을 order의 total로 넘겨줌(post_save @ order or cart)
         2. checkout_total을 point를 제외한 금액으로 update
         '''
-
-        cart_total = self.cart.total
-        point_total = self.point_total
-        self.total = cart_total
-        self.checkout_total = self.total
-        if point_total > 0:
-            self.checkout_total = self.total - point_total
-        else:
-            self.checkout_total = self.total
+        self.total = self.cart.total
+        self.checkout_total = self.total + self.shipping_cost - self.point_total
         self.save()
-        return self.total
+        return self.checkout_total
 
     def check_done(self):
         billing_profile = self.billing_profile

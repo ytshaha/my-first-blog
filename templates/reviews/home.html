@@ -12,42 +12,32 @@
 
 <div class='container'>
     <div class='row'>
-        <div class='col text-right'>
-            <a href="{% url 'reviews:upload' %}"><button>리뷰업로드</button></a>
-        </div>
-    </div>
-    <div class='row'>
-        <div class='col'>
+        <div class='col-12 col-lg-8 col-md-10 col-sm-12 mx-auto'>
             <table class="table text-center" style='font-size:medium;'>
                 <colgroup>
-                    <col span="1" style="width: 13%;">
-                    <col span="1" style="width: 15%;">
-                    <col span="1" style="width: 30%;">
-                    <col span="1" style="width: 8%;">
-                    <col span="1" style="width: 10%;">
-                    <col span="1" style="width: 15%;">
+                    <col span="1" style="width: 20%;">
+                    <col span="1" style="width: 60%;">
+                    <col span="1" style="width: 20%;">
                     
                 </colgroup>
                 <thead>
                   <tr>
                     <th scope="col">상품사진</th>
-                    <th scope="col">상품명</th>
-                    <th scope="col">제목</th>
-                    <th scope="col">작성자</th>
+                    <th scope="col">내용</th>
                     <th scope="col">평점</th>
-                    <th scope="col">작성일</th>
                   </tr>
                 </thead>
                 <tbody>
                   {% for review in reviews %}  
                   <tr>
                     <td>
-                        <img src="{{ review.product_item.product_item.product.image.url }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'>
+                        <img src="{{ review.cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:80px;height:auto;object-fit:cover;'>
                     </td>
-                    <td class="text-left align-middle"><p>{% if review.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ review.product_item.product_item.product }}</td>
-                    <td class="align-middle"><a href="{% url 'reviews:detail' pk=review.pk %}" style='color:black;'>{{ review.title }}</p></a></td>
-                    
-                    <td class="align-middle" style='font-size:small'>{{ review.user.username|slice:":2" }}*****</td>
+                    <td class="text-left align-middle">
+                        <p class="mb-1" style='color:black;font-size:medium;font-weight:bold;'><a href="{% url 'reviews:detail' pk=review.pk %}" style='color:black;'>{{ review.title|slice:"27" }}{% if review.title|length|get_digit:"-1" > 27 %}...{% endif %}</p></a>
+                        <p class="mb-1" style='font-size:small;'>{% if review.cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ review.cart_item.product_item.product }}  </p>
+                        <p class="mb-0" style='font-size:x-small;'><span>{{ review.user.username|slice:":2" }}*****</span><span>&nbsp;&nbsp;&nbsp;{{ review.created_date|date:'Y-m-d H:i:s' }}</span></p>
+                    </td>
                     {% if review.rating == 0 %}
                     <td class="align-middle" style='font-size:small'>
                         <span style="font-size: 0.6em; color:black;">
@@ -109,7 +99,6 @@
                         </span>
                     </td>
                     {% endif %}
-                    <td class="align-middle" style='font-size:small'>{{ review.created_date|date:'Y-m-d H:i:s' }}</td>
                   </tr>
                   {% endfor %}
                   

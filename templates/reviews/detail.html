@@ -29,7 +29,7 @@
                 </div>
                 
             </div>
-            <p class='' style='font-size:x-large;font-weight:bold;'>{% if review.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}[{{ review.product_item.product_item.product }}] {{ review.title }}</p>
+            <p class='' style='font-size:x-large;font-weight:bold;'>{% if review.cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}[{{ review.cart_item.product_item.product }}] {{ review.title }}</p>
             
             <p class='' style=''>작성자 : {{ review.user }}</p>
             <p>{{ review.created_date|date:'Y-m-d H:i:s' }}</p>
@@ -39,36 +39,36 @@
 
             <!-- 리뷰이미지들.. -->
             <div class="row">
-                {% if review.image2 %}
-                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                {% if review.image1 %}
+                <div class='col-lg-4 col-md-6 col-sm-12' style="padding:0px;">
                     <picture>
                         <img class="detail-image detail-image-sub" src="{{ review.image1.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
                     </picture>
                 </div>
                 {% endif %}
                 {% if review.image2 %}
-                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                <div class='col-lg-4 col-md-6 col-sm-12' style="padding:0px;">
                     <picture>
                         <img class="detail-image detail-image-sub" src="{{ review.image2.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
                     </picture>
                 </div>
                 {% endif %}
                 {% if review.image3 %}
-                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                <div class='col-lg-4 col-md-6 col-sm-12' style="padding:0px;">
                     <picture>
                         <img class="detail-image detail-image-sub" src="{{ review.image3.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
                     </picture>
                 </div>
                 {% endif %}
                 {% if review.image4 %}
-                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                <div class='col-lg-4 col-md-6 col-sm-12' style="padding:0px;">
                     <picture>
                         <img class="detail-image detail-image-sub" src="{{ review.image4.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
                     </picture>
                 </div>
                 {% endif %}
                 {% if review.image5 %}
-                <div class='col-lg-4 col-md-6 col-sm-12 mx-auto' style="padding:0px;">
+                <div class='col-lg-4 col-md-6 col-sm-12' style="padding:0px;">
                     <picture>
                         <img class="detail-image detail-image-sub" src="{{ review.image5.url }}" alt="리뷰사진1" style="max-width:600px;width:100%;height:100%;display:inline;">
                     </picture>

@@ -1,3 +1,5 @@
+import pandas as pd
+
 from django.contrib.auth import authenticate, login, get_user_model
 
 from django.contrib.auth.decorators import login_required
@@ -380,3 +382,35 @@ def send_register_ticket_success(request):
 
     return render(request, 'accounts/send_register_ticket_success.html', context)
 
+
+
+from django.core.files.storage import default_storage
+import os
+from django.conf import settings
+
+MEDIA_ROOT = getattr(settings, 'MEDIA_ROOT')
+REGISTER_TICKET_ROOT = os.path.join(MEDIA_ROOT, 'register_ticket_excel.xlsx')
+def get_register_ticket_excel(request):
+    print('실행')
+    if request.method == 'POST':
+        username = request.POST.get('username', None)
+        print(username, '의 티켓 다운로드가 요청되었습니다.')
+        qs = RegisterTicket.objects.filter(user__username=username, shared=False)
+        if qs.count() == 0:
+            messages.success(request, '해당 {}는 티켓이 없습니다.'.format(username))
+            return redirect('accounts:get_register_ticket_excel')
+        q = qs.values("ticket_number", "key")
+        df = pd.DataFrame.from_records(q)
+        print('dataframe print...')
+        print(df)
+        
+        # register_ticket_excel = df.to_excel(REGISTER_TICKET_ROOT)
+        # file_name = default_storage.save(file.name, file)
+        # print('file print...')
+        # print(register_ticket_excel)
+        context = {
+            'qs':qs,
+        }
+        return render(request, 'accounts/get_register_ticket_excel.html', context)
+
+    return render(request, 'accounts/get_register_ticket_excel.html', {})

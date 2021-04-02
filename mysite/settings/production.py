@@ -49,6 +49,8 @@ IMPORT_REST_API_KEY = os.environ.get('IMPORT_REST_API_KEY')
 IMPORT_REST_API_SECRET = os.environ.get('IMPORT_REST_API_SECRET')
 
 GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client_deploy.json')
+
+POSTAL_CODE_INFORMATION_DIRS = os.path.join(BASE_DIR, 'carts', 'delivery_cost_added_postal_code_simple.csv')
 # GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client.json')
 
 # Application definition

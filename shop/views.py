@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import BuyingTicket
+from wishlist.models import Wish
 from django.contrib.auth.decorators import login_required
 from .forms import BuyingTicketForm
 
@@ -17,10 +18,15 @@ def index(request):
     print("Current request.session.")
     for key, value in request.session.items():
         print('{} => {}'.format(key, value))
-
+    user = request.user
+    wish_list = None
+    if not request.user.is_anonymous:
+        wish_list = Wish.objects.filter(user=user).values_list('product_item', flat=True)
+        
     context = {
         'product_items_normal': product_items_normal,
-        'product_items_bidding': product_items_bidding
+        'product_items_bidding': product_items_bidding,
+        'wish_list' : wish_list
     }
 
     # gmail.send_email('aaa', 'ytshaha@naver.com','subject')

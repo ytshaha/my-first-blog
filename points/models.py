@@ -1,4 +1,6 @@
-from datetime import datetime
+from datetime import timezone, datetime, timedelta
+from pytz import timezone
+
 
 
 from django.db import models
@@ -23,5 +25,10 @@ class Point(models.Model):
 
     def __str__(self):
         datetime_format = "%Y-%m-%d %H:%M:%S"
-        formatted_timestamp = self.timestamp.strftime(datetime_format)
+        settings_time_zone = timezone(settings.TIME_ZONE)
+        timestamp_localize = self.timestamp.astimezone(settings_time_zone)
+        formatted_timestamp = timestamp_localize.strftime(datetime_format)
         return "{}_{}_{}".format(self.user, str(self.amount), formatted_timestamp)
+
+
+        

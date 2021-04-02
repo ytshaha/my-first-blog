@@ -40,6 +40,7 @@ class ProductNormalListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_list.html'
     context_object_name = 'product_items'
+    paginate_by = 20
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductNormalListView, self).get_context_data(*args, **kwargs)
@@ -137,6 +138,7 @@ class ProductBiddingListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_bidding_list.html'
     context_object_name = 'product_items'
+    # paginate_by = 20
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductBiddingListView, self).get_context_data(*args, **kwargs)
@@ -449,7 +451,7 @@ class ProductStaffCheckView(LoginRequiredMixin, StaffRequiredView, generic.ListV
         return product_item_qs.filter(updated__gte=start_datetime, updated__lt=end_datetime)
     
 
-class ProductFeaturedDetailView(generic.DetailView):
+class ProductFeaturedDetailView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_featured-detail.html'
     context_object_name = 'product'
 
@@ -476,7 +478,7 @@ class ProductFeaturedDetailView(generic.DetailView):
 
 
 # 실질적으로 사용하는 detail View
-class ProductDetailSlugView(generic.DetailView):
+class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
     template_name = 'products/product_detail.html'
     context_object_name = 'product_item'
 
@@ -488,6 +490,8 @@ class ProductDetailSlugView(generic.DetailView):
         product_item_obj = ProductItem.objects.get(slug=slug)
         product_obj = product_item_obj.product
         product_type = product_item_obj.product_type
+        wish_list = Wish.objects.filter(user=user).values_list('product_item', flat=True)
+        context['wish_list'] = wish_list
         
         cart_obj, new_obj = Cart.objects.new_or_get(request) #??
         
