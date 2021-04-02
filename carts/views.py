@@ -409,7 +409,7 @@ def checkout_iamport(request):
     # text = "Hello, This is KaKao Message Test!!"
 
     # print(sendToMeMessage(text).text)
-    dd()
+    # dd()
 
     # 1. 카트만들기.(없으면 만들고 있으면 있는거 갖겨오고 재고 없는것 체크, 없으면 지우기)
     user = request.user

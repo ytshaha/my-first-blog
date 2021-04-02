@@ -127,6 +127,13 @@ class ProductManager(models.Manager):
         #                             category=category_obj,
         #                             list_price=list_price
         #                             )
+        
+        if data['combined_delivery'] == 1:
+            data['combined_delivery'] = True
+        elif data['combined_delivery'] == 0:
+            data['combined_delivery'] = False
+        else:
+            data['combined_delivery'] = None
         data = {k: v for k, v in data.items() if 'image' not in str(k)}
         obj = self.model.objects.create(**data)
         created = True

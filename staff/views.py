@@ -1,6 +1,7 @@
 import os
 import urllib.request
 from urllib.parse import urlparse
+from django.contrib import messages
 
 from django.shortcuts import render, redirect
 from django.contrib.admin.views.decorators import staff_member_required
@@ -120,7 +121,11 @@ def upload_product_by_file(request):
 
 def upload_product_complete(request):
     if request.method == 'POST':
-        file = request.FILES['database_file']
+        try:
+            file = request.FILES['database_file']
+        except:
+            messages.success(request, '파일이 선택되지 않았습니다.')
+            return redirect('staff:upload_product_by_file')
     try:
         df = pd.read_excel(file)
         df = df.where(pd.notnull(df), None)
@@ -130,8 +135,8 @@ def upload_product_complete(request):
         raise ObjectDoesNotExist
     
     print(df)
-    df.columns=["number", "title", "brand", 'category', 'list_price',  # 필수항목
-                'info_made_country', 'info_product_number', 'info_delivery', 'main_image',  # 필수항목
+    df.columns = ["number", "title", "brand", 'category', 'list_price',  # 필수항목
+                'info_made_country', 'info_product_number', 'info_delivery', 'combined_delivery', 'main_image',  # 필수항목
                 'image1', 'image2', 'image3', 'image4', 'image5', 
                 'image6', 'image7', 'image8', 'image9',
                 'info_product_kind', 'info_material', 'info_feature', 'info_product_person', 'info_alert', # 비필수
