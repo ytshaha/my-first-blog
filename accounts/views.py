@@ -59,14 +59,14 @@ class AccountEmailActivateView(FormMixin, View):
             if qs_confirm.count() == 1:
                 obj = qs_confirm.first()
                 obj.activate()
-                messages.success(request, "Your email has been confirmed, Please login.")
+                messages.success(request, "이메일 인증이 완료되었습니다. 로그인이 가능합니다.")
                 return redirect("login")
             else:
                 activated_qs = qs.filter(activated=True)
                 if activated_qs.exists():
                     reset_link = reverse("password_reset")
-                    msg = '''Your email has already been confirmed.
-                    Do you need to <a href="{link}">reset your password</a>?
+                    msg = '''이미 이메일 인증이 완료되어 있습니다.
+                    비밀번호를 재설정이 필요하십니까?<a href="{link}"></a>?
                     '''.format(link=reset_link)
                     messages.success(request, mark_safe(msg))
                     return redirect("login")
@@ -85,7 +85,7 @@ class AccountEmailActivateView(FormMixin, View):
             return self.form_invalid(form)
 
     def form_valid(self, form):
-        msg = '''Activation link sent, please check you email.'''
+        msg = '''계정 활성화 링크가 가입하신 이메일주소로 전송되었습니다.'''
         request = self.request
         messages.success(request, msg)
         email = form.cleaned_data.get("email")
@@ -340,7 +340,7 @@ def send_register_ticket_success(request):
         email = request.POST.get('email', None)
         ticket_number = request.POST.get('ticket_number', None)
         if User.objects.filter(email=email).exists():
-            messages.success(request, '이미 회원인 이메일주소로 보내려고 합니다. 다른 이메일로 보내십시오.')
+            messages.success(request, '이미 회원인 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
             return redirect('accounts:send_register_ticket')
         # 가입티켓 상태변경(보내짐으로 바꾸고 메일주소도 넣기.)
         register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)

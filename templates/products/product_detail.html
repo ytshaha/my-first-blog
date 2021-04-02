@@ -118,7 +118,7 @@ a.wish-link-added {
                 </div>
                 <!-- 기타정보 -->
                 <div class='mt-2 mb-4 '>
-                    {% if is_stock %}
+                    {% if is_stock and product_item.featured %}
                     <p class='mb-0' style="font-size:medium;font-weight:bold;">재고 보유</p>
                         {% if product_item.info_delivery_from == 'overseas' %}
                         <p class='mb-2' style="font-size:small;color:gray;">7~8일 이내에 발송 가능한 상품입니다.</p>
@@ -126,7 +126,7 @@ a.wish-link-added {
                         <p class='mb-2' style="font-size:small;color:gray;">1~2일 이내에 발송 가능한 상품입니다.</p>
                         {% endif %}
                     {% else %}
-                    <p class='mb-2' style="font-size:medium;">재고 없음</p>
+                    <p class='mb-2' style="font-size:medium;">재고 없음<span style='font-size:small;color:green;font-weight:bold;'>{% if user.is_staff and is_stock %}(스탭: 실제 재고 보유 중){% endif %}</span></p>
                     {% endif %}
 
                     <p class='mb-2' style="font-size:medium;">원산지 : {{ product_item.product.made_info_made_country }}</p>
@@ -145,7 +145,7 @@ a.wish-link-added {
                 <!-- 구매버튼 조건문 -->
                 {% if product_type == 'normal' %}
                     {% if user.is_authenticated %}
-                        {% if is_stock %}
+                        {% if is_stock and product_item.featured %}
                         <div class='col p-0' style="margin-top:20px;">
                             <form method="post" action="{% url 'carts:update' %}" class='buy-form'>{% csrf_token %}
                                 <input id="id_product_item" type="hidden" name="product_item_id" value="{{ product_item.id }}">

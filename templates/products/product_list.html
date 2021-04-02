@@ -81,6 +81,7 @@
 a.wish-link {
     color:rgb(190, 190, 190);
     transition: 0.3s;
+    outline:none;
 }
 
 a.wish-link:hover {
@@ -106,6 +107,9 @@ a.wish-link-added {
     top: 121px;
     z-index: 2;
 }
+
+
+
 </style>
 {% endblock %}
 
@@ -339,7 +343,7 @@ a.wish-link-added {
                     {% if product_item.id in wish_list %}
                     <div style='position:absolute;top:1%;right:4%'>
                         <a class='wish-link' id="{{ product_item.slug }}" tabindex="0">
-                            <span style="font-size: 0.5em;color:rgb(0, 0, 0)">
+                            <span style="font-size: 0.5em;color:rgb(0, 0, 0);">
                                 <i class="fas fa-heart fa-3x"></i>
                             </span>
                         </a>
@@ -347,7 +351,7 @@ a.wish-link-added {
                     {% else %}
                     <div style='position:absolute;top:1%;right:4%'>
                         <a class='wish-link' id="{{ product_item.slug }}" tabindex="0">
-                            <span style="font-size: 0.5em;color:rgb(197, 197, 197)">
+                            <span style="font-size: 0.5em;color:rgb(197, 197, 197);">
                                 <i class="fas fa-heart fa-3x"></i>
                             </span>
                         </a>

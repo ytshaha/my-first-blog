@@ -422,8 +422,6 @@ def checkout_iamport(request):
     # address_form = AddressForm()
     billing_address_id = request.session.get('billing_address_id', None)
     shipping_address_id = request.session.get('shipping_address_id', None)
-    print("shipping_address_id", shipping_address_id )
-    print("billing_address_id", billing_address_id )
     # 물건들의 재고가 남아있는지 check
     # order_obj = request.POST.get('order_obj')
     stock_refresh = False # 괜찮으면 넘어가고 안괜찮으면 스탁없는 물품들을 refresh하기 위해 carts:home 보냄.
@@ -432,15 +430,17 @@ def checkout_iamport(request):
         if cart_item_obj.product_type == 'normal':
             if cart_item_obj.option is not None:
                 option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
-                if option_obj.amount < 1:
+                if option_obj.amount < 1 or not cart_item_obj.product_item.featured:
                     print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
+                    messages.success(request, '{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
                     cart_obj.cart_items.remove(cart_item_obj)
                     cart_obj.save()
                     cart_item_obj.delete()
                     stock_refresh = True
             else:
-                if cart_item_obj.product_item.amount < 1:
+                if cart_item_obj.product_item.amount < 1 or not cart_item_obj.product_item.featured:
                     print('{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
+                    messages.success(request, '{}의 재고가 없어 카트에서 제거합니다.'.format(cart_item_obj.product_item.product.title))
                     cart_obj.cart_items.remove(cart_item_obj)
                     cart_obj.save()
                     cart_item_obj.delete()
@@ -468,9 +468,10 @@ def checkout_iamport(request):
             shipping_address_obj = address_qs.filter(address_type='shipping').order_by('-timestamp').first()
             order_obj.shipping_address = shipping_address_obj
             
-            print("shipping_address : OK")
+            print("shipping_address가 존재합니다.")
         else:
             shipping_address_obj = None
+            print("shipping_address가 없습니다.")
 
 
         if address_qs.filter(address_type='billing').count() > 0:
@@ -484,9 +485,10 @@ def checkout_iamport(request):
         order_obj.update_total()
 
         has_card = billing_profile.has_card
-    
-    
 
+
+
+    
     # 3.  첫 화면 로드 - 주소2개 있을때
     # 주소는 완성되어있게 하고 빌링 주소, 쉬핑주소 같이 나오게(위아래로,)
     # 오른쪽에 장바구니항목간단표기 및 포읹트 사용가능하게 나옴. 
@@ -497,7 +499,7 @@ def checkout_iamport(request):
     for cart_item in order_obj.cart.cart_items.all():
         if cart_item.product_type == 'normal':
             order_normal_total = order_normal_total + cart_item.subtotal
-    point_available = round(order_normal_total * 0.1, -2)
+    point_available = round(order_normal_total * 1, -2)
     if point_available >= user.points:
         point_available = user.points
     else:
@@ -520,6 +522,40 @@ def checkout_iamport(request):
             cart_items_name = cart_items_name + "ticket_" + str(cart_item.ticket_item.tickets_type) + "_"
         else:
             cart_items_name = cart_items_name + cart_item.product_item.product.title + "_"
+
+
+    
+    # 도서산간지역이면 배송비용추가함. #
+    # 빌링프로파일에 어드레스가 없는 이제 막 만들어진 상태에서는 배송비용에 대한 정보 아직 없어도됨.
+    # 어드레스가 있는지 확인해서 있으면 아래의 프로세스 진행.
+    if postcode is not None:
+        postal_code = postcode
+        print('배송갯수')
+        df_postal_code  = pd.read_csv(POSTAL_CODE_INFORMATION_DIRS)
+        postal_code_array = df_postal_code.postal_code.values
+        
+        # 배송갯수 세기
+        delivery_count = 0
+        combined_delevery_exist = False
+        for cart_item in cart_obj.cart_items.all():
+            if cart_item.product_type == 'normal' or cart_item.product_type == 'bidding':
+                if not cart_item.product_item.product.combined_delivery:
+                    delivery_count += 1
+                else:
+                    combined_delevery_exist = True
+        if combined_delevery_exist:
+            delivery_count += 1
+        order_obj.shipping_count = delivery_count
+            
+        if str(postal_code) in postal_code_array:
+            order_obj.shipping_cost = 3000 * delivery_count
+        else:
+            order_obj.shipping_cost = 0
+        
+        order_obj.update_total()
+    ###############################################
+
+
 
     context = {
         'object':order_obj,
@@ -638,6 +674,8 @@ def checkout_iamport(request):
             # 2) postal_code가 산지배송이면 * 5000원으로 order_obj의 shipping_cost에 추가.
             # 3) order_obj의 총 checkout 비용에 shipping_cost 추가.
             
+
+            # 도서산간지역이면 배송비용추가함. ##############
             print('배송갯수')
             df_postal_code  = pd.read_csv(POSTAL_CODE_INFORMATION_DIRS)
             postal_code_array = df_postal_code.postal_code.values
@@ -661,7 +699,9 @@ def checkout_iamport(request):
             
             order_obj.update_total()
             order_obj.customer_request = order_memo
-            
+            ###############################################
+
+
             change_address = False # 주소변경 완료됐으므로 템플릿에 체인지 하자 안해도됨.
             # address_changed = True
             # point_changed = False

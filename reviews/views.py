@@ -74,11 +74,11 @@ class ReviewUploadView(generic.CreateView):
         form.instance.save()
         print('form.instance.image1',type(form.instance.image1))
         if form.instance.image1:
-            Point.objects.new(user=self.request.user, amount=2000, details='사진리뷰 작성을 통한 포인트적립')
-            messages.success(self.request, '사진리뷰 작성을 통해 2000포인트 적립되었습니다.')
+            Point.objects.new(user=self.request.user, amount=2000, details='포토리뷰 작성을 통한 +2000포인트적립')
+            messages.success(self.request, '포토리뷰 작성을 통해 2000포인트 적립되었습니다.')
         else:
-            Point.objects.new(user=self.request.user, amount=1000, details='일반리뷰 작성을 통한 포인트적립')
-            messages.success(self.arequest, '일반리뷰 작성을 통해 1000포인트 적립되었습니다.')
+            Point.objects.new(user=self.request.user, amount=1000, details='리뷰 작성을 통한 +1000포인트적립')
+            messages.success(self.arequest, '리뷰 작성을 통해 1000포인트 적립되었습니다.')
         cart_item_obj.is_reviewed = True
         cart_item_obj.save()
         return super().form_valid(form)
