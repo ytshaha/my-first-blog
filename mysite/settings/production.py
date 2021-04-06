@@ -27,7 +27,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['.herokuapp.com', 'moum8.herokuapp.com', 'www.moum8.com']
+ALLOWED_HOSTS = ['.herokuapp.com', 'moum8.herokuapp.com', 'www.moum8.com', 'moum8.com']
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'moum8.ecommerce@gmail.com' 

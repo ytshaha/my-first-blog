@@ -194,11 +194,13 @@
                   <div class='row'>
                     <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:home' %}">전체</a>
                     <hr>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:user-update' %}">개인정보변경</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'password_change' %}">비밀번호변경</a>
                     <a class="dropdown-item dropdown-item-2" href="{% url 'orders:list' %}">주문/배송</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'points:home' %}">보유포인트</a>
                     <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_wish_list' %}">관심리스트</a>
+                    <a class="dropdown-item dropdown-item-2" href="{% url 'points:home' %}">보유포인트</a>
+                    <hr>
+                    <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:change_address' %}">기본배송지 변경</a>
+                    <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:card_home' %}">결제카드 설정</a>
+                    <a class="dropdown-item dropdown-item-2" href="{% url 'password_change' %}">비밀번호변경</a>
                   </div>
               </div>
             </div>
@@ -346,14 +348,15 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
             <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'accounts:home' %}">마이페이지 홈</a>
+              <a class="dropdown-item dropdown-item" href="{% url 'accounts:home' %}">전체</a>
               <div class="dropdown-divider"></div>
-              <!-- <a class="dropdown-item" href="{% url 'accounts:user-update' %}">개인정보변경</a> -->
-              <a class="dropdown-item" href="{% url 'password_change' %}">비밀번호변경</a>
-              <a class="dropdown-item" href="{% url 'orders:list' %}">주문/배송</a>
-              <a class="dropdown-item" href="{% url 'points:home' %}">보유포인트</a>
-              <a class="dropdown-item" href="{% url 'products:product_wish_list' %}">위시리스트</a>
+              <a class="dropdown-item dropdown-item" href="{% url 'orders:list' %}">주문/배송</a>
+              <a class="dropdown-item dropdown-item" href="{% url 'products:product_wish_list' %}">관심리스트</a>
+              <a class="dropdown-item dropdown-item" href="{% url 'points:home' %}">보유포인트</a>
               <div class="dropdown-divider"></div>
+              <a class="dropdown-item dropdown-item" href="{% url 'accounts:change_address' %}">기본배송지 변경</a>
+              <a class="dropdown-item dropdown-item" href="{% url 'accounts:card_home' %}">결제카드 설정</a>
+              <a class="dropdown-item dropdown-item" href="{% url 'password_change' %}">비밀번호변경</a>
             </div>
           </li>
           <li class="nav-item"></li>
