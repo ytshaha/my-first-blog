@@ -187,10 +187,10 @@ post_save.connect(user_created_receiver, sender=User)
 
 class ChargeManager(models.Manager):
     def new(self, order, response): # Charge.objects.do()
-        timestamp = response['paid_at']
-        local_tz = pytz.timezone("Asia/Seoul") 
-        utc_dt = datetime.utcfromtimestamp(timestamp).replace(tzinfo=pytz.utc)
-        local_dt = local_tz.normalize(utc_dt.astimezone(local_tz))
+        # timestamp = response['paid_at']
+        # local_tz = pytz.timezone("Asia/Seoul") 
+        # utc_dt = datetime.utcfromtimestamp(timestamp).replace(tzinfo=pytz.utc)
+        # local_dt = local_tz.normalize(utc_dt.astimezone(local_tz))
         new_charge_obj = self.model(
             order=order,
             paid=True,
@@ -201,7 +201,7 @@ class ChargeManager(models.Manager):
             pg_tid=response['pg_tid'],
             receipt_url=response['receipt_url'],
             status=response['status'],
-            timestamp=local_dt
+            # timestamp=local_dt
             )
         new_charge_obj.save()
         return new_charge_obj
@@ -221,7 +221,7 @@ class Charge(models.Model):
     pg_tid          = models.CharField(max_length=200, blank=True, null=True)
     receipt_url     = models.CharField(max_length=200, blank=True, null=True)
     status          = models.CharField(max_length=20, blank=True, null=True)
-    timestamp       = models.DateTimeField(blank=True, null=True)
+    # timestamp       = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.imp_uid

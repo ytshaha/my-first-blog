@@ -74,9 +74,4 @@ class Migration(migrations.Migration):
             name='active',
             field=models.BooleanField(default=False),
         ),
-        migrations.AlterField(
-            model_name='charge',
-            name='timestamp',
-            field=models.DateTimeField(blank=True, null=True),
-        ),
     ]
