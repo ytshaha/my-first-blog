@@ -31,3 +31,4 @@ class Address(models.Model):
 
     def get_postal_code(self):
         return self.postal_code
+

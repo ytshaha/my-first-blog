@@ -8,8 +8,11 @@
 
 <div class='container'>
     <div class='row'>
-        <div class='col-6 mx-auto'>
+        <div class='col-4 ml-auto'>
             <a href="{% url 'shop:index' %}"><button class='btn btn-block btn-outline-dark'>홈으로</button></a>
+        </div>
+        <div class='col-4 mr-auto'>
+            <a href="{% url 'orders:list' %}"><button class='btn btn-block btn-outline-dark'>주문/배송현황</button></a>
         </div>
     </div> 
 </div>

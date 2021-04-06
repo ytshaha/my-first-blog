@@ -1,0 +1,212 @@
+{% extends 'shop/base.html' %}
+
+{% block header %}
+<style>
+
+/* .container {
+  background-color: #f2f2f2;
+  padding: 5px 20px 15px 20px;
+  border: 1px solid lightgrey;
+  border-radius: 3px;
+} */
+
+input[type=text] {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+label {
+  margin-bottom: 10px;
+  display: block;
+}
+
+.icon-container {
+  margin-bottom: 20px;
+  padding: 7px 0;
+  font-size: 24px;
+}
+
+
+span.price {
+  float: right;
+  color: grey;
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+{% load humanize %}
+
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center">주소변경</h2>
+          <hr class="index-title-divider">
+      </div>
+  </div>
+  <div class='row'>
+    <div class='col-4 ml-auto text-right'>
+        <a href="{% url 'accounts:home' %}"><button class='btn btn-outline-dark btn-sm'>마이페이지 홈 돌아가기</button></a>
+    </div>
+  </div>
+  <hr class='mt-1'>
+</div>
+
+<div class='container'>
+    <!-- 마지막 체크아웃 부트스트랩 버전-->
+    <div class="row">
+        {% if not shipping_address_obj or change_address %}
+        <div class="col-lg-7 col-md-6 col-sm-12 mb-5 mx-auto">
+            <div class="container">
+                <form method='post' action="{% url 'accounts:change_address' %}">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class='col-12 pl-0 pr-3 text-left'>
+                            <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보 (* 항목은 필수항목입니다.)</p>
+                            <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                        </div>
+                        <div class='row' style='font-size:small;width:100%'>
+                            <div class='col-12'>
+                                <label for="fname"><i class="fa fa-user"></i> 수령인 *<small>필수</small></label>
+                                <input type="text" id="fname" name="full_name" placeholder="수령인 이름(필수)" value='{% if change_address %}{{ shipping_address_obj.full_name }}{% endif %}'>  
+                                <!-- <p>{{ user.full_name }}</p> -->
+                            </div>
+                            <div class='col-12'>
+                                <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                                <input type="text" id="email" name="email" placeholder="수령인 이메일(미입력시 기존 이메일주소로 적용됩니다.)" value='{% if change_address %}{{ shipping_address_obj.email }}{% endif %}'>
+                                <!-- <p>{{ user.email }}</p> -->
+                            </div>
+                        </div>
+                        <div class='row' style='font-size:small;width:100%'>
+                            <div class='col-12'>
+                                <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처 (- 기호 제외하여 입력) *<small>필수</small></label>
+                                <input type="text" id="phone_number" name="phone_number" placeholder="받으실 분의 연락처를 입력해주세요.(필수)" value='{% if change_address %}{{ shipping_address_obj.phone_number }}{% endif %}'>
+                                <div class='row'>
+                                    <div class='col-9 pr-2'>
+                                        <label for="address_line_1"><i class="fas fa-address-book"></i> 주소 *<small>필수</small></label>
+                                        <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="검색버튼을 눌러주세요.(필수)" readonly="readonly" value='{% if change_address %}{{ shipping_address_obj.address_line_1 }}{% endif %}'>
+                                    </div>
+                                   
+                                    <div class='col-3 pl-2'>
+                                        <label for="postal_code" style='color:white;'><small>주소검색</small></label>
+                                        <input class='btn btn-dark btn-block' id="postcodify_search_button" style='top:10px;height:40px;font-size:small;' value='검색'>
+                                    </div>
+                                </div>
+                                <label for="postal_code"><i class="fas fa-university"></i> 우편번호 *<small>필수</small></label>
+                                <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="주소 검색 후 상세주소를 입력해주세요." readonly="readonly" value='{% if change_address %}{{ shipping_address_obj.postal_code }}{% endif %}'>
+                                <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소 *<small>필수</small></label>
+                                <input type="text" id="adr" name="address_line_2" class="postcodify_details" placeholder="주소 검색 후 상세주소를 입력해주세요.(필수)" value='{% if change_address %}{{ shipping_address_obj.address_line_2 }}{% endif %}'>
+                                <input type="hidden" name='post_purpose' value='change_or_add_address'>
+                            </div>
+                        </div> 
+                        <div class='col-12 ml-0 pl-0'>
+                            <button class='btn btn-dark btn-block'>배송지 정보 저장</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-lg-7 col-md-6 col-sm-12 mb-5 mx-auto">
+            <div class="container">
+                <div class="row">
+                    <div class='col pl-0 pr-3 text-left'>
+                        <p class='mb-1' style='font-weight:bold;font-size:large;'>배송지 정보</p>
+                        
+                    </div>
+                    <div class='col text-right'>
+                        
+                        <form method='post' action="{% url 'accounts:change_address' %}">{% csrf_token %}
+                            <button class='btn btn-outline-dark px-2 py-1 mb-1'><small>배송지변경</small></button>
+                            <input type="hidden" name='post_purpose' value='modify_address'>
+                        </form>
+                    </div>
+                    <div class='col-12 px-0'>
+                        <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                    
+                    </div>
+                    <div class='row' style='font-size:small;width:100%'>
+                        <div class='col-12'>
+                            <label for="fname" class='mb-1'><i class="fa fa-user"></i> 수령인</label>
+                            <!-- <input type="text" id="fname" name="full-name" placeholder="홍길동">   -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.full_name }}</p>
+                                
+                        </div>
+                        <div class='col-12'>
+                            <label for="email"><i class="fa fa-envelope"></i> Email</label>
+                            <!-- <input type="text" id="email" name="email" placeholder="john@example.com"> -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.email }}</p>    
+                        </div>
+                        
+                    </div>
+                    <div class='row' style='font-size:small;width:100%'>
+                        <div class='col-12'>
+                            <label for="phone_number"><i class="fas fa-mobile-alt"></i> 연락처(- 기호 제외하여 입력)</label>
+                            <!-- <input type="text" id="phone_number" name="phone_number" placeholder="" readonly="readonly"> -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.phone_number }}</p>
+                            <label for="address_line_1"><i class="fas fa-address-book"></i> 주소</label>
+                            <!-- <input type="text" id="city" name="address_line_1" class='postcodify_address' placeholder="{{ shipping_address_obj.address_line_1 }}" readonly="readonly"> -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_1 }}</p>
+                            <label for="postal_code"><i class="fas fa-university"></i> 우편번호</label>
+                            <!-- <input type="text" id="postal_code" name="postal_code" class='postcodify_postcode5' placeholder="{{ shipping_address_obj.postal_code }}" readonly="readonly"> -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.postal_code }}</p>
+                            <label for="address_line_2"><i class="fas fa-address-card"></i> 상세주소</label>
+                            <!-- <input type="text" id="adr" name="address_line_2" class="postcodify_details" placeholder="{{ shipping_address_obj.address_line_2 }}" readonly="readonly"> -->
+                            <p class='mb-3 p-1' style='border-bottom:1px dashed gray;'>{{ shipping_address_obj.address_line_2 }}</p>
+                            
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+        {% endif %}
+        <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
+            <div class='col pt-4 pb-4 text-center'>
+                <span style="font-size: 0.6em; color: #ffe5a9;">
+                    <i class="fas fa-user-alt fa-5x"></i>
+                </span>
+            </div>
+            <div class="store-card-header">
+                <p class='text-center' style='color:white;font-weight:bold;font-size:xx-large;'>기본배송지 변경안내</p>
+            </div>
+            <div class="info-card-description mb-5 text-left">
+                <ul style='color:white;'>
+                    <p style='font-size:medium;color: #ffe5a9;'><bold>주문결제 시 배송지는 위에 저장하신 기본배송지로 셋팅이 됩니다.</bold></p>
+                    <p style='font-size:medium;color: white;'><bold>기본배송지 변경은 현재 들어와계신 메뉴 및 상품 결제화면에서 모두 변경이 가능합니다.</bold></p>
+                    <p style='font-size:medium;color: white;'><bold>결제 완료 후에는 배송비용으로 인해 고객센터로 연락주셔야 주소 변경이 가능합니다.</bold></p>
+                    
+                    
+                    <!-- <p style='font-size:medium;'>가입이 필요한 일반사용자는 6개월 60만원, 1년 100만원의 가입비를 지불하면 가입티켓을 받아 가입이 가능합니다.</p> -->
+    
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<!-- iamport.payment.js -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+
+
+<!--  주소 API -->
+<script src="//d1p7wdleee1q2z.cloudfront.net/post/search.min.js"></script>
+
+
+<!-- 주소검색 script -->
+<script> 
+
+$("#postcodify_search_button").postcodifyPopUp();
+
+</script>
+{% endblock %} 

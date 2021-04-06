@@ -53,6 +53,11 @@ class CartItemManager(models.Manager):#################210303_여기 좀 나중�
             raise Http404
 
         qs = self.get_queryset().filter(user=user, product_item=product_item_obj, ticket_item=ticket_item_obj, product_type=product_type).exclude(status='paid')
+        
+        # 옵션상품(일반상품만, 경매상품은 사이즈관여 x)에 대해서는 옵션까지 검사해서 동일해야 get하고 아니면 new
+        if product_type == 'normal' and option is not None:
+            qs = qs.filter(option=option)
+        
         if qs.exists():
             new_obj = False
             cart_item_obj = qs.first()

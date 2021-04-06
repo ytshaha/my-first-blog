@@ -212,7 +212,7 @@ span.price {
                             {% if cart_item.product_type == 'ticket' %}
                             <p class='mb-1' style='font-size:small;'>TICKET {{ cart_item.ticket_item.tickets_type }}개</p>
                             {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
-                            <p class='mb-1' style='font-size:small;'>{{ cart_item.product_item.product.title }}</p>
+                            <p class='mb-1' style='font-size:small;'>{{ cart_item.product_item.product.title }}{% if cart_item.option != None %}({{ cart_item.option|floatformat:"0" }}){% endif %}</p>
                             {% else %}
                             <p class='mb-1' style='font-size:small;font-weight:bold;'>물품명잘못지정됨</p>
                             {% endif %}
@@ -276,9 +276,28 @@ span.price {
                                 <button type='submit' class='btn btn-dark btn-block'>결제하기</button>
                             </form>
                             {% else %}
-                            <div class='col-12 check-out-div mr-0 pr-0' style='visibility:hidden;'>
-                                <input type='button' class='btn btn-dark btn-block' id='check-out-button' value='결제하기'>
-                            </div>
+                                <!-- pg에 저장된 카드가 있는지 여부에 따라 버튼 두개 뜨게가능. -->
+                                {% if object.billing_profile.card %}
+                                <div class='col-12 check-out-div mr-0 pr-0 mb-2'>
+                                    <form method='post' action="">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='post_purpose' value='simple_checkout'>
+                                        <input type="hidden" name='customer_uid' value='{{ object.billing_profile.card.customer_uid }}'>
+                                        <input type="hidden" name='merchant_uid' value='{{ merchant_uid }}'>
+                                        <input type="hidden" name='amount' value='{{ amount }}'>
+                                        <input type="hidden" name='name' value='{{ name }}'>
+                                        <button type='submit' class='btn btn-dark btn-block' id='check-out-card-button' value='간편결제하기'>「{{ object.billing_profile.card.card_name }}」 카드로 결제
+                                    </form>
+                                    
+                                </div>
+                                <div class='col-12 check-out-div mr-0 pr-0'>
+                                    <input type='button' class='btn btn-outline-dark btn-block' id='check-out-button' value='결제하기'>
+                                </div>
+                                {% else %}
+                                <div class='col-12 check-out-div mr-0 pr-0'>
+                                    <input type='button' class='btn btn-dark btn-block' id='check-out-button' value='결제하기'>
+                                </div>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -320,7 +339,7 @@ span.price {
 
 
         <!-- 체크아웃정보 -->
-    <div class='row'>
+    <!-- <div class='row'>
         <form action="" class='form-get-data' style='display:none;'>
             
             <input type="hidden" class='pg' name='pg' value='{{ pg }}'/>
@@ -334,7 +353,7 @@ span.price {
             <input type="hidden" class='buyer_addr' name='buyer_addr' value='{{ buyer_addr }}'/>
             <input type="hidden" class='buyer_postcode' name='buyer_postcode' value='{{ buyer_postcode }}'/>
         </form>
-    </div>
+    </div> -->
 </div>
 
 <!-- jQuery -->
@@ -361,51 +380,18 @@ $("#postcodify_search_button").postcodifyPopUp();
 <script type="text/javascript">
 
 $(document).ready(function(){
-    // Auto Search
-    var getForm = $(".form-get-checkout-data")
-    var getButton = getForm.find("#get-checkout-data-btn")
-    getButton.click(function (event){
-        var promise = $.ajax({
-            url: "{% url 'carts:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
-            type: 'POST',
-            dataType: 'json',
-            data: {get_data: "True",
-                   post_purpose: "fianl_checkout"
-                },
-            
-            success: function(data){
-                // success start
-                console.log("데이터를 성공적으로 받았쪄염.")
-
-                console.log($(".pg").val())
-
-                
-                // 데이터 성공적으로 들어오기에 여기에 결재 function 넣는다.
-                 
-                //결재 펑션 여기가 끝이다.
-                },
-            
-            // suceess end
-            
-            // error start
-            //체크아웃데이터를 못받았을떼 웁스
-            error: function(errordata){
-                $.alert({
-                    title: "Oops!",
-                    content: "An error occurred",
-                    theme: "modern"
-                })
-            }
-        })
-    })
-    var checkoutDiv = $(".check-out-div")
-    checkoutDiv.css('visibility', 'visible')
+    //  일반결제(1회성)
     var checkoutButton = $("#check-out-button")
-    
     checkoutButton.click(function (event){
         console.log("클릭됐쪄염")
         requestPay()
-    })
+    });
+    var checkoutCardButton = $("#check-out-card-button")
+    checkoutCardButton.click(function (event){
+        console.log("클릭됐쪄염")
+        requestCardPay()
+    });
+
 
 
 })
@@ -420,16 +406,16 @@ function requestPay() {
     console.log("리퀘스트 페이 실행도ㅣ쪄염")
     // 결제요청
     IMP.request_pay({ // param
-        pg : $(".pg").val(), // pg 사 선택
-        pay_method : $(".pay_method").val(),
-        merchant_uid : $(".merchant_uid").val(),// 'merchant_' + new Date().getTime(),
-        name : $(".name").val(),
-        amount : $(".amount").val(),
-        buyer_email : $(".buyer_email").val(),
-        buyer_name : $(".buyer_name").val(),
-        buyer_tel : $(".buyer_tel").val(),
-        buyer_addr : $(".buyer_addr").val(),
-        buyer_postcode : $(".buyer_postcode").val(),
+        pg : '{{ pg }}', // pg 사 선택
+        pay_method : '{{ pay_method }}',
+        merchant_uid : '{{ merchant_uid }}',// 'merchant_' + new Date().getTime(),
+        name : '{{ name }}',
+        amount : '{{ amount }}',
+        buyer_email : '{{ buyer_email }}',
+        buyer_name : '{{ buyer_name }}',
+        buyer_tel : '{{ buyer_tel }}',
+        buyer_addr : '{{ buyer_addr }}',
+        buyer_postcode : '{{ buyer_postcode }}',
         m_redirect_url : "https://moum8.herokuapp.com/cart/checkout/iamport/"
     }, function (rsp) {
         if (rsp.success) {
@@ -488,6 +474,88 @@ function requestPay() {
     });
 }
 
-</script>
+// function requestCardPay() {
+// // IMP.request_pay(param, callback) 호출
+//     var IMP = window.IMP;
+//     var code = "imp30832141";  // FIXME: 가맹점 식별코드
+//     IMP.init(code);
+    
+//     console.log("리퀘스트 카드 페이 실행됐습니다.")
+//     console.log('{{ merchant_uid }}')
+    
+//     // 결제요청
+//     IMP.request_pay({ // param
+//         pg : '{{ pg }}', // pg 사 선택
+//         pay_method : '{{ pay_method }}',
+//         merchant_uid : '{{ merchant_uid }}',// 'merchant_' + new Date().getTime(),
+//         customer_uid : '{{ object.billing_profile.card.customer_uid }}',
+//         name : '{{ name }}',
+//         amount : '{{ amount }}',
+//         buyer_email : '{{ buyer_email }}',
+//         buyer_name : '{{ buyer_name }}',
+//         buyer_tel : '{{ buyer_tel }}',
+//         buyer_addr : '{{ buyer_addr }}',
+//         buyer_postcode : '{{ buyer_postcode }}',
+//         m_redirect_url : "https://moum8.herokuapp.com/cart/checkout/iamport/"
+//     }, function (rsp) {
+//         if (rsp.success) {
+//             //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
+//             jQuery.ajax({
+//                 url: "{% url 'carts:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+//                 type: 'POST',
+//                 dataType: 'json',
+//                 data: {
+//                     imp_uid: rsp.imp_uid,
+//                     customer_uid: '{{ object.billing_profile.card.customer_uid }}',
+//                     merchant_uid : '{{ merchant_uid }}',
+//                     amount : '{{ amount }}',
+//                     //기타 필요한 데이터가 있으면 추가 전달
+//                 },
+//             }).done(function (data) {
+//                 //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
+//                 alert("ajax done");               
+//                 console.log("ajax done");
+//                 if (data.status=='success') {
+//                     var msg = '결제가 완료되었습니다.';
+//                     msg += '\n고유ID : ' + rsp.imp_uid;
+//                     msg += '\n상점 거래ID : ' + rsp.merchant_uid;
+//                     msg += '\n결제 금액 : ' + rsp.paid_amount;
+//                     msg += '카드 승인번호 : ' + rsp.apply_num;
+//                     alert(msg);
+//                     console.log(msg);
+//                     var checkOutText = $(".check-out-complete-text")
+//                     checkOutText.text("결재가 성공하였습니다.")
+//                     window.location.href= "{% url 'carts:success' %}"
 
+//                 } else {
+//                     //[3] 아직 제대로 결제가 되지 않았습니다.
+//                     //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
+//                     var msg = '아직 제대로 결제가 되지 않았습니다.';
+//                     alert(msg);
+//                     console.log(msg);
+//                 }
+//             }).fail(function () {
+//                 alert("ajax fail");
+//                 console.log("ajax fail");
+//             }).always(function () {
+//                 alert("ajax always");
+//                 console.log("ajax always");
+//             });
+            
+//             // window.location.href= "{% url 'carts:payment_success' %}"
+
+
+//         } else {
+//             var msg = data.message;
+//             msg += '에러내용 : ' + rsp.error_msg;
+//             alert(msg);
+//             var checkOutText = $(".check-out-complete-text")
+//             checkOutText.text("결재가 실패하였습니다.")
+//             // 실패시 이동할 페이지
+//             // window.location.href= "{% url 'carts:payment_fail' %}"
+//         }
+//     });
+// }
+
+</script>
 {% endblock %} 

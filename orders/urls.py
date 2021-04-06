@@ -8,5 +8,7 @@ app_name = 'orders'
 urlpatterns = [
     path('', views.OrderListView.as_view(), name='list'),
     path('<order_id>/', views.OrderDetailView.as_view(), name='detail'),
-    path('order/cancel/', views.cancel_order, name='cancel'),
+    path('order/cancel/cancel', views.cancel_order, name='cancel_order'),
+    path('order/cancel/', views.cancel_request, name='cancel_request'),
+    
     ]

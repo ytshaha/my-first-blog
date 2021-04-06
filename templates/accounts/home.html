@@ -3,7 +3,7 @@
 {% block header %}
 <style>
 .my-page-a {
-    background-color: #ddd;
+    background-color: white;
     border: none;
     color: black;
     padding: 16px 32px;
@@ -51,7 +51,54 @@ a:hover{
 
 <div class='container my-5'>
     <div class='row'>
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
+        <div class='col-12 col-lg-8 mx-auto'>
+            <div class='row'>
+                <div class="col-12 p-0 m-0" >
+                    <a class='' href="{% url 'orders:list' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="fas fa-truck fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>주문/배송</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col p-0 m-0" >
+                    <a class="" href="{% url 'products:product_wish_list' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="fas fa-heart fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>관심리스트</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="col p-0 m-0" >
+                    <a class='' href="{% url 'points:home' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="fas fa-plus-circle fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>보유포인트</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+            
+        </div>
+        <!-- <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
             <a class='' href="{% url 'accounts:user-update' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -60,56 +107,65 @@ a:hover{
                         </span>
                     </div>
                     <div class='text-center my-5'>
-                        <p style='font-size:large;font-weight:bold;'>개인정보변경</p>
+                        <p style='font-size:x-large;font-weight:bold;'>개인정보변경</p>
                     </div>
                 </div>
             </a>
-        </div>
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
-            <a class='' href="{% url 'password_change' %}" style='color:black'>
-                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
-                    <div class='text-center my-5'>
-                        <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="fas fa-unlock-alt fa-3x my-page-icon"></i>
-                        </span>
-                    </div>
-                    <div class='text-center my-5'>
-                        <p style='font-size:large;font-weight:bold;'>비밀번호변경</p>
-                    </div>
+        </div> -->
+        
+    </div>
+    <div class='row'>
+        <div class='col-12 col-lg-8 mx-auto'>
+            <div class='row'>
+                <div class="col p-0 m-0" >
+                    <a class='' href="{% url 'accounts:change_address' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="fas fa-user-circle fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>기본배송지 변경</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
-            <a class='' href="{% url 'orders:list' %}" style='color:black'>
-                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
-                    <div class='text-center my-5'>
-                        <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="far fa-credit-card fa-3x my-page-icon"></i>
-                        </span>
-                    </div>
-                    <div class='text-center my-5'>
-                        <p style='font-size:large;font-weight:bold;'>주문/배송</p>
-                    </div>
+                <div class="col p-0 m-0" >
+                    <a class='' href="{% url 'accounts:card_home' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="far fa-credit-card fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>결제카드 설정</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+                <div class="col p-0 m-0" >
+                    <a class='' href="{% url 'password_change' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="fas fa-unlock-alt fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>비밀번호 변경</p>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
-            <a class='' href="{% url 'points:home' %}" style='color:black'>
-                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
-                    <div class='text-center my-5'>
-                        <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="fas fa-plus-circle fa-3x my-page-icon"></i>
-                        </span>
-                    </div>
-                    <div class='text-center my-5'>
-                        <p style='font-size:large;font-weight:bold;'>보유포인트</p>
-                    </div>
-                </div>
-            </a>
-        </div>
+        
 
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
+        <!-- <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
             <a class='' href="" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -122,24 +178,11 @@ a:hover{
                     </div>
                 </div>
             </a>
-        </div>
+        </div> -->
 
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
-            <a class="" href="{% url 'products:product_wish_list' %}" style='color:black'>
-                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
-                    <div class='text-center my-5'>
-                        <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="fas fa-heart fa-3x my-page-icon"></i>
-                        </span>
-                    </div>
-                    <div class='text-center my-5'>
-                        <p style='font-size:large;font-weight:bold;'>관심리스트</p>
-                    </div>
-                </div>
-            </a>
-        </div>
+        
 
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
+        <!-- <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
             <a class='' href="{% url 'faq' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -153,40 +196,59 @@ a:hover{
                     </div>
                 </div>
             </a>
-        </div>
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
-            <a class='' href="{% url 'shop:introduction' %}" style='color:black'>
-                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
-                    <div class='text-center my-5'>
-                        <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="fas fa-building fa-3x my-page-icon"></i>
-                        </span>
-                    </div>
-                    <div class='text-center my-5'>
-                        <p style='font-size:large;font-weight:bold;'>ABOUT MOUM</p>
-                    </div>
+        </div> -->
+    <div class='row'>
+        <div class='col-12 col-lg-8 mx-auto'>
+            <div class='row'>
+                <div class="col p-0 m-0" >
+                    <a class='' href="{% url 'shop:introduction' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="fas fa-building fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>ABOUT MOUM8</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
-        </div>
-        {% if register_ticket_qs.count > 0 %}
-        <div class="col-6 col-lg-3 col-md-3 col-sm-6 p-0 m-0" >
-            <a class='' href="{% url 'accounts:send_register_ticket' %}" style='color:black'>
-                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
-                    <div class='text-center my-5'>
-                        <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="fas fa-paper-plane fa-3x my-page-icon"></i>
-                        </span>
-                    </div>
-                    <div class='text-center my-5'>
-                        <p style='font-size:large;font-weight:bold;'>SEND REGISTER TICKET</p>
-                    </div>
+                {% if register_ticket_qs.count > 0 %}
+                <div class="col p-0 m-0" >
+                    <a class='' href="{% url 'accounts:send_register_ticket' %}" style='color:black'>
+                        <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                            <div class='text-center my-5'>
+                                <span class='' style="font-size: 1.5em; color: #423f3b;">
+                                    <i class="fas fa-paper-plane fa-3x my-page-icon"></i>
+                                </span>
+                            </div>
+                            <div class='text-center my-5'>
+                                <p style='font-size:x-large;font-weight:bold;'>가입티켓 전송<br>(고객전용)</p>
+                            </div>
+                        </div>
+                    </a>
                 </div>
-            </a>
+                {% endif %}
+            </div>
         </div>
-        {% endif %}
-
     </div>
 </div>
 
+
+
+<script>
+
+var menuBoxes = document.getElementsByClassName('my-page-a');
+for (var i = 0; i < menuBoxes.length; i++) {
+    menuBoxes[i].onmouseover = function(e) {
+        var color = '#'+Math.floor(Math.random()*16777215).toString(16);
+        var colorString = '0px 0px 30px 0px ' + color;
+        this.style['box-shadow'] = colorString;
+        this.style['-webkit-box-shadow'] = colorString;
+        this.style['-moz-box-shadow'] = colorString;
+    }  
+}
+</script>
 
 {% endblock %}

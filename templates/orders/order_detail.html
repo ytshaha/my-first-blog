@@ -18,8 +18,13 @@
             <hr class="index-title-divider">
         </div>
     </div>
+    <div class='row'>
+        <div class='col-4 ml-auto text-right'>
+            <a href="{% url 'accounts:home' %}"><button class='btn btn-outline-dark btn-sm'>마이페이지 홈 돌아가기</button></a>
+        </div>
+    </div>
+    <hr class='mt-1'>
 </div>  
-<hr/>
 
 <div class='container my-2 py-2 px-4' style='min-height:300px;'>
     <div class='row'>
@@ -49,19 +54,19 @@
                             <tbody>
                                 <tr>
                                     <td class="align-middle table-bidding-info" style='font-size:small;'>고객성명</td>
-                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.full_name }}</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.final_address.full_name }}</td>
                                 </tr>
                                 <tr>
                                     <td class="align-middle table-bidding-info" style='font-size:small;'>이메일</td>
-                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.email }}</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.final_address.email }}</td>
                                 </tr>
                                 <tr>
                                     <td class="align-middle table-bidding-info" style='font-size:small;'>전화번호</td>
-                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.phone_number }}</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.final_address.phone_number }}</td>
                                 </tr>
                                 <tr>
                                     <td class="align-middle table-bidding-info" style='font-size:small;'>배송지 주소</td>
-                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.shipping_address.get_address }}</td>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>{{ object.final_address.get_address }}</td>
                                 </tr>
                                 <tr>
                                     <td class="align-middle table-bidding-info" style='font-size:small;'>총 금액</td>
@@ -130,7 +135,7 @@
                     <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
                     {% endif %}
                     {% if not cart_item.is_reviewed and cart_item.product_type != 'ticket' and object.status == 'shipped' %}
-                    <div class='col'>
+                    <div class='col text-left'>
                         <form method='post' action="{% url 'reviews:upload' %}">
                             {% csrf_token %}
                             <input type="hidden" name='post_purpose' value='write_review'>
@@ -138,9 +143,13 @@
                             <button type='submit' class='btn btn-outline-dark btn-sm btn-block'>리뷰 작성</button>
                         </form>
                     </div>
-                    {% else %}
-                    <div class='col'>
-                        <button class='btn btn-outline-dark btn-sm btn-block'>리뷰 작성완료</button>
+                    {% elif object.status == 'shipping' or object.status == 'paid' %}
+                    <div class='col text-left'>
+                        <button class='btn btn-outline-dark btn-sm btn-block'>상품 배송완료 후 리뷰작성가능.</button>
+                    </div>
+                    {% elif cart_item.is_reviewed %}
+                    <div class='col text-left'>
+                        <button class='btn btn-outline-dark btn-sm btn-block'>이미 리뷰가 작성되었습니다.</button>
                     </div>
                     {% endif %}
                     
@@ -163,7 +172,7 @@
 
 <hr>
 
-<div class='col-12 my-5 px-5 rounded' style='background-color:#423F3B;'>
+<div class='col-12 my-5 px-5 rounded mt-5' style='background-color:#423F3B;'>
     <div class='container'>
         <div class='col pt-4 pb-4 text-center'>
             <span style="font-size: 0.6em; color: #ffe5a9;">
@@ -183,7 +192,6 @@
             
             </ul>
         </div>
-        <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
     </div>
 </div>
 <hr>

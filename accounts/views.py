@@ -25,6 +25,7 @@ from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, User
 from .models import GuestEmail, EmailActivation, RegisterTicket
 from .signals import user_logged_in
 from tickets.models import Ticket
+
 User = get_user_model()
 
 # Create your views here.
@@ -332,6 +333,7 @@ def send_register_ticket(request):
     context = {
         'register_ticket_qs' : register_ticket_qs
     }
+
     return render(request, 'accounts/send_register_ticket.html', context)
 
 def send_register_ticket_success(request):
@@ -342,6 +344,11 @@ def send_register_ticket_success(request):
         if User.objects.filter(email=email).exists():
             messages.success(request, '이미 회원인 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
             return redirect('accounts:send_register_ticket')
+        register_ticket_obj = RegisterTicket.objects.get(ticket_number=ticket_number)
+        if register_ticket_obj.shared:
+            messages.success(request, '이미 보낸 티켓을 선택하셨습니다. 전송되지 않은 티켓을 선택해주세요.')
+            return redirect('accounts:send_register_ticket')
+        
         # 가입티켓 상태변경(보내짐으로 바꾸고 메일주소도 넣기.)
         register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)
         register_ticket_obj = register_ticket_qs.first()
@@ -414,3 +421,8 @@ def get_register_ticket_excel(request):
         return render(request, 'accounts/get_register_ticket_excel.html', context)
 
     return render(request, 'accounts/get_register_ticket_excel.html', {})
+
+
+
+
+

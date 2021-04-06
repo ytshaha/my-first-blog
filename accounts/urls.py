@@ -2,6 +2,8 @@ from django.conf.urls import url
 from django.urls import path, include
 
 from . import views
+from addresses.views import change_address
+from billing.views import CardHomeListView, card_register, card_select
 
 app_name = 'accounts'
 urlpatterns = [
@@ -15,6 +17,12 @@ urlpatterns = [
     path('register_ticket/send/', views.send_register_ticket, name='send_register_ticket'),
     path('register_ticket/send/success/', views.send_register_ticket_success, name='send_register_ticket_success'),
     path('register_ticket/download/', views.get_register_ticket_excel, name='get_register_ticket_excel'),
+    path('change/address/', change_address, name='change_address'),
+    path('card/', CardHomeListView.as_view(), name='card_home'),
+    path('card/register/', card_register, name='card_register'),
+    path('card/select/', card_select, name='card_select'),
+    
+    
     ]
 
 

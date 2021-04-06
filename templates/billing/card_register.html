@@ -1,0 +1,145 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+{% load humanize %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">{{ user }}님의 결제카드 추가등록</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-4 ml-auto text-right'>
+            <a href="{% url 'accounts:home' %}"><button class='btn btn-outline-dark btn-sm'>마이페이지 홈 돌아가기</button></a>
+        </div>
+    </div>
+    <hr class='mt-1'>
+</div>  
+
+<div class='container'>
+    <div class='row'>
+        <div class='col-12 col-lg-8 col-md-10 col-sm-12 mx-auto'>
+            <div class='row'>
+                <div class='col mb-2'>
+                    <input type="text" id='id_card_name' class='form-control' name='카드이름' placeholder='등록할 카드의 카드이름(별칭)을 입력해주세요.'>
+                </div>
+            </div>
+            
+            <input type='button' class='btn btn-dark btn-block' id='register-card-button' value='카드등록'>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<!-- jQuery -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+<!-- iamport.payment.js -->
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+
+<!-- jqeury-confirm -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+    var checkoutButton = $("#register-card-button")
+    checkoutButton.click(function (event){
+        console.log("클릭됐쪄염")
+        requestPay()
+    });        
+
+});
+    
+
+
+    //  일반결제(1회성)
+    
+
+
+
+// 그냥 펑션 바깥에 꺼냈다. 나중에 실행만하자.
+function requestPay() {
+// IMP.request_pay(param, callback) 호출
+    var IMP = window.IMP;
+    var code = "imp30832141";  // FIXME: 가맹점 식별코드
+    IMP.init(code);
+    
+    console.log("리퀘스트 페이 실행도ㅣ쪄염")
+    // 결제요청
+    // console.log({{ pg }})
+    console.log('{{ pg }}')
+    
+    IMP.request_pay({ // param
+        // pg : '{{ pg }}', // pg 사 선택
+        // pay_method : '{{ pay_method }}',
+        // merchant_uid : '{{ merchant_uid }}',
+        // // customer_uid : '{{ customer_uid }}',
+        // name : '{{ name }}',
+        // amount : '{{ amount }}',
+        // buyer_email : '{{ buyer_email }}',
+        // buyer_name : '{{ buyer_name }}',
+        // buyer_tel : '{{ buyer_tel }}',
+        // buyer_addr : '{{ buyer_addr }}',
+        // buyer_postcode : '{{ buyer_postcode }}',
+        // m_redirect_url : "https://moum8.herokuapp.com/cart/checkout/iamport/"
+        pg : "html5_inicis.INIBillTst", // 실제 계약 후에는 실제 상점아이디로 변경
+        pay_method : 'card', // 'card'만 지원됩니다.
+        merchant_uid : 'merchant_' + new Date().getTime(),
+        name : '최초인증결제',
+        amount : 0, // 결제창에 표시될 금액. 실제 승인이 이뤄지지는 않습니다. (모바일에서는 가격이 표시되지 않음)
+        customer_uid : '{{ customer_uid }}', //customer_uid 파라메터가 있어야 빌링키 발급을 시도합니다.
+        buyer_email : 'iamport@siot.do',
+        buyer_name : '아임포트',
+        buyer_tel : '02-1234-1234'
+    }, function (rsp) {
+        if (rsp.success) {
+            console.log("Ajax 실행하나여???.")
+            jQuery.ajax({
+                url: "{% url 'accounts:card_register' %}", // 서비스 웹서버
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    imp_uid: rsp.imp_uid,
+                    customer_uid: '{{ customer_uid }}', // 카드(빌링키)와 1:1로 대응하는 값
+                    card_name: $("#id_card_name").val()
+                },
+           
+            }).done(function (data) {
+                //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
+                $.alert("ajax done");               
+                console.log("ajax done");
+                if (data.status=='success') {
+                    $.alert("카드가 등록되었습니다.");               
+                    var msg = '카드등록이 완료되었습니다.';
+                    msg += '\n고유ID : ' + rsp.imp_uid;
+                    msg += '\n상점 거래ID : ' + rsp.merchant_uid;
+                    msg += '\n고객아이디 : ' + rsp.customer_uid;
+                    $.alert(msg);
+                    console.log(msg);
+                    window.location.href= "{% url 'accounts:card_home' %}"
+
+                } else {
+                    //[3] 아직 제대로 결제가 되지 않았습니다.
+                    //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
+                    $.alert("카드가 등록되지 않았습니다.")
+                }
+            });
+
+        } else {
+            // var msg = data.message;
+            // msg += '에러내용 : ' + rsp.error_msg;
+            // alert(msg);
+            // var checkOutText = $(".check-out-complete-text")
+            // checkOutText.text("빌링키 발행이 실패했습니다.")
+            // 실패시 이동할 페이지
+            // window.location.href= "{% url 'carts:payment_fail' %}"
+        }
+    });
+}
+</script>
+{% endblock %}

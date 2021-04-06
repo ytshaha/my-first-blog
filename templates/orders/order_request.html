@@ -1,0 +1,40 @@
+{% extends 'shop/base.html' %}
+{% block content %}
+{% load humanize %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">주문 취소</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+
+<div class='container my-2 py-2 px-4' style='min-height:300px;'>
+    <div class='row'>
+        <div class='col-4 ml-auto text-right'>
+            <a href="{% url 'orders:list' %}"><button class='btn btn-outline-dark btn-sm'>주문현황 돌아가기</button></a>
+                        
+        </div>
+    </div>
+    <hr>
+    <div class='row'>
+        <div class='col-12 col-lg-6 col-md-12 col-sm-12 mx-auto'>
+            <!-- 아이템들 -->
+            <div class='row'>
+                <div class='col-12 pl-0 pr-3 mx-auto'>
+                    <form method='POST' action="{% url 'orders:cancel_order' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name='order_id' value="{{ order_id }}">
+                        <p>취소사유: <span><input type="text" class='form-control' name='cancel_reson' placeholder='취소사유를 기록해주세요.'></span></p>
+                        <button type='submit' class='btn btn-outline-dark btn-block'>취소 요청</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -298,19 +298,6 @@ span.price {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- jQuery -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
 <!-- iamport.payment.js -->
@@ -347,7 +334,7 @@ $(document).ready(function(){
             // error start
             //체크아웃데이터를 못받았을떼 웁스
             error: function(errordata){
-                $.alert({
+                alert({
                     title: "Oops!",
                     content: "An error occurred",
                     theme: "modern"

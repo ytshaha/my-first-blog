@@ -2,6 +2,9 @@ import math
 from django.db import models
 from django.db.models.signals import pre_save, post_save
 from django.urls import reverse
+from django.conf import settings
+from datetime import timezone, datetime, timedelta
+from pytz import timezone
 
 from addresses.models import Address
 from billing.models import BillingProfile
@@ -9,6 +12,7 @@ from carts.models import Cart
 from tickets.models import TicketItem
 from mysite.utils import unique_order_id_generator
 
+User = settings.AUTH_USER_MODEL
 
 ORDER_STATUS_CHOICES = (
     ('created','Created'),
@@ -31,6 +35,40 @@ ORDER_STATUS_CHOICES = (
 
 #     class Meta:
 #         abstract = True
+
+
+
+class OrderAddress(models.Model):
+    user            = models.ForeignKey(User, null=True, blank=True, on_delete=models.CASCADE)
+    email           = models.EmailField(max_length=255)
+    phone_number    = models.CharField(max_length=255, blank=True, null=True)
+    full_name       = models.CharField(max_length=255, blank=True, null=True)
+    
+    address_line_1  = models.CharField(max_length=120)
+    address_line_2  = models.CharField(max_length=120, null=True, blank=True)
+    postal_code     = models.CharField(max_length=120)
+    timestamp       = models.DateTimeField(auto_now_add=True)
+
+
+    def __str__(self):
+        datetime_format = "%Y-%m-%d %H:%M:%S"
+        settings_time_zone = timezone(settings.TIME_ZONE)
+        timestamp_localize = self.timestamp.astimezone(settings_time_zone)
+        formatted_timestamp = timestamp_localize.strftime(datetime_format)
+        return "{}_{}".format(self.user, formatted_timestamp)
+
+
+    def get_address(self):
+        return "{line1} {line2}({postal})".format(
+            line1 = self.address_line_1,
+            line2 = self.address_line_2,
+            postal = self.postal_code
+        )
+
+    def get_postal_code(self):
+        return self.postal_code
+    
+
 
 class OrderManagerQuerySet(models.query.QuerySet):
     def by_request(self, request):
@@ -74,6 +112,7 @@ class Order(models.Model):
     order_id            = models.CharField(max_length=120, blank=True)
     shipping_address    = models.ForeignKey(Address, related_name='shopping_address', null=True, blank=True, on_delete=models.CASCADE)
     billing_address     = models.ForeignKey(Address, related_name='billing_address', null=True, blank=True, on_delete=models.CASCADE)
+    final_address       = models.ForeignKey(OrderAddress, null=True, blank=True, on_delete=models.CASCADE)
     cart                = models.ForeignKey(Cart, on_delete=models.CASCADE, blank=True, null=True)
     status              = models.CharField(max_length=120, default='created', choices=ORDER_STATUS_CHOICES)
     total               = models.IntegerField(default=0) # 물건값
@@ -283,3 +322,4 @@ post_save.connect(post_save_order, sender=Order)
 #         instance.update_total()
 
 # post_save.connect(post_save_ticketorder, sender=TicketOrder)
+

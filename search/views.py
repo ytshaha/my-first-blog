@@ -19,5 +19,5 @@ class SearchProductListView(generic.ListView):
         print(request.GET)
         query = request.GET.get('q')
         if query is not None:
-            return ProductItem.objects.search(query)
+            return ProductItem.objects.search(query).filter(featured=True).exclude(bidding_on='bidding_end')
         return ProductItem.objects.none()
