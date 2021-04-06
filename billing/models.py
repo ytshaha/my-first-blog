@@ -42,7 +42,7 @@ class Card(models.Model):
     card_name       = models.CharField(default='abc', max_length=120)
     customer_uid    = models.CharField(default='abc', max_length=120)
     active          = models.BooleanField(default=False)
-    timestamp       = models.DateTimeField(auto_now_add=True)
+    # timestamp       = models.DateTimeField(auto_now_add=True)
 
     objects = CardManager()
 
