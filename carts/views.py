@@ -900,7 +900,9 @@ def checkout_iamport(request):
             'amount': order_obj.checkout_total,
             'name': name,
         }
+        print('payload', payload)
         response = iamport.pay_again(**payload)
+        print('response', response)
         order_amount = order_obj.checkout_total
         is_paid = iamport.is_paid(order_amount, merchant_uid=merchant_uid)
         status = response['status']

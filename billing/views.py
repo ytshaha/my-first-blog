@@ -29,7 +29,7 @@ def payment_method_view(request):
     billing_profile, billing_profile_created = BillingProfile.objects.new_or_get(request)
     if not billing_profile:
         return redirect("/cart")
-        
+         
     next_url = None
     next_ = request.GET.get('next')
     if is_safe_url(next_, request.get_host()):

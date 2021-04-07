@@ -35,7 +35,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <moum8.ecommerce@gmail.com>'
-BASE_URL = 'https://moum8.herokuapp.com'
+BASE_URL = 'https://moum8.com'
 
 MANAGERS = (
     ("MOUM8 ecommerce", "moum8.ecommerce@gmail.com"),
