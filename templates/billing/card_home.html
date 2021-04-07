@@ -10,7 +10,7 @@
         </div>
     </div>
     <div class='row'>
-        <div class='col-4 ml-auto text-right'>
+        <div class='col-6 ml-auto text-right'>
             <a href="{% url 'accounts:home' %}"><button class='btn btn-outline-dark btn-sm'>마이페이지 홈 돌아가기</button></a>
         </div>
     </div>
@@ -21,12 +21,12 @@
     <div class='col-12 col-lg-10 col-md-10 col-sm-12 mx-auto mb-2'>
         <div class='row'>
             {% if cards.count > 1 %}
-            <div class='col-4 mr-auto text-left'>
-                <a href="{% url 'accounts:card_select' %}"><button type='submit' class='btn btn-outline-dark btn-sm'>간편 결제용 카드 선택하기</button></a>
+            <div class='col-6 mr-auto text-left'>
+                <a href="{% url 'accounts:card_select' %}"><button type='submit' class='btn btn-outline-dark btn-sm'>간편 결제용 카드 선택</button></a>
             </div>
             {% endif %}
-            <div class='col-4 ml-auto text-right'>
-                <a href="{% url 'accounts:card_register' %}"><button type='submit' class='btn btn-outline-dark btn-sm'>간편 결제용 카드 추가등록하기</button></a>
+            <div class='col-6 ml-auto text-right'>
+                <a href="{% url 'accounts:card_register' %}"><button type='submit' class='btn btn-outline-dark btn-sm'>카드 추가등록</button></a>
             </div>
         </div>
     </div>

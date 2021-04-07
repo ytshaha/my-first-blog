@@ -94,7 +94,6 @@
                 </div>
                 <div class='col'>
                     <div class='row'>
-                        {% if not comment.approved_comment %}
                         <div>
                             <form method="POST" action="{% url 'reviews:comment_remove' pk=comment.pk %}">
                                 {% csrf_token %}<input class='btn btn-outline-danger btn-sm mx-1' type="submit" value="DELETE">
@@ -107,11 +106,11 @@
                         </div>
                     </div>
                 </div>
-                    {% endif %}
+                <hr>
                 <div class='col-12 text-left'>
                     <p>{{ comment.text|linebreaks }}</p>
                 </div>
-                
+                <hr>
             </div>
             {% endif %}
             {% empty %}
