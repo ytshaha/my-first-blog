@@ -214,7 +214,7 @@ class EmailActivation(models.Model):
     def send_activation(self):
         if not self.activated and not self.forced_expired:
             if self.key:
-                base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com')
+                base_url = getattr(settings, 'BASE_URL', 'https://moum8.com')
                 key_path = reverse("accounts:email-activate", kwargs={'key':self.key}) # use reverse
                 path = "{base}{path}".format(base=base_url, path=key_path)
                 context = {
@@ -223,7 +223,7 @@ class EmailActivation(models.Model):
                 }
                 txt_ = get_template("registration/emails/verify.txt").render(context)
                 html_ = get_template("registration/emails/verify.html").render(context)
-                subject = '명품 병행수입 쇼핑몰_MOUM8_가입 계정활성화 메일_Activation mail for MOUM8'
+                subject = '명품 병행수입 쇼핑몰_MOUM8_가입 계정활성화 메일'
                 from_email = settings.DEFAULT_FROM_EMAIL
                 recipient_list = [self.email]
 

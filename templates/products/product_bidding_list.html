@@ -579,9 +579,11 @@ $(document).ready(function(){
             success: function(data){
                 if(data.added == "true"){
                     wishBtn.children().css('color','rgb(0, 0, 0)')
+                    alert("위시리스트에서 제거되었습니다.")
                 }
                 else{
                     wishBtn.children().css('color','rgb(197, 197, 197)')
+                    alert("위시리스트에 추가되었습니다.")
                 }
 
                 }

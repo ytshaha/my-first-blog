@@ -1,0 +1,79 @@
+{% extends 'shop/base.html' %}
+
+{% block header %}
+{% endblock %}
+
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center">고객 주문 체크</h2>
+          <hr class="index-title-divider">
+      </div>
+  </div>
+</div>  
+
+<div class='container my-2 py-2 px-4' style='min-height:300px;'>
+  <div class='row'>
+      <div class='col-4 ml-auto text-right'>
+          <a href="{% url 'staff:home' %}"><button class='btn btn-outline-dark btn-sm'>스탭 홈 돌아가기</button></a>
+                      
+      </div>
+  </div>
+  <hr>
+
+
+
+  <div class='row'>
+      <div class='col-12 mx-auto'>
+          <!-- 아이템들 -->
+          <div class='row'>
+            <div class='col-12'>
+                <!-- 아이템들 -->
+                <div class='row'>
+                    <div class='row mb-5' style='width:100%;'>
+                        <div class='col'>
+                            <table class="table table-bidding-info text-center align-middle">
+                                <!-- <colgroup>
+                                    <col span="1" style="width: 30%;">
+                                    <col span="1" style="width: 70%;">
+                                </colgroup> -->
+                                <thead class=>
+                                    <th class='align-middle' scope="col" style='font-size:small;'>고객성명</th>
+                                    <th class='align-middle' scope="col" style='font-size:small;'>이메일</th>
+                                    <th class='align-middle' scope="col" style='font-size:small;'>전화번호</th>
+                                    <th class='align-middle' scope="col" style='font-size:small;'>배송지 주소</th>
+                                    <th class='align-middle' scope="col" style='font-size:small;'>총 금액</th>
+                                    <th class='align-middle' scope="col" style='font-size:small;'>배송 요청사항</th>
+                                    <th class='align-middle' scope="col" style='font-size:small;'>주문상태</th>
+                                </thead>
+                                <tbody>
+                                    {% for order in orders %}
+                                    <tr>
+                                        <td class="align-middle table-bidding-info" style='font-size:small;'>{{ order.final_address.full_name }}</td>
+                                        <td class="align-middle table-bidding-info" style='font-size:small;'>{{ order.final_address.email }}</td>
+                                        <td class="align-middle table-bidding-info" style='font-size:small;'>{{ order.final_address.phone_number }}</td>
+                                        <td class="align-middle table-bidding-info" style='font-size:small;'>{{ order.final_address.get_address }}</td>
+                                        <td class="align-middle table-bidding-info" style='font-size:small;'>{{ order.cart.total|intcomma }} 원</td>
+                                        <td class="align-middle table-bidding-info" style='font-size:small;'>{% if order.cart.customer_request %}{{ order.cart.customer_request }}{% else %}요청사항 없음.{% endif %}</td>
+                                        <td class="align-middle table-bidding-info" style='font-size:small;'>{{ order.status }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+        
+                            <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

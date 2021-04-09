@@ -1396,3 +1396,35 @@ def payment_fail(request):
 @login_required
 def payment_success(request):
     return render(request, 'carts/payment_success.html', {})
+
+
+
+
+# 체크아웃완료되면 이메일 보내기.
+def checkout_complete_mail(email, order):
+    base_url = getattr(settings, 'BASE_URL', 'https://moum8.com')
+    key_path = reverse("home") # use reverse
+    path = "{base}{path}".format(base=base_url, path=key_path)
+    context = {
+        'path':path,
+        'email': email
+    }
+    txt_ = get_template("registration/emails/verify.txt").render(context)
+    html_ = get_template("registration/emails/verify.html").render(context)
+    subject = '명품 병행수입 쇼핑몰_MOUM8_가입 계정활성화 메일'
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [self.email]
+
+    # send_mail = send_email(
+    #                         emailMsg=txt_, 
+    #                         to=self.email, 
+    #                         subject=subject)
+    sent_mail = send_mail(
+                subject,
+                txt_,
+                from_email,
+                recipient_list,
+                html_message=html_,
+                fail_silently=False,
+                )
+    return send_mail

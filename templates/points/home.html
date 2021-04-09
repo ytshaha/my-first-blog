@@ -19,8 +19,8 @@
 
 <div class='container'>
     <div class='row'>
-        <div class='col-12 col-lg-10 col-md-10 col-sm-12 mx-auto'>
-            <p style='font-size:small;'>현재 남은 포인트 : {{ user.points }} 포인트</p>
+        <div class='col-12 col-lg-10 col-md-10 col-sm-12 mx-auto text-center'>
+            <p style='font-size:large;font-weight:bold;'>현재 <span style='font-size:x-large;color:white;background-color: black;'>{{ user.points|intcomma }}</span> 포인트가 있습니다.</p>
         </div>
     </div>
     <div class='row'>

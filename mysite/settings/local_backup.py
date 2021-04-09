@@ -11,7 +11,6 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
-
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 # BASE_LOCAL_DIR = Path(__file__).resolve().parent.parent
@@ -31,17 +30,17 @@ DEBUG = True
 ALLOWED_HOSTS = ['127.0.0.1', '.pythonanywhere.com', '0.0.0.0', 'localhost']
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'taesun.yoo@gmail.com' 
-EMAIL_HOST_PASSWORD = 'Stock1holm3#'
+EMAIL_HOST_USER = 'moum8.ecommerce@gmail.com' 
+EMAIL_HOST_PASSWORD = 'Moum8878'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <taesun.yoo@gmail.com>'
+DEFAULT_FROM_EMAIL = 'MOUM8 ecommerce <moum8.ecommerce@gmail.com>'
 BASE_URL = 'http://127.0.0.1:8000'
 # 쥐메일생일 1986.1.15
-# 임시계정 moum8.mailing@gmail.com
-# 비번 : moum8admin3#
+# 임시계정 moum8.ecommerce@gmail.com
+# 비번 : Moum8878
 MANAGERS = (
-    ("Taesun Yoo", "taesun.yoo@gmail.com"),
+    ("MOUM8 ecommerce", "moum8.ecommerce@gmail.com"),
 )
 
 ADMIN = MANAGERS
@@ -58,6 +57,13 @@ COOLSMS_REST_API_SECRET = 'TX8TJ7GOHWBKI6BAZNCSXGAJ4CBAVZFO'
 
 
 GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client.json')
+
+
+POSTAL_CODE_INFORMATION_DIRS = os.path.join(BASE_DIR, 'carts', 'delivery_cost_added_postal_code_simple.csv')
+
+NCLOUD_API_ACCESS_KEY_ID = '5qPLEqntCjWKDBE8IHOF'
+NCLOUD_API_SECRET_KEY = '28iAXjOb5JmnCp9m0I42BgCnVoAhlAGsZlrzzLm3'
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -86,6 +92,7 @@ INSTALLED_APPS = [
     'points',
     'reviews',
     'staff',
+    'wishlist',
 ]
 
 AUTH_USER_MODEL = 'accounts.User' #changes the built-in user model.
@@ -127,6 +134,15 @@ TEMPLATES = [
     },
 ]
 
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+)
+
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
 
@@ -150,6 +166,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTION': {
+            'min_length': 9,
+        }
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',

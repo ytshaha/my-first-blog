@@ -48,6 +48,7 @@
 a.wish-link {
     color:rgb(190, 190, 190);
     transition: 0.3s;
+    outline:none;
 }
 
 a.wish-link:hover {
@@ -319,6 +320,8 @@ a.wish-link-added {
 
 <!-- JavaScript 영역 -->
 {% block javascript %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 
 <!-- jQuery -->
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
@@ -341,9 +344,11 @@ $(document).ready(function(){
             success: function(data){
                 if(data.added == "true"){
                     wishBtn.children().css('color','rgb(0, 0, 0)')
+                    alert("위시리스트에서 제거되었습니다.")
                 }
                 else{
                     wishBtn.children().css('color','rgb(197, 197, 197)')
+                    alert("위시리스트에 추가되었습니다.")
                 }
 
                 }

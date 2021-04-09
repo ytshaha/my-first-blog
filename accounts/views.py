@@ -348,7 +348,11 @@ def send_register_ticket_success(request):
         if register_ticket_obj.shared:
             messages.success(request, '이미 보낸 티켓을 선택하셨습니다. 전송되지 않은 티켓을 선택해주세요.')
             return redirect('accounts:send_register_ticket')
-        
+        if RegisterTicket.objects.filter(sent_mail=email).exists():
+            messages.success(request, '이미 가입티켓을 받은 회원의 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
+            return redirect('accounts:send_register_ticket')
+
+
         # 가입티켓 상태변경(보내짐으로 바꾸고 메일주소도 넣기.)
         register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)
         register_ticket_obj = register_ticket_qs.first()
@@ -358,7 +362,7 @@ def send_register_ticket_success(request):
 
         #메일 보내기
         base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com')
-        path = "{base}{path}".format(base=base_url, path='/register/')
+        path = "{base}{path}".format(base=base_url, path='/register_ticket_confirm/')
         context = {
             'path':path,
             'email': email,

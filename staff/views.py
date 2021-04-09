@@ -33,8 +33,8 @@ from .models import Test
 from products.models import Product, ProductItem, SizeOption, upload_main_image_path
 from products.forms import ProductForm, ProductItemForm
 from mysite.utils import unique_slug_generator, unique_product_item_slug_generator
-
-
+from mysite.mixin import StaffRequiredView
+from orders.models import Order
 
 # def get_filename_ext(filepath):
 #     base_name = os.path.basename(filepath)
@@ -77,7 +77,7 @@ class UploadProductItemView(generic.CreateView):
     form_class = ProductItemForm
     template_name = 'staff/upload_product_item.html'
     success_url = reverse_lazy('products:product_list')
-
+    
     def get_context_data(self, *args, **kwargs):
         context = super(UploadProductItemView, self).get_context_data(*args, **kwargs)
         return context
@@ -276,3 +276,19 @@ def upload_product_item_complete(request):
         'qs' : product_item_qs
     }
     return render(request, 'staff/upload_product_item_complete.html', context)
+
+
+
+class StaffOrderCheckListView(StaffRequiredView, generic.ListView):
+    template_name = 'staff/staff_order_check_list.html'
+    context_object_name = 'orders'
+    paginate_by = 20
+
+
+    def get_queryset(self, *args, **kwargs):
+        request = self.request
+
+        check_order_status = ['paid', 'shipping']
+        order_qs = Order.objects.exclude(status='created')
+
+        return order_qs
