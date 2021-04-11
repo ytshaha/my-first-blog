@@ -120,10 +120,12 @@ class Order(models.Model):
     point_total         = models.IntegerField(default=0) # 포인트로 결재한 금액
     checkout_total      = models.IntegerField(default=0) # 실제 결재할 금액  checkout_total = total + shipping_cost - point_total
     customer_request    = models.CharField(max_length=250, blank=True, null=True, help_text=u'고객요청사항')
+    cancel_reson        = models.CharField(max_length=250, blank=True, null=True, help_text=u'취소사유')
     shipping_count      = models.IntegerField(default=0)
     active              = models.BooleanField(default=True)
     updated             = models.DateTimeField(auto_now_add=True)
     timestamp           = models.DateTimeField(auto_now_add=True)
+    cart_items_name     = models.CharField(max_length=210, blank=True, null=True) # 주문한 상품명들 나열한 str. 결제완료시 checkout_iamport에서 할당해줌/
 
     objects = OrderManager()
 

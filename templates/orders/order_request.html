@@ -26,7 +26,7 @@
                     <form method='POST' action="{% url 'orders:cancel_order' %}">
                         {% csrf_token %}
                         <input type="hidden" name='order_id' value="{{ order_id }}">
-                        <p>취소사유: <span><input type="text" class='form-control' name='cancel_reson' placeholder='취소사유를 기록해주세요.'></span></p>
+                        <p>취소사유: <span><input type="text" class='form-control' name='cancel_reason' placeholder='취소사유를 기록해주세요.'></span></p>
                         <button type='submit' class='btn btn-outline-dark btn-block'>취소 요청</button>
                     </form>
                 </div>

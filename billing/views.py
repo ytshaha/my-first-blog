@@ -111,6 +111,31 @@ def card_register(request):
         else:
             print("결재 상태 : 결제가 실패하였습니다.")
             return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+    
+    # 모바일 버전
+    elif request.method == 'GET' and request.GET.get('card_name'):
+        card_name = request.GET.get('card_name', None)
+        print('카드네임', card_name)
+        iamport = Iamport(imp_key=IMPORT_REST_API_KEY, imp_secret=IMPORT_REST_API_SECRET)
+        imp_uid = request.GET.get('imp_uid', None)
+        response = iamport.find(imp_uid=imp_uid)
+        print(response)
+        status = response['status']
+        
+        if status=='paid':
+            print("결재 상태 : paid, success")
+            card_obj = Card.objects.create(
+                                        user=user, 
+                                        card_name=card_name, 
+                                        customer_uid=customer_uid
+                                        )
+            card_obj.set_active()
+
+            return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
+                                content_type="application/json")
+        else:
+            print("결재 상태 : 결제가 실패하였습니다.")
+            return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
 
     return render(request, 'billing/card_register.html', context)
 

@@ -416,7 +416,7 @@ function requestPay() {
         buyer_tel : '{{ buyer_tel }}',
         buyer_addr : '{{ buyer_addr }}',
         buyer_postcode : '{{ buyer_postcode }}',
-        m_redirect_url : "https://moum8.herokuapp.com/cart/checkout/iamport/"
+        m_redirect_url : "{% url 'carts:checkout-iamport' %}",
     }, function (rsp) {
         if (rsp.success) {
             //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
@@ -463,11 +463,11 @@ function requestPay() {
 
 
         } else {
-            var msg = data.message;
-            msg += '에러내용 : ' + rsp.error_msg;
-            alert(msg);
-            var checkOutText = $(".check-out-complete-text")
-            checkOutText.text("결재가 실패하였습니다.")
+            alert(rsp.success, rsp.error_comde, rpp.error_mgs)
+            // msg += '에러내용 : ' + rsp.error_msg;
+            // alert(msg);
+            // var checkOutText = $(".check-out-complete-text")
+            console.log("결재가 실패하였습니다.")
             // 실패시 이동할 페이지
             // window.location.href= "{% url 'carts:payment_fail' %}"
         }

@@ -9,6 +9,9 @@ from django.http import Http404
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.template.loader import get_template
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -28,7 +31,6 @@ from products.models import Product, ProductItem, SizeOption
 from tickets.models import Ticket, TicketItem
 from points.models import Point
 from mysite.utils import random_string_generator
-
 # import stripe
 
 # STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM")
@@ -413,6 +415,8 @@ def checkout_iamport(request):
             billing_address_obj = None
 
         order_obj.update_total()
+        order_obj.customer_request = "없음"
+        order_obj.save()
 
 
 
@@ -445,12 +449,23 @@ def checkout_iamport(request):
         postcode = None
 
     # 결제시 필요한 name에 물건들을 넣어주자.
-    cart_items_name = ""
-    for cart_item in cart_obj.cart_items.all():
+    cart_items_name = "" # 실제 물품명
+    cart_items_name_iamport = "" # 아임포트용 물품명 -> 티켓내용 제외
+    item_count = cart_obj.cart_items.all().count()
+    for i, cart_item in enumerate(cart_obj.cart_items.all()):
         if cart_item.product_type == 'ticket':
-            cart_items_name = cart_items_name + "ticket_" + str(cart_item.ticket_item.tickets_type) + "_"
+            cart_items_name = cart_items_name + "ticket_" + str(cart_item.ticket_item.tickets_type)
+            if i < item_count-1:
+                cart_items_name = cart_items_name + ", "
         else:
-            cart_items_name = cart_items_name + cart_item.product_item.product.title + "_"
+            cart_items_name = cart_items_name + cart_item.product_item.product.title
+            cart_items_name_iamport = cart_items_name_iamport + cart_item.product_item.product.title
+            if i < item_count-1:
+                cart_items_name = cart_items_name + ", "
+                cart_items_name_iamport = cart_items_name_iamport + ", "
+        
+        if len(cart_items_name) > 200:
+            cart_items_name = cart_items_name[:200] + "..."
 
 
     
@@ -502,10 +517,10 @@ def checkout_iamport(request):
         # 'address_changed': False,
 
         # 결재용 context
-        'pg': "html5_inicis",
+        'pg': "html5_inicis.INIpayTest",
         'pay_method':'card',
         'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
-        'name':cart_items_name,
+        'name':cart_items_name_iamport,
         'amount': order_obj.checkout_total,
         'buyer_email': billing_profile.email,
         'buyer_name': user.full_name,
@@ -533,6 +548,7 @@ def checkout_iamport(request):
 
     
     if request.method == 'POST' and not post_purpose and not request.is_ajax():
+        print('context', context)
         return render(request, "carts/checkout-iamport.html", context)
     
     # 4. POST 이후의 화면 구성
@@ -554,10 +570,13 @@ def checkout_iamport(request):
         address_line_2 = request.POST.get('address_line_2', None)
         postal_code = request.POST.get('postal_code', None)
         order_memo = request.POST.get('order_memo', None)
+        if order_memo == "" or order_memo is None:
+            order_memo == "없음"
+
         # address_type = request.POST.get('address_type', None)
         
         # 폼이 제대로 완성되어있지 않았을 경우
-        print(full_name, email, phone_number, address_line_1, address_line_2, postal_code)
+        print(full_name, email, phone_number, address_line_1, address_line_2, postal_code, order_memo)
         if not full_name or not address_line_1 or not address_line_2 or not postal_code:
             change_address = True
             if full_name is None or full_name == '':
@@ -607,44 +626,44 @@ def checkout_iamport(request):
             
             shipping_address_obj.save()
             
-            # 여기에 postal_code에 따른 배송비용이 추가됨.
-            # 1) 각물품의 갯수를 파악(합배송가능한건 합해서 1, 나머지는 개별 1로 침.)
-            # 2) postal_code가 산지배송이면 * 5000원으로 order_obj의 shipping_cost에 추가.
-            # 3) order_obj의 총 checkout 비용에 shipping_cost 추가.
+        # 여기에 postal_code에 따른 배송비용이 추가됨.
+        # 1) 각물품의 갯수를 파악(합배송가능한건 합해서 1, 나머지는 개별 1로 침.)
+        # 2) postal_code가 산지배송이면 * 5000원으로 order_obj의 shipping_cost에 추가.
+        # 3) order_obj의 총 checkout 비용에 shipping_cost 추가.
+        
+
+        # 도서산간지역이면 배송비용추가함. ##############
+        print('배송갯수')
+        df_postal_code  = pd.read_csv(POSTAL_CODE_INFORMATION_DIRS)
+        postal_code_array = df_postal_code.postal_code.values
+        # 배송갯수 세기
+        delivery_count = 0
+        combined_delevery_exist = False
+        for cart_item in cart_obj.cart_items.all():
+            if cart_item.product_type == 'normal' or cart_item.product_type == 'bidding':
+                if not cart_item.product_item.product.combined_delivery:
+                    delivery_count += 1
+                else:
+                    combined_delevery_exist = True
+        if combined_delevery_exist:
+            delivery_count += 1
+        order_obj.shipping_count = delivery_count
             
-
-            # 도서산간지역이면 배송비용추가함. ##############
-            print('배송갯수')
-            df_postal_code  = pd.read_csv(POSTAL_CODE_INFORMATION_DIRS)
-            postal_code_array = df_postal_code.postal_code.values
-            # 배송갯수 세기
-            delivery_count = 0
-            combined_delevery_exist = False
-            for cart_item in cart_obj.cart_items.all():
-                if cart_item.product_type == 'normal' or cart_item.product_type == 'bidding':
-                    if not cart_item.product_item.product.combined_delivery:
-                        delivery_count += 1
-                    else:
-                        combined_delevery_exist = True
-            if combined_delevery_exist:
-                delivery_count += 1
-            order_obj.shipping_count = delivery_count
-                
-            if str(postal_code) in postal_code_array:
-                order_obj.shipping_cost = 3000 * delivery_count
-            else:
-                order_obj.shipping_cost = 0
-            
-            order_obj.update_total()
-            order_obj.customer_request = order_memo
-            ###############################################
+        if str(postal_code) in postal_code_array:
+            order_obj.shipping_cost = 3000 * delivery_count
+        else:
+            order_obj.shipping_cost = 0
+        
+        order_obj.update_total()
+        order_obj.customer_request = order_memo
+        ###############################################
 
 
-            change_address = False # 주소변경 완료됐으므로 템플릿에 체인지 하자 안해도됨.
-            # address_changed = True
-            # point_changed = False
-            print("Address changed")
-            messages.success(request, "배송지 정보가 수정되었습니다.")
+        change_address = False # 주소변경 완료됐으므로 템플릿에 체인지 하자 안해도됨.
+        # address_changed = True
+        # point_changed = False
+        print("Address changed")
+        messages.success(request, "배송지 정보가 수정되었습니다.")
 
         
         context = {
@@ -658,10 +677,10 @@ def checkout_iamport(request):
             
 
             # 결재용 context
-            'pg': "html5_inicis",
+            'pg': "html5_inicis.INIpayTest",
             'pay_method':'card',
             'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
-            'name':cart_items_name,
+            'name':cart_items_name_iamport,
             'amount': order_obj.checkout_total,
             'buyer_email': billing_profile.email,
             'buyer_name': user.full_name,
@@ -686,10 +705,10 @@ def checkout_iamport(request):
             'change_address': True,
 
             # 결재용 context
-            'pg': "html5_inicis",
+            'pg': "html5_inicis.INIpayTest",
             'pay_method':'card',
             'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
-            'name':cart_items_name,
+            'name':cart_items_name_iamport,
             'amount': order_obj.checkout_total,
             'buyer_email': billing_profile.email,
             'buyer_name': user.full_name,
@@ -726,10 +745,10 @@ def checkout_iamport(request):
                 # 'address_changed': False,
 
                 # 결재용 context
-                'pg': "html5_inicis",
+                'pg': "html5_inicis.INIpayTest",
                 'pay_method':'card',
                 'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
-                'name':cart_items_name,
+                'name':cart_items_name_iamport,
                 'amount': order_obj.checkout_total,
                 'buyer_email': billing_profile.email,
                 'buyer_name': user.full_name,
@@ -781,6 +800,7 @@ def checkout_iamport(request):
             postal_code=order_obj.shipping_address.postal_code,   
         )
         order_obj.final_address = order_address_obj
+        order_obj.cart_items_name = cart_items_name
         order_obj.save()
 
         context = {
@@ -792,10 +812,10 @@ def checkout_iamport(request):
         # 'address_changed': False,
 
         # 결재용 context
-        'pg': "html5_inicis",
+        'pg': "html5_inicis.INIpayTest",
         'pay_method':'card',
         'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
-        'name':cart_items_name,
+        'name':cart_items_name_iamport,
         'amount': order_obj.checkout_total,
         'buyer_email': billing_profile.email,
         'buyer_name': user.full_name,
@@ -876,8 +896,12 @@ def checkout_iamport(request):
                     postal_code=order_obj.shipping_address.postal_code,   
                 )
                 order_obj.final_address = order_address_obj
+                order_obj.cart_items_name = cart_items_name
                 order_obj.save()
                 charge_obj = Charge.objects.new(order=order_obj, response=response)
+
+                # 결제 성공하여 이메일 보내기
+                order_complete_mail(user.email, order_obj)
 
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
                                     content_type="application/json")
@@ -953,10 +977,11 @@ def checkout_iamport(request):
                     postal_code=order_obj.shipping_address.postal_code,   
                 )
                 order_obj.final_address = order_address_obj
+                order_obj.cart_items_name = cart_items_name
                 order_obj.save()
                 charge_obj = Charge.objects.new(order=order_obj, response=response)
-                print(response)
-
+                # print(response)
+                order_complete_mail(user.email, order_obj)
                 return redirect('carts:success')
             else:
                 print("결재 상태 : 결제가 실패하였습니다.")
@@ -1151,8 +1176,10 @@ def checkout_iamport(request):
                     postal_code=order_obj.shipping_address.postal_code,   
                 )
                 order_obj.final_address = order_address_obj
+                order_obj.cart_items_name = cart_items_name
                 order_obj.save()
                 charge_obj = Charge.objects.new(order=order_obj, response=response)
+                order_complete_mail(user.email, order_obj)
                 # return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}), content_type="application/json")
                 return redirect('carts:success')
 
@@ -1195,7 +1222,7 @@ def checkout_iamport(request):
     #             cart_items_name = cart_items_name + cart_item.product_item.product.title + "_"
         
     #     iamport_data = {
-    #                 'pg': "html5_inicis",
+    #                 'pg': "html5_inicis.INIpayTest",
     #                 'pay_method':'card',
     #                 'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
     #                 'name':cart_items_name,
@@ -1324,7 +1351,7 @@ def checkout_iamport(request):
     #     'has_card': has_card,
     #     'publish_key': STRIPE_PUB_KEY,
     #     # 결재용 context
-    #     'pg': "html5_inicis",
+    #     'pg': "html5_inicis.INIpayTest",
     #     'pay_method':'card',
     #     'merchant_uid':order_obj.order_id + "_" + random_string_generator(size=10),
     #     'name':cart_items_name,
@@ -1401,19 +1428,33 @@ def payment_success(request):
 
 
 # 체크아웃완료되면 이메일 보내기.
-def checkout_complete_mail(email, order):
+def order_complete_mail(email, order):
     base_url = getattr(settings, 'BASE_URL', 'https://moum8.com')
     key_path = reverse("home") # use reverse
-    path = "{base}{path}".format(base=base_url, path=key_path)
+    path = "{base}".format(base=base_url)
+    
+    
     context = {
         'path':path,
-        'email': email
+        'email': email,
+        'order_id': order.order_id,
+        'full_name': order.final_address.full_name,
+        'phone_number': order.final_address.phone_number,
+        'address': order.final_address.get_address,
+        'cart_items_name': order.cart_items_name,
+        'total': order.total, # 물건값
+        'shiping_cost': order.shipping_cost,
+        'point_total': order.point_total,
+        'checkout_total': order.checkout_total,
+        'customer_request': order.customer_request,
+        'shipping_count': order.shipping_count,
+
     }
-    txt_ = get_template("registration/emails/verify.txt").render(context)
-    html_ = get_template("registration/emails/verify.html").render(context)
-    subject = '명품 병행수입 쇼핑몰_MOUM8_가입 계정활성화 메일'
+    txt_ = get_template("orders/emails/order_complete_email.txt").render(context)
+    html_ = get_template("orders/emails/order_complete_email.html").render(context)
+    subject = '명품 병행수입 쇼핑몰_MOUM8_상품결제 완료 메일'
     from_email = settings.DEFAULT_FROM_EMAIL
-    recipient_list = [self.email]
+    recipient_list = [email]
 
     # send_mail = send_email(
     #                         emailMsg=txt_, 
@@ -1427,4 +1468,5 @@ def checkout_complete_mail(email, order):
                 html_message=html_,
                 fail_silently=False,
                 )
+    print("{}님께 결제완료 이메일이 보내졌습니다.".format(order.billing_profile.user))
     return send_mail

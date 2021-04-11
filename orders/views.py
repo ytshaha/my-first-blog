@@ -41,7 +41,7 @@ def cancel_request(request):
         return render(request, 'orders/order_request.html', context)
     else:
         return redirect('orders:list')
-def cancel_order(request):
+def cancel_order(request): 
     # print("캔슬 실행은 되는건가?")
     if request.method == 'POST':
         # print('POST는 드렁온건가?')
@@ -60,10 +60,12 @@ def cancel_order(request):
                 cancel_result = cancel_iamport(request, imp_uid=imp_uid, cancel_reason=cancel_reason)
                 if cancel_result:
                     order_obj.status = 'cancel'
+                    order_obj.cancel_reason = cancel_reason
                     order_obj.save()
                     messages.success(request, '주문이 취소되었습니다.')
                     print('{} 주문이 최소되었음.'.format(order_obj))
-                    
+                    order_cancel_mail(email=order_obj.billing_profile.email, order=order_obj)
+                    print('{}님에게 결제 취소 메일이 발송되었습니다.'.format(request.user))
                 else:
                     messages.success(request, '결제상에 문제가 있어 주문이 취소되지 않았습니다. 관리자에게 문의바랍니다.')
                     print('{} 주문이 결제상에 문제가 있어 주문이 취소되지 않았습니다. '.format(order_obj))
@@ -89,7 +91,7 @@ def cancel_iamport(request, imp_uid, cancel_reason):
     try:    
         response = iamport.cancel(cancel_reason, imp_uid=imp_uid)
         print("취소 리스폰스", response)
-        charge_obj = Charge.objects.get(order=order_obj)
+        charge_obj = Charge.objects.get(imp_uid=imp_uid)
         charge_obj.status = 'cancel'
         charge_obj.cancelled = True
         charge_obj.refunded = True
@@ -106,3 +108,55 @@ def cancel_iamport(request, imp_uid, cancel_reason):
         print(http_error.code)
         print(http_error.reason) # HTTP not 200 에러난 이유를 알 수 있음
         return False
+
+
+
+
+from django.urls import reverse
+from django.core.mail import send_mail
+from django.template.loader import get_template
+
+
+# 체크아웃완료되면 이메일 보내기.
+def order_cancel_mail(email, order):
+    base_url = getattr(settings, 'BASE_URL', 'https://moum8.com')
+    key_path = reverse("home") # use reverse
+    path = "{base}".format(base=base_url)
+    
+    
+    context = {
+        'path':path,
+        'email': email,
+        'order_id': order.order_id,
+        'full_name': order.final_address.full_name,
+        'phone_number': order.final_address.full_name,
+        'address': order.final_address.get_address,
+        'cart_items_name': order.cart_items_name,
+        'total': order.total, # 물건값
+        'shiping_cost': order.shipping_cost,
+        'point_total': order.point_total,
+        'checkout_total': order.checkout_total,
+        'cancel_reason': order.cancel_reason,
+        'shipping_count': order.shipping_count,
+
+    }
+    txt_ = get_template("orders/emails/order_cancel_email.txt").render(context)
+    html_ = get_template("orders/emails/order_cancel_email.html").render(context)
+    subject = '명품 병행수입 쇼핑몰_MOUM8_상품결제 취소 메일'
+    from_email = settings.DEFAULT_FROM_EMAIL
+    recipient_list = [email]
+
+    # send_mail = send_email(
+    #                         emailMsg=txt_, 
+    #                         to=self.email, 
+    #                         subject=subject)
+    sent_mail = send_mail(
+                subject,
+                txt_,
+                from_email,
+                recipient_list,
+                html_message=html_,
+                fail_silently=False,
+                )
+    print("{}님께 결제취소 이메일이 보내졌습니다.".format(order.billing_profile.user))
+    return send_mail

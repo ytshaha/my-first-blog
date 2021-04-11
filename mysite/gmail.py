@@ -22,3 +22,7 @@ def send_email(emailMsg, to, subject):
 
     message = service.users().messages().send(userId='me', body={'raw':raw_string}).execute()
     print(message)
+
+
+
+
