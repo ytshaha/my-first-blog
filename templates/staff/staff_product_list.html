@@ -1,0 +1,117 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center">STAFF PRODUCT LIST</h2>
+          <hr class="index-title-divider">
+      </div>
+  </div>
+</div>  
+
+<div class='container my-2 py-2 px-4' style='min-height:300px;'>
+    <div class='row'>
+        <div class='col-4 ml-auto text-right'>
+            <a href="{% url 'staff:home' %}"><button class='btn btn-outline-dark btn-sm'>스탭 홈 돌아가기</button></a>
+                        
+        </div>
+    </div>
+    <hr>
+
+
+
+    <div class='row'>
+        <div class='col-12 mx-auto'>
+            <div class='col'>
+                <table class="table table-bidding-info text-center align-middle">
+                <!-- <colgroup>
+                    <col span="1" style="width: 30%;">
+                    <col span="1" style="width: 70%;">
+                </colgroup> -->
+                    <thead class=''>
+                        <th class='align-middle' scope="col" style='font-size:small;'>사진</th>
+                        <th class='align-middle' scope="col" style='font-size:small;'>상품번호</th>
+                        <th class='align-middle' scope="col" style='font-size:small;'>상품명</th>
+                        <th class='align-middle' scope="col" style='font-size:small;'>브랜드</th>
+                        <th class='align-middle' scope="col" style='font-size:small;'>카테고리</th>
+                        <th class='align-middle' scope="col" style='font-size:small;'>리테일가격</th>
+                        <th class='align-middle' scope="col" style='font-size:small;'>합배송여부</th>
+                        <th class='align-middle' scope="col" style='font-size:small;'>수정</th>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td class="align-middle">
+                                <img src="{{ product.main_image.url }}" style='max-width:100%;max-height:80px;height:auto;object-fit:cover;'>
+                            </td>
+                            <td class="align-middle" style='font-size:small;'>{{ product.number }}</td>
+                            <td class="align-middle" style='font-size:small;'>{{ product.title }}</td>
+                            <td class="align-middle" style='font-size:small;'>{{ product.brand }}</td>
+                            <td class="align-middle" style='font-size:small;'>{{ product.category }}</td>
+                            <td class="align-middle" style='font-size:small;'>{{ product.list_price|intcomma }}원</td>
+                            <td class="align-middle" style='font-size:small;'>{{ product.combined_delivery }}</td>
+                            <td class="align-middle" style='font-size:small;'>
+                                <a href="{% url 'staff:staff_product_edit' pk=product.pk %}">
+                                    <button class='btn btn-outline-primary btn-sm'>정보수정</button>
+                                </a>
+
+                                
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Pagination -->
+<div class='row mt-5'>
+    <div class='col-12'>
+        <nav aria-label="...">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" style='color:black'>PREVIOUS</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1">PREVIOUS</a>
+                    </li>
+                {% endif %}
+                
+                {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                <li class="page-item active">
+                    <a class="page-link" href="#" style='border-color:black;background-color:black'>{{ i }} <span class="sr-only">(current)</span></a>
+                </li>
+                {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}" style='color:black'>{{ i }}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" tabindex="-1" style='color:black'>NEXT</a>
+                    </li>
+                {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">NEXT</a>
+                    </li>
+                {% endif %}
+            </ul>
+          </nav>
+    </div>
+</div>
+<!-- End of Pagination -->
+
+
+{% endblock %}

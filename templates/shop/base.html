@@ -263,14 +263,15 @@
               <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
               <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
               <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'products:check' %}">물품 체크</a> 
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">주문상태 확인</a>
-              <a class="dropdown-item " href="">물품 상태 변경</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">통계분석</a>
+              <a class="dropdown-item" href="{% url 'staff:staff_product_list' %}">PRODUCT 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:staff_product_item_normal_list' %}">PRODUCT ITEM(일반물품) 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:staff_product_item_bidding_list' %}">PRODUCT ITEM(경매물품) 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:staff_order_check_list' %}">주문상태 확인</a> 
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}">회원가입 티켓만들기</a>
+              <a class="dropdown-item" href="">통계분석(추가예정)</a>
+              <div class="dropdown-divider"></div>
             </div>
           </li>
           {% endif %}
@@ -392,14 +393,15 @@
               <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
               <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
               <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'products:check' %}">물품 체크</a> 
               <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">주문상태 확인</a>
-              <a class="dropdown-item " href="">물품 상태 변경</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="">통계분석</a>
+              <a class="dropdown-item" href="{% url 'staff:staff_product_list' %}">PRODUCT 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:staff_product_item_normal_list' %}">PRODUCT ITEM(일반물품) 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:staff_product_item_bidding_list' %}">PRODUCT ITEM(경매물품) 체크</a> 
+              <a class="dropdown-item" href="{% url 'staff:staff_order_check_list' %}">주문상태 확인</a> 
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}">회원가입 티켓만들기</a>
+              <a class="dropdown-item" href="">통계분석(추가예정)</a>
+              <div class="dropdown-divider"></div>
             </div>
           </li>
           {% endif %}

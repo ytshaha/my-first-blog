@@ -297,26 +297,15 @@ def cart_update(request):
 
 @login_required
 def checkout_done_view(request):
-    '''
-     여기에 product 수량감소시키는 스크립트 작성.
-    0보다 높으면 결재가 진행되었다. 깔끔. 수량 감소시키자. 
-    bidding여부 field를 추가하여 bidding 이면 그냥 amount. 아니면 amount_always_on을 감소시키자.
-    만약 감소시키기 전에 1 보다 낮으면 실패이므로 결재가 진행되지 않았습니다 문구 발생
-    그리고 order 는 실패상태로 놔두든가 order에 석세스 실패 여부 field추가하자.
-    지금은 일단 일반 prduct만 한정해서 하자.
-    나중에 메모장에 적어둔 cart_item 모델을 따로 만들어서 product_always_on, product_bidding, ticket이라고 따로 카테고리화하면 완성 시키자. 
-    '''
-
-    # order_obj = request.POST.get('order_obj')
-    # for item in order_obj.cart.products.all:
-    #     print(item)
-    #     if product.amount_always_on < 1:
-    #         print('{}의 재고가 없습니다.')
-    #     product.amount_always_on = 
-    
-
-
     return render(request, "carts/checkout-done.html", {})
+
+@login_required
+def checkout_fail_view(request):
+    return render(request, "carts/checkout-fail.html", {})
+
+@login_required
+def checkout_vbank_view(request):
+    return render(request, "carts/checkout-vbank.html", {})
 
 
 #############아임포트로 체크아웃 재구현###################
@@ -514,6 +503,7 @@ def checkout_iamport(request):
         'shipping_address_obj': shipping_address_obj,
         'billing_address_obj': billing_address_obj,
         'address_qs': address_qs,
+        'base_url': getattr(settings, 'BASE_URL', 'https://moum8.com'),
         # 'address_changed': False,
 
         # 결재용 context
@@ -674,7 +664,7 @@ def checkout_iamport(request):
             'address_qs': address_qs,
             # 'address_changed': address_changed,
             'change_address': change_address,
-            
+            'base_url': getattr(settings, 'BASE_URL', 'https://moum8.com'),
 
             # 결재용 context
             'pg': "html5_inicis.INIpayTest",
@@ -703,6 +693,7 @@ def checkout_iamport(request):
             'address_qs': address_qs,
             # 'address_changed': address_changed,
             'change_address': True,
+            'base_url': getattr(settings, 'BASE_URL', 'https://moum8.com'),
 
             # 결재용 context
             'pg': "html5_inicis.INIpayTest",
@@ -743,6 +734,7 @@ def checkout_iamport(request):
                 'billing_address_obj': billing_address_obj,
                 'address_qs': address_qs,
                 # 'address_changed': False,
+                'base_url': getattr(settings, 'BASE_URL', 'https://moum8.com'),
 
                 # 결재용 context
                 'pg': "html5_inicis.INIpayTest",
@@ -810,6 +802,7 @@ def checkout_iamport(request):
         'billing_address_obj': billing_address_obj,
         'address_qs': address_qs,
         # 'address_changed': False,
+        'base_url': getattr(settings, 'BASE_URL', 'https://moum8.com'),
 
         # 결재용 context
         'pg': "html5_inicis.INIpayTest",
@@ -1139,8 +1132,7 @@ def checkout_iamport(request):
             if status == 'ready' and imp_success == 'true':
                 # DB에 가상계좌 발급정보 저장
                 print("결재 상태 : ready, vbankIssued")
-                return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
-                                    content_type="application/json")
+                return redirect('carts:vbank')
             elif status=='paid' and imp_success == 'true':
                 print("결재 상태 : paid, success")
 
@@ -1185,10 +1177,10 @@ def checkout_iamport(request):
 
             elif status=='failed' or imp_success == 'false':
                 print("결재 상태 : 결제가 실패하였습니다.")
-                return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+                return redirect('carts:fail')
         else:
             print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
-            return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json") 
+            return redirect('carts:fail')
 
 
 

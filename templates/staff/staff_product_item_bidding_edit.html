@@ -1,0 +1,62 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+{% load static %}
+{% load humanize %}
+<div class="container">
+  <div class='row'>
+      <div class="col-12 ml-auto mr-auto">
+          <h2 class="index-title-index text-center">STAFF PRODUCT ITEM(경매상품) EDIT</h2>
+          <hr class="index-title-divider">
+      </div>
+  </div>
+</div>  
+
+<div class='container my-2 py-2 px-4' style='min-height:300px;'>
+    <div class='row'>
+        <div class='col-4 ml-auto text-right'>
+            <a href="{% url 'staff:home' %}"><button class='btn btn-outline-dark btn-sm'>스탭 홈 돌아가기</button></a>
+                        
+        </div>
+    </div>
+    <hr>
+
+
+    <div class='row'>
+        <div class='col-12 mx-auto'>
+            <table class="table text-center align-middle">
+                <colgroup>
+                    <col span="1" style="width: 25%;">
+                    <col span="1" style="width: 20%;">
+                    <col span="1" style="width: 55%;">
+                </colgroup>
+                <thead class=''>
+                    <th class='align-middle' scope="col" style='font-size:medium;'>사진</th>
+                    <th class='align-middle' scope="col" style='font-size:medium;'>상품번호</th>
+                    <th class='align-middle' scope="col" style='font-size:medium;'>상품명</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="align-middle">
+                            <img src="{{ product_item.product.main_image.url }}" style='max-width:100%;max-height:200px;height:auto;object-fit:cover;'>
+                        </td>
+                        <td class="align-middle" style='font-size:medium;'>{{ product_item.product.number }}</td>
+                        <td class="align-middle" style='font-size:medium;'>{{ product_item.product.title }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <hr>
+    <div class='row'>
+        <div class='col-12 mx-auto'>
+            <form method='post' action="">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class='btn btn-outline-dark btn-block'>수정완료</button>
+            </form>
+        </div> 
+    </div>
+</div>
+{% endblock %}

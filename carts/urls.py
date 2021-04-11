@@ -14,6 +14,8 @@ urlpatterns = [
     url(r'^update/$', views.cart_update, name='update'),
     # url(r'^checkout/$', views.checkout_home, name='checkout'),
     url(r'^checkout/success/$', views.checkout_done_view, name='success'),
+    url(r'^checkout/fail/$', views.checkout_fail_view, name='fail'),
+    url(r'^checkout/vbank/$', views.checkout_vbank_view, name='vbank'),
     
     # 테스트중.
     url(r'^checkout/iamport/$', views.checkout_iamport, name='checkout-iamport'),

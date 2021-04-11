@@ -416,7 +416,7 @@ function requestPay() {
         buyer_tel : '{{ buyer_tel }}',
         buyer_addr : '{{ buyer_addr }}',
         buyer_postcode : '{{ buyer_postcode }}',
-        m_redirect_url : "{% url 'carts:checkout-iamport' %}",
+        m_redirect_url : '{{ base_url }}' + "{% url 'carts:checkout-iamport' %}",
     }, function (rsp) {
         if (rsp.success) {
             //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
@@ -444,16 +444,29 @@ function requestPay() {
                     checkOutText.text("결재가 성공하였습니다.")
                     window.location.href= "{% url 'carts:success' %}"
 
+                } else if (data.status=='vbankIssued') {
+                var msg = '가상계좌가 발급되었습니다.';
+                // msg += '\n고유ID : ' + rsp.imp_uid;
+                // msg += '\n상점 거래ID : ' + rsp.merchant_uid;
+                // msg += '\결제 금액 : ' + rsp.paid_amount;
+                // msg += '카드 승인번호 : ' + rsp.apply_num;
+                // alert(msg);
+                // console.log(msg);
+                // var checkOutText = $(".check-out-complete-text")
+                // checkOutText.text("결재가 성공하였습니다.")
+                window.location.href= "{% url 'carts:vbank' %}"
                 } else {
                     //[3] 아직 제대로 결제가 되지 않았습니다.
                     //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
                     var msg = '아직 제대로 결제가 되지 않았습니다.';
                     alert(msg);
                     console.log(msg);
+                    window.location.href= "{% url 'carts:fail' %}"
                 }
             }).fail(function () {
                 alert("ajax fail");
                 console.log("ajax fail");
+                window.location.href= "{% url 'carts:fail' %}"
             }).always(function () {
                 alert("ajax always");
                 console.log("ajax always");
@@ -468,94 +481,12 @@ function requestPay() {
             // alert(msg);
             // var checkOutText = $(".check-out-complete-text")
             console.log("결재가 실패하였습니다.")
+            window.location.href= "{% url 'carts:fail' %}"
             // 실패시 이동할 페이지
             // window.location.href= "{% url 'carts:payment_fail' %}"
         }
     });
 }
-
-// function requestCardPay() {
-// // IMP.request_pay(param, callback) 호출
-//     var IMP = window.IMP;
-//     var code = "imp30832141";  // FIXME: 가맹점 식별코드
-//     IMP.init(code);
-    
-//     console.log("리퀘스트 카드 페이 실행됐습니다.")
-//     console.log('{{ merchant_uid }}')
-    
-//     // 결제요청
-//     IMP.request_pay({ // param
-//         pg : '{{ pg }}', // pg 사 선택
-//         pay_method : '{{ pay_method }}',
-//         merchant_uid : '{{ merchant_uid }}',// 'merchant_' + new Date().getTime(),
-//         customer_uid : '{{ object.billing_profile.card.customer_uid }}',
-//         name : '{{ name }}',
-//         amount : '{{ amount }}',
-//         buyer_email : '{{ buyer_email }}',
-//         buyer_name : '{{ buyer_name }}',
-//         buyer_tel : '{{ buyer_tel }}',
-//         buyer_addr : '{{ buyer_addr }}',
-//         buyer_postcode : '{{ buyer_postcode }}',
-//         m_redirect_url : "https://moum8.herokuapp.com/cart/checkout/iamport/"
-//     }, function (rsp) {
-//         if (rsp.success) {
-//             //[1] 서버단에서 결제정보 조회를 위해 jQuery ajax로 imp_uid 전달하기
-//             jQuery.ajax({
-//                 url: "{% url 'carts:checkout-iamport' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
-//                 type: 'POST',
-//                 dataType: 'json',
-//                 data: {
-//                     imp_uid: rsp.imp_uid,
-//                     customer_uid: '{{ object.billing_profile.card.customer_uid }}',
-//                     merchant_uid : '{{ merchant_uid }}',
-//                     amount : '{{ amount }}',
-//                     //기타 필요한 데이터가 있으면 추가 전달
-//                 },
-//             }).done(function (data) {
-//                 //[2] 서버에서 REST API로 결제정보확인 및 서비스루틴이 정상적인 경우
-//                 alert("ajax done");               
-//                 console.log("ajax done");
-//                 if (data.status=='success') {
-//                     var msg = '결제가 완료되었습니다.';
-//                     msg += '\n고유ID : ' + rsp.imp_uid;
-//                     msg += '\n상점 거래ID : ' + rsp.merchant_uid;
-//                     msg += '\n결제 금액 : ' + rsp.paid_amount;
-//                     msg += '카드 승인번호 : ' + rsp.apply_num;
-//                     alert(msg);
-//                     console.log(msg);
-//                     var checkOutText = $(".check-out-complete-text")
-//                     checkOutText.text("결재가 성공하였습니다.")
-//                     window.location.href= "{% url 'carts:success' %}"
-
-//                 } else {
-//                     //[3] 아직 제대로 결제가 되지 않았습니다.
-//                     //[4] 결제된 금액이 요청한 금액과 달라 결제를 자동취소처리하였습니다.
-//                     var msg = '아직 제대로 결제가 되지 않았습니다.';
-//                     alert(msg);
-//                     console.log(msg);
-//                 }
-//             }).fail(function () {
-//                 alert("ajax fail");
-//                 console.log("ajax fail");
-//             }).always(function () {
-//                 alert("ajax always");
-//                 console.log("ajax always");
-//             });
-            
-//             // window.location.href= "{% url 'carts:payment_success' %}"
-
-
-//         } else {
-//             var msg = data.message;
-//             msg += '에러내용 : ' + rsp.error_msg;
-//             alert(msg);
-//             var checkOutText = $(".check-out-complete-text")
-//             checkOutText.text("결재가 실패하였습니다.")
-//             // 실패시 이동할 페이지
-//             // window.location.href= "{% url 'carts:payment_fail' %}"
-//         }
-//     });
-// }
 
 </script>
 {% endblock %} 

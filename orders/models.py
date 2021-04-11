@@ -15,12 +15,12 @@ from mysite.utils import unique_order_id_generator
 User = settings.AUTH_USER_MODEL
 
 ORDER_STATUS_CHOICES = (
-    ('created','Created'),
-    ('paid','Paid'),
-    ('shipping','Shipping'),
-    ('shipped','Shipped'),
-    ('refunded','Refunded'),
-    ('cancel', 'Cancel'),
+    ('created','주문생성'),
+    ('paid','결제완료'),
+    ('shipping','배송중'),
+    ('shipped','배송완료'),
+    ('refunded','환불완료'),
+    ('cancel', '결제취소'),
 )
    
 # class AbstractOrder(models.Model):
@@ -126,6 +126,7 @@ class Order(models.Model):
     updated             = models.DateTimeField(auto_now_add=True)
     timestamp           = models.DateTimeField(auto_now_add=True)
     cart_items_name     = models.CharField(max_length=210, blank=True, null=True) # 주문한 상품명들 나열한 str. 결제완료시 checkout_iamport에서 할당해줌/
+    tracking_number     = models.CharField(max_length=200, blank=True, null=True)
 
     objects = OrderManager()
 

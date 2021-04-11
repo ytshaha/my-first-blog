@@ -76,7 +76,18 @@
                                     <td class="align-middle table-bidding-info" style='font-size:small;'>배송 요청사항</td>
                                     <td class="align-middle table-bidding-info" style='font-size:small;'>{% if object.cart.customer_request %}{{ object.cart.customer_request }}{% else %}요청사항 없음.{% endif %}</td>
                                 </tr>
-                                
+                                {% if object.status == 'shipping' or object.status == 'shipped' %}
+                                <tr>
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>운송장번호</td>
+                                    
+                                    
+                                    <td class="align-middle table-bidding-info" style='font-size:small;'>
+                                        {% for track_number in tracking_number_list %}
+                                        <a href="https://www.ilogen.com/web/personal/trace/{{ track_number }}">{{ track_number }}</a>
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% endif %}
                             </tbody>
                         </table>
 

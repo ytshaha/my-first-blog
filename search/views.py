@@ -21,3 +21,5 @@ class SearchProductListView(generic.ListView):
         if query is not None:
             return ProductItem.objects.search(query).filter(featured=True).exclude(bidding_on='bidding_end')
         return ProductItem.objects.none()
+
+    

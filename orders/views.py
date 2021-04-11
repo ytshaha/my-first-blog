@@ -29,6 +29,14 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
         if qs.count() == 1:
             return qs.first()
         raise Http404
+    def get_context_data(self, *args, **kwargs):
+        context = super(OrderDetailView, self).get_context_data(*args, **kwargs)
+        tracking_number = self.object.tracking_number
+        tracking_number_list = tracking_number.split(",")
+        tracking_number_list = [tn.strip() for tn in tracking_number_list]
+        context['tracking_number_list'] = tracking_number_list
+        return context
+
 
 def cancel_request(request):
     if request.method == 'POST':

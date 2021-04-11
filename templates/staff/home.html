@@ -52,8 +52,9 @@ a:hover{
 
 <div class='container my-5'>
     <!-- 물품/물품 아이템 업로드 -->
+    <p class='my-3' style='font-size:large;font-weight:bold;'>물품업로드</p>
     <div class='row'>
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+        <div class="col p-0 m-0">
             <a class='' href="{% url 'staff:upload_product' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -68,7 +69,7 @@ a:hover{
             </a>
         </div>
         
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+        <div class="col p-0 m-0">
             <a class='' href="{% url 'staff:upload_product_by_file' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -83,7 +84,7 @@ a:hover{
             </a>
         </div>
 
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+        <div class="col p-0 m-0">
             <a class='' href="{% url 'staff:upload_product_item' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -98,7 +99,7 @@ a:hover{
             </a>
         </div>
         
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+        <div class="col p-0 m-0">
             <a class='' href="{% url 'staff:upload_product_item_by_file' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -112,13 +113,14 @@ a:hover{
                 </div>
             </a>
         </div>
+    </div>
 
+    <p class='my-3' style='font-size:large;font-weight:bold;'>각종 체크</p>
 
-
-
+    <div class='row'>
         <!-- 물품 체크 -->
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
-            <a class='' href="{% url 'products:check' %}" style='color:black'>
+        <div class="col p-1">
+            <a class='' href="{% url 'staff:staff_product_list' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
                         <span class='' style="font-size: 1.5em; color: #423f3b;">
@@ -126,13 +128,40 @@ a:hover{
                         </span>
                     </div>
                     <div class='text-center my-5'>
-                        <p style='font-size:x-large;font-weight:bold;'>물품 체크</p>
+                        <p style='font-size:x-large;font-weight:bold;'>PRODUCT 체크</p>
                     </div>
                 </div>
             </a>
         </div>
-
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+        <div class="col p-1">
+            <a class='' href="{% url 'staff:staff_product_item_normal_list' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="far fa-credit-card fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>PRODUCT ITEM(일반물품) 체크</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col p-1">
+            <a class='' href="{% url 'staff:staff_product_item_bidding_list' %}" style='color:black'>
+                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
+                    <div class='text-center my-5'>
+                        <span class='' style="font-size: 1.5em; color: #423f3b;">
+                            <i class="far fa-credit-card fa-5x my-page-icon"></i>
+                        </span>
+                    </div>
+                    <div class='text-center my-5'>
+                        <p style='font-size:x-large;font-weight:bold;'>PRODUCT ITEM(경매물품) 체크</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col p-1">
             <a class='' href="{% url 'staff:staff_order_check_list' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -146,23 +175,11 @@ a:hover{
                 </div>
             </a>
         </div>
+    </div>
+    <p class='my-3' style='font-size:large;font-weight:bold;'>회원가입티켓관련</p>
 
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
-            <a class='' href="" style='color:black'>
-                <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
-                    <div class='text-center my-5'>
-                        <span class='' style="font-size: 1.5em; color: #423f3b;">
-                            <i class="far fa-hand-paper fa-5x my-page-icon"></i>
-                        </span>
-                    </div>
-                    <div class='text-center my-5'>
-                        <p style='font-size:x-large;font-weight:bold;'>상품상태 변경</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+    <div class='row'>
+        <div class="col p-1">
             <a class='' href="{% url 'accounts:make_register_ticket' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -177,7 +194,7 @@ a:hover{
             </a>
         </div>
 
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+        <div class="col p-1">
             <a class='' href="" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>
@@ -192,7 +209,7 @@ a:hover{
                 </div>
             </a>
         </div>
-        <div class="col-6 col-lg-4 col-md-4 p-1" style='min-height:200px;max-width:285px;'>
+        <div class="col p-1">
             <a class='' href="{% url 'accounts:get_register_ticket_excel' %}" style='color:black'>
                 <div class="my-page-a" role="alert" style='height:100%;width:100%;border:2px solid #423f3b;'>
                     <div class='text-center my-5'>

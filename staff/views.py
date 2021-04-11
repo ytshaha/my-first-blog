@@ -9,7 +9,7 @@ from .forms import ProductForm
 from django.utils import timezone
 from django.core.files import File
 from django.core.files.base import ContentFile, File
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 from django.shortcuts import render
 from django.http import HttpResponseBadRequest, HttpResponse
@@ -35,7 +35,7 @@ from products.forms import ProductForm, ProductItemForm
 from mysite.utils import unique_slug_generator, unique_product_item_slug_generator
 from mysite.mixin import StaffRequiredView
 from orders.models import Order
-
+from orders.forms import OrderForm
 # def get_filename_ext(filepath):
 #     base_name = os.path.basename(filepath)
 #     name, ext = os.path.splitext(filepath)
@@ -292,3 +292,98 @@ class StaffOrderCheckListView(StaffRequiredView, generic.ListView):
         order_qs = Order.objects.exclude(status='created')
 
         return order_qs
+
+class StaffOrderEditView(StaffRequiredView, generic.UpdateView): ################ 얘는 취소시에 포인트환불 등의 뭔가가 되어야함. 그냥일반 사용자취소도 동일하게 하자.
+    form_class = OrderForm
+    model = Order
+    context_object_name = 'order'
+    template_name = 'staff/staff_order_edit.html'
+    
+    def get_success_url(self):
+        return reverse('staff:staff_order_check_list')
+
+
+
+
+
+
+class StaffProductListView(StaffRequiredView, generic.ListView):
+    template_name = 'staff/staff_product_list.html'
+    model = Product
+    context_object_name = 'products'
+    paginate_by = 20
+
+    # def get_queryset(self):
+    #     qs = Product
+    #     return qs
+
+class StaffProductEditView(StaffRequiredView, generic.UpdateView):
+    form_class = ProductForm
+    model = Product
+    template_name = 'staff/staff_product_edit.html'
+    
+    def get_success_url(self):
+        return reverse('staff:staff_product_list')
+
+
+class StaffProductItemNormalListView(StaffRequiredView, generic.ListView):
+    template_name = 'staff/staff_product_item_normal_list.html'
+    model = Product
+    context_object_name = 'product_items'
+    paginate_by = 20
+
+    def get_queryset(self):
+        qs = ProductItem.objects.filter(product_type='normal')
+        return qs
+
+class StaffProductItemNormalEditView(StaffRequiredView, generic.UpdateView):
+    form_class = ProductItemForm
+    model = ProductItem
+    template_name = 'staff/staff_product_item_normal_edit.html'
+    
+    def get_success_url(self):
+        return reverse('staff:staff_product_item_normal_list')
+
+
+def staff_product_item_option_amount_edit(request, pk):
+    product_item_qs = ProductItem.objects.filter(pk=pk)
+    if product_item_qs.count() == 1:
+        product_item_obj = product_item_qs.first()
+    size_option_qs = SizeOption.objects.filter(product_item=product_item_obj)
+    context = {
+        'product_item_obj': product_item_obj,
+        'size_option_qs': size_option_qs
+    }
+
+    if request.method == 'POST':
+        for size_option in size_option_qs:
+            size_option.amount = request.POST.get(str(size_option.option), 0)
+            if size_option.amount:
+                size_option.save()
+
+        return redirect('staff:staff_product_item_normal_list')
+    return render(request, 'staff/staff_product_item_normal_option_amount_edit.html', context)
+
+class StaffProductItemBiddingListView(StaffRequiredView, generic.ListView):
+    template_name = 'staff/staff_product_item_bidding_list.html'
+    model = Product
+    context_object_name = 'product_items'
+    paginate_by = 20
+
+    def get_queryset(self):
+        qs = ProductItem.objects.filter(product_type='bidding')
+        return qs
+
+class StaffProductItemBiddingEditView(StaffRequiredView, generic.UpdateView):
+    form_class = ProductItemForm
+    model = ProductItem
+    context_object_name = 'product_item'
+    template_name = 'staff/staff_product_item_bidding_edit.html'
+    
+    # def get_context_data(self, *args, **kwargs):
+    #     context = super(StaffProductItemBiddingEditView, self).get_context_data(*args, **kwargs)
+
+    #     return context
+
+    def get_success_url(self):
+        return reverse('staff:staff_product_item_bidding_list')
