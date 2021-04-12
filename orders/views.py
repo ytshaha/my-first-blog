@@ -32,9 +32,10 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(OrderDetailView, self).get_context_data(*args, **kwargs)
         tracking_number = self.object.tracking_number
-        tracking_number_list = tracking_number.split(",")
-        tracking_number_list = [tn.strip() for tn in tracking_number_list]
-        context['tracking_number_list'] = tracking_number_list
+        if tracking_number is not None: 
+            tracking_number_list = tracking_number.split(",")
+            tracking_number_list = [tn.strip() for tn in tracking_number_list]
+            context['tracking_number_list'] = tracking_number_list
         return context
 
 
