@@ -1129,11 +1129,11 @@ def checkout_iamport(request):
         if is_paid:
             # DB에 결제 정보 저장
             # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
-            if status == 'ready' and imp_success == 'true':
+            if status == 'ready':# and imp_success == 'true':
                 # DB에 가상계좌 발급정보 저장
                 print("결재 상태 : ready, vbankIssued")
                 return redirect('carts:vbank')
-            elif status=='paid' and imp_success == 'true':
+            elif status=='paid':# and imp_success == 'true':
                 print("결재 상태 : paid, success")
 
                 order_obj.mark_paid()
@@ -1175,7 +1175,7 @@ def checkout_iamport(request):
                 # return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}), content_type="application/json")
                 return redirect('carts:success')
 
-            elif status=='failed' or imp_success == 'false':
+            elif status=='failed':# or imp_success == 'false':
                 print("결재 상태 : 결제가 실패하였습니다.")
                 return redirect('carts:fail')
         else:
