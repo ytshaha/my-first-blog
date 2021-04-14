@@ -31,6 +31,7 @@ from products.models import Product, ProductItem, SizeOption
 from tickets.models import Ticket, TicketItem
 from points.models import Point
 from mysite.utils import random_string_generator
+from mysite.alimtalk import send
 # import stripe
 
 # STRIPE_SECRET_KEY = getattr(settings, "STRIPE_SECRET_KEY", "sk_test_51IKQwOCVFucPeMu3u9m60jSPGBQhXrHPPfiCoRC1SDPg8CdVLLEVnZExC79i3NaMVU5kgDADgoCffTq7AsKPvwxy00065IC9BM")
@@ -895,6 +896,9 @@ def checkout_iamport(request):
 
                 # 결제 성공하여 이메일 보내기
                 order_complete_mail(user.email, order_obj)
+                alimtalk_message = '선택하신 상품에 대한 결제가 완료되었습니다. '
+                send(templateCode='checkout', to='01079299901', message=alimtalk_message)
+                print("{}으로 결제완료 알림톡이 보내졌습니다.".format('01079299901'))
 
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
                                     content_type="application/json")
@@ -975,6 +979,9 @@ def checkout_iamport(request):
                 charge_obj = Charge.objects.new(order=order_obj, response=response)
                 # print(response)
                 order_complete_mail(user.email, order_obj)
+                alimtalk_message = '선택하신 상품에 대한 결제가 완료되었습니다. '
+                send(templateCode='checkout', to='01079299901', message=alimtalk_message)
+                print("{}으로 결제완료 알림톡이 보내졌습니다.".format('01079299901'))
                 return redirect('carts:success')
             else:
                 print("결재 상태 : 결제가 실패하였습니다.")
@@ -1172,6 +1179,9 @@ def checkout_iamport(request):
                 order_obj.save()
                 charge_obj = Charge.objects.new(order=order_obj, response=response)
                 order_complete_mail(user.email, order_obj)
+                alimtalk_message = '선택하신 상품에 대한 결제가 완료되었습니다. '
+                send(templateCode='checkout', to='01079299901', message=alimtalk_message)
+                print("{}으로 결제완료 알림톡이 보내졌습니다.".format('01079299901'))
                 # return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}), content_type="application/json")
                 return redirect('carts:success')
 
