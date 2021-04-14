@@ -37,7 +37,7 @@
                         <label for="id_{{ size_option.option }}">옵션 {{ size_option.option|floatformat:"0" }} </label>
                     </div>
                     <div class='col'>
-                        <input class='form-control' type="number" id='id_{{ size_option.option }}'name="{{ size_option.option }}" min='0' placeholder="{{ size_option.amount }}">
+                        <input class='form-control' type="number" id='id_{{ size_option.option }}' name="{{ size_option.option }}" min='0' placeholder="{{ size_option.amount }}">
                     </div>
                 </div>
                 {% endfor %}
