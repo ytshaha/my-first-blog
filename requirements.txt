@@ -10,6 +10,7 @@ cryptography==3.4.7
 defusedxml==0.7.1
 dj-database-url==0.5.0
 Django==3.1.7
+django-allauth==0.44.0
 django-excel==0.0.10
 django-storages==1.11.1
 et-xmlfile==1.0.1

@@ -69,12 +69,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    # allauth
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    # provider
-    'allauth.socialaccount.providers.google',
     
     # third party
     'storages',
