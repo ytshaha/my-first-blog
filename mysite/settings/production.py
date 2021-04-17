@@ -64,11 +64,18 @@ NCLOUD_API_SECRET_KEY = os.environ.get('NCLOUD_API_SECRET_KEY')
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    # # allauth
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # provider
+    # 'allauth.socialaccount.providers.google',
     
     # third party
     'storages',
