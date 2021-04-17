@@ -53,9 +53,9 @@ GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client_deploy.json
 POSTAL_CODE_INFORMATION_DIRS = os.path.join(BASE_DIR, 'carts', 'delivery_cost_added_postal_code_simple.csv')
 
 # 카카오톡 알림톡
-SERVICE_ID = 'ncp:kkobizmsg:kr:2648568:moum'
-NCLOUD_API_ACCESS_KEY_ID = '5qPLEqntCjWKDBE8IHOF'
-NCLOUD_API_SECRET_KEY = '28iAXjOb5JmnCp9m0I42BgCnVoAhlAGsZlrzzLm3'
+SERVICE_ID = os.environ.get('SERVICE_ID')
+NCLOUD_API_ACCESS_KEY_ID = os.environ.get('NCLOUD_API_ACCESS_KEY_ID')
+NCLOUD_API_SECRET_KEY = os.environ.get('NCLOUD_API_SECRET_KEY')
 
 # GMAIL_API_CREDENTIAL_DIRS = os.path.join(BASE_DIR, 'mysite', 'client.json')
 
@@ -69,6 +69,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    # allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    # provider
+    'allauth.socialaccount.providers.google',
+    
     # third party
     'storages',
     # my app

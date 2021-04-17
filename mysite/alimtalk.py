@@ -4,11 +4,13 @@ import hmac
 import time
 import requests
 import json
+
+from django.conf import settings
 # from filters import *
 
-SERVICE_ID = 'ncp:kkobizmsg:kr:2648568:moum'
-NCLOUD_API_ACCESS_KEY_ID = '5qPLEqntCjWKDBE8IHOF'
-NCLOUD_API_SECRET_KEY = '28iAXjOb5JmnCp9m0I42BgCnVoAhlAGsZlrzzLm3'
+SERVICE_ID = getattr(settings, 'SERVICE_ID', None)
+NCLOUD_API_ACCESS_KEY_ID = getattr(settings, 'NCLOUD_API_ACCESS_KEY_ID', None)
+NCLOUD_API_SECRET_KEY = getattr(settings, 'NCLOUD_API_SECRET_KEY', None)
 
 def send(templateCode, to, message):
     url = "https://sens.apigw.ntruss.com"
@@ -51,7 +53,7 @@ def send(templateCode, to, message):
             "buttons":[
                 {
                     "type":"WL",
-                    "name":"MOUM 접속",
+                    "name":"MOUM8 접속",
                     "linkMobile":"https://moum8.com",
                     "linkPc":"https://moum8.com"
                     # "schemeIos":"string",

@@ -896,9 +896,13 @@ def checkout_iamport(request):
 
                 # 결제 성공하여 이메일 보내기
                 order_complete_mail(user.email, order_obj)
-                alimtalk_message = '선택하신 상품에 대한 결제가 완료되었습니다. '
-                send(templateCode='checkout', to='01079299901', message=alimtalk_message)
-                print("{}으로 결제완료 알림톡이 보내졌습니다.".format('01079299901'))
+                alimtalk_message = '''{user}님이 구매하신 상품의 결제가 완료되었습니다.
+
+                                    물품: {cart_items_name}
+                                    총금액: {checkout_total}
+                                    '''.format(user=user, cart_items_name=cart_items_name_iamport, checkout_total=order_obj.checkout_total)
+                send(templateCode='checkout', to=user.phone_number, message=alimtalk_message)
+                print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
 
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
                                     content_type="application/json")

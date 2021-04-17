@@ -20,6 +20,7 @@ from django.core.mail import send_mail
 from django.template.loader import get_template
 
 from mysite.mixin import NextUrlMixIn, RequestFormAttachMixin
+from mysite.alimtalk import send
 from mysite.utils import check_ticket_activate
 from .forms import LoginForm, RegisterForm, GuestForm, ReactivateEmailForm, UserDetailChangeForm, PasswordChangeForm, RegisterTicketForm
 from .models import GuestEmail, EmailActivation, RegisterTicket
@@ -136,6 +137,7 @@ class GuestRegisterView(NextUrlMixIn, RequestFormAttachMixin, CreateView):
     #     new_guest_email = GuestEmail.objects.create(email=email)
     #     return redirect(self.get_next_url())
 
+from django.contrib.sites.models import Site
 
 class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
     form_class = LoginForm
@@ -340,56 +342,85 @@ def send_register_ticket_success(request):
     
     if request.method == 'POST':
         email = request.POST.get('email', None)
+        phone_number = request.POST.get('phone_number', None)
         ticket_number = request.POST.get('ticket_number', None)
-        if User.objects.filter(email=email).exists():
-            messages.success(request, '이미 회원인 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
+        print(email, type(email))
+        print(email=="")
+        if email == "" and phone_number == "":
+            messages.success(request, "이메일과 카카오톡이 있는 전화번호 중 하나 이상은 입력해주세요.")
             return redirect('accounts:send_register_ticket')
+
         register_ticket_obj = RegisterTicket.objects.get(ticket_number=ticket_number)
-        if register_ticket_obj.shared:
-            messages.success(request, '이미 보낸 티켓을 선택하셨습니다. 전송되지 않은 티켓을 선택해주세요.')
-            return redirect('accounts:send_register_ticket')
-        if RegisterTicket.objects.filter(sent_mail=email).exists():
-            messages.success(request, '이미 가입티켓을 받은 회원의 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
-            return redirect('accounts:send_register_ticket')
+        if email != "":
+            if User.objects.filter(email=email).exists():
+                messages.success(request, '이미 회원인 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
+                return redirect('accounts:send_register_ticket')
+            
+            if register_ticket_obj.shared:
+                messages.success(request, '이미 보낸 티켓을 선택하셨습니다. 전송되지 않은 티켓을 선택해주세요.')
+                return redirect('accounts:send_register_ticket')
+            if RegisterTicket.objects.filter(sent_mail=email).exists():
+                messages.success(request, '이미 가입티켓을 받은 회원의 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
+                return redirect('accounts:send_register_ticket')
+            # 가입티켓 상태변경(보내짐으로 바꾸고 메일주소도 넣기.)
+            register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)
+            register_ticket_obj = register_ticket_qs.first()
+            register_ticket_obj.shared = True
+            register_ticket_obj.sent_mail = email
+            register_ticket_obj.save()
+
+            #메일 보내기
+            base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com')
+            path = "{base}{path}".format(base=base_url, path='/register_ticket_confirm/')
+            context = {
+                'path':path,
+                'email': email,
+                'ticket_number': register_ticket_obj.ticket_number,
+                'key': register_ticket_obj.key
+            }
+            txt_ = get_template("registration/emails/send_register_ticket.txt").render(context)
+            html_ = get_template("registration/emails/send_register_ticket.html").render(context)
+            subject = '명품 병행수입 쇼핑몰_MOUM8_가입티켓을 보내드립니다.'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = [email]
+
+            # send_mail = send_email(
+            #                         emailMsg=txt_, 
+            #                         to=self.email, 
+            #                         subject=subject)
+            sent_mail = send_mail(
+                        subject,
+                        txt_,
+                        from_email,
+                        recipient_list,
+                        html_message=html_,
+                        fail_silently=False,
+                        )
+            print("{}로 가입티켓 메일을 송부하였습니다.티켓번호:{}, 키:{}".format(email, register_ticket_obj.ticket_number, register_ticket_obj.key))
+        if phone_number != "":
+
+            templateCode ='alim1'
+            to = phone_number
+            alimtalk_message = """안녕하세요.
+                         명품 병행수입 쇼핑몰 MOUM8 입니다.
+                         저희 사이트는 VIP로 선정되신분만 가입할 수 있는 프라이빗 사이트로 운영되고 있습니다.
+ 
+                         고객님께 프라이빗 명품 병행수입 쇼핑몰 MOUM8로 가입이 가능한 티켓을 송부드립니다.
+                         아래 링크를 들어가시면 가입을 진행하실수 있습니다.
+ 
+                         가입티켓 번호 :  {}
+ 
+                         가입티켓 키 :  {}""".format(register_ticket_obj.ticket_number, register_ticket_obj.key)
+            send(templateCode=templateCode, to=to, message=alimtalk_message)
+            print("{}로 가입티켓 메일을 송부하였습니다.티켓번호:{}, 키:{}".format(email, register_ticket_obj.ticket_number, register_ticket_obj.key))   
 
 
-        # 가입티켓 상태변경(보내짐으로 바꾸고 메일주소도 넣기.)
-        register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)
-        register_ticket_obj = register_ticket_qs.first()
-        register_ticket_obj.shared = True
-        register_ticket_obj.sent_mail = email
-        register_ticket_obj.save()
-
-        #메일 보내기
-        base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com')
-        path = "{base}{path}".format(base=base_url, path='/register_ticket_confirm/')
-        context = {
-            'path':path,
-            'email': email,
-            'ticket_number': register_ticket_obj.ticket_number,
-            'key': register_ticket_obj.key
-        }
-        txt_ = get_template("registration/emails/send_register_ticket.txt").render(context)
-        html_ = get_template("registration/emails/send_register_ticket.html").render(context)
-        subject = '명품 병행수입 쇼핑몰_MOUM8_가입티켓을 보내드립니다.'
-        from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [email]
-
-        # send_mail = send_email(
-        #                         emailMsg=txt_, 
-        #                         to=self.email, 
-        #                         subject=subject)
-        sent_mail = send_mail(
-                    subject,
-                    txt_,
-                    from_email,
-                    recipient_list,
-                    html_message=html_,
-                    fail_silently=False,
-                    )
-        print("{}로 가입티켓 메일을 송부하였습니다.티켓번호:{}, 키:{}".format(email, register_ticket_obj.ticket_number, register_ticket_obj.key))
-
-
+    context = {
+                'email': email,
+                'phone_number': phone_number,
+                'ticket_number': register_ticket_obj.ticket_number,
+                'key': register_ticket_obj.key
+            }
 
     return render(request, 'accounts/send_register_ticket_success.html', context)
 
@@ -401,6 +432,7 @@ from django.conf import settings
 
 MEDIA_ROOT = getattr(settings, 'MEDIA_ROOT')
 REGISTER_TICKET_ROOT = os.path.join(MEDIA_ROOT, 'register_ticket_excel.xlsx')
+
 def get_register_ticket_excel(request):
     print('실행')
     if request.method == 'POST':
@@ -425,7 +457,6 @@ def get_register_ticket_excel(request):
         return render(request, 'accounts/get_register_ticket_excel.html', context)
 
     return render(request, 'accounts/get_register_ticket_excel.html', {})
-
 
 
 

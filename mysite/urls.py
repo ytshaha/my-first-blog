@@ -61,7 +61,8 @@ urlpatterns = [
     url(r'^ticket/', include('tickets.urls')),
     url(r'^staff/', include('staff.urls')),
     url(r'^wishlist/', include('wishlist.urls')),
-    url(r'^api/cart/$', cart_detail_api_view, name='api-cart'),   
+    url(r'^api/cart/$', cart_detail_api_view, name='api-cart'),
+    # path('accounts/', include('allauth.urls')),
     
 
 
