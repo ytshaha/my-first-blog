@@ -8,7 +8,7 @@
     src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWeb.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWeb.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWeb.ttf') format('truetype');
    }
    
-   @font-face {
+@font-face {
     font-family: 'NanumBarunGothic';
     font-style: normal;
     font-weight: 700;
@@ -16,7 +16,7 @@
     src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebBold.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebBold.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebBold.ttf') format('truetype')
    }
    
-   @font-face {
+@font-face {
     font-family: 'NanumBarunGothic';
     font-style: normal;
     font-weight: 300;
@@ -24,9 +24,45 @@
     src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.ttf') format('truetype');
    }
    
-   .nanumbarungothic * {
+.nanumbarungothic * {
     font-family: 'NanumBarunGothic', sans-serif;
    }
+
+@font-face {
+    font-family: 'Wemakeprice-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/Wemakeprice-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+/* noto-sans-kr-regular - latin */
+@font-face {
+    font-family: 'Noto Sans KR';
+    font-style: normal;
+    font-weight: 400;
+    src: url('../fonts/noto-sans-kr-v13-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+         url('../fonts/noto-sans-kr-v13-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('../fonts/noto-sans-kr-v13-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('../fonts/noto-sans-kr-v13-latin-regular.woff') format('woff'), /* Modern Browsers */
+         url('../fonts/noto-sans-kr-v13-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('../fonts/noto-sans-kr-v13-latin-regular.svg#NotoSansKR') format('svg'); /* Legacy iOS */
+  }
+@font-face {
+      font-family: "GLYPHICONS Halflings"; 
+      src: url("//db.onlinewebfonts.com/t/017408da87d74ff3770960264091f3d4.eot"); 
+      src: url("//db.onlinewebfonts.com/t/017408da87d74ff3770960264091f3d4.eot?#iefix") format("embedded-opentype"), 
+      url("//db.onlinewebfonts.com/t/017408da87d74ff3770960264091f3d4.woff2") format("woff2"), 
+      url("//db.onlinewebfonts.com/t/017408da87d74ff3770960264091f3d4.woff") format("woff"), 
+      url("//db.onlinewebfonts.com/t/017408da87d74ff3770960264091f3d4.ttf") format("truetype"), 
+      url("//db.onlinewebfonts.com/t/017408da87d74ff3770960264091f3d4.svg#GLYPHICONS Halflings") format("svg"); 
+}
+
+@font-face {
+        font-family: 'SeoulHangangM';
+        src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulHangangM.woff') format('woff');
+        font-weight: normal;
+        font-style: normal;
+}
 
 h2 {
     display: block;
@@ -39,7 +75,8 @@ h2 {
 }
 
 body {
-    font-family: 'NanumBarunGothic', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"!important;
+    font-family: 'SeoulHangangM', "Noto Sans KR", sans-serif, 'GLYPHICONS Halflings';
+    /* font-family: 'NanumBarunGothic', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"!important; */
 }
 
 .index-container-1 {

@@ -109,6 +109,44 @@ a.wish-link-added {
 }
 
 
+/* 데탑 */
+.product-card__name {
+    font-weight:bold;
+    font-size:small;
+}
+
+.product-card__list-price{
+    color:gray;
+    font-size:small;
+}
+
+.product-card__price {
+    font-weight:bold;
+    font-size:medium;
+}
+
+.product-card__title {
+    /* font-weight:bold; */
+    font-size:medium;
+}
+
+@media screen and (max-width: 768px) {
+    /* 모바일에 사용될 스트일 시트를 여기에 작성합니다. */
+    .product-card__name {
+        font-size:x-small;
+    }
+    .product-card__list-price{
+        font-size:small;
+    }
+    .product-card__price {
+        font-size:small;
+    }
+    .product-card__title {
+        font-size:small;
+    }
+
+}
+
 
 </style>
 {% endblock %}
@@ -118,35 +156,37 @@ a.wish-link-added {
 {% load humanize %}
 <!-- 프로덕트 리스트 네브바 -->
 <nav class='sticky-top-3'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
-    <ul class="navbar-nav navbar-expand-lg">
-        <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" id="collapseCategoryBtn" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
-              카테고리 <i class="fas fa-chevron-down"></i>
-            </a>
-        </li>
-        <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" id="collapseBrandBtn" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
-              브랜드 <i class="fas fa-chevron-down"></i>
-            </a>
-        </li>
-        <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" id="collapseFilterBtn" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
-              필터 <i class="fas fa-chevron-down"></i>
-            </a>
-        </li>
-        <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" id="collapseOrderbyBtn" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
-              정렬기준 <i class="fas fa-chevron-down"></i>
-            </a>
-        </li>
-        <li class='nav-item mx-2'>
-            <a class="nav-link" data-toggle="collapse" id="collapseSearchBtn" href="#collapseSearch" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
-              검색 <i class="fas fa-chevron-down"></i>
-            </a>
-        </li>
-        
-        
-    </ul>
+    <div class='container'>
+        <ul class="navbar-nav navbar-expand-lg">
+            <li class='nav-item mx-2'>
+                <a class="nav-link" data-toggle="collapse" id="collapseCategoryBtn" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+                카테고리 <i class="fas fa-chevron-down"></i>
+                </a>
+            </li>
+            <li class='nav-item mx-2'>
+                <a class="nav-link" data-toggle="collapse" id="collapseBrandBtn" href="#collapseBrand" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+                브랜드 <i class="fas fa-chevron-down"></i>
+                </a>
+            </li>
+            <li class='nav-item mx-2'>
+                <a class="nav-link" data-toggle="collapse" id="collapseFilterBtn" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+                필터 <i class="fas fa-chevron-down"></i>
+                </a>
+            </li>
+            <li class='nav-item mx-2'>
+                <a class="nav-link" data-toggle="collapse" id="collapseOrderbyBtn" href="#collapseOrderby" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+                정렬기준 <i class="fas fa-chevron-down"></i>
+                </a>
+            </li>
+            <li class='nav-item mx-2'>
+                <a class="nav-link" data-toggle="collapse" id="collapseSearchBtn" href="#collapseSearch" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
+                검색 <i class="fas fa-chevron-down"></i>
+                </a>
+            </li>
+            
+            
+        </ul>
+    </div>
 </nav>
 
 <div class="collapse sticky-top-4" id="collapseCategory">
@@ -196,7 +236,7 @@ a.wish-link-added {
                     {% for brand in brands %}
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
                         <a class="dropdown-item" href="{% url 'products:product_list' brand=brand %}" style='font-size:small;'>{{ brand|upper }}</a>
-                    </div>    
+                    </div>
                     {% endfor %}
                 </div>
             </div>
@@ -362,9 +402,6 @@ a.wish-link-added {
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
                         <div class='row'>
-                            <div class='col'>
-                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
-                            </div>
                             {% if user.is_staff %}
                             <div class='col text-right'>
                                 {% if product_item.featured %}
@@ -393,23 +430,19 @@ a.wish-link-added {
                             {% endif %} 
                         </div>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
-                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
-                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__title mb-0">{{ product_item.product.title }} </p>
+                        <p class='mb-0'><span class='product-card__list-price'><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
+                        <p class='mb-0'><span class="product-card__price">{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
-                                {% if product_item.product_type == 'bidding' %}
-                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
-                                {% elif product_item.product_type == 'normal' %}
-                                    {% if product_item.info_delivery_from == 'overseas' %}
-                                    <!-- <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div> -->
-                                
-                                    {% endif %}
+                                {% if product_item.info_delivery_from == 'overseas' %}
+                                <!-- <span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'>남은 시간 : </span></span><div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div> -->
                                 {% endif %}
                             </div>
                             <div class='col'>
-                                <!-- 국내배송여부 삭제 210309 -->
                                 <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
                             </div>
                         </div>
