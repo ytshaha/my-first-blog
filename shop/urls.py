@@ -13,5 +13,5 @@ urlpatterns = [
     path('ticket/result/<int:pk>', views.BuyingTicketResultView.as_view(), name='buying_ticket_result'),
     # path('shop_login/', django_views.LoginView.as_view(), name='shop_login'),
     path('accounts/logout/', django_views.LogoutView.as_view(next_page='/shop/'), name='logout'),
-    
+    path('event/1/', views.open_event, name='event_1')
 ]

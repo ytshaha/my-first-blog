@@ -1,0 +1,118 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block header %}
+<style>
+
+@font-face {
+    font-family: "Don Graffiti"; 
+    src: url("https://db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.eot"); 
+    src: url("https://db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.eot?#iefix") format("embedded-opentype"), 
+    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.woff2") format("woff2"), 
+    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.woff") format("woff"), 
+    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.ttf") format("truetype"), 
+    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.svg#Don Graffiti") format("svg"); 
+    }
+
+@font-face {font-family: "Allura"; 
+    src: url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.eot"); 
+    src: url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.eot?#iefix") format("embedded-opentype"), 
+    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.woff2") format("woff2"), 
+    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.woff") format("woff"), 
+    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.ttf") format("truetype"), 
+    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.svg#Allura") format("svg"); 
+}
+
+
+@font-face {
+    font-family: "Meddon"; 
+    src: url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.eot"); 
+    src: url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.eot?#iefix") format("embedded-opentype"), 
+    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.woff2") format("woff2"),
+    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.woff") format("woff"), 
+    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.ttf") format("truetype"), 
+    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.svg#Meddon") format("svg"); 
+    }
+
+@font-face {
+    font-family: "Josefin Sans"; 
+    src: url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.eot"); 
+    src: url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.eot?#iefix") format("embedded-opentype"), 
+    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.woff2") format("woff2"), 
+    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.woff") format("woff"), 
+    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.ttf") format("truetype"), 
+    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.svg#Josefin Sans") format("svg"); 
+    }
+@font-face {
+    font-family: 'Wemakeprice-Bold';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/Wemakeprice-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: '양진체';
+    src: url('https://cdn.jsdelivr.net/gh/supernovice-lab/font@0.9/yangjin.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+.wemake-bold{
+    font-family:'Wemakeprice-Bold';
+}
+.graffiti{
+    font-family:'Don Graffiti';
+}
+
+.yangjin{
+    font-family:'양진체';
+}
+
+</style>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">EVENT</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+</div>  
+<div class='container' style="padding-top:20px;">
+    <div class="row">
+        <div class='col-12 px-5 rounded' style='background-color:rgb(0, 92, 0);'>
+            <div class='col pt-4 pb-4 text-center'>
+                <span style="font-size: 1em; color: white;">
+                    <i class="fas fa-plane-departure fa-5x"></i>
+                </span>
+            </div>
+            <div class="store-card-header">
+                <p class='text-center wemake-bold mb-0' style='color:white;font-weight:bold;font-size:60px;'>MOUM8</p>
+                <p class='text-center wemake-bold mb-0' style='color:white;font-weight:bold;font-size:60px;'>GRAND OPEN</p>
+            </div>
+            <div class='col-12 text-center'>
+                <img src="{% static 'shop/images/open-1853924_1920.jpg' %}" alt="open-image" style='width:100%'>
+            </div>
+            <div class="info-card-description mb-5 text-left">
+                <ul style='color:white;'>
+                    <p class='yangjin' style='font-size:large;'>
+                    모움8이 드디어 오픈했습니다. <br>
+                    30여개의 브랜드와 그 명품들을 이탈리아에서 직접 공수하여 가져옵니다. <br>
+                    명품의 가치를 유지한채 합리적인 가격을 고객님께 드리기 위해 온라인으로 뵙게 됐습니다. <br><br>
+                    
+                    </p> 
+                </ul>
+            </div>
+            <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

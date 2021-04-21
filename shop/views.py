@@ -90,3 +90,8 @@ def bidding(request, pk):
 #     buying_ticket = get_object_or_404(BuyingTicket, pk=pk)
 #     return render(request, 'shop/buying_ticket_result.html', {'buying_ticket':buying_ticket})
 
+
+
+######################################################
+def open_event(request):
+    return render(request, 'shop/event/210426_open_event.html', {})
