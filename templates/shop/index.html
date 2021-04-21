@@ -142,7 +142,7 @@ a.wish-link-added {
         font-size:x-small;
     }
     .product-card__list-price{
-        font-size:small;
+        font-size:x-small;
     }
     .product-card__price {
         font-size:small;
@@ -216,7 +216,24 @@ a.wish-link-added {
     border: 1px solid rgb(201, 201, 201);
     padding: 10px;
 }
+.div-brand-logo:hover {
+    background-color:orange;
+    transition: 0.3s;
+}
 
+a:hover{
+    text-decoration: none!important;
+}
+
+.btn-transparent-dark{
+    background-color: rgba(0, 0, 0, 0.5)!important;
+    border-color:black!important;
+    color:white!important;
+    
+}
+.btn-transparent-dark:hover{
+    background-color: rgba(0, 0, 0, 1)!important;
+}
 
 </style>
 
@@ -244,7 +261,7 @@ a.wish-link-added {
             <h1 class='carousel-text-title add-text-stroke' sytle='font-size:40px;'>MOUM8</h1>
             <h3 class='carousel-text-title add-text-stroke' >GRAND OPEN</h3>
             <h3 class='carousel-text-desc' >모움8이 4월 26일에 오픈합니다.</h3>
-            <a href="{% url 'shop:event_1' %}"><button class='btn btn-success'>OPEN EVENT 참여</button></a>
+            <a href="{% url 'shop:event_1' %}"><button class='btn btn-transparent-dark btn-lg'>OPEN EVENT 참여</button></a>
         </div>
       </div>
       <div class="carousel-item">
@@ -257,7 +274,7 @@ a.wish-link-added {
             <h3 class='carousel-text-desc' >30여개의 BRAND가 여러분을 기다리고 있습니다.</h3>
             <h3 class='carousel-text-desc'>ITEM은 지속적으로 UPDATE 됩니다.</h3>
             
-            <a href="{% url 'shop:event_1' %}"><button class='btn btn-success'>OPEN EVENT 참여</button></a>
+            <a href="{% url 'shop:event_1' %}"><button class='btn btn-transparent-dark btn-lg'>OPEN EVENT 참여</button></a>
         </div>
       </div>
       <div class="carousel-item">
@@ -268,7 +285,7 @@ a.wish-link-added {
             <h3 class='carousel-text-title add-text-stroke' ></h3>
             <h3 class='carousel-text-title add-text-stroke' ></h3>
             <h3 class='carousel-text-desc' >합리적인 가격으로 고객에게 가치를 선사해드립니다.</h3>
-            <a href="{% url 'shop:event_1' %}"><button class='btn btn-success'>OPEN EVENT 참여</button></a>
+            <a href="{% url 'shop:event_1' %}"><button class='btn btn-transparent-dark btn-lg'>OPEN EVENT 참여</button></a>
         </div>
       </div>
       <div class="carousel-item">
@@ -280,7 +297,7 @@ a.wish-link-added {
             <h3 class='carousel-text-title add-text-stroke' ></h3>
             <h3 class='carousel-text-desc'>상품 구매전부터 구해한 후에도 지속적인 고객관리 경험을 선사해드립니다.</h3>
             
-            <a href="{% url 'shop:event_1' %}"><button class='btn btn-success'>OPEN EVENT 참여</button></a>
+            <a href="{% url 'shop:event_1' %}"><button class='btn btn-transparent-dark btn-lg'>OPEN EVENT 참여</button></a>
         </div>
       </div>
     </div>
@@ -295,7 +312,7 @@ a.wish-link-added {
   
 </div>
 <!--  -->
-<div class="container">
+<div class="container mb-3">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto ">
             <h2 class="index-title-index text-center">BRANDS</h2>
@@ -366,7 +383,11 @@ a.wish-link-added {
                 <img class='brand-logo' src="{% static 'shop/images/CHLOE_LOGO.png' %}" alt="클로에">
             </a>
         </div>
-        
+        <div class='col-12 mx-auto text-center div-brand-logo'>
+            <a href="{% url 'products:product_list' %}">
+                <span style='font-size:20px;font-weight:bold;color:black;'>위 브랜드 포함 30여개 브랜드</span>
+            </a>
+        </div>
     </div>
 
 </div>  
@@ -385,7 +406,7 @@ a.wish-link-added {
 <div class='container'>
     <div class='row'>
         <div class='col-6 ml-auto text-right'>
-            <a href="{% url 'products:product_list' %}"><p style='color:gray;'>SHOW MORE <i class="fas fa-angle-double-right "></i></p></a>
+            <a href="{% url 'products:product_list' %}"><p style='color:gray;'>전체보기 <i class="fas fa-angle-double-right "></i></p></a>
         </div>
     </div>
     <div class='row'>
@@ -430,9 +451,11 @@ a.wish-link-added {
                         {% endif %}        
                         <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__title mb-0">{{ product_item.product.title }} </p>
-                        <p class='mb-0'><span class='product-card__list-price'><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
-                        <p class='mb-0'><span class="product-card__price">{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
+                        <p class="product-card__title mb-0">
+                            {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
+                        </p>
+                        <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
+                        <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
