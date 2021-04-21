@@ -36,6 +36,8 @@ from mysite.utils import unique_slug_generator, unique_product_item_slug_generat
 from mysite.mixin import StaffRequiredView
 from orders.models import Order
 from orders.forms import OrderForm
+
+from mysite.alimtalk import send
 # def get_filename_ext(filepath):
 #     base_name = os.path.basename(filepath)
 #     name, ext = os.path.splitext(filepath)
@@ -300,11 +302,78 @@ class StaffOrderEditView(StaffRequiredView, generic.UpdateView): ###############
     template_name = 'staff/staff_order_edit.html'
     
     def get_success_url(self):
+        self.object = self.get_object()
+        pk = self.kwargs.get('pk', None)
+        order_obj = Order.objects.get(pk=pk)
+        cart_obj = order_obj.cart
+
+        # 결제시 필요한 name에 물건들을 넣어주자.
+        cart_items_name = "" # 실제 물품명
+        cart_items_name_iamport = "" # 아임포트용 물품명 -> 티켓내용 제외
+        item_count = cart_obj.cart_items.all().count()
+        for i, cart_item in enumerate(cart_obj.cart_items.all()):
+            if cart_item.product_type == 'ticket':
+                cart_items_name = cart_items_name + "ticket_" + str(cart_item.ticket_item.tickets_type)
+                if i < item_count-1:
+                    cart_items_name = cart_items_name + ", "
+            else:
+                cart_items_name = cart_items_name + cart_item.product_item.product.title
+                cart_items_name_iamport = cart_items_name_iamport + cart_item.product_item.product.title
+                if i < item_count-1:
+                    cart_items_name = cart_items_name + ", "
+                    cart_items_name_iamport = cart_items_name_iamport + ", "
+            
+            if len(cart_items_name) > 200:
+                cart_items_name = cart_items_name[:200] + "..."
+
+        user = self.request.user
+
+        alimtalk_message = '''{user}님이 구매하신 상품의 배송이 시작되었습니다.
+
+물품: {cart_items_name}
+운송장번호: {tracking_number}
+'''.format(user=user, cart_items_name=cart_items_name_iamport, tracking_number=order_obj.tracking_number)
+        print("★★★★", order_obj)
+        send(templateCode='alim4', to=user.phone_number, message=alimtalk_message)
+        print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
         return reverse('staff:staff_order_check_list')
 
+#     def post(self, request, *args, **kwargs):
+#         self.object = self.get_object()
+#         pk = kwargs.get('pk', None)
+#         order_obj = Order.objects.get(pk=pk)
+#         cart_obj = order_obj.cart
 
+#         # 결제시 필요한 name에 물건들을 넣어주자.
+#         cart_items_name = "" # 실제 물품명
+#         cart_items_name_iamport = "" # 아임포트용 물품명 -> 티켓내용 제외
+#         item_count = cart_obj.cart_items.all().count()
+#         for i, cart_item in enumerate(cart_obj.cart_items.all()):
+#             if cart_item.product_type == 'ticket':
+#                 cart_items_name = cart_items_name + "ticket_" + str(cart_item.ticket_item.tickets_type)
+#                 if i < item_count-1:
+#                     cart_items_name = cart_items_name + ", "
+#             else:
+#                 cart_items_name = cart_items_name + cart_item.product_item.product.title
+#                 cart_items_name_iamport = cart_items_name_iamport + cart_item.product_item.product.title
+#                 if i < item_count-1:
+#                     cart_items_name = cart_items_name + ", "
+#                     cart_items_name_iamport = cart_items_name_iamport + ", "
+            
+#             if len(cart_items_name) > 200:
+#                 cart_items_name = cart_items_name[:200] + "..."
 
+#         user = request.user
 
+#         alimtalk_message = '''{user}님이 구매하신 상품의 배송이 시작되었습니다.
+
+# 물품: {cart_items_name}
+# 운송장번호: {tracking_number}
+# '''.format(user=user, cart_items_name=cart_items_name_iamport, tracking_number=order_obj.tracking_number)
+#         print("★★★★", order_obj)
+#         send(templateCode='alim4', to=user.phone_number, message=alimtalk_message)
+#         print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
+#         return super().post(request, *args, **kwargs)
 
 
 class StaffProductListView(StaffRequiredView, generic.ListView):

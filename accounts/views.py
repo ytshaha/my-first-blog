@@ -403,9 +403,11 @@ def send_register_ticket_success(request):
             to = phone_number
             alimtalk_message = """안녕하세요.
 명품 병행수입 쇼핑몰 MOUM8 입니다. 
-저희 사이트는 VIP로 선정되신분만 가입할 수 있는 프라이빗 사이트로 운영되고 있습니다. 
+
+저희 사이트는 VIP로 선정되신 분만 가입할 수 있는 프라이빗 사이트로 운영되고 있습니다. 
 고객님께 프라이빗 명품 병행수입 쇼핑몰 MOUM8로 가입이 가능한 티켓을 송부드립니다. 
-아래 링크를 들어가시면 가입을 진행하실수 있습니다. 
+아래 링크를 들어가시면 가입을 진행하실 수 있습니다. 
+
 가입티켓 번호 :  {}
 가입티켓 키 :  {}""".format(register_ticket_obj.ticket_number, register_ticket_obj.key)
             send(templateCode=templateCode, to=to, message=alimtalk_message)

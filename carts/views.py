@@ -898,10 +898,10 @@ def checkout_iamport(request):
                 order_complete_mail(user.email, order_obj)
                 alimtalk_message = '''{user}님이 구매하신 상품의 결제가 완료되었습니다.
 
-                                    물품: {cart_items_name}
-                                    총금액: {checkout_total}
-                                    '''.format(user=user, cart_items_name=cart_items_name_iamport, checkout_total=order_obj.checkout_total)
-                send(templateCode='checkout', to=user.phone_number, message=alimtalk_message)
+물품: {cart_items_name}
+총 금액: {checkout_total}
+'''.format(user=user, cart_items_name=cart_items_name_iamport, checkout_total=order_obj.checkout_total)
+                send(templateCode='alim3', to=user.phone_number, message=alimtalk_message)
                 print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
 
                 return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
@@ -983,9 +983,13 @@ def checkout_iamport(request):
                 charge_obj = Charge.objects.new(order=order_obj, response=response)
                 # print(response)
                 order_complete_mail(user.email, order_obj)
-                alimtalk_message = '선택하신 상품에 대한 결제가 완료되었습니다. '
-                send(templateCode='checkout', to='01079299901', message=alimtalk_message)
-                print("{}으로 결제완료 알림톡이 보내졌습니다.".format('01079299901'))
+                alimtalk_message = '''{user}님이 구매하신 상품의 결제가 완료되었습니다.
+
+물품: {cart_items_name}
+총 금액: {checkout_total}
+'''.format(user=user, cart_items_name=cart_items_name_iamport, checkout_total=order_obj.checkout_total)
+                send(templateCode='alim3', to=user.phone_number, message=alimtalk_message)
+                print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
                 return redirect('carts:success')
             else:
                 print("결재 상태 : 결제가 실패하였습니다.")
@@ -1183,9 +1187,13 @@ def checkout_iamport(request):
                 order_obj.save()
                 charge_obj = Charge.objects.new(order=order_obj, response=response)
                 order_complete_mail(user.email, order_obj)
-                alimtalk_message = '선택하신 상품에 대한 결제가 완료되었습니다. '
-                send(templateCode='checkout', to='01079299901', message=alimtalk_message)
-                print("{}으로 결제완료 알림톡이 보내졌습니다.".format('01079299901'))
+                alimtalk_message = '''{user}님이 구매하신 상품의 결제가 완료되었습니다.
+
+물품: {cart_items_name}
+총 금액: {checkout_total}
+'''.format(user=user, cart_items_name=cart_items_name_iamport, checkout_total=order_obj.checkout_total)
+                send(templateCode='alim3', to=user.phone_number, message=alimtalk_message)
+                print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
                 # return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}), content_type="application/json")
                 return redirect('carts:success')
 

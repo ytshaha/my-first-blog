@@ -77,7 +77,6 @@
     flex-basis: auto;
 }
 
-
 a.wish-link {
     color:rgb(190, 190, 190);
     transition: 0.3s;
@@ -100,12 +99,36 @@ a.wish-link-added {
     top: 86px;
     z-index: 2;
 }
+
 .sticky-top-4 {
     position: -webkit-sticky;
     position: sticky;
     top: 121px;
     z-index: 2;
 }
+
+
+/* 데탑 */
+.product-card__name {
+    font-weight:bold;
+    font-size:small;
+}
+
+.product-card__list-price{
+    color:gray;
+    font-size:small;
+}
+
+.product-card__price {
+    font-weight:bold;
+    font-size:medium;
+}
+
+.product-card__title {
+    /* font-weight:bold; */
+    font-size:medium;
+}
+
 </style>
 {% endblock %}
 
@@ -343,40 +366,41 @@ a.wish-link-added {
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
                         <div class='row'>
-                            <div class='col'>
-                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
-                            </div>
+                            {% if user.is_staff %}
                             <div class='col text-right'>
-                                {% if user.is_staff %}
-                                    {% if product_item.featured %}
-                                    <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                {% if product_item.featured %}
+                                <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                    <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
+                                    <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                </form>
+                                {% else %}
+                                    {% if product_item.product_type == 'bidding' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                        <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
-                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                        <button class='btn btn-sm btn-outline-danger' type='submit'>경매활성화</button>
                                     </form>
-                                    {% else %}
-                                        {% if product_item.product_type == 'bidding' %}
-                                        <form method='post' action="{% url 'products:product_make_featured' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                            <button class='btn btn-sm btn-outline-danger' type='submit'>경매활성화</button>
-                                        </form>
-                                        {% elif product_item.product_type == 'normal' %}
-                                        <form method='post' action="{% url 'products:product_make_featured' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                            <button class='btn btn-sm btn-outline-success' type='submit'>판매활성화</button>
-                                        </form>
-                                        {% endif %}
+                                    {% elif product_item.product_type == 'normal' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매활성화</button>
+                                    </form>
                                     {% endif %}
-                                {% endif %}   
-                            </div> 
+                                {% endif %}
+                            </div>
+                            {% endif %} 
                         </div>
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
-                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
-                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
-                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__title mb-0">
+                            {{ product_item.product.title|slice:"27" }}{% if product_item.product.title|length|get_digit:"-1" > 20 %}...{% endif %}
+                        </p>
+                        <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
+                        <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
@@ -419,8 +443,6 @@ a.wish-link-added {
 <div id="count"></div>
 
 <!-- jQuery -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
 $(document).ready(function(){
 
@@ -439,9 +461,17 @@ $(document).ready(function(){
             success: function(data){
                 if(data.added == "true"){
                     wishBtn.children().css('color','rgb(0, 0, 0)')
+                    $.alert({
+                        title: '위시리스트',
+                        content: '위시리스트에서 추가되었습니다.',
+                    });
                 }
                 else{
                     wishBtn.children().css('color','rgb(197, 197, 197)')
+                    $.alert({
+                        title: '위시리스트',
+                        content: '위시리스트에 제거되었습니다.',
+                    });
                 }
 
                 }

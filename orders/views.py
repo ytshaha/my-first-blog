@@ -8,6 +8,8 @@ from django.conf import settings
 from billing.models import BillingProfile, Charge
 from .models import Order
 from mysite.client import Iamport
+from mysite.alimtalk import send
+
 
 IAMPORT_CODE = getattr(settings, "IAMPORT_CODE", 'imp30832141')
 IMPORT_REST_API_KEY = getattr(settings, "IMPORT_REST_API_KEY", '8306112827056798')
@@ -75,6 +77,35 @@ def cancel_order(request):
                     print('{} 주문이 최소되었음.'.format(order_obj))
                     order_cancel_mail(email=order_obj.billing_profile.email, order=order_obj)
                     print('{}님에게 결제 취소 메일이 발송되었습니다.'.format(request.user))
+                    
+                    # cart_items_name 뽑아내기
+                    user = request.user
+                    cart_obj = order_obj.cart
+
+                    # 결제시 필요한 name에 물건들을 넣어주자.
+                    cart_items_name = "" # 실제 물품명
+                    cart_items_name_iamport = "" # 아임포트용 물품명 -> 티켓내용 제외
+                    item_count = cart_obj.cart_items.all().count()
+                    for i, cart_item in enumerate(cart_obj.cart_items.all()):
+                        if cart_item.product_type == 'ticket':
+                            cart_items_name = cart_items_name + "ticket_" + str(cart_item.ticket_item.tickets_type)
+                            if i < item_count-1:
+                                cart_items_name = cart_items_name + ", "
+                        else:
+                            cart_items_name = cart_items_name + cart_item.product_item.product.title
+                            cart_items_name_iamport = cart_items_name_iamport + cart_item.product_item.product.title
+                            if i < item_count-1:
+                                cart_items_name = cart_items_name + ", "
+                                cart_items_name_iamport = cart_items_name_iamport + ", "
+                        
+                        if len(cart_items_name) > 200:
+                            cart_items_name = cart_items_name[:200] + "..."
+                    alimtalk_message = '''{user}님이 구매하신 상품의 결제가 취소되었습니다.
+
+물품: {cart_items_name}
+'''.format(user=user, cart_items_name=cart_items_name_iamport)
+                    send(templateCode='alim5', to=user.phone_number, message=alimtalk_message)
+                    print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
                 else:
                     messages.success(request, '결제상에 문제가 있어 주문이 취소되지 않았습니다. 관리자에게 문의바랍니다.')
                     print('{} 주문이 결제상에 문제가 있어 주문이 취소되지 않았습니다. '.format(order_obj))
@@ -95,7 +126,7 @@ def cancel_order(request):
 
 def cancel_iamport(request, imp_uid, cancel_reason):
     iamport = Iamport(imp_key=IMPORT_REST_API_KEY, imp_secret=IMPORT_REST_API_SECRET)
-
+    user = request.user
     # 취소시 오류 예외처리(이미 취소된 결제는 에러가 발생함)
     try:    
         response = iamport.cancel(cancel_reason, imp_uid=imp_uid)
@@ -107,7 +138,7 @@ def cancel_iamport(request, imp_uid, cancel_reason):
         charge_obj.timestamp = response['cancelled_at']
         charge_obj.receipt_url = response['receipt_url']
         charge_obj.save()
-        charge_obj
+        
         return True
     except Iamport.ResponseError as e:
         print(e.code)

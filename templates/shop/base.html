@@ -23,13 +23,47 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    
+    <!-- fontawsome CSS -->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+        
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    
+
+    <!-- CSRF for ajax JS -->
+    <script src="{% static 'js/csrf.ajax.js' %}"></script>
+
+      <!-- js render -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.11/jsrender.js"></script>
+    <!-- % include 'shop/base/js_template.html' %} -->
+    
+    <!-- ecommerce Custom2 js -->
+    <script src="{% static 'js/ecommerce.billing.js' %}"></script>  
+
+    <!-- iamport.payment.js -->
+    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
+    
+    <!-- Jquery-confirm JavaScript -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    
+    <!-- jQuery -->
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
+
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script> -->
+    <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script> -->
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"> -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+
     <!-- Shop Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/shop.css' %}">
-    
-    <!-- Stripe Custom CSS -->
-    <link rel="stylesheet" href="{% static 'css/stripe-custom-style.css' %}">
-    
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+
+
     {% block header %}
     {% endblock %}
     <style>
@@ -138,317 +172,7 @@
   </head> 
   
   <body>
-    <!-- Navbar -->
-    <div id="mySidenav-home" class="sidenav-home">
-      <div class='text-center'>
-        <a href="javascript:void(0)" class="closebtn px-0 mx-0" onclick="closeNav()" style='right:40%;'>&times;</a>
-      </div>
-      <div class='px-3' style='width:200px;'>
-        <ul class="navbar-nav mr-auto text-center">
-          <!-- 일반물품 Dropdiwn -->
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'shop:index' %}"><img src="{% static 'shop/logo/logo_sidebar.png' %}" alt="로고" style="height:30px;"></a> 
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'shop:introduction' %}">ABOUT MOUM8</a> 
-          </li>
-          
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="collapse" href="#collapseProduct" role="button" aria-expanded="false" aria-controls="collapseExample">PRODUCT</a> 
-            
-            <div class="collapse" id="collapseProduct" style='border-top:1px solid gray;border-bottom:1px solid gray;'>
-              <div class="nav-link text-center">
-                  <div class='row'>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_list' %}">전체</a>
-                    <!-- <div class="dropdown-divider"></div> -->
-                    <hr>
-                    <a class="dropdown-item dropdown-item-2 px-0 " href="{% url 'products:product_list' category='woman' %}">여성의류</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_list' category='men' %}">남성의류</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_list' category='bag' %}">가방</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_list' category='acc' %}">ACC</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_list' category='kid' %}">키즈</a>
-                  </div>
-              </div>
-            </div>
-            
-
-          <!-- 경매물품 Dropdown -->
-          <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">AUCTION</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' %}">전체</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='woman' %}">여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='men' %}">남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='shoes' %}">슈즈</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='bag' %}">가방</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='acc' %}">ACC</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}">키즈</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'tickets:home' %}">경매참여티켓</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_end_list' %}">경매 결과</a>
-              
-            </div>
-          </li> -->
-          
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i></a> 
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'products:product_wish_list' %}"><i class="fas fa-heart"></i></a> 
-          </li>
-          <li class="nav-item"></li>
-            <a class="nav-link" href="{% url 'reviews:home' %}">리뷰</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="collapse" href="#collapseAccount" role="button" aria-expanded="false" aria-controls="collapseExample">마이페이지</a> 
-            
-            <div class="collapse" id="collapseAccount" style='border-top:1px solid gray;border-bottom:1px solid gray;'>
-              <div class="nav-link">
-                  <div class='row'>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:home' %}">전체</a>
-                    <hr>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'orders:list' %}">주문/배송</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:product_wish_list' %}">관심리스트</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'points:home' %}">보유포인트</a>
-                    <hr>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:change_address' %}">기본배송지 변경</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:card_home' %}">결제카드 설정</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'password_change' %}">비밀번호변경</a>
-                  </div>
-              </div>
-            </div>
-
-
-          </li>
-          <li class="nav-item"></li>
-            <a class="nav-link" href="{% url 'logout' %}">로그아웃</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">로그인</a>
-          </li>  
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'register_ticket_confirm' %}">회원가입</a>
-          </li>  
-          {% endif %}
-
-          {% if user.is_staff %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="collapse" href="#collapseStaff" role="button" aria-expanded="false" aria-controls="collapseExample">STAFF</a> 
-            
-            <div class="collapse" id="collapseStaff" style='border-top:1px solid gray;border-bottom:1px solid gray;'>
-              <div class="nav-link">
-                  <div class='row'>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'staff:home' %}" style='font-size:14px;'>HOME</a>
-                    <hr>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'staff:upload_product' %}"  style='font-size:14px;'>물품 업로드</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'staff:upload_product_by_file' %}"  style='font-size:14px;'>물품 업로드(엑셀일괄)</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'staff:upload_product_item' %}"  style='font-size:14px;'>물품 아이템 업로드</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'staff:upload_product_item_by_file' %}"  style='font-size:14px;'>물품 아이템 업로드(엑셀일괄)</a>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'products:check' %}"  style='font-size:14px;'>물품 체크</a> 
-                    <hr>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'staff:staff_order_check_list' %}"  style='font-size:14px;'>주문상태 확인</a>
-                    <a class="dropdown-item dropdown-item-2" href=""  style='font-size:14px;'>상품 상태 변경</a>
-                    <hr>
-                    <a class="dropdown-item dropdown-item-2" href=""  style='font-size:14px;'>통계분석</a>
-                    <hr>
-                    <a class="dropdown-item dropdown-item-2" href="{% url 'accounts:make_register_ticket' %}"  style='font-size:14px;'>회원가입 티켓만들기</a>
-                  </div>
-              </div>
-            </div>
-
-            
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'staff:home' %}">HOME</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'staff:upload_product' %}">물품 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'staff:staff_product_list' %}">PRODUCT 체크</a> 
-              <a class="dropdown-item" href="{% url 'staff:staff_product_item_normal_list' %}">PRODUCT ITEM(일반물품) 체크</a> 
-              <a class="dropdown-item" href="{% url 'staff:staff_product_item_bidding_list' %}">PRODUCT ITEM(경매물품) 체크</a> 
-              <a class="dropdown-item" href="{% url 'staff:staff_order_check_list' %}">주문상태 확인</a> 
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}">회원가입 티켓만들기</a>
-              <a class="dropdown-item" href="">통계분석(추가예정)</a>
-              <div class="dropdown-divider"></div>
-            </div>
-          </li>
-          {% endif %}
-
-          {% if user.is_admin %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
-          </li>
-          {% endif %}
-
-        </ul>
-      </div>
-    </div>
-    
-
-    
-
-    <nav class="navbar sticky-top navbar-expand-lg" style="height:46px;-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255); padding: 6px 24px 0px; box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;">
-      <!-- <a class="navbar-brand" href="">sss</a> -->
-      <!-- <p class='navbar-brand mb-0 mr-0' style='font-size:medium;color:gray;'><bold>MOUM8<small>_모움8</small></bold></p> -->
-      <div class='col'>
-        <a class="nav-link" href="{% url 'shop:index' %}"><img src="{% static 'shop/logo/logo.png' %}" alt="로고" style="position:fixed;top:8px;left:10px;height:30px;"></a>
-      </div>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <img src="{% static 'shop/open-iconic/svg/menu.svg' %}" alt="아이콘" style="width:12px;">
-      </button>
-      <div class='main-sidebar ml-0 ml-auto ' id='id_main-sidebar'>
-        
-        <span style="font-size:medium;cursor:pointer" onclick="openNav()">&#9776; MENU</span>
-      </div>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
-          <!-- 일반물품 Dropdiwn -->
-          <li class="nav-item dropdown"></li>
-          <!-- <p style='font-size:xx-large;font-weight:bold;'>MOUM8</p> -->
-          
-          
-        </ul>
-      </div>
-
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav ml-auto">
-          <!-- 일반물품 Dropdiwn -->
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">PRODUCT</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'products:product_list' %}">전체</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='men' %}">남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}">가방</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='acc' %}">ACC</a>
-              <a class="dropdown-item" href="{% url 'products:product_list' category='kid' %}">키즈</a>
-            </div>
-          </li>
-
-          <!-- 경매물품 Dropdown -->
-          <!-- <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">AUCTION</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' %}">전체</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='woman' %}">여성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='men' %}">남성의류</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='shoes' %}">슈즈</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='acc' %}">ACC</a>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}">키즈</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'tickets:home' %}">경매참여티켓</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'products:product_bidding_end_list' %}">경매 결과</a>
-              
-            </div>
-          </li> -->
-          {% if user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i></a> 
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'products:product_wish_list' %}"><i class="fas fa-heart"></i></a> 
-          </li>
-          <li class="nav-item"></li>
-            <a class="nav-link" href="{% url 'reviews:home' %}">리뷰</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">마이페이지</a>
-            <div class="dropdown-menu">
-              <a class="dropdown-item dropdown-item" href="{% url 'accounts:home' %}">전체</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item dropdown-item" href="{% url 'orders:list' %}">주문/배송</a>
-              <a class="dropdown-item dropdown-item" href="{% url 'products:product_wish_list' %}">관심리스트</a>
-              <a class="dropdown-item dropdown-item" href="{% url 'points:home' %}">보유포인트</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item dropdown-item" href="{% url 'accounts:change_address' %}">기본배송지 변경</a>
-              <a class="dropdown-item dropdown-item" href="{% url 'accounts:card_home' %}">결제카드 설정</a>
-              <a class="dropdown-item dropdown-item" href="{% url 'password_change' %}">비밀번호변경</a>
-            </div>
-          </li>
-          <li class="nav-item"></li>
-            <a class="nav-link" href="{% url 'logout' %}">로그아웃</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'login' %}">로그인</a>
-          </li>  
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'register_ticket_confirm' %}">회원가입</a>
-          </li>  
-          {% endif %}
-
-          {% if user.is_staff %}
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">STAFF</a>
-            <div class="dropdown-menu dropdown-menu-right">
-              <a class="dropdown-item" href="{% url 'staff:home' %}">HOME</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'staff:upload_product' %}">물품 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_by_file' %}">물품 업로드(엑셀일괄)</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item' %}">물품 아이템 업로드</a>
-              <a class="dropdown-item" href="{% url 'staff:upload_product_item_by_file' %}">물품 아이템 업로드(엑셀일괄)</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'staff:staff_product_list' %}">PRODUCT 체크</a> 
-              <a class="dropdown-item" href="{% url 'staff:staff_product_item_normal_list' %}">PRODUCT ITEM(일반물품) 체크</a> 
-              <a class="dropdown-item" href="{% url 'staff:staff_product_item_bidding_list' %}">PRODUCT ITEM(경매물품) 체크</a> 
-              <a class="dropdown-item" href="{% url 'staff:staff_order_check_list' %}">주문상태 확인</a> 
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="{% url 'accounts:make_register_ticket' %}">회원가입 티켓만들기</a>
-              <a class="dropdown-item" href="">통계분석(추가예정)</a>
-              <div class="dropdown-divider"></div>
-            </div>
-          </li>
-          {% endif %}
-
-          {% if user.is_admin %}
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'admin:index' %}">ADMIN</a> 
-          </li>
-          {% endif %}      
-          
-        </ul>
-      </div>
-    </nav>
-    
-    <nav class='sticky-top-2'style='height:40px;z-index:3;background-color:white;-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255);box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
-      <div class='container py-0'>
-        <div class='row text-center pt-2 mx-auto' style='font-size:small;max-width:1200px;'>
-          <div class='col px-0 div-category-fixed'>
-            <a class="dropdown-item px-1" href="{% url 'products:product_list' %}">전체</a>
-          </div>
-          <div class='col px-0 div-category-fixed'>
-            <a class="dropdown-item nav2 px-1" href="{% url 'products:product_list' category='woman' %}">여성의류</a>
-          </div>
-          <div class='col px-0 div-category-fixed'>
-            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='men' %}">남성의류</a>
-          </div>
-          <div class='col px-0 div-category-fixed'>
-            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='shoes' %}">슈즈</a>
-          </div>
-          <div class='col px-0 div-category-fixed'>
-            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='bag' %}">가방</a>
-          </div>
-          <div class='col px-0 div-category-fixed'>
-            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='acc' %}">ACC</a>
-          </div>
-          <div class='col px-0 div-category-fixed'>
-            <a class="dropdown-item px-1" href="{% url 'products:product_list' category='kid' %}">키즈</a>
-          </div>
-        </div>
-      </div>
-  </nav>
+    {% include 'shop/base/navbar.html' %}
   
 
 
@@ -481,114 +205,11 @@
     
     <hr style="margin: 10px 0px 0px; height: 1px; border: none; background-color: rgb(224, 224, 224);">
     <!-- 여기부터 Footer -->  
-    <footer style='background-color:#423f3b'>    
-      <div class="container" style="padding-top:30px;color:#cbbeb5;">
-        <div class="row">
-          <!-- <div class="col-5 mr-auto mb-5">
-              <div class="footer-social text-center">
-                <p class='mb-2' style='font-size:medium;font-weight:bold;'>소셜미디어</p>
-                <ul class='list-inline'>
-                  <li class="list-inline-item">
-                    <a href="">
-                      <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fab fa-instagram fa-3x"></i>
-                      </span>
-                    </a>
-                  </li>
-                  <li class="list-inline-item">
-                    <a href="">
-                      <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fab fa-youtube fa-3x"></i>
-                      </span>
-                    </a>
-                  </li>
-                  <li class="list-inline-item">
-                    <a href="">
-                      <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fas fa-envelope fa-3x"></i>
-                      </span>
-                    </a>
-                  </li>
-                  <li class="list-inline-item">
-                    <a href="">
-                      <span style="font-size: 0.6em; color: #ffe5a9;">
-                        <i class="fab fa-facebook fa-3x"></i>
-                      </span>
-                    </a>
-                  </li>
-                </ul>
-                <div class='col-12'>
-                  <p class='mb-2' style='font-size:medium;font-weight:bold;'>고객센터</p>
-                    <span style="font-size: 0.5em; color: #ffe5a9;">
-                      <i class="fas fa-phone-square-alt fa-2x"></i></span>
-                      <span style='font-size:small;font-weight:bold;'>  031-945-8832</span>
-                </div>
-              </div>
-            </div> -->
-
-        
-          <div class="col-12 mr-auto mb-5">
-            <div style="box-sizing: border-box; padding: 0px; width: 100%;">
-              <div cols="4" rows="1" style="position: relative; display: block; height: 100%; overflow: hidden;">
-                <div class="text-center">
-                  <p class='mb-2' style='font-size:large;font-weight:bold;'>MOUM8</p>
-                  <p class='mb-2' style='font-size:medium;font-weight:bold;'>© 2021 MOUM International, All Rights Reserved.</p>
-                  <p class='mb-0' style='font-size:small;'>모움 인터내셔널, 경기 파주시 탄현면 필승로210, 109~112</p>
-                  <p class='mb-0' style='font-size:small;'>대표 유지나, 유선번호 031-945-8832</p>
-                  <p class='mb-0' style='font-size:small;'>사업자등록번호 : 515-36-91661</p>
-                  <p class='mb-0' style='font-size:small;'>통신판매번호 : 2016-경기파주-0005</p>
-                </div>
-                <br>
-                <div class='col-12 text-center'>
-                  <p class='mb-2' style='font-size:medium;font-weight:bold;'>고객센터
-                    <span style="font-size: 0.5em; color: #ffe5a9;">
-                      <i class="fas fa-phone-square-alt fa-2x"></i></span>
-                      <span style='font-size:small;font-weight:bold;'>  031-945-8832</span></p>
-                <a class="" href="{% url 'shop:introduction' %}"style='color:#ffe5a9;'>ABOUT MOUM8</a> 
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- <div class="col-3 text-center">
-            <p class='mb-2' style='font-size:medium;font-weight:bold;'>사이트 정책</p>
-            <ul class="list-unstyled">
-              <li><a href="/terms-of-service" style='color:#cbbeb5;'>Terms of Service</a></li>
-              <li><a href="/copyright-policy" style='color:#cbbeb5;'>Copyright Policy</a></li>
-              <li><a href="/privacy-policy" style='color:#cbbeb5;'>Privacy Policy</a></li>
-            </ul>
-          </div> -->
-        </div>
-      </div>
-    </footer>
+    {% include 'shop/base/footer.html' %}
     <!-- Footer 끝 --> 
-    
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    
-    <!-- Stripe JS -->
-    <!-- <script src="https://js.stripe.com/v3/"></script>  -->
 
-    <!-- CSRF for ajax JS -->
-    <script src="{% static 'js/csrf.ajax.js' %}"></script>
 
-      <!-- js render -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrender/1.0.11/jsrender.js"></script>
-    {% include 'shop/base/js_template.html' %}
-    
-    <!-- ecommerce Custom2 js -->
-    <script src="{% static 'js/ecommerce.billing.js' %}"></script>  
 
-      <!-- jQuery -->
-    <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script> -->
-    <!-- iamport.payment.js -->
-    <script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.1.5.js"></script>
-    
-    <!-- Jquery-confirm JavaScript -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    
- 
     <script>
       $(document).ready(function(){
         // Auto Search

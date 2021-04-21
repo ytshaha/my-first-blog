@@ -100,12 +100,65 @@ a.wish-link-added {
     top: 86px;
     z-index: 2;
 }
+
 .sticky-top-4 {
     position: -webkit-sticky;
     position: sticky;
     top: 121px;
     z-index: 2;
 }
+
+
+/* 데탑 */
+.product-card__name {
+    font-weight:bold;
+    font-size:small;
+}
+
+.product-card__list-price{
+    color:gray;
+    font-size:small;
+}
+
+.product-card__price {
+    font-weight:bold;
+    font-size:medium;
+}
+
+.product-card__title {
+    /* font-weight:bold; */
+    font-size:medium;
+}
+
+@media screen and (max-width: 768px) {
+    /* 모바일에 사용될 스트일 시트를 여기에 작성합니다. */
+    .product-card__name {
+        font-size:x-small;
+    }
+    .product-card__list-price{
+        font-size:small;
+    }
+    .product-card__price {
+        font-size:small;
+    }
+    .product-card__title {
+        font-size:small;
+    }
+
+}
+
+@font-face {
+    font-family: "Graduate"; src: 
+    url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.eot"); src: 
+    url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.eot?#iefix") format("embedded-opentype"), 
+    url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.woff2") format("woff2"), 
+    url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.woff") format("woff"), 
+    url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.ttf") format("truetype"), 
+    url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.svg#Graduate") format("svg"); 
+}
+
+
+
 </style>
 {% endblock %}
 
@@ -310,12 +363,16 @@ a.wish-link-added {
         <div class="col-12 ml-auto mr-auto">
             <h2 class="index-title-index text-center">경매 진행 물품</h2>
             <hr class="index-title-divider">
+            
         </div>
     </div>
 </div>  
 
 <div class=container>
     <div class='row'>
+        <div class='col-12 text-center'>
+            <div id='count' style='color:white;font-weight:bold;display:inline;font-size:60px;background-color:black;'></div>
+        </div>
         {% for product_item in bidding_items %}
         <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
@@ -349,30 +406,14 @@ a.wish-link-added {
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
-                        <div class='row'>
-                            <div class='col'>
-                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
-                            </div>
-                            <div class='col text-right'>
-                                <p class="product-card__on-bidding mb-0" style='font-size:small;'>On Bidding</p>                            
-                            </div> 
-                        </div>
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
-                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
-                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
-                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.current_price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
-                        <div class='row'>
-                            <div class='col-7 pr-0'>
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__title mb-0">
+                            {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
+                        </p>
+                        <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
+                        <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
-                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div><span id='count-comment' style='color:green;font-weight:bold;font-size:smaller;'> 뒤에 종료</span>
-                            </div>
-                            <div class='col'>
-                                <p class="product-card__name text-right" style="font-size:15px;font-weight:bold;margin-bottom:5px;font-size:small;"></p>
-                            </div>
-                        </div>
-                        <div class='col mr-auto' style='display:none;'>
-                            <!-- 나중에 featured 버튼을 넣기위한 공간. -->
-                        </div>
+                        <div id='count' style='color:green;font-weight:bold;display:inline;font-size:large;font-family:"Graduate"'></div></span>
 
                         <!-- 해외배송이면 이걸 계산하게 해야한다. -->
                         <div style='display:none;' id='bidding_end_date_year'>{{ product_item.bidding_end_date|date:'Y' }}</div>
@@ -423,26 +464,41 @@ a.wish-link-added {
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
                         <div class='row'>
-                            <div class='col'>
-                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
-                            </div>
+                            {% if user.is_staff %}
                             <div class='col text-right'>
-                                {% if user.is_staff %}
-                                    {% if product_item.featured %}
-                                    <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                {% if product_item.featured %}
+                                <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                    <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
+                                    <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                </form>
+                                {% else %}
+                                    {% if product_item.product_type == 'bidding' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                        <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
-                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                        <button class='btn btn-sm btn-outline-danger' type='submit'>경매활성화</button>
+                                    </form>
+                                    {% elif product_item.product_type == 'normal' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매활성화</button>
                                     </form>
                                     {% endif %}
                                 {% endif %}
-                            </div> 
+                            </div>
+                            {% endif %} 
                         </div>
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
-                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
-                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
-                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.current_price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__title mb-0">
+                            {{ product_item.product.title|slice:"27" }}{% if product_item.product.title|length|get_digit:"-1" > 20 %}...{% endif %}
+                        </p>
+                        <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
+                        <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
@@ -505,26 +561,41 @@ a.wish-link-added {
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
                         <div class='row'>
-                            <div class='col'>
-                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
-                            </div>
+                            {% if user.is_staff %}
                             <div class='col text-right'>
-                                {% if user.is_staff %}
-                                    {% if product_item.featured %}
-                                    <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                {% if product_item.featured %}
+                                <form method='post' action="{% url 'products:product_make_unfeatured' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                    <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
+                                    <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                </form>
+                                {% else %}
+                                    {% if product_item.product_type == 'bidding' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
                                         {% csrf_token %}
                                         <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
-                                        <input type="hidden" name='product_type' value='{{ product_item.product_type }}'>
-                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매비활성화</button>
+                                        <button class='btn btn-sm btn-outline-danger' type='submit'>경매활성화</button>
+                                    </form>
+                                    {% elif product_item.product_type == 'normal' %}
+                                    <form method='post' action="{% url 'products:product_make_featured' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name='product_item_id' value='{{ product_item.id }}'>
+                                        <button class='btn btn-sm btn-outline-success' type='submit'>판매활성화</button>
                                     </form>
                                     {% endif %}
-                                {% endif %}                          
-                            </div> 
+                                {% endif %}
+                            </div>
+                            {% endif %} 
                         </div>
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
-                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
-                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
-                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.current_price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat }} %</span></p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__title mb-0">
+                            {{ product_item.product.title|slice:"27" }}{% if product_item.product.title|length|get_digit:"-1" > 20 %}...{% endif %}
+                        </p>
+                        <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
+                        <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
@@ -685,31 +756,73 @@ $(document).ready(function(){
 });
 
 
-setInterval(function(){
-    $('.product-infos').each(function(i, obj) {
-        var $this = $(this)
-        console.log($this)
-        var temp_end_date = $this.find(".bidding_end_date")
-        console.log(temp_end_date)
-        var year = $this.find("#bidding_end_date_year").text()
-        var month = $this.find("#bidding_end_date_month").text()
-        var day = $this.find("#bidding_end_date_day").text()
-        var hour = $this.find("#bidding_end_date_hour").text()
-        var minute = $this.find("#bidding_end_date_minute").text()
-        var second = $this.find("#bidding_end_date_second").text()
+// setInterval(function(){
+//     $('.product-infos').each(function(i, obj) {
+//         var $this = $(this)
+//         console.log($this)
+//         var temp_end_date = $this.find(".bidding_end_date")
+//         console.log(temp_end_date)
+//         var year = $this.find("#bidding_end_date_year").text()
+//         var month = $this.find("#bidding_end_date_month").text()
+//         var day = $this.find("#bidding_end_date_day").text()
+//         var hour = $this.find("#bidding_end_date_hour").text()
+//         var minute = $this.find("#bidding_end_date_minute").text()
+//         var second = $this.find("#bidding_end_date_second").text()
         
         
-        console.log("dday:" , year, month, day, hour, minute, second)
-        var dday = new Date(year, month-1, day, hour, minute, second, 0).getTime();
-        console.log(dday)
-        var today = new Date().getTime();
+//         console.log("dday:" , year, month, day, hour, minute, second)
+//         var dday = new Date(year, month-1, day, hour, minute, second, 0).getTime();
+//         console.log(dday)
+//         var today = new Date().getTime();
         
-        console.log(dday, today)
+//         console.log(dday, today)
         
 
+//         var gap = dday - today;
+//         var calcDay = Math.ceil(gap / (1000 * 60 * 60 * 24))-1;
+//         var calcHour = Math.ceil((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+//         if(calcHour<10){
+//             calcHour = "0" + (calcHour-1)
+//         } else {
+//             calcHour = calcHour -1
+//         }
+//         var calcMin = Math.ceil((gap % (1000 * 60 * 60)) / (1000 * 60)) ;
+//         if(calcMin<10){
+//             calcMin = "0" + (calcMin-1)
+//         } else {
+//             calcMin = calcMin -1
+//         }
+//         var calcSec = Math.ceil((gap % (1000 * 60)) / 1000 ) ;
+//         if(calcSec<10){
+//             calcSec = "0" + (calcSec-1)
+//         } else {
+//             calcSec = calcSec -1
+//         }
+//         console.log(calcHour, calcMin, calcSec)
+//         if (gap>0){
+//             $this.find("#count").text(calcDay + "일 " + calcHour + ":" + calcMin + ":" + calcSec)
+//         } else {
+//             $this.find("#count").text("경매종료")
+//         }
+        
+//     });
+// }, 1000)
+setInterval(function(){
+        var count = $("#count")
+        console.log(count)
+
+        var today2 = new Date()
+        var year = today2.getFullYear()
+        var month = today2.getMonth() + 1
+        var day = today2.getDate()
+        var dday = new Date(year, month-1, day, 16, 0, 0, 0).getTime();
+        
+        var today = new Date().getTime();
+        // var gap = 0;
         var gap = dday - today;
+        
         var calcDay = Math.ceil(gap / (1000 * 60 * 60 * 24))-1;
-        var calcHour = Math.ceil((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var calcHour = Math.ceil((gap % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)) ;
         if(calcHour<10){
             calcHour = "0" + (calcHour-1)
         } else {
@@ -728,13 +841,14 @@ setInterval(function(){
             calcSec = calcSec -1
         }
         console.log(calcHour, calcMin, calcSec)
+
         if (gap>0){
-            $this.find("#count").text("남은시간 " + calcDay + "일 " + calcHour + ":" + calcMin + ":" + calcSec)
-        } else {
-            $this.find("#count").text("경매종료")
-        }
+            count.text(calcDay + "일 " + calcHour + ":" + calcMin + ":" + calcSec)
         
-    });
+        } else{
+            count.text("경매종료")
+            
+        }
 }, 1000)
 
 </script>
