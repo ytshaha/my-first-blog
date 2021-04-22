@@ -14,14 +14,10 @@
 <div class="container">
     <div class='row'>
         {% if email %}
-        <div class='col-6 mx-auto'>
-            <p style='font-size:large;'>{{ email }}로 가입티켓({{ ticket_number }})이 보내졌습니다.</p>
-        </div>
+        <p style='font-size:large;'>{{ email }}로 가입티켓({{ ticket_number }})이 보내졌습니다.</p>
         {% endif %}
         {% if phone_number %}
-        <div class='col-6 mx-auto'>
-            <p style='font-size:large;'>{{ phone_number }}로 가입티켓({{ ticket_number }})이 보내졌습니다.</p>
-        </div>
+        <p style='font-size:large;'>{{ phone_number }}로 가입티켓({{ ticket_number }})이 보내졌습니다.</p>
         {% endif %}
         
     </div>

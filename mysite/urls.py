@@ -8,7 +8,7 @@ from django.conf.urls import include, url
 from django.contrib.auth import views
 from django.views.generic import TemplateView, RedirectView
 
-from accounts.views import LoginView, RegisterView, GuestRegisterView, register_success, register_ticket_confirm
+from accounts.views import LoginView, RegisterView, GuestRegisterView, register_success, register_ticket_confirm, send_phone_number_alimtalk, confirm_phone_number_alimtalk
 from django.contrib.auth.views import LogoutView
 from addresses.views import checkout_address_create_view, checkout_address_reuse_view
 from billing.views import payment_method_view, payment_method_createview
@@ -36,7 +36,10 @@ urlpatterns = [
 
 
     url(r'^register_ticket_confirm/$', register_ticket_confirm, name='register_ticket_confirm'),
+    url(r'^register_ticket_confirm/(?P<ticket_number>\w+)/(?P<key>\w+)$', register_ticket_confirm, name='register_ticket_confirm'),
     url(r'^register/$', RegisterView.as_view(), name='register'),
+    url(r'^register/send_phone_number_alimtalk/$', send_phone_number_alimtalk, name='send_phone_number_alimtalk'),
+    url(r'^register/confirm_phone_number_alimtalk/$', confirm_phone_number_alimtalk, name='confirm_phone_number_alimtalk'),
     url(r'^register/success/$', register_success, name='register-success'),
     url(r'^billing/payment-method/$', payment_method_view, name='billing-payment-method'),
     url(r'^billing/payment-method/create/$', payment_method_createview, name='billing-payment-method-endpoint'),

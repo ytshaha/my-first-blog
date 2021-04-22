@@ -16,9 +16,9 @@
                 <input type="hidden" name='post_purpose' value='register_ticket_confirm'>
                 <p class='text-center' style='font-weight:bold;font-size:large;'>가입티켓 정보
                 <p><label for="id_ticket_number">*가입티켓 번호:</label>
-                <input class='form-control' id='id_ticket_number' name='ticket_number' type="text"></p>
+                <input class='form-control' id='id_ticket_number' name='ticket_number' type="text" value="{% if ticket_number %}{{ ticket_number }}{% endif %}"></p>
                 <p><label for="id_key">*가입티켓 키</label>
-                <input class='form-control' id='id_key' name='key' type="text"></p>
+                <input class='form-control' id='id_key' name='key' type="text" value="{% if key %}{{ key }}{% endif %}"></p>
                 <button class='btn btn-dark btn-block' id='confirm_register_ticket'>가입티켓정보제출</button>
             </form>
         </div>

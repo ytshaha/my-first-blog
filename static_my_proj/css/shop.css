@@ -1,4 +1,4 @@
-
+/* 
 
 @font-face {
     font-family: 'NanumBarunGothic';
@@ -22,11 +22,11 @@
     font-weight: 300;
     src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.eot');
     src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.ttf') format('truetype');
-   }
-   
+   } */
+/*    
 .nanumbarungothic * {
     font-family: 'NanumBarunGothic', sans-serif;
-   }
+   } */
 
 @font-face {
     font-family: 'Wemakeprice-Bold';
@@ -35,18 +35,7 @@
     font-style: normal;
 }
 /* noto-sans-kr-regular - latin */
-@font-face {
-    font-family: 'Noto Sans KR';
-    font-style: normal;
-    font-weight: 400;
-    src: url('../fonts/noto-sans-kr-v13-latin-regular.eot'); /* IE9 Compat Modes */
-    src: local(''),
-         url('../fonts/noto-sans-kr-v13-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
-         url('../fonts/noto-sans-kr-v13-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
-         url('../fonts/noto-sans-kr-v13-latin-regular.woff') format('woff'), /* Modern Browsers */
-         url('../fonts/noto-sans-kr-v13-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
-         url('../fonts/noto-sans-kr-v13-latin-regular.svg#NotoSansKR') format('svg'); /* Legacy iOS */
-  }
+
 @font-face {
       font-family: "GLYPHICONS Halflings"; 
       src: url("//db.onlinewebfonts.com/t/017408da87d74ff3770960264091f3d4.eot"); 

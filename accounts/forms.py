@@ -239,6 +239,15 @@ class RegisterForm(forms.ModelForm):
             raise forms.ValidationError("패스워드가 너무 짧습니다.(8글자이상)")
             
         return password2
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        print('cleaned_data',cleaned_data)
+        # username = cleaned_data.get('username')
+        # email = cleaned_data.get('email')
+        # phone_number = cleaned_data.get('phone_number')
+        # full_name = cleaned_data.get('full_name')
+        return cleaned_data
 
     def save(self, commit=True):
         # Save the provided password in hashed format

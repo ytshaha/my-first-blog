@@ -1,4 +1,6 @@
 import pandas as pd
+import random
+import json
 
 from django.contrib.auth import authenticate, login, get_user_model
 
@@ -159,12 +161,21 @@ class LoginView(NextUrlMixIn, RequestFormAttachMixin, FormView):
         return redirect(next_path)
 
     
-def register_ticket_confirm(request):
+def register_ticket_confirm(request, *args, **kwargs):
     # form_class = RegisterTicketForm
     # success_url = '/register/'
     # template_name = "accounts/register_ticket_confirm.html"
 
     # default_next = 'register_ticket_confirm'
+    if request.method == "GET":  # (self, request, key=None, *args, **kwargs):
+        ticket_number = kwargs.get('ticket_number', None)
+        key = kwargs.get('key', None)
+        context = {
+            'ticket_number': ticket_number,
+            'key': key
+        }
+        return render(request, 'accounts/register_ticket_confirm.html', context)
+
     if request.method == "POST":
         ticket_number = request.POST.get("ticket_number", None)
         key = request.POST.get("key", None)
@@ -204,7 +215,20 @@ class RegisterView(CreateView):
         context['register_ticket_confirm'] = register_ticket_confirm
         
         return context
+    
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        print('폼맞다?')
+        self.object = form.save()
+        return super().form_valid(form)
 
+    def form_invalid(self, form):
+        print(form)
+        print("폼안맞다.")
+        print(form.errors)
+        print(form.non_field_errors())
+        """If the form is invalid, render the invalid form."""
+        return self.render_to_response(self.get_context_data(form=form))
 
 def register_success(request):
     register_ticket_number = request.session.get('register_ticket_number', None)
@@ -217,6 +241,43 @@ def register_success(request):
         del request.session['register_ticket_number']
     return render(request, "accounts/register_success.html", {})
     
+
+
+def send_phone_number_alimtalk(request):
+    if request.method == 'POST' and request.is_ajax():
+        print('Ajax requested.')
+        phone_number = request.POST.get('phone_number', None)
+
+        alimtalk_message = '''회원 가입하신 이메일로 계정 활성화 링크를 보내드렸습니다. 
+24시간 이내에 메일 내 링크로 접속하시어 계정활성화를 해주세요.'''
+        send(templateCode='register', to=phone_number, message=alimtalk_message)
+        print("{}으로 결제완료 알림톡이 보내졌습니다.".format(phone_number))
+
+        code = random.randint(1000,9999)
+        print(code)
+        request.session['phone_code'] = code
+        return HttpResponse(json.dumps({'status': "success", 'message': "알림톡보내기 성공", 'code': code}),
+                                    content_type="application/json")
+
+
+
+def confirm_phone_number_alimtalk(request):
+    if request.method == 'POST' and request.is_ajax():
+        print('Ajax requested.')
+        code = request.POST.get('code', None)
+        code = int(code)
+        print("request.session")
+        for key, value in request.session.items():
+            print('{} => {}'.format(key, value))
+        if code ==  request.session['phone_code']:
+            print('코드인증 성공')
+            return HttpResponse(json.dumps({'status': "success", 'message': "코드인증성공"}),
+                                        content_type="application/json")
+        else:
+            print('코드인증 실패')
+            return HttpResponse(json.dumps({'status': "fail", 'message': "코드인증실패"}),
+                                        content_type="application/json")
+
 # class ProductDetailView(LoginRequiredMixin, generic.DetailView):
 #     template_name = 'products/product_detail.html'
 #     context_object_name = 'product'
@@ -359,9 +420,9 @@ def send_register_ticket_success(request):
             if register_ticket_obj.shared:
                 messages.success(request, '이미 보낸 티켓을 선택하셨습니다. 전송되지 않은 티켓을 선택해주세요.')
                 return redirect('accounts:send_register_ticket')
-            if RegisterTicket.objects.filter(sent_mail=email).exists():
-                messages.success(request, '이미 가입티켓을 받은 회원의 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
-                return redirect('accounts:send_register_ticket')
+            # if RegisterTicket.objects.filter(sent_mail=email).exists():
+            #     messages.success(request, '이미 가입티켓을 받은 회원의 이메일주소로 보내려고 합니다. 다른 이메일로 보내주세요.')
+            #     return redirect('accounts:send_register_ticket')
             # 가입티켓 상태변경(보내짐으로 바꾸고 메일주소도 넣기.)
             register_ticket_qs = RegisterTicket.objects.filter(ticket_number=ticket_number)
             register_ticket_obj = register_ticket_qs.first()
@@ -371,7 +432,8 @@ def send_register_ticket_success(request):
 
             #메일 보내기
             base_url = getattr(settings, 'BASE_URL', 'https://moum8.herokuapp.com')
-            path = "{base}{path}".format(base=base_url, path='/register_ticket_confirm/')
+            key_path = reverse("register_ticket_confirm", kwargs={'ticket_number':register_ticket_obj.ticket_number, 'key':register_ticket_obj.key})
+            path = "{base}{path}".format(base=base_url, path=key_path)
             context = {
                 'path':path,
                 'email': email,
