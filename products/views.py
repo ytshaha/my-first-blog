@@ -40,7 +40,7 @@ class ProductNormalListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_list.html'
     context_object_name = 'product_items'
-    paginate_by = 3
+    paginate_by = 20
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductNormalListView, self).get_context_data(*args, **kwargs)

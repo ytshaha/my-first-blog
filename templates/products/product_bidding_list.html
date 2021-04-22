@@ -109,42 +109,35 @@ a.wish-link-added {
 }
 
 
-/* 데탑 */
+/* For mobile phones: */
 .product-card__name {
-    font-weight:bold;
-    font-size:small;
-}
-
-.product-card__list-price{
-    color:gray;
-    font-size:small;
-}
-
-.product-card__price {
-    font-weight:bold;
-    font-size:medium;
-}
-
-.product-card__title {
-    /* font-weight:bold; */
-    font-size:medium;
-}
-
-@media screen and (max-width: 768px) {
-    /* 모바일에 사용될 스트일 시트를 여기에 작성합니다. */
-    .product-card__name {
+        font-weight:bold;
         font-size:x-small;
     }
     .product-card__list-price{
+        color:gray;
         font-size:small;
     }
     .product-card__price {
+        font-weight:bold;
         font-size:small;
     }
     .product-card__title {
+        height:32px;
         font-size:small;
+        line-height:1.2;
     }
 
+@media only screen and (min-width: 768px) {
+    .product-card__price {
+        font-size:medium;
+    }
+
+    .product-card__title {
+        height:38px;
+        /* font-weight:bold; */
+        font-size:medium;
+    }
 }
 
 @font-face {
@@ -157,7 +150,9 @@ a.wish-link-added {
     url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.svg#Graduate") format("svg"); 
 }
 
-
+.font-graduate{
+    font-family:"Graduate";
+}
 
 </style>
 {% endblock %}
@@ -225,7 +220,7 @@ a.wish-link-added {
                         <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='kid' %}" style='font-size:small;'>키즈</a>
                     </div>
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
-                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='bag' %}" style='font-size:small;'>키즈</a>
+                        <a class="dropdown-item" href="{% url 'products:product_bidding_list' category='bag' %}" style='font-size:small;'>가방</a>
                     </div>
                 </div>
             </div>
@@ -251,24 +246,25 @@ a.wish-link-added {
 <div class="collapse sticky-top-4" id="collapseFilter">
     <div class="card card-body">
         <div class='row'>
-            
-            <form method='GET' action="{% url 'products:product_bidding_list' %}" style='width:100%;'>
+            <form method='GET' action="{% url 'products:product_list' %}" style='width:100%;'>
                 <input type="hidden" name='post_purpose' value='filter_product'>
                 <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
                     <div class='col-12 text-left'>
-                        <p style='font-size:large;font-weight:bold;'>필터</p>
+                        <p class='mb-2' style='font-size:large;font-weight:bold;'>필터</p>
+                        <p class='mb-0' style='font-size:small;'/>* 카테고리와 브랜드를 교차로 필터링이 가능합니다.</p>
+                        <p class='mb-4' style='font-size:small;'>* 카테고리와 브랜드는 꼭 한개 이상 선택이 되어야합니다.</p>
                     </div>
                     <div class='col-12 text-left'>
                         <p style='font-size:large;'>카테고리</p>
                     </div>
                     <div class='row pl-4'>
                         <div class='col-12'>
-                            <p style='font-size:small;'><input type="checkbox" onClick="toggleCategory(this)" style='font-size:small;'> 전체</p>
+                            <p style='font-size:small;'><input type="checkbox" onClick="toggleCategory(this)"> 전체</p>
+                            <hr>
                         </div>
-                        <hr>
                         {% for category in category_qs %}
-                        <div class='col-3'>
-                        <p style='font-size:small;'><input type="checkbox" name="category_selected" value="{{ category.0 }}"> {{ category.1 }}</p>                    
+                        <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                            <p style='font-size:small;'><input type="checkbox" name="category_selected" value="{{ category.0 }}"> {{ category.1 }}</p>                    
                         </div> 
                         {% endfor %}
                     </div>
@@ -280,10 +276,12 @@ a.wish-link-added {
                     </div>
                     <div class='row pl-4'>
                         <div class='col-12'>
-                            <p style='font-size:small;'><input type="checkbox" onClick="toggleBrand(this)" style='font-size:small;'> 전체</p>
+                            <p style='font-size:small;'><input type="checkbox" onClick="toggleBrand(this)"> 전체</p>
+                            <hr>
                         </div>
+                        
                         {% for brand in brands %}
-                        <div class='col-4 col-lg-3 col-md-4 col-sm-4'>
+                        <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
                             <p style='font-size:small;'><input type="checkbox" name="brand_selected" value="{{ brand }}" style='font-size:small;'> {{ brand }}</p>
                         </div>
                         {% endfor %}
@@ -304,25 +302,25 @@ a.wish-link-added {
                 <div class='col-12'>
                     <p style='font-size:large;font-weight:bold;'>정렬기준</p>
                 </div>
-                <div class='col-4'>
+                <div class='col-12 mb-2'>
                     <form action="{% url 'products:product_bidding_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="-price" />
-                        <button class='btn btn-outline-dark' type='submit'>높은가격순서</button>
+                        <button class='btn btn-outline-dark btn-sm' type='submit'>높은가격순서</button>
                     </form>
                 </div>
-                <div class='col-4'>
+                <div class='col-12 mb-2'>
                     <form action="{% url 'products:product_bidding_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="price" />
-                        <button class='btn btn-outline-dark' type='submit'>낮은가격순서</button>
+                        <button class='btn btn-outline-dark btn-sm' type='submit'>낮은가격순서</button>
                     </form>
                 </div>
-                <div class='col-4'>
+                <div class='col-12 mb-2'>
                     <form action="{% url 'products:product_bidding_list' %}">
                         <input type="hidden" name='post_purpose' value='ordering_method'>
                         <input type="hidden" name="ordering" value="bidding_start_date" />
-                        <button class='btn btn-outline-dark' type='submit'>경매순서</button>
+                        <button class='btn btn-outline-dark btn-sm' type='submit'>경매순서</button>
                     </form>
                 </div>
             </div>
@@ -346,14 +344,14 @@ a.wish-link-added {
     </div>
 </div>
 <!-- 프로덕트 리스트 헤더 -->
-<div class="container">
+<!-- <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
             <h2 class="index-title-index text-center">BIDDING LIST</h2>
             <hr class="index-title-divider">
         </div>
     </div>
-</div>  
+</div>   -->
 
 
 {% if bidding_items.exists %}
@@ -361,18 +359,21 @@ a.wish-link-added {
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
-            <h2 class="index-title-index text-center">경매 진행 물품</h2>
+            <h2 class="index-title-index text-center">특별할인 진행 물품</h2>
             <hr class="index-title-divider">
             
         </div>
     </div>
 </div>  
 
+<div class='container-fluid mb-2' style="background-color:#423f3b">
+    <div class='col-12 text-center'>
+        <div class='font-graduate' id='count' style='color:white;font-weight:bold;display:inline;font-size:30px;'></div>
+    </div>
+</div>
+
 <div class=container>
     <div class='row'>
-        <div class='col-12 text-center'>
-            <div id='count' style='color:white;font-weight:bold;display:inline;font-size:60px;background-color:black;'></div>
-        </div>
         {% for product_item in bidding_items %}
         <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
@@ -406,13 +407,13 @@ a.wish-link-added {
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
                         </p>
                         <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
                         <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
-                                <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
                         <div id='count' style='color:green;font-weight:bold;display:inline;font-size:large;font-family:"Graduate"'></div></span>
 
                         <!-- 해외배송이면 이걸 계산하게 해야한다. -->
@@ -492,10 +493,10 @@ a.wish-link-added {
                             {% endif %} 
                         </div>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
-                            {{ product_item.product.title|slice:"27" }}{% if product_item.product.title|length|get_digit:"-1" > 20 %}...{% endif %}
+                            {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
                         </p>
                         <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
                         <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>

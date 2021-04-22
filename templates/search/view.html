@@ -92,13 +92,60 @@
         transition: 0.3s;
     }
     
+.sticky-top-3 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 86px;
+    z-index: 2;
+}
+
+.sticky-top-4 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 121px;
+    z-index: 2;
+}
+
+
+/* For mobile phones: */
+.product-card__name {
+        font-weight:bold;
+        font-size:x-small;
+    }
+    .product-card__list-price{
+        color:gray;
+        font-size:small;
+    }
+    .product-card__price {
+        font-weight:bold;
+        font-size:small;
+    }
+    .product-card__title {
+        height:32px;
+        font-size:small;
+        line-height:1.2;
+    }
+
+@media only screen and (min-width: 768px) {
+    .product-card__price {
+        font-size:medium;
+    }
+
+    .product-card__title {
+        height:38px;
+        /* font-weight:bold; */
+        font-size:medium;
+    }
+}
+
+
     </style>
 {% endblock %}
 {% block content %}
 {% load static %}
 {% load humanize %}
 <!-- 프로덕트 리스트 네브바 -->
-<nav class='sticky-top-2'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
+<nav class='sticky-top-3'style='z-index:3;background-color:white;box-shadow: rgba(0, 0, 0, 0.22) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
     <ul class="navbar-nav navbar-expand-lg">
         <li class='nav-item mx-2'>
             <a class="nav-link" data-toggle="collapse" href="#collapseCategory" role="button" aria-expanded="false" aria-controls="collapseExample" style='font-size:small;color:gray;'>
@@ -192,7 +239,9 @@
                 <input type="hidden" name='post_purpose' value='filter_product'>
                 <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
                     <div class='col-12 text-left'>
-                        <p style='font-size:large;font-weight:bold;'>필터</p>
+                        <p class='mb-2' style='font-size:large;font-weight:bold;'>필터</p>
+                        <p class='mb-0' style='font-size:small;'/>* 카테고리와 브랜드를 교차로 필터링이 가능합니다.</p>
+                        <p class='mb-4' style='font-size:small;'>* 카테고리와 브랜드는 꼭 한개 이상 선택이 되어야합니다.</p>
                     </div>
                     <div class='col-12 text-left'>
                         <p style='font-size:large;'>카테고리</p>
@@ -334,11 +383,6 @@
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
-                        <div class='row'>
-                            <div class='col'>
-                                <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>-{{ product_item.product.brand }}-</p>
-                            </div>
-                            <div class='col text-right'>
                                 {% if user.is_staff %}
                                     {% if product_item.featured %}
                                     <form method='post' action="{% url 'products:product_make_unfeatured' %}">
@@ -363,20 +407,21 @@
                                         {% endif %}
                                     {% endif %}
                                 {% endif %}   
-                            </div> 
-                        </div>
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p>
-                        <p class="product-card__name mb-0" style="font-weight:bold;font-size:medium;">{{ product_item.product.title }} </p>
-                        <p class='mb-0'><span style='color:gray;'><small><del>{{ product_item.product.list_price|intcomma }}원</del></small></span></p>
-                        <p class='mb-0'><span class="product-card__price" style="font-weight:bold;font-size:medium;">{{ product_item.price|intcomma }}</span><span>원 </span><span style='color:red;font-size:small;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
+                        <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
+                        <p class="product-card__title mb-0">
+                            {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
+                        </p>
+                        <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
+                        <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                         <div class='row'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
                                 {% if product_item.product_type == 'bidding' %}
-                                <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
+                                <!-- <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div> -->
                                 {% elif product_item.product_type == 'normal' %}
                                     {% if product_item.info_delivery_from == 'overseas' %}
-                                    <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
+                                    <!-- <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div> -->
                                 
                                     {% endif %}
                                 {% endif %}
@@ -408,6 +453,98 @@
 </div>
 
 <script>
+$(document).ready(function(){
+    $('.product-image-div').each(function(i, obj) {
+        var $this = $(this)
+        console.log($this.css('width'))
+        var width = $this.css('width')
+        $this.css('height', width)
+        
+    });
+
+    // $('.wish-link').click(function(){
+    //     $.alert("위시리스트에 추가되었습니다.")
+    // })
+    // $('.wish-link-added').click(function(){
+    //     $.alert("위시리스트에서 제외되었습니다.")
+    // })
+    
+    
+
+    var collapseCategoryBtn = $("#collapseCategoryBtn")
+    var collapseCategory = $("#collapseCategory")
+    
+    var collapseBrandBtn = $("#collapseBrandBtn")
+    var collapseBrand = $("#collapseBrand")
+    
+    var collapseFilterBtn = $("#collapseFilterBtn")
+    var collapseFilter = $("#collapseFilter")
+    
+    var collapseOrderbyBtn = $("#collapseOrderbyBtn")
+    var collapseOrderby = $("#collapseOrderby")
+    
+    var collapseSearchBtn = $("#collapseSearchBtn")
+    var collapseSearch = $("#collapseSearch")
+
+    var collapseCategoryBtnClicked = collapseCategoryBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseBrandBtnClicked = collapseBrandBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseFilterBtnClicked = collapseFilterBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseOrderbyBtnClicked = collapseOrderbyBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+    var collapseSearchBtnClicked = collapseSearchBtn.click(function () {
+        $(this).addClass('clicked');
+    });
+
+
+    collapseCategoryBtnClicked.click(function () {
+        if (collapseCategoryBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseBrandBtnClicked.click(function () {
+        if (collapseBrandBtnClicked.is('.clicked')) {
+            collapseCategory.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseFilterBtnClicked.click(function () {
+        if (collapseFilterBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseCategory.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseOrderbyBtnClicked.click(function () {
+        if (collapseOrderbyBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseCategory.removeClass("show")
+            collapseSearch.removeClass("show")
+        } 
+    })
+    collapseSearchBtnClicked.click(function () {
+        if (collapseSearchBtnClicked.is('.clicked')) {
+            collapseBrand.removeClass("show")
+            collapseFilter.removeClass("show")
+            collapseOrderby.removeClass("show")
+            collapseCategory.removeClass("show")
+        } 
+    })
+
+});
     // 일반 페이지에는 그냥 그날 4시까지 남은시간을 게산해서 넣어주자.
     // 3시가 넘어가면 시간이 아닌 구매불가로 뜨게 하고 링크들어가면 거기에도 구매불가로 뜨게하자.
     // 즉이 이 jquery는 재활용이 필요한 상황.
@@ -478,4 +615,22 @@ setInterval(function(){
 }, 1000)
 
 </script>
+<script language="JavaScript">
+
+    function toggleBrand(source) {
+        console.log('toggleBrand 이 실행되었다')
+        brandCheckboxes = document.getElementsByName('brand_selected');
+        for(var i=0, n=brandCheckboxes.length;i<n;i++) {
+            brandCheckboxes[i].checked = source.checked;
+        }
+    }
+    function toggleCategory(source) {
+        console.log('toggleCategory 이 실행되었다')
+        categoryCheckboxes = document.getElementsByName('category_selected');
+        for(var i=0, n=categoryCheckboxes.length;i<n;i++) {
+            categoryCheckboxes[i].checked = source.checked;
+        }
+    }
+    
+    </script>
 {% endblock %}

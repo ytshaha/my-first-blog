@@ -109,42 +109,35 @@ a.wish-link-added {
 }
 
 
-/* 데탑 */
+/* For mobile phones: */
 .product-card__name {
-    font-weight:bold;
-    font-size:small;
-}
-
-.product-card__list-price{
-    color:gray;
-    font-size:small;
-}
-
-.product-card__price {
-    font-weight:bold;
-    font-size:medium;
-}
-
-.product-card__title {
-    /* font-weight:bold; */
-    font-size:medium;
-}
-
-@media screen and (max-width: 768px) {
-    /* 모바일에 사용될 스트일 시트를 여기에 작성합니다. */
-    .product-card__name {
+        font-weight:bold;
         font-size:x-small;
     }
     .product-card__list-price{
+        color:gray;
         font-size:small;
     }
     .product-card__price {
+        font-weight:bold;
         font-size:small;
     }
     .product-card__title {
+        height:32px;
         font-size:small;
+        line-height:1.2;
     }
 
+@media only screen and (min-width: 768px) {
+    .product-card__price {
+        font-size:medium;
+    }
+
+    .product-card__title {
+        height:38px;
+        /* font-weight:bold; */
+        font-size:medium;
+    }
 }
 
 </style>
@@ -244,14 +237,17 @@ a.wish-link-added {
     </div>
 </div>
 
-<div class="collapse sticky-top-4" id="collapseFilter">
+<div class="collapse" id="collapseFilter">
     <div class="card card-body">
         <div class='row'>
             <form method='GET' action="{% url 'products:product_list' %}" style='width:100%;'>
                 <input type="hidden" name='post_purpose' value='filter_product'>
                 <div class='col-12 col-lg-8 col-md-8 col-sm-12 mx-auto'>
                     <div class='col-12 text-left'>
-                        <p style='font-size:large;font-weight:bold;'>필터</p>
+                        <p class='mb-2' style='font-size:large;font-weight:bold;'>필터</p>
+                        <p class='mb-0' style='font-size:small;'/>* 카테고리와 브랜드를 교차로 필터링이 가능합니다.</p>
+                        <p class='mb-4' style='font-size:small;'>* 카테고리와 브랜드는 꼭 한개 이상 선택이 되어야합니다.</p>
+                        
                     </div>
                     <div class='col-12 text-left'>
                         <p style='font-size:large;'>카테고리</p>
@@ -287,8 +283,8 @@ a.wish-link-added {
                     </div>
                     <hr>
                 </div>
-                <div class='col-12 col-lg-8 col-mg-8 col-sm-12 mx-auto'>
-                    <button class='btn btn-outline-dark btn-block' type='submit'>선택 완료</button>
+                <div class='col-8 col-lg-6 col-md-6 col-sm-8 mx-auto'>
+                    <button class='btn btn-dark btn-block' type='submit'>선택 완료</button>
                 </div>
             </form>
         </div>
@@ -369,7 +365,7 @@ a.wish-link-added {
 <div class='container'>
     <div class='row'>
         {% for product_item in product_items %}
-        <div class="col-6 col-lg-4 col-md-4 add-border infinite-item">
+        <div class="col-6 col-lg-3 col-md-4 col-sm-6 add-border infinite-item">
                 <div class='product-image-div'>
                     <picture>
                         {% if product_item.product.main_image %}
@@ -430,7 +426,7 @@ a.wish-link-added {
                             {% endif %} 
                         </div>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}

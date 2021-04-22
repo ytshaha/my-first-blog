@@ -6,45 +6,6 @@
 <style>
 
 @font-face {
-    font-family: "Don Graffiti"; 
-    src: url("https://db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.eot"); 
-    src: url("https://db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.eot?#iefix") format("embedded-opentype"), 
-    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.woff2") format("woff2"), 
-    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.woff") format("woff"), 
-    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.ttf") format("truetype"), 
-    url("https:////db.onlinewebfonts.com/t/8a0d6cb93b52452e75effc359cfa1783.svg#Don Graffiti") format("svg"); 
-    }
-
-@font-face {font-family: "Allura"; 
-    src: url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.eot"); 
-    src: url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.eot?#iefix") format("embedded-opentype"), 
-    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.woff2") format("woff2"), 
-    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.woff") format("woff"), 
-    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.ttf") format("truetype"), 
-    url("https://db.onlinewebfonts.com/t/c67e743db5dd353f5479c6e1fdb60804.svg#Allura") format("svg"); 
-}
-
-
-@font-face {
-    font-family: "Meddon"; 
-    src: url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.eot"); 
-    src: url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.eot?#iefix") format("embedded-opentype"), 
-    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.woff2") format("woff2"),
-    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.woff") format("woff"), 
-    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.ttf") format("truetype"), 
-    url("https://db.onlinewebfonts.com/t/6d73658e70244cd6dde798c08c4620a6.svg#Meddon") format("svg"); 
-    }
-
-@font-face {
-    font-family: "Josefin Sans"; 
-    src: url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.eot"); 
-    src: url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.eot?#iefix") format("embedded-opentype"), 
-    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.woff2") format("woff2"), 
-    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.woff") format("woff"), 
-    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.ttf") format("truetype"), 
-    url("//db.onlinewebfonts.com/t/e314da2c0c4113fe575fa8a22cec8394.svg#Josefin Sans") format("svg"); 
-    }
-@font-face {
     font-family: 'Wemakeprice-Bold';
     src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_20-10-21@1.0/Wemakeprice-Bold.woff') format('woff');
     font-weight: normal;
@@ -58,7 +19,12 @@
     font-style: normal;
 }
 
-
+@font-face {
+    font-family: 'SeoulNamsanM';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/SeoulNamsanM.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
 
 .center {
     display: cover;
@@ -110,42 +76,35 @@ a.wish-link-added {
     transition: 0.3s;
 }
 
-/* 데탑 */
+/* For mobile phones: */
 .product-card__name {
-    font-weight:bold;
-    font-size:small;
-}
-
-.product-card__list-price{
-    color:gray;
-    font-size:small;
-}
-
-.product-card__price {
-    font-weight:bold;
-    font-size:medium;
-}
-
-.product-card__title {
-    /* font-weight:bold; */
-    font-size:medium;
-}
-
-@media screen and (max-width: 768px) {
-    /* 모바일에 사용될 스트일 시트를 여기에 작성합니다. */
-    .product-card__name {
+        font-weight:bold;
         font-size:x-small;
     }
     .product-card__list-price{
-        font-size:x-small;
+        color:gray;
+        font-size:small;
     }
     .product-card__price {
+        font-weight:bold;
         font-size:small;
     }
     .product-card__title {
+        height:32px;
         font-size:small;
+        line-height:1.2;
     }
 
+@media only screen and (min-width: 768px) {
+    .product-card__price {
+        font-size:medium;
+    }
+
+    .product-card__title {
+        height:38px;
+        /* font-weight:bold; */
+        font-size:medium;
+    }
 }
 
 .carousel-text-title {
@@ -378,7 +337,9 @@ a:hover{
         </div>
         <div class='col-12 mx-auto text-center div-brand-logo'>
             <a href="{% url 'products:product_list' %}">
-                <span style='font-size:20px;font-weight:bold;color:black;'>위 브랜드 포함 30여개 브랜드</span>
+                <div class='col-12'>
+                    <span style='font-size:20px;font-weight:bold;color:black;'>위 브랜드 포함 30여개 브랜드</span>
+                </div>
             </a>
         </div>
     </div>
@@ -442,7 +403,7 @@ a:hover{
                         {% else %}
                         <p class="product-card___on-bidding mb-0" style='font-size:small;color:black;'></p>                            
                         {% endif %}        
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
