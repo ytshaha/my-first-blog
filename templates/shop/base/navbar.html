@@ -282,30 +282,90 @@
       </ul>
     </div>
   </nav>
-  
-  <nav class='sticky-top-2'style='height:40px;z-index:3;background-color:white;-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255);box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
+  <!--  -->
+  <!-- .brand-logo {
+    text-align:center;
+    object-fit:cover;
+    /* max-height:80px; */
+    height:auto;
+    max-width:100%;
+    max-height:100%;
+}
+
+.div-brand-logo {
+    border: 1px solid rgb(201, 201, 201);
+    padding: 10px;
+}
+.div-brand-logo:hover {
+    background-color:orange;
+    transition: 0.3s;
+}
+<div class='col-6 col-lg-4 col-md-4 col-sm-6 m-0 text-center div-brand-logo'>
+            <a href="{% url 'products:product_list' brand='Gucci' %}">
+                <img class='brand-logo' src="{s% static 'shop/images/GUCCI_LOGO.png' %}" alt="구찌">
+            </a>
+        </div> -->
+
+
+<!--  -->
+  <nav class='sticky-top-2 nav-size-responsive'style='z-index:3;background-color:white;-webkit-tap-highlight-color: rgba(0, 0, 0, 0); background: rgb(255, 255, 255);box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;"'>
     <div class='container py-0'>
-      <div class='row text-center pt-2 mx-auto' style='font-size:small;max-width:1200px;'>
-        <div class='col px-0 div-category-fixed'>
-          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' %}" style='font-size:medium;'>전체</a>
+      <div class='row text-center mx-auto' style='font-size:small;max-width:1200px;'>
+        <div class='col px-0 pt-1 div-category-fixed'>
+          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' %}" style='font-size:medium;'>
+            <div class=''>
+              <img class='nav-logo' src="{% static 'shop/nav_icon/ALL.png' %}" alt="전체">
+              <p class='my-0'>전체</p>
+            </div>
+          </a>
         </div>
-        <div class='col px-0 div-category-fixed'>
-          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='woman' %}" style='font-size:medium;'>여성의류</a>
+        <div class='col px-0 pt-1 div-category-fixed'>
+          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='woman' %}" style='font-size:medium;'>
+            <div class=''>
+              <img class='nav-logo' src="{% static 'shop/nav_icon/FEMALE.png' %}" alt="여성">
+              <p class='my-0'>여성</p>
+            </div>
+          </a>
         </div>
-        <div class='col px-0 div-category-fixed'>
-          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='men' %}" style='font-size:medium;'>남성의류</a>
+        <div class='col px-0 pt-1 div-category-fixed'>
+          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='men' %}" style='font-size:medium;'>
+            <div class=''>
+              <img class='nav-logo' src="{% static 'shop/nav_icon/MALE.png' %}" alt="남성">
+              <p class='my-0'>남성</p>
+            </div>
+          </a>
         </div>
-        <div class='col px-0 div-category-fixed'>
-          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='shoes' %}" style='font-size:medium;'>슈즈</a>
+        <div class='col px-0 pt-1 div-category-fixed'>
+          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='shoes' %}" style='font-size:medium;'>
+            <div class=''>
+              <img class='nav-logo' src="{% static 'shop/nav_icon/SHOES.png' %}" alt="슈즈">
+              <p class='my-0'>슈즈</p>
+            </div>
+          </a>
         </div>
-        <div class='col px-0 div-category-fixed'>
-          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='bag' %}" style='font-size:medium;'>가방</a>
+        <div class='col px-0 pt-1 div-category-fixed'>
+          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='bag' %}" style='font-size:medium;'>
+            <div class=''>
+              <img class='nav-logo' src="{% static 'shop/nav_icon/BAG.png' %}" alt="가방">
+              <p class='my-0'>가방</p>
+            </div>
+          </a>
         </div>
-        <div class='col px-0 div-category-fixed'>
-          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='acc' %}" style='font-size:medium;'>ACC</a>
+        <div class='col px-0 pt-1 div-category-fixed'>
+          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='acc' %}" style='font-size:medium;'>
+            <div class=''>
+              <img class='nav-logo' src="{% static 'shop/nav_icon/ACC.png' %}" alt="ACC">
+              <p class='my-0'>ACC</p>
+            </div>
+          </a>
         </div>
-        <div class='col px-0 div-category-fixed'>
-          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='kid' %}" style='font-size:medium;'>키즈</a>
+        <div class='col px-0 pt-1 div-category-fixed'>
+          <a class="dropdown-item a-category-fixed px-0" href="{% url 'products:product_list' category='kid' %}" style='font-size:medium;'>
+            <div class=''>
+              <img class='nav-logo' src="{% static 'shop/nav_icon/KIDS.png' %}" alt="키즈">
+              <p class='my-0'>키즈</p>
+            </div>
+          </a>
         </div>
       </div>
     </div>

@@ -647,3 +647,31 @@ ul#horizontal-list {
     font-size: .7875rem;
     display: block;
 }
+
+
+.nav-logo {
+    text-align:center;
+    object-fit:cover;
+    /* max-height:80px; */
+    height:auto;
+    width:40px;
+    display:none;
+}
+
+.div-nav-logo {
+    border: 1px solid rgb(201, 201, 201);
+    padding: 10px;
+}
+
+.sticky-top-2 {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 46px;
+    z-index: 2;
+}
+
+/* 폰 */
+.nav-size-responsive {
+    top:46px;
+    height:40px;
+}
