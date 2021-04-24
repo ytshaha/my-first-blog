@@ -287,23 +287,6 @@ ul#horizontal-list {
 
 /* how-to buy 부분 */
 
-@media (min-width: 1200px)
-.container-card {
-    max-width: 1200px;
-}
-
-@media (min-width: 992px)
-.container-card {
-    max-width: 990px;
-}
-@media (min-width: 768px)
-.container-card {
-    max-width: 720px;
-}
-@media (min-width: 576px)
-.container-card {
-    max-width: 540px;
-}
 .container-card {
     width: 100%;
     padding-right: 15px;
