@@ -67,7 +67,7 @@ a.wish-link-added {
         <!-- 사진부분 -->
         <div class='col-lg-6 col-md-8 col-sm-12 mx-auto'style="padding-bottom:10px;">
             <picture>
-                <img class="detail-image detail-image-main" src="{{ product_item.product.main_image.url }}" alt="메인사진" style="width:100%;height:100%;float:both;">
+                <img class="detail-image detail-image-main" src="{{ product_item.product.main_image.url }}" alt="메인사진" style="object-fit:contain;width:100%;height:100%;float:both;">
             </picture>
         </div>
         <!-- 설명부분 div1 -->
@@ -92,45 +92,45 @@ a.wish-link-added {
                 {% endif %}
                 <!-- 상품명 부분 -->
                 <div class="product-detail-head">
-                    <span class="product-detail-number" style='font-size:medium;'>{{ product_item.product.info_product_number }}</span>
+                    
+                    <span class="product-detail-brand"  style='font-size:large;'>[{{ product_item.product.brand|upper }}]</span>
                 </div>
                 <div class="product-detail-main">
                     <h1 class="product-detail-product-name" style='font-size:x-large;'>{{ product_item.product.title }}</h1>
-                    <span class="product-detail-brand"  style='font-size:large;'>-{{ product_item.product.brand|upper }}-</span>
+                    <span class="product-detail-number" style='font-size:medium;'>{{ product_item.product.info_product_number }}</span>
                 </div>
                 <!-- 가격 -->
-                <div class='mb-2 mt-4'>
+                <div class='mb-2 mt-2'>
                     {% if product_type == 'bidding' %}
-                    <div class='my-2'>
-                        <span style="font-size:large;font-weight:bold;">경매 현재가격</span>
-                        <p><span style="font-weight:bold;font-size:x-large;">{{ product_item.current_price|intcomma }} 원</span>
+                    <div class='my-1'>
+                        <p class='m-0'><span style="font-weight:bold;font-size:x-large;">{{ product_item.current_price|intcomma }} 원</span>
                         <span style='color:gray;'><del>{{ product_item.product.list_price|intcomma }} 원</del></span>
                         <span style='color:red;font-size:large;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                     </div>
                     {% else %}
-                    <div class='my-2'>
-                        <span style="font-size:large;font-weight:bold;">가격</span>
-                        <p><span style="font-weight:bold;font-size:x-large;">{{ product_item.price|intcomma }} 원</span>
+                    <div class='my-1'>
+                        <p class='m-0'><span style="font-weight:bold;font-size:x-large;">{{ product_item.price|intcomma }} 원</span>
                         <span style='color:gray;'><del>₩ {{ product_item.product.list_price|intcomma }}</del></span>
                         <span style='color:red;font-size:large;font-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
                     </div>
                     {% endif %}
                 </div>
                 <!-- 기타정보 -->
-                <div class='mt-2 mb-4 '>
+                <div class='mb-2 '>
                     {% if is_stock and product_item.featured %}
-                    <p class='mb-0' style="font-size:medium;font-weight:bold;">재고 보유</p>
+                    <p class='mb-0' style="font-size:medium;font-weight:bold;">재고 보유
                         {% if product_item.info_delivery_from == 'overseas' %}
-                        <p class='mb-2' style="font-size:small;color:gray;">7~8일 이내에 발송 가능한 상품입니다.</p>
+                        <span class='mb-2' style="font-size:small;color:gray;">7~8일 이내에 발송 가능한 상품입니다.</span>
                         {% elif product_item.info_delivery_from == 'domestic' %}
-                        <p class='mb-2' style="font-size:small;color:gray;">1~2일 이내에 발송 가능한 상품입니다.</p>
+                        <span class='mb-2' style="font-size:small;color:gray;">1~2일 이내에 발송 가능한 상품입니다.</span>
                         {% endif %}
+                        </p>
                     {% else %}
                     <p class='mb-2' style="font-size:medium;">재고 없음<span style='font-size:small;color:green;font-weight:bold;'>{% if user.is_staff and is_stock %}(스탭: 실제 재고 보유 중){% endif %}</span></p>
                     {% endif %}
 
-                    <p class='mb-2' style="font-size:medium;">원산지 : {{ product_item.product.made_info_made_country }}</p>
-                    <p class='mb-2' style="font-size:medium;">모델명 : {{ product_item.product.info_product_number }}</p>
+                    <p class='my-2' style="font-size:medium;">원산지 : {{ product_item.product.made_info_made_country }}</p>
+                    <!-- <p class='mb-2' style="font-size:medium;">모델명 : {{ product_item.product.info_product_number }}</p> -->
 
                     <p class='mb-2' style="font-size:medium;">배송정보 : {{ product_item.product.info_delivery }}{% if product_item.product.combined_delivery %}(합배송 가능){% else %}(합배송 불가){% endif %}</p>
 
@@ -156,6 +156,7 @@ a.wish-link-added {
                                 <div class="input-group mb-3">
                                     <div class="input-group-prepend col-8 p-0">
                                         <input type='button' class="btn btn-block btn-outline-dark" value='사이즈 선택'></button>
+                                        <!-- <p>사이즈선택</p> -->
                                     </div>
                                     <select class="custom-select col-4" id="inputGroupSelectOption" name="option">
                                         <option value="">---</option>
@@ -325,11 +326,11 @@ a.wish-link-added {
 
     <!-- 물품 상세설명 -->
     <div class='row'>
-        <div class="product-detail-description">
-            <p class="product-detail-description-header"  style="font-weight:bold;font-size:medium;margin-bottom:8px;">-상품 상세설명-</p>
-            <ul>
-                <li>{{ product_item.product.description|linebreaks }}</li>
-            </ul>
+        <div class='col-12'>
+            <div class="product-detail-description">
+                <p class="product-detail-description-header"  style="font-weight:bold;font-size:medium;margin-bottom:8px;">-상품 상세설명-</p>
+                <p style='font-size:medium;'>{{ product_item.product.description|linebreaksbr }}</p>
+            </div>
         </div>
     </div>    
     <!-- 물품 설명 끝 -->
@@ -358,71 +359,31 @@ a.wish-link-added {
         <div class='col-12'>
             <p class="product-detail-description-header"  style="font-weight:bold;font-size:medium;margin-bottom:8px;">-전자상거래에 관한 상품정보 제공-</p>
         </div>
-        <div class='col-lg-5 col-md-5 col-sm-12 mx-auto'>
-        
-            <table class="table table-striped table-hover text-center " style="font-size:small;">
-                <colgroup>
-                    <col span="1" style="width: 30%;">
-                    <col span="1" style="width: 70%;">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th scope="col">항목</th>
-                        <th scope="col">내용</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>소재</td>
-                        <td>{{ product_item.product.info_material }}</td>
-                    </tr>
-                    <tr>
-                        <td>크기/치수/색상</td>
-                        <td>{{ product_item.product.info_feature }}</td>
-                    </tr>
-                    <tr>
-                        <td>제조자</td>
-                        <td>{{ product_item.product.info_product_person }}</td>
-                    </tr>
-                    <tr>
-                        <td>제조국</td>
-                        <td>{{ product_item.product.info_made_country }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        <div class='col-lg-5 col-md-5 col-sm-12 mx-auto'>
-
-            <table class="table table-striped table-hover text-center " style="font-size:small;">
-                <colgroup>
-                    <col span="1" style="width: 30%;">
-                    <col span="1" style="width: 70%;">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th scope="col">항목</th>
-                        <th scope="col">내용</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>제조연월</td>
-                        <td>{{ product_item.info_product_date }}</td>
-                    </tr>
-                    <tr>
-                        <td>취급시 주의사항</td>
-                        <td>{{ product_item.product.info_alert }}</td>
-                    </tr>
-                    <tr>
-                        <td>품질보증기준</td>
-                        <td>{{ product_item.product.info_quality_standard }}</td>
-                    </tr>
-                    <tr>
-                        <td>A/S 책임자와 전화번호</td>
-                        <td>{{ product_item.product.info_as }}</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class='col-lg-5 col-md-5 col-sm-12'>
+            {% if product_item.product.info_material %}
+            <p style='font-size:medium;'>소재 : {{ product_item.product.info_material }}</p>
+            {% endif %}
+            {% if product_item.product.info_feature %}
+            <p style='font-size:medium;'>크기/치수/색상 : {{ product_item.product.info_feature }}</p>
+            {% endif %}
+            {% if product_item.product.info_product_person %}
+            <p style='font-size:medium;'>제조자 : {{ product_item.product.info_product_person }}</p>
+            {% endif %}
+            {% if product_item.product.info_made_country %}
+            <p style='font-size:medium;'>제조국 : {{ product_item.product.info_made_country }}</p>
+            {% endif %}
+            {% if product_item.product.info_product_date %}
+            <p style='font-size:medium;'>제조연월 : {{ product_item.product.info_product_date }}</p>
+            {% endif %}
+            {% if product_item.product.info_alert %}
+            <p style='font-size:medium;'>취급시 주의사항 : {{ product_item.product.info_alert }}</p>
+            {% endif %}
+            {% if product_item.product.info_quality_standard %}
+            <p style='font-size:medium;'>품질보증기준 : {{ product_item.product.info_quality_standard }}</p>
+            {% endif %}
+            {% if product_item.product.info_as %}
+            <p style='font-size:medium;'>A/S 책임자와 전화번호 : {{ product_item.product.info_as }}</p>
+            {% endif %}
         </div>
     </div>
 
@@ -459,12 +420,12 @@ a.wish-link-added {
             <div class="store-card-header">
                 <p class='text-center' style='color:white;font-weight:bold;font-size:xx-large;'>ABOUT OUR PRODUCT</p>
             </div>
-            <div class="info-card-description mb-5 text-left">
+            <div class="mb-5 text-left">
                 <ul style='color:white;'>
                     <p style='font-size:medium;color:white;'><bold>모움은 관세청 인증의 병행수입통관업체입니다.</bold>  모움에서 판매하는 브랜드 상품은 대한민국 세관을 통과한 100% 정품입니다.<br>
                     판매자가 직접 이태리 현지에서 딜러 없이 수입하는 것으로, 직접 셀렉하는 것이기에 최고의 상품을 합리적인 가격으로 판매할 수 있도록 노력하고 있습니다. </p>
                     <p style='font-size:medium;color:white;'>고객님들께서 온라인에서 겪으실 우려가 있는 가품(위조상품)으로부터 안심하고 쇼핑하실 수 있도록 아래와 같이 노력하고 있습니다. </p>
-                    <hr style='border-top:1px dashed white;'>
+                    <!-- <hr style='border-top:1px dashed white;'> -->
                     <li><p style='font-size:medium;'><span style='color:#ffe5a9'>첫 번째, 당사는 위조품 수출입, 유통 방지 위원회 'TIPA CAC'에 가입되어 있습니다.</span><br>
                         TIPA에서 실시하는 상품 및 물류 창고의 관리상태확인, 상품의 샘플감정을 주기적으로 진행하고 있으며 분기별 1회 이상 위조품 식별 및 유통예방교육을 받고 있습니다.</p></li>
                         <li><p style='font-size:medium;'><span style='color:#ffe5a9'>두 번째, 위조품 의심, 상품 상담 및 신고를 받고 있습니다.</span><br>
@@ -551,7 +512,7 @@ a.wish-link-added {
                     <p style='font-size:medium;'>상기의사항 양해 부탁드립니다.</p> 
                 </ul>
             </div>
-            <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+            <!-- <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'> -->
         </div>
 
         <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
@@ -572,7 +533,7 @@ a.wish-link-added {
                     
                 </ul>
             </div>
-            <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+            <!-- <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'> -->
         </div>
 
         <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
@@ -624,7 +585,7 @@ a.wish-link-added {
                     </ul>
                 </div>
             </div>
-            <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'>
+            <!-- <hr class='mt-5' style='border-top: 1px dashed#ffe5a9;'> -->
         </div>
 
         <div class='col-12 px-5 rounded' style='background-color:#423F3B;'>
@@ -651,47 +612,54 @@ a.wish-link-added {
     <!-- 배송관련 안내사항 끝 -->
 
 
-
+</div>
+{% endblock %}
 
 {% block javascript %}
 <!-- <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script src="{% static 'js/csrf.ajax.js' %}"></script> -->
 <!-- jQuery -->
-<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js" ></script>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script>
-$(document).ready(function(){
-
-    $(".wish-link").each(function(i, obj){
-        var wishBtn = $(this)
-        var ProductItem = wishBtn.attr("id")
-        wishBtn.click(function (event){
-        console.log("ProductItem", ProductItem)
-        var promise = $.ajax({
-            url: "{% url 'wishlist:make_wishlist' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
-            type: 'POST',
-            dataType: 'json',
-            data: {product_item: ProductItem,
-                },
-            
-            success: function(data){
-                if(data.added == "true"){
-                    wishBtn.children().css('color','rgb(0, 0, 0)')
-                }
-                else{
-                    wishBtn.children().css('color','rgb(197, 197, 197)')
-                }
-
-                }
+    $(document).ready(function(){
+    
+        $(".wish-link").each(function(i, obj){
+            var wishBtn = $(this)
+            var ProductItem = wishBtn.attr("id")
+            wishBtn.click(function (event){
+            console.log("ProductItem", ProductItem)
+            var promise = $.ajax({
+                url: "{% url 'wishlist:make_wishlist' %}", //cross-domain error가 발생하지 않도록 동일한 도메인으로 전송
+                type: 'POST',
+                dataType: 'json',
+                data: {product_item: ProductItem,
+                    },
+                
+                success: function(data){
+                    if(data.added == "true"){
+                        wishBtn.children().css('color','rgb(0, 0, 0)')
+                        $.alert({
+                            title: '위시리스트',
+                            content: '위시리스트에서 추가되었습니다.',
+                        });
+                    }
+                    else{
+                        wishBtn.children().css('color','rgb(197, 197, 197)')
+                        $.alert({
+                            title: '위시리스트',
+                            content: '위시리스트에 제거되었습니다.',
+                        });
+                    }
+    
+                    }
+                })
             })
-        })
-
+    
+        });
+    
+    
     });
-
-
-});
-
-</script>
+    
+    </script>
 
 <script>
 $(document).ready(function(){
@@ -855,5 +823,3 @@ $(document).ready(function(){
 </script>
 {% endblock %}
 
-</div>
-{% endblock %}

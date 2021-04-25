@@ -162,15 +162,141 @@
         background-color:transparent;
         }
 
-      .div-category-fixed:hover {
+      /* .div-category-fixed:hover {
         border-left:1px solid rgb(224, 224, 224);
         border-right:1px solid rgb(224, 224, 224);
-      }
+      } */
+
+.a-category-fixed {
+	 /* display: none; */
+	 /* padding: 10px; */
+	 border-radius: 0;
+   border: 1px solid transparent; 
+	 /* color: #fff; */
+	 /* text-transform: uppercase; */
+	 /* font-size: 15px; */
+	 /* letter-spacing: 0.10; */
+	 transition: all 0.3s;
+	 /* position: fixed; */
+	 overflow: hidden;
+	 z-index: 1;
+   /* bottom: 20px;
+   right: 30px; */
+}
+ .a-category-fixed:after {
+	 content: '';
+	 /* position: absolute; */
+	 /* bottom: 0; */
+	 /* left: 0; */
+	 width: 100%;
+	 height: 100%;
+	 background-color: white!important;
+	 border-radius: 0;
+	 z-index: -2;
+}
+ .a-category-fixed:before {
+	 /* content: '';
+	 position: absolute;
+	 bottom: 0;
+	 left: 0; */
+	 width: 0%;
+	 height: 100%;
+	 background-color: rgb(207, 207, 207);
+	 transition: all 0.3s;
+	 border-radius: 0;
+	 z-index: -1;
+}
+ .a-category-fixed:hover {
+	 color: #fff;
+   border: 1px solid rgb(207, 207, 207); 
+   background-color: rgb(207, 207, 207);
+}
+ .a-category-fixed:hover:before {
+	 width: 100%;
+}
+ 
+
+      
       /* .a-category-fixed {
         font-family:'SeoulNamsanM'!important;
         font-weight:bold!important;
 
       } */
+
+/* 
+#topBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: red;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 4px;
+}
+
+#topBtn:hover {
+  background-color: #555;
+} */
+
+/* $color: #0cf; */
+#topBtn {
+	 display: none;
+	 padding: 10px;
+	 border-radius: 10rem;
+   border: 1px solid transparent; 
+	 color: #fff;
+	 text-transform: uppercase;
+	 font-size: 15px;
+	 letter-spacing: 0.15rem;
+	 transition: all 0.2s;
+	 position: fixed;
+	 overflow: hidden;
+	 z-index: 1;
+   bottom: 20px;
+   right: 30px;
+}
+ #topBtn:after {
+	 content: '';
+	 position: absolute;
+	 bottom: 0;
+	 left: 0;
+	 width: 100%;
+	 height: 100%;
+	 background-color: black;
+	 border-radius: 10rem;
+	 z-index: -2;
+}
+ #topBtn:before {
+	 content: '';
+	 position: absolute;
+	 bottom: 0;
+	 left: 0;
+	 width: 0%;
+	 height: 100%;
+	 background-color: #423f3b;
+	 transition: all 0.2s;
+	 border-radius: 10rem;
+	 z-index: -1;
+}
+ #topBtn:hover {
+	 color: #fff;
+}
+ #topBtn:hover:before {
+	 width: 100%;
+}
+ 
+  
+
+
+
+
+
 
       </style>
     <title>MOUM8, 시작</title>
@@ -178,7 +304,8 @@
   
   <body>
     {% include 'shop/base/navbar.html' %}
-  
+    <button onclick="topFunction()" id="topBtn" title="Go to top">TOP</button>
+
 
 
 
@@ -213,7 +340,29 @@
     {% include 'shop/base/footer.html' %}
     <!-- Footer 끝 --> 
 
+    <!-- Top button -->
+    <script>
+      //Get the button
+    var mybutton = document.getElementById("topBtn");
 
+    // When the user scrolls down 20px from the top of the document, show the button
+    window.onscroll = function() {scrollFunction()};
+
+    function scrollFunction() {
+      if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        mybutton.style.display = "block";
+      } else {
+        mybutton.style.display = "none";
+      }
+    }
+
+    // When the user clicks on the button, scroll to the top of the document
+    function topFunction() {
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+    }
+
+    </script>
 
     <script>
       $(document).ready(function(){
