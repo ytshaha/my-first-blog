@@ -95,3 +95,9 @@ def bidding(request, pk):
 ######################################################
 def open_event(request):
     return render(request, 'shop/event/210426_open_event.html', {})
+
+
+def privacy(request):
+    return render(request, 'shop/private_privacy.html', {})
+def terms(request):
+    return render(request, 'shop/terms.html', {})
