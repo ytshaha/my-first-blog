@@ -101,3 +101,6 @@ def privacy(request):
     return render(request, 'shop/private_privacy.html', {})
 def terms(request):
     return render(request, 'shop/terms.html', {})
+
+def policy(request):
+    return render(request, 'shop/policy.html', {})

@@ -16,5 +16,5 @@ urlpatterns = [
     path('event/1/', views.open_event, name='event_1'),
     path('privacy/', views.privacy, name='privacy'),
     path('terms/', views.terms, name='terms'),
-    
+    path('policy/', views.policy, name='policy'),
 ]
