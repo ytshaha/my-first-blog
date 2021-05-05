@@ -23,7 +23,7 @@ from .forms import ProductForm, ProductItemForm, ProductImageForm
 from biddings.forms import BiddingForm
 from carts.models import Cart
 from wishlist.models import Wish
-
+from billing.models import Card
 CATEGORY_CHOICES = (
     ('woman', '여성의류'),
     ('man', '남성의류'),
@@ -529,6 +529,10 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
             bidding_obj_up_to_10 = None
             bidding_on = None
 
+        if product_type == 'rental':
+            is_rental = True
+        else:
+            is_rental = False
         # 경매준비 경매중 경매종료 여부확인
         
         # 재고여부
@@ -579,6 +583,8 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         #         JsonResponse(json_data, statis=200)
         #     else:
         #         pass
+        has_card = Card.objects.filter(user=user).exists()
+        print("해스카드.:", has_card)
 
         context['size_option'] = size_option
         context['product_item'] = product_item_obj
@@ -589,6 +595,8 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         context['cart'] = cart_obj
         context['images'] = images
         context['bidding_obj_up_to_10'] = bidding_obj_up_to_10
+        context['is_rental'] = is_rental
+        context['has_card'] = has_card
         return context
 
     def get_object(self, *args, **kwargs):
@@ -844,5 +852,102 @@ def product_item_featured_update_api_view(request):
 #             if user.is_authenticated:
 #                 user_obj = user
 #         return self.model.objects.create(user=user_obj)
+
+
+class ProductRentalListView(LoginRequiredMixin, generic.ListView):
+    '''
+    Featured = True이고 product_type= Noraml인 물품들을 표시함.(active와 다른 개념. active는 구매가능여부.)
+    '''
+    template_name = 'products/product_list.html'
+    context_object_name = 'product_items'
+    paginate_by = 20
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(ProductRentalListView, self).get_context_data(*args, **kwargs)
+        brands = Brand.objects.all()
+        context['brands'] = brands
+        context['is_staff_check'] = False
+        context['is_rental'] = True
+        user = self.request.user
+        wish_list = Wish.objects.filter(user=user).values_list('product_item', flat=True)
+        context['wish_list'] = wish_list
+        
+        try: 
+            context['brand'] = self.kwargs['brand']
+        except:
+            pass
+        try:
+            context['category'] = self.kwargs['category']
+        except:
+            pass    
+
+        context['category_qs'] = CATEGORY_CHOICES
+        # if self.request.method == 'GET':
+        #     brand = self.request.GET.get('brand', None)
+        #     category = self.request.GET.get('category', None)
+        # context['brand'] = brand
+        # context['category'] = category
+        
+        
+        return context
+    
+    def get_queryset(self, *args, **kwargs):
+        request = self.request
+
+        product_item_qs = ProductItem.objects.featured().filter(product_type='rental')
+
+        #정렬기준을 세션에 저장했으면 그기준. 아니면 아닌걸로.    
+        print(request.method, '요청됨.')
+        
+        if request.method == 'GET':
+            post_purpose = request.GET.get('post_purpose', None)
+            if post_purpose == 'filter_product':
+                category_selected = request.GET.getlist('category_selected', None)
+                brand_selected = request.GET.getlist('brand_selected', None)
+                product_item_qs = product_item_qs.filter(product__category__name__in=category_selected).filter(product__brand__name__in=brand_selected)           
+            elif post_purpose =='ordering_method':
+                request.session['ordering'] = request.GET.get('ordering', None)
+        # product_item_obj = ProductItem.objects.get(slug=slug)
+        
+        try:
+            ordering = request.session['ordering']
+            print('ordering', ordering)
+        except:
+            ordering = None
+
+        if post_purpose is None:
+            # brand 받았나
+            try:
+                brand = self.kwargs['brand']
+            except:
+                brand = None
+            # category 받았나
+            try:
+                category = self.kwargs['category']
+            except:
+                category = None
+            
+            # 필터링
+            if not brand is None:
+                product_item_qs = product_item_qs.filter(product__brand__name=brand) # 두개 합친건데 되는지 확인. 
+            elif not category is None:
+                product_item_qs = product_item_qs.filter(product__category__name=category) # 두개 합친건데 되는지 확인. 
+        # 전체 쿼리셋 저장 및 업데이트
+        for product_item_obj in product_item_qs:
+            product_item_obj.save()
+
+        if ordering is not None:
+            product_item_qs = product_item_qs.order_by(ordering)
+        # if ordering is not None:
+        #     if ordering == '-price':
+        #         product_item_qs = product_item_qs.order_by(ordering)
+        #     elif ordering == 'price':
+        #         product_item_qs = product_item_qs.order_by(ordering)
+        #     elif ordering == '-updated':
+        #         product_item_qs = product_item_qs.order_by(ordering)
+        #     else:
+        #         pass
+
+        return product_item_qs
 
 

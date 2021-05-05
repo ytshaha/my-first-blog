@@ -127,6 +127,7 @@ class Order(models.Model):
     timestamp           = models.DateTimeField(auto_now_add=True)
     cart_items_name     = models.CharField(max_length=210, blank=True, null=True) # 주문한 상품명들 나열한 str. 결제완료시 checkout_iamport에서 할당해줌/
     tracking_number     = models.CharField(max_length=200, blank=True, null=True)
+    is_rental           = models.BooleanField(default=False)
 
     objects = OrderManager()
 

@@ -11,6 +11,8 @@ from . import views
 app_name = 'carts'
 urlpatterns = [
     path('', views.cart_home, name='home'),
+    # path('checkout/select/', views.select_purchase_way, name='select_purchase_way'),
+    path('checkout_now/', views.checkout_iamport_now, name='checkout_iamport_now'),
     url(r'^update/$', views.cart_update, name='update'),
     # url(r'^checkout/$', views.checkout_home, name='checkout'),
     url(r'^checkout/success/$', views.checkout_done_view, name='success'),
@@ -19,6 +21,9 @@ urlpatterns = [
     
     # 테스트중.
     url(r'^checkout/iamport/$', views.checkout_iamport, name='checkout-iamport'),
+
+
+    
 
     url(r'^payment/test/$', TemplateView.as_view(template_name='carts/payment_test.html'), name='payment_test'),
     url(r'^payment/complete/$', views.payment_complete, name='payment_complete'),

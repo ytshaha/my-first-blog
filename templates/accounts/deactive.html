@@ -1,0 +1,34 @@
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class='row'>
+        <div class="col-12 ml-auto mr-auto">
+            <h2 class="index-title-index text-center">회원탈퇴</h2>
+            <hr class="index-title-divider">
+        </div>
+    </div>
+  </div>  
+<div class="container">
+    <div class='row mb-5'>
+        <div class='col-12 col-lg-8 col-md-10 col-sm-12 mx-auto'>
+            <p class='text-center' style='font-weight:bold;font-size:large;'>회원탈퇴 안내</p>
+            <p class='mb-1'>* 회원탈퇴는 구매진행 건과 렌탈 건에 대해 확인 후 탈퇴처리 됩니다.(2-3일이내)</p>
+            <p class='mb-1'>* 탈퇴 후에는 신규 티켓없이는 가입이 불가합니다.</p>
+            <p class='mb-1'>* 완전히 탈퇴가 되면 메일로 확인 메일을 송부드립니다.</p>
+            <p class='mb-1'>* 회원탈퇴를 철회하시려면 관리자에게 이메일이나 전화 연락부탁드립니다.</p>
+            
+            
+        </div>
+        <div class='col-12 col-lg-8 col-md-10 col-sm-12 mx-auto'>
+            <form method='post' action="">
+                {% csrf_token %}
+                <button type='submit', class='btn btn-outline-dark btn-block'>회원탈퇴</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

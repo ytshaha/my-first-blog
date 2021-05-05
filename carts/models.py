@@ -12,9 +12,10 @@ from tickets.models import TicketItem
 User = settings.AUTH_USER_MODEL
 
 PRODUCT_TYPE = (
-    ('normal','상시상품구매'),
-    ('bidding','경매상품구매'),
-    ('ticket','경매티켓구매'),
+    ('normal', '상시상품구매'),
+    ('bidding', '경매상품구매'),
+    ('ticket', '경매티켓구매'),
+    ('rental', '렌탈상품구매'),
     
 )
 
@@ -29,7 +30,8 @@ class CartItemManager(models.Manager):#################210303_여기 좀 나중�
         product_type = request.POST.get('product_type', None)
         option = request.POST.get('option', None)
         at_cart = request.POST.get('at_cart', None)
-
+        
+        print('★★템프아이디', temp_id)
         # 카트에서 remove로 호출된 경우
         if at_cart:
             cart_item_id = request.POST.get('cart_item_id', None)
@@ -39,7 +41,7 @@ class CartItemManager(models.Manager):#################210303_여기 좀 나중�
             return cart_item_obj, new_obj
 
         # 티켓구매나 물품구매에서 호출된 경우
-        if product_type == 'bidding' or product_type == 'normal':
+        if product_type == 'bidding' or product_type == 'normal' or product_type == 'rental':
             # product_item_id = request.POST.get('product_item_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
             product_item_obj = ProductItem.objects.get(id=temp_id)
             # ticket_item_id = None
@@ -57,36 +59,60 @@ class CartItemManager(models.Manager):#################210303_여기 좀 나중�
         # 옵션상품(일반상품만, 경매상품은 사이즈관여 x)에 대해서는 옵션까지 검사해서 동일해야 get하고 아니면 new
         if product_type == 'normal' and option is not None:
             qs = qs.filter(option=option)
-        
+        print("product_type: ", product_type)
         if qs.exists():
+            print('뉴올 겟에서 기존 qs있는 63')
             new_obj = False
             cart_item_obj = qs.first()
             cart_item_obj.option = option
             cart_item_obj.save()
         else:
-            cart_item_obj = self.new(user=user, product_item=product_item_obj, ticket_item=ticket_item_obj, product_type=product_type, option=option)
+            if product_type == 'rental':
+                print('뉴올 겟에서 렌탈 가정문 통과')
+                period = request.POST.get('period', None)
+                rental_start_date = request.POST.get('rental_start_date', None)
+                print("뉴얼겟 하기전에 피리오드랑 렌탈 스탈트데이트 :", period, rental_start_date)
+                cart_item_obj = self.new(
+                    user=user, 
+                    product_item=product_item_obj, 
+                    ticket_item=ticket_item_obj, 
+                    product_type=product_type, 
+                    option=option, 
+                    period=period,
+                    rental_start_date=rental_start_date
+                    )
+            else:
+                cart_item_obj = self.new(
+                    user=user, 
+                    product_item=product_item_obj, 
+                    ticket_item=ticket_item_obj, 
+                    product_type=product_type, 
+                    option=option
+                    )
             new_obj = True
         return cart_item_obj, new_obj
 
-    def new(self, user, product_item, ticket_item, product_type, option):
-        return self.model.objects.create(user=user, product_item=product_item, ticket_item=ticket_item, product_type=product_type, option=option)
+    def new(self, user, product_item, ticket_item, product_type, option, period=None, rental_start_date=None):
+        return self.model.objects.create(user=user, product_item=product_item, ticket_item=ticket_item, product_type=product_type, option=option, period=period, rental_start_date=rental_start_date)
 
 
 class CartItem(models.Model):
-    user            = models.ForeignKey(User, on_delete=models.CASCADE)
-    product_item    = models.ForeignKey(ProductItem, blank=True, null=True, on_delete=models.CASCADE)
-    ticket_item     = models.ForeignKey(TicketItem, blank=True, null=True, on_delete=models.CASCADE)
-    option          = models.CharField(max_length=20, default=0, blank=True, null=True, help_text=u'옵션')
-    amount          = models.IntegerField(default=1)
-    price           = models.IntegerField(default=0, help_text=u'단가')
-    subtotal        = models.IntegerField(default=0, help_text=u'물품 총액')
-    total           = models.IntegerField(default=0, help_text=u'기타비용 포함 총액')
-    product_type    = models.CharField(max_length=20, default='bidding', choices=PRODUCT_TYPE)
-    status          = models.CharField(max_length=120, default='created', choices=CART_ITEM_STATUS_CHOICES)
-    timestamp       = models.DateTimeField(auto_now_add=True)
-    sale_ratio      = models.DecimalField(default=0, max_digits=100, decimal_places=1, help_text=u'할인율_자동계산필드')
-    add_certificate = models.BooleanField(default=False)
-    is_reviewed     = models.BooleanField(default=False)
+    user                = models.ForeignKey(User, on_delete=models.CASCADE)
+    product_item        = models.ForeignKey(ProductItem, blank=True, null=True, on_delete=models.CASCADE)
+    ticket_item         = models.ForeignKey(TicketItem, blank=True, null=True, on_delete=models.CASCADE)
+    option              = models.CharField(max_length=20, default=0, blank=True, null=True, help_text=u'옵션')
+    amount              = models.IntegerField(default=1)
+    price               = models.IntegerField(default=0, help_text=u'단가')
+    subtotal            = models.IntegerField(default=0, help_text=u'물품 총액')
+    total               = models.IntegerField(default=0, help_text=u'기타비용 포함 총액')
+    period              = models.IntegerField(default=0, blank=True, null=True) #렌탈일 경우 정기결제 기간을 의미.
+    rental_start_date   = models.DateTimeField(blank=True, null=True)
+    product_type        = models.CharField(max_length=20, default='bidding', choices=PRODUCT_TYPE)
+    status              = models.CharField(max_length=120, default='created', choices=CART_ITEM_STATUS_CHOICES)
+    timestamp           = models.DateTimeField(auto_now_add=True)
+    sale_ratio          = models.DecimalField(default=0, max_digits=100, decimal_places=1, help_text=u'할인율_자동계산필드')
+    add_certificate     = models.BooleanField(default=False)
+    is_reviewed         = models.BooleanField(default=False)
 
     objects = CartItemManager()
     
@@ -98,7 +124,7 @@ class CartItem(models.Model):
         formmated_timestamp = "{:04d}{:02d}{:02d}".format(year, month, day)
         if self.product_type == 'ticket':
             return "added_{}_{}_{}".format(formmated_timestamp, str(self.user), str(self.ticket_item) )
-        elif self.product_type == 'bidding' or self.product_type == 'normal':
+        elif self.product_type == 'bidding' or self.product_type == 'normal' or self.product_type == 'rental':
             return "added_{}_{}_{}".format(formmated_timestamp, str(self.user), str(self.product_item))
         else:
             return self.id

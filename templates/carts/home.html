@@ -30,7 +30,7 @@
           <div class='row mb-3' style='width:100%;'>
             <div class='col-8 col-lg-6 col-mg-6 col-sm-8 mx-auto pb-2'>
               <!-- 이미지 -->
-              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
+              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
               <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
               <a href="{{ cart_item.product_item.get_absolute_url }}"><img src="{{ cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'></a>   
               {% elif cart_item.product_type == 'ticket' %}
@@ -43,13 +43,13 @@
               <!-- 물품명 -->
               {% if cart_item.product_type == 'ticket' %}
                 <p class='mb-1' style='font-size:medium;font-weight:bold;'>경매티켓 {{ cart_item.ticket_item.tickets_type }}개</p>
-              {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
+              {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
                 <p class='mb-1' style='font-size:medium;font-weight:bold;'>{% if cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ cart_item.product_item.product.title }}</p>
               {% else %}
                 <p class='mb-1' style='font-size:medium;font-weight:bold;'>물품명잘못지정됨</p>
               {% endif %}
 
-              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
+              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal'  or cart_item.product_type == 'rental' %}
                 <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.product_item.product.list_price|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
               {% elif cart_item.product_type == 'ticket' %}
                 <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.ticket_item.subtotal|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
@@ -66,7 +66,7 @@
                 <p class='mb-1' style='font-size:small;'>옵션: 없음</p>
               {% endif %}
               
-              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
+              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal'  or cart_item.product_type == 'rental' %}
                 <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
                 <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
               {% endif %}

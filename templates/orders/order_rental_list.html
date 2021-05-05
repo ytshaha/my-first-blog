@@ -5,7 +5,7 @@
 <div class="container">
     <div class='row'>
         <div class="col-12 ml-auto mr-auto">
-            <h2 class="index-title-index text-center">주문현황</h2>
+            <h2 class="index-title-index text-center">렌탄현황리스트</h2>
             <hr class="index-title-divider">
         </div>
     </div>
@@ -26,31 +26,15 @@
         <!-- 아이템들 -->
         {% for object in object_list %}
         <div class='row' style='margin-left: 0px;'>
-          <!-- 아이템수 -->
-          
-          <div class='col text-left pl-0'>
-            {% if object.status == 'shipped' %}
-            <p class='pt-3'>배송 완료</p>
-            {% elif object.status == 'paid' %}
-            <form method='post' action="{% url 'orders:cancel_request' %}">
+            <form method='post' action="{% url 'orders:cancel_rental' %}">
                 {% csrf_token %}
                 <input type="hidden" name='post_purpose' value='cancel'>
                 <input type="hidden" name='order_id' value='{{ object.id }}'>
                 <input type="hidden" name="next" value="{{ request.path }}">
-                <p class='pt-3'><span style='font-size:large;font-weight:bold;color:blue'>배송준비 중  </span><button type='submit' class='btn btn-outline-dark btn-sm'>취소신청</button></p>
+                <p class='pt-3'><span style='font-size:large;font-weight:bold;color:blue'>렌탈 중  </span><button type='submit' class='btn btn-outline-dark btn-sm'>취소신청</button></p>
             </form>
-
-
-
-
-            {% elif object.status == 'shipping' %}
-            <p class='pt-3' style='font-size:large;font-weight:bold;color:blue'>배송 중</p> 
-            {% elif object.status == 'refunded' %}
-            <p class='pt-3' style='font-size:large;font-weight:bold;color:black'>환불완료</p>
-            {% elif object.status == 'cancel' %}
-            <p class='pt-3' style='font-size:large;font-weight:bold;color:black'>구매취소(환불준비중)</p> 
-            {% endif %}
           </div>
+          <!-- 아이템수 -->
           <div class='col text-right'>
             <p class='mb-1' style='font-size:small;'><span>{{ object.timestamp|date:'Y-m-d' }}</span></p>
             <a href="{{ object.get_absolute_url }}" style='color:black;'><input class='btn btn-outline-dark btn-sm' type="button" name='post_purpose' value='상세보기'></a>

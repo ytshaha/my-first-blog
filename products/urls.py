@@ -12,19 +12,24 @@ from biddings.views import bidding_new, bidding_result
 app_name = 'products'
 urlpatterns = [
     # 일반물품 URL
-    path('', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
-    # path('filter/', views.ProductFilterListView.as_view(), name='product_filter_list'), # 전체 물품보기(feature=True)
+    path('', views.ProductNormalListView.as_view(), name='product_list'), 
+    # path('filter/', views.ProductFilterListView.as_view(), name='product_filter_list'), 
     
-    path('category/<category>/', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
-    path('brand/<brand>/', views.ProductNormalListView.as_view(), name='product_list'), # 전체 물품보기(feature=True)
-    path('wishlist/', views.ProductWishListView.as_view(), name='product_wish_list'), # 전체 물품보기(feature=True)
-    path('wishlist/category/<category>/', views.ProductWishListView.as_view(), name='product_wish_list'), # 전체 물품보기(feature=True)
-    path('wishlist/brand/<brand>/', views.ProductWishListView.as_view(), name='product_wish_list'), # 전체 물품보기(feature=True)
+    path('category/<category>/', views.ProductNormalListView.as_view(), name='product_list'), 
+    path('brand/<brand>/', views.ProductNormalListView.as_view(), name='product_list'), 
+    path('wishlist/', views.ProductWishListView.as_view(), name='product_wish_list'), 
+    path('wishlist/category/<category>/', views.ProductWishListView.as_view(), name='product_wish_list'), 
+    path('wishlist/brand/<brand>/', views.ProductWishListView.as_view(), name='product_wish_list'), 
     # 경매물품 URL
-    path('bidding/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)
-    path('bidding/category/<category>/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)
-    path('bidding/brand/<brand>/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), # 전체 물품보기(feature=True)
-    path('bidding/complete/', views.ProductBiddingCompleteListView.as_view(), name='product_bidding_end_list'), # 전체 물품보기(feature=True)
+    path('bidding/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), 
+    path('bidding/category/<category>/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), 
+    path('bidding/brand/<brand>/', views.ProductBiddingListView.as_view(), name='product_bidding_list'), 
+    path('bidding/complete/', views.ProductBiddingCompleteListView.as_view(), name='product_bidding_end_list'), 
+    
+    # 렌탈물품 URL
+    path('rental/', views.ProductRentalListView.as_view(), name='product_rental_list'), 
+    path('rental/category/<category>/', views.ProductRentalListView.as_view(), name='product_rental_list'), 
+    path('rental/brand/<brand>/', views.ProductRentalListView.as_view(), name='product_rental_list'), 
     
 
     # path('featured/', views.ProductFeaturedListView.as_view(), name='product_featured_list'), #

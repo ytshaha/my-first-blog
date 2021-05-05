@@ -165,7 +165,12 @@ span.price {
         </div>
 
         {% endif %}
+        
+        
         <div class="col-lg-5 col-md-6 col-sm-12">
+            {% if object.cart.cart_items.first.product_type == 'rental' %}
+            <!-- 렌탈이면 포인트관련부분을 아예 제외시키자. -->
+            {% else %} 
             <div class="container">
                 <div class="row" style='width:100%'>
                     <form method="post" action="" class='form-get-checkout-data' style='width:100%;'>
@@ -199,7 +204,7 @@ span.price {
                     </form>
                 </div>
             </div>
-
+            {% endif %}
             <div class="container mb-5">
                 <div class="row" style='width:100%'>
                     <div class='col-12 pl-0 pr-3 text-left'>
@@ -211,7 +216,7 @@ span.price {
                         <div class='col-8'>
                             {% if cart_item.product_type == 'ticket' %}
                             <p class='mb-1' style='font-size:small;'>TICKET {{ cart_item.ticket_item.tickets_type }}개</p>
-                            {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' %}
+                            {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
                             <p class='mb-1' style='font-size:small;'>{{ cart_item.product_item.product.title }}{% if cart_item.option != None %}({{ cart_item.option|floatformat:"0" }}){% endif %}</p>
                             {% else %}
                             <p class='mb-1' style='font-size:small;font-weight:bold;'>물품명잘못지정됨</p>
@@ -241,6 +246,10 @@ span.price {
                             <p style='font-size:small;'>{% if object.shipping_cost %}+{% endif %}{{ object.shipping_cost|intcomma }} 원</p>
                         </div>
                     </div>
+                    
+                    {% if object.cart.cart_items.first.product_type == 'rental' %}
+                    <!-- 렌탈이면 포인트관련부분을 아예 제외시키자. -->
+                    {% else %} 
                     <div class='row' style='width:100%'>
                         <div class='col-8'>
                             <p style='font-size:small;'>포인트</p>
@@ -249,6 +258,8 @@ span.price {
                             <p style='font-size:small;'>{% if object.point_total == 0 %}0 원{% else %}-{{ object.point_total|intcomma }} 원{% endif %}</p>
                         </div>
                     </div>
+                    {% endif %}
+                    
                     <div class="col-12 m-0 p-0">
                         <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
                     </div>
@@ -281,18 +292,26 @@ span.price {
                                 <div class='col-12 check-out-div mr-0 pr-0 mb-2'>
                                     <form method='post' action="">
                                         {% csrf_token %}
+                                        {% if object.cart.cart_items.first.product_type == 'rental' %}
+                                        <input type="hidden" name='post_purpose' value='rental'>
+                                        {% else %}
                                         <input type="hidden" name='post_purpose' value='simple_checkout'>
+                                        {% endif %}
                                         <input type="hidden" name='customer_uid' value='{{ object.billing_profile.card.customer_uid }}'>
                                         <input type="hidden" name='merchant_uid' value='{{ merchant_uid }}'>
                                         <input type="hidden" name='amount' value='{{ amount }}'>
                                         <input type="hidden" name='name' value='{{ name }}'>
-                                        <button type='submit' class='btn btn-dark btn-block' id='check-out-card-button' value='간편결제하기'>「{{ object.billing_profile.card.card_name }}」 카드로 결제
+                                        <button type='submit' class='btn btn-dark btn-block' id='check-out-card-button' value='간편결제하기'>간편 결제「{{ object.billing_profile.card.card_name }}」
                                     </form>
                                     
                                 </div>
-                                <div class='col-12 check-out-div mr-0 pr-0'>
-                                    <input type='button' class='btn btn-outline-dark btn-block' id='check-out-button' value='결제하기'>
-                                </div>
+                                    {% if object.cart.cart_items.first.product_type == 'rental' %}
+                                    <!-- 렌탈이면 일반결제 없다. -->
+                                    {% else %}
+                                    <div class='col-12 check-out-div mr-0 pr-0'>
+                                        <input type='button' class='btn btn-outline-dark btn-block' id='check-out-button' value='결제하기'>
+                                    </div>
+                                    {% endif %}
                                 {% else %}
                                 <div class='col-12 check-out-div mr-0 pr-0'>
                                     <input type='button' class='btn btn-dark btn-block' id='check-out-button' value='결제하기'>

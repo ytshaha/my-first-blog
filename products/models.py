@@ -28,6 +28,8 @@ BIDDING_STATUS_CHOICE = (
 PRODUCT_TYPE = (
     ('normal','일반물품'),
     ('bidding','경매물품'),
+    ('rental','렌탈물품'),
+    
 )
 
 PRICE_STEP_CHOICE = (

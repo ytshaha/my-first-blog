@@ -200,3 +200,69 @@ def order_cancel_mail(email, order):
                 )
     print("{}님께 결제취소 이메일이 보내졌습니다.".format(order.billing_profile.user))
     return send_mail
+
+
+class RentalListView(LoginRequiredMixin, ListView):
+    template_name = 'orders/order_rental_list.html'
+    paginate_by = 5
+
+    def get_queryset(self):
+        user = self.request.user
+        return Order.objects.filter(billing_profile__user=user, is_rental=True)
+        
+def cancel_rental_iamport(request, imp_uid, cancel_reason):
+    if request.method == 'POST':
+        print('체크아웃 렌탈 취소 설정')
+        imp_uid = request.POST.get('imp_uid', None)
+        customer_uid = request.POST.get('customer_uid', None)
+        merchant_uid = request.POST.get('merchant_uid', None)
+        amount = request.POST.get('amount', None)
+        name = request.POST.get('name', None)
+
+        rental_start_date = order_obj.cart.cart_items.first().rental_start_date
+        period = order_obj.cart.cart_items.first().period
+        schedule_list = []
+
+
+        from django.utils import timezone
+        import time
+        import datetime
+
+        for i in range(0, period):
+            schedule = rental_start_date + datetime.timedelta(days=i)
+            schedule_timestamp = time.mktime(schedule.timetuple())
+            schedule_list.append(schedule_timestamp)
+
+        payload = {
+            'customer_uid': customer_uid,
+            'schedules': [
+            ]
+        }
+        payload = {
+            'customer_uid': customer_uid,
+            'merchant_uid': 'test_merchant_01',
+        }
+        print('payload', payload)
+        try:
+            response = iamport.pay_unschedule(**payload)
+            print('response', response)
+            # 예약 성공 시
+            order_obj.status = 'cancel'
+            order_obj.save()
+
+            return redirect('carts:success')
+        except KeyError:
+            # 필수 값이 없을때 에러 처리
+            print('response', response)
+            messages.success(request, '필수 값이 없을때 에러 처리')
+            return redirect('carts:fail')
+        except Iamport.ResponseError as e:
+            # 응답 에러 처리
+            print('response', response)
+            messages.success(request, '응답 에러 처리')
+            return redirect('carts:fail')
+        except Iamport.HttpError as http_error:
+            # HTTP not 200 응답 에러 처리
+            print('response', response)
+            messages.success(request, 'HTTP not 200 응답 에러 처리')
+            return redirect('carts:fail')

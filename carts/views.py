@@ -1,7 +1,7 @@
 import requests
 import json
 import pandas as pd
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -9,7 +9,7 @@ from django.http import Http404
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.core.mail import send_mail
 from django.template.loader import get_template
 
@@ -125,8 +125,30 @@ def cart_home(request):
     print('카트홈에 있는 cart_obj',cart_obj, cart_obj.total, cart_obj.subtotal)
     return render(request, "carts/home.html", {'cart':cart_obj})
 
+
+# def select_purchase_way(request):
+#     print('★★★★★★★리퀘스트 포스트 프린트')
+#     print(request.POST)
+#     if request.method == 'POST':
+#         product_item_id = request.POST.get('product_item_id', None)
+#         product_item_obj = ProductItem.objects.get(id=product_item_id)
+#         action = request.POST.get('action', None)
+#         if action == '장바구니 담기':
+#             print("장바구니 담기 실행")
+#             cart_update(request)
+#             return redirect('carts:home')
+#         elif action == '바로구매':
+#             print("바로구매 실행")
+#             checkout_iamport_now(request)
+#             return redirect('carts:checkout_iamport_now')
+#     else:
+#         pass
+#     return redirect('products:product_detail', slug=product_item_obj.slug)
+
+
 @login_required
 def cart_update(request):
+    
     '''
     원래 강의에서는 물품의 갯수도 상관없고 그냥 바로 제거하는 것으로 되어있음.
     카트에서 다시누를때만 remove 되게하고 나머지 위치에서는 무조건 추가만하게 하는것으로 하는게 나을 것 같다.
@@ -168,7 +190,7 @@ def cart_update(request):
     2. bidding
     - 그냥 바로 filter 없으면 바로 get
     '''
-
+ 
     try:
         at_cart = request.POST.get('at_cart')
         only_add = False
@@ -294,7 +316,121 @@ def cart_update(request):
                 # return JsonResponse({"message":"Error 400"}, status_code=400) # django rest framework
 
         return redirect("carts:home")
+        # return HttpResponseRedirect("carts:home")
 
+
+def checkout_iamport_now(request):
+    '''
+    바로구매
+
+    1. normal, bidding 
+    - 그냥 있는그대로 카트에 있는거 구매.
+    - rental 지우기
+
+    2. rental
+    - rental 빼고 다지우기.
+    - 왜냐면 rental은 한가지 항목에 대해 기간도 넣어서 구매해야하기 때문에.
+
+    '''
+
+    print("체크아웃나웃 실행")
+    product_type = request.POST.get('product_type')
+
+    
+    # 2. 물품추가 혹은 티켓구매인경우
+    product_item_id = request.POST.get('product_item_id', None) # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
+    option = request.POST.get('option', None)
+    tickets_type = request.POST.get('tickets_type', None)
+    
+    if product_type == 'bidding' or product_type == 'normal' or product_type == 'rental':
+        # product_item_id = request.POST.get('product_item_id') # POST가 안먹힐수도 있다. 그렇게 되면 함수의 parameter에 product넣자. 
+        # option = request.POST.get('option', None)
+        product_item_obj = ProductItem.objects.get(id=product_item_id)
+
+        # ticket_item_id = None
+        
+    elif product_type == 'ticket':
+        # tickets_type = request.POST.get('tickets_type')
+        # ticket_item_obj = TicketItem.objects.get(id=ticket_item_id)
+        ticket_item_obj = TicketItem.objects.new(user=user, tickets_type=tickets_type)
+        ticket_item_id = ticket_item_obj.id
+        
+        ticket_item_obj.save()
+
+        # product_item_id = None
+    else:
+        raise Http404("직원님...해당물품의 아이디가 이상합니다.") 
+
+
+    # 추가수량에 대해 POST로 오면 업뎃
+    # 이부분이 product_type으로 if문을 추가로 안에 넣을지는 고민 필요.
+    if product_type == "bidding":
+        amount = 1 # 경매상품일때
+    elif product_type == "normal" or product_type == "rental" :
+        amount = request.POST.get('amount') # 상시상품일때
+        if amount == '' or amount == '---' or amount == '재고없음':
+            print("사이즈와 수량이 입력되지 않았다.")
+            # return 
+            messages.error(request, "사이즈와 구매수량을 넣어주세요.")
+            return redirect('products:product_detail', slug=product_item_obj.slug)
+    elif product_type == 'ticket':
+        amount = 1
+
+    if product_item_id is not None or ticket_item_id is not None:
+        if product_item_id is not None:
+            temp_id = product_item_id
+        elif ticket_item_id is not None:
+            temp_id = ticket_item_id
+
+        # 렌탈물품이면 cart 무조건 새로 만들어라.
+        if product_type == 'rental':
+            del request.session['cart_id']
+            cart_obj, new_obj = Cart.objects.new_or_get(request)
+        # 렌탈물품이 아니면 렌탈물품이 기존에 있는것을 다 지워라. (헷갈리쟈나.)
+        else:
+            cart_obj, new_obj = Cart.objects.new_or_get(request)
+            for cart_item_obj in cart_obj.cart_items.all():
+                if cart_item_obj.product_type == 'rental':
+                    cart_item_obj.delete()
+        print('체크아웃 아임포트 나우에서 뉴올겟 직전열 395')
+        cart_item_obj, new_item_obj = CartItem.objects.new_or_get(request, temp_id)
+        
+        
+        # 2. 그냥 추가 혹은 수량조정인경우
+        # m2m Change가 적용되려면 cart_item의 수량과 단가가 확정되어야함.
+        
+        # 단가확정
+        if product_type == "bidding":
+            price = Bidding.objects.get(user=user, product_item=cart_item_obj.product_item, win=True).bidding_price
+        elif product_type == "normal":
+            price = product_item_obj.price
+        elif product_type == "ticket":
+            price = ticket_item_obj.total
+        elif product_type == 'rental':
+            price = product_item_obj.price
+
+        cart_item_obj.price = price
+        cart_item_obj.amount = amount
+        cart_item_obj.save()
+
+        if cart_item_obj in cart_obj.cart_items.all():# and only_add:
+            # m2mchange가 안되서 그냥 지웠다가 다시 추가함.
+            cart_obj.cart_items.remove(cart_item_obj)
+            cart_obj.cart_items.add(cart_item_obj)
+            added = False
+            cart_obj.save()
+        # 처음 추가되는 cart_item일경우
+        else:
+            cart_obj.cart_items.add(cart_item_obj)
+            added = True
+            cart_obj.save()
+            
+        # 그냥 나중에 쓸수도 있는 json이기에 남겨둠.
+        request.session['cart_items'] = cart_obj.cart_items.count()
+        request.session['checkout_iamport_now'] = True
+    # return True
+    print("리다이렉트 넘어간다.", cart_item_obj.id)
+    return redirect("carts:checkout-iamport")
 
 @login_required
 def checkout_done_view(request):
@@ -312,7 +448,7 @@ def checkout_vbank_view(request):
 #############아임포트로 체크아웃 재구현###################
 
 @login_required
-def checkout_iamport(request):
+def checkout_iamport(request, *args, **kwargs):
     '''
     크게 보면 체크아웃절차는 아래와 같이 이루어짐
     1. 카트 만듬.
@@ -328,13 +464,33 @@ def checkout_iamport(request):
     그럼 진행해보자. 
 
     '''
-    # 카카오톡 메시지 전송 테스트
-    # text = "Hello, This is KaKao Message Test!!"
 
-    # print(sendToMeMessage(text).text)
-    # dd()
+    # 바로구매인지 확인을 위함.
+    # try:
+    #     checkout_iamport_now(request)
+    # except:
+    #     pass
+
+    # 바로구매시 checkoutnow에서 옴
+    checkout_directly = request.session.get('checkout_iamport_now', None)
+    # 바로 구매 세션 삭제
+    if checkout_directly is not None:
+        del request.session['checkout_iamport_now']
+    #############################################################################
+    # 지금 상황.
+    # 체크아웃 다이렉틀리 때문에 첫화면 로드로 자꾸간다. 
+    # 체크아웃다이렉틀리는 1회성이어야한다. 
+    # 그래서 아무래도 세션을 삭제를 해주긴해야할듯. 
+    # 단 어드레스수정. 포인트 어쩌구등에서는 다시 만들어주고
+    # 결제가 직접적으로 될때는 안만들어주자.
+    # 그래야 넘어가든 말든할듯하다. 
+    # 졸리다. 
+    ############################################################################
+
 
     # 1. 카트만들기.(없으면 만들고 있으면 있는거 갖겨오고 재고 없는것 체크, 없으면 지우기)
+
+    
     user = request.user
     cart_obj, cart_created = Cart.objects.new_or_get(request)
     order_obj = None
@@ -420,7 +576,7 @@ def checkout_iamport(request):
     point_available = None
     order_normal_total = 0
     for cart_item in order_obj.cart.cart_items.all():
-        if cart_item.product_type == 'normal':
+        if cart_item.product_type == 'normal' or cart_item.product_type == 'rental' :
             order_normal_total = order_normal_total + cart_item.subtotal
     point_available = round(order_normal_total * 1, -2)
     if point_available >= user.points:
@@ -472,7 +628,7 @@ def checkout_iamport(request):
         delivery_count = 0
         combined_delevery_exist = False
         for cart_item in cart_obj.cart_items.all():
-            if cart_item.product_type == 'normal' or cart_item.product_type == 'bidding':
+            if cart_item.product_type == 'normal' or cart_item.product_type == 'bidding' or cart_item.product_type == 'rental':
                 if not cart_item.product_item.product.combined_delivery:
                     delivery_count += 1
                 else:
@@ -537,11 +693,21 @@ def checkout_iamport(request):
     # 아임포트 토큰 가져오기
     
 
-    
-    if request.method == 'POST' and not post_purpose and not request.is_ajax():
-        print('context', context)
-        return render(request, "carts/checkout-iamport.html", context)
-    
+    # 원래위치 여기 하지만 맨마지막으로 최초화면 로딩을 옮긴다.################################################
+    # if request.method == 'POST' and not post_purpose and not request.is_ajax() or checkout_directly:
+    #     print('체크아웃 최초화면 로딩')
+    #     print('context', context)
+
+    #     # 바로구매의 get으로 인한 http404 방지용
+    #     # 결제가 됐을때는 아래의 session이 없어져도 상관없다. 
+    #     # 하지만 결제가 안됐을때 checkout_iamport는 get으로 오게되어 모바일결제로 넘어오게 된다. 
+    #     # 이것을 방지하기 위해 아래와 같이 다시 session을 만들어 첫화면이 보이게 해준다.
+    #     request.session['checkout_iamport_now'] = True
+    #     return render(request, "carts/checkout-iamport.html", context)
+    # 원래위치 여기 하지만 맨마지막으로 최초화면 로딩을 옮긴다.################################################
+
+
+
     # 4. POST 이후의 화면 구성
     #   1) 주소 수정 눌렀을 때
     #   2) 포인트사용 눌렀을 떄
@@ -684,6 +850,14 @@ def checkout_iamport(request):
             }
         return render(request, "carts/checkout-iamport.html", context)
     elif request.method == 'POST' and post_purpose == 'modify_address':
+        print('체크아웃 주소수정화면 로딩')
+
+        # 바로구매의 get으로 인한 http404 방지용
+        # 결제가 됐을때는 아래의 session이 없어져도 상관없다. 
+        # 하지만 결제가 안됐을때 checkout_iamport는 get으로 오게되어 모바일결제로 넘어오게 된다. 
+        # 이것을 방지하기 위해 아래와 같이 다시 session을 만들어 첫화면이 보이게 해준다.
+        request.session['checkout_iamport_now'] = True
+        
         # address_changed = False
         # point_changed = False
         context = {
@@ -716,6 +890,13 @@ def checkout_iamport(request):
     
     # 2) 포인트사용 버튼 눌렀을 때
     elif request.method == 'POST' and post_purpose == 'use_point':
+        print('체크아웃 포인트사용적용')
+
+        # 바로구매의 get으로 인한 http404 방지용
+        # 결제가 됐을때는 아래의 session이 없어져도 상관없다. 
+        # 하지만 결제가 안됐을때 checkout_iamport는 get으로 오게되어 모바일결제로 넘어오게 된다. 
+        # 이것을 방지하기 위해 아래와 같이 다시 session을 만들어 첫화면이 보이게 해준다.
+        request.session['checkout_iamport_now'] = True
 
         use_point = request.POST.get('use_point')
         print('usepoint.', use_point)
@@ -762,6 +943,7 @@ def checkout_iamport(request):
         
     # 3) 결재할 금액이 포인트로 다 대체 되었을 경우
     elif request.method == 'POST' and post_purpose == 'checkout_0':
+        print('체크아웃 포인트로 전체결제')
         order_obj.mark_paid()
         request.session['cart_items'] = 0
         del request.session['cart_id']
@@ -826,6 +1008,7 @@ def checkout_iamport(request):
         
         # 4) 마지막으로 결재버튼이 눌렸을 경우
     elif request.method == 'POST' and request.is_ajax():
+        print('체크아웃 일반결제 모듈 후 ajax 요청.')
         imp_uid = request.POST.get('imp_uid', None)
         # customer_uid = request.POST.get('customer_uid', None)
         # merchant_uid = request.POST.get('merchant_uid', None)
@@ -858,6 +1041,7 @@ def checkout_iamport(request):
                 order_obj.mark_paid()
                 request.session['cart_items'] = 0
                 del request.session['cart_id']
+                
                 
                 # 사용포인트 차감
                 if order_obj.point_total > 0:
@@ -914,6 +1098,7 @@ def checkout_iamport(request):
             return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json") 
     
     elif request.method == 'POST' and post_purpose == 'simple_checkout':
+        print('체크아웃 간편결제')
         imp_uid = request.POST.get('imp_uid', None)
         customer_uid = request.POST.get('customer_uid', None)
         merchant_uid = request.POST.get('merchant_uid', None)
@@ -946,6 +1131,7 @@ def checkout_iamport(request):
                 order_obj.mark_paid()
                 request.session['cart_items'] = 0
                 del request.session['cart_id']
+                
                 
                 # 사용포인트 차감
                 if order_obj.point_total > 0:
@@ -999,6 +1185,167 @@ def checkout_iamport(request):
             print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
             return redirect('carts:home')
     
+
+    # ★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★★여기완성시켜야해.
+    # 렌탈 물품일경우.(렌탈은 무조건 예약결제이므로 카드등록이 되어있어야함.)
+    elif request.method == 'POST' and post_purpose == 'rental':
+        print('체크아웃 렌탈 결제예약 설정')
+        imp_uid = request.POST.get('imp_uid', None)
+        customer_uid = request.POST.get('customer_uid', None)
+        merchant_uid = request.POST.get('merchant_uid', None)
+        amount = request.POST.get('amount', None)
+        name = request.POST.get('name', None)
+
+        rental_start_date = order_obj.cart.cart_items.first().rental_start_date
+        period = order_obj.cart.cart_items.first().period
+        schedule_list = []
+
+
+        from django.utils import timezone
+        import time
+        import datetime
+
+        for i in range(0, period):
+            schedule = rental_start_date + datetime.timedelta(days=i)
+            schedule_timestamp = time.mktime(schedule.timetuple())
+            schedule_list.append(schedule_timestamp)
+
+        payload = {
+            'customer_uid': customer_uid,
+            'schedules': [
+            ]
+        }
+
+        for schedule in schedule_list:
+            schedule_dict = {
+                'merchant_uid': merchant_uid,
+                # UNIX timestamp
+                'schedule_at': schedule,
+                'amount': order_obj.checkout_total,
+                'name': order_obj.cart_items_name,
+                'buyer_name': order_obj.shipping_address.full_name,
+                'buyer_email': order_obj.shipping_address.email,
+                'buyer_tel': order_obj.shipping_address.phone_number,
+                'buyer_addr': order_obj.shipping_address.get_address(),
+                'buyer_postcode': order_obj.shipping_address.postal_code,
+                }
+            payload['schedules'].append(schedule_dict)
+
+        print('payload', payload)
+
+        # response = iamport.pay_schedule(**payload)
+        # print('response', response)
+        try:
+            response = iamport.pay_schedule(**payload)
+            print('response', response)
+            
+            # 예약 성공 시
+            order_obj.is_rental = True
+            order_obj.save()
+
+            order_address_obj = OrderAddress.objects.create(
+                    user=user,
+                    email=order_obj.shipping_address.email,
+                    phone_number=order_obj.shipping_address.phone_number,
+                    full_name=order_obj.shipping_address.full_name,
+                    address_line_1=order_obj.shipping_address.address_line_1,
+                    address_line_2=order_obj.shipping_address.address_line_2,
+                    postal_code=order_obj.shipping_address.postal_code,   
+                )
+            order_obj.final_address = order_address_obj
+            order_obj.save()
+            charge_obj = Charge.objects.new(order=order_obj, response=response)
+
+            return redirect('carts:success')
+        except KeyError:
+            # 필수 값이 없을때 에러 처리
+            print('response', response)
+            messages.success(request, '필수 값이 없을때 에러 처리')
+            return redirect('carts:fail')
+        except Iamport.ResponseError as e:
+            # 응답 에러 처리
+            print('response', response)
+            messages.success(request, '응답 에러 처리')
+            return redirect('carts:fail')
+        except Iamport.HttpError as http_error:
+            # HTTP not 200 응답 에러 처리
+            print('response', response)
+            messages.success(request, 'HTTP not 200 응답 에러 처리')
+            return redirect('carts:fail')
+
+#         if is_paid:
+#             # DB에 결제 정보 저장
+#             # await Orders.findByIdAndUpdate(merchant_uid, { $set: paymentData}); // DB에
+#             # if status == 'ready':
+#             #     # DB에 가상계좌 발급정보 저장
+#             #     print("결재 상태 : ready, vbankIssued")
+#             #     return HttpResponse(json.dumps({'status': "vbankIssued", 'message': "가상계좌 발급 성공"}),
+#             #                         content_type="application/json")
+#             if status=='paid':
+#                 print("결재 상태 : paid, success")
+
+#                 order_obj.mark_paid()
+#                 request.session['cart_items'] = 0
+#                 del request.session['cart_id']
+                
+#                 # 사용포인트 차감
+#                 if order_obj.point_total > 0:
+#                     point_use = (-1) * order_obj.point_total
+#                     point_details = "주문번호 {} 구매를 위한 포인트 {} 사용".format(order_obj, point_use)
+#                     point_obj = Point.objects.new(user=user, amount=point_use, details=point_details)
+
+
+#                 # 재고 있는것들에 대해서 아래와 같이 구매한다.
+#                 for cart_item_obj in cart_obj.cart_items.all():
+#                     if cart_item_obj.product_type == 'normal':
+#                         if cart_item_obj.option is not None:
+#                             option_obj = SizeOption.objects.get(product_item=cart_item_obj.product_item, option=cart_item_obj.option)
+#                             option_obj.amount = option_obj.amount - cart_item_obj.amount
+#                             option_obj.save()
+#                             print('{}의 {}옵션이 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, option_obj.option, option_obj.amount))                 
+#                         else:
+#                             cart_item_obj.product_item.amount = cart_item_obj.product_item.amount - cart_item_obj.amount
+#                             cart_item_obj.product_item.save()
+#                             print('{}가 checkout 되었습니다. 현재고는 {}개입니다.'.format(cart_item_obj.product_item.product.title, cart_item_obj.product_item.amount))
+                
+#                 # 최종 주소 저장 및 charge 만들기
+#                 order_address_obj = OrderAddress.objects.create(
+#                     user=user,
+#                     email=order_obj.shipping_address.email,
+#                     phone_number=order_obj.shipping_address.phone_number,
+#                     full_name=order_obj.shipping_address.full_name,
+#                     address_line_1=order_obj.shipping_address.address_line_1,
+#                     address_line_2=order_obj.shipping_address.address_line_2,
+#                     postal_code=order_obj.shipping_address.postal_code,   
+#                 )
+#                 order_obj.final_address = order_address_obj
+#                 order_obj.cart_items_name = cart_items_name
+#                 order_obj.save()
+#                 charge_obj = Charge.objects.new(order=order_obj, response=response)
+#                 # print(response)
+#                 order_complete_mail(user.email, order_obj)
+#                 alimtalk_message = '''{user}님이 구매하신 상품의 결제가 완료되었습니다.
+
+# 물품: {cart_items_name}
+# 총 금액: {checkout_total}
+# '''.format(user=user, cart_items_name=cart_items_name_iamport, checkout_total=order_obj.checkout_total)
+#                 send(templateCode='alim3', to=user.phone_number, message=alimtalk_message)
+#                 print("{}으로 결제완료 알림톡이 보내졌습니다.".format(user.phone_number))
+#                 return redirect('carts:success')
+#             else:
+#                 print("결재 상태 : 결제가 실패하였습니다.")
+#                 return redirect('carts:home')
+#                 # return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+#         else:
+#             print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
+#             return redirect('carts:home')
+####################################################################################################################
+
+
+
+
+
+
 
 
         # print('Ajax requested', post_purpose)
@@ -1090,7 +1437,8 @@ def checkout_iamport(request):
         #     return HttpResponse(json.dumps({'status': "forgery", 'message': "위조된 결제시도"}), content_type="application/json") 
     
     # 모바일 checkout suceess 후 redirectino 일때...
-    elif request.method == 'GET':
+    elif request.method == 'GET' and not checkout_directly :
+        print('체크아웃 모바일결제 로딩')
         imp_uid = request.GET.get('imp_uid', None)
         response = iamport.find(imp_uid=imp_uid)
         merchant_uid = response['merchant_uid']
@@ -1154,7 +1502,7 @@ def checkout_iamport(request):
                 order_obj.mark_paid()
                 request.session['cart_items'] = 0
                 del request.session['cart_id']
-                
+
                 # 사용포인트 차감
                 if order_obj.point_total > 0:
                     point_use = (-1) * order_obj.point_total
@@ -1204,7 +1552,16 @@ def checkout_iamport(request):
             print("결재 상태 : forgery, 결재금액과 상품금액이 다릅니다.")
             return redirect('carts:fail')
 
+    elif request.method == 'POST' and not post_purpose and not request.is_ajax() or checkout_directly:
+        print('체크아웃 최초화면 로딩')
+        print('context', context)
 
+        # 바로구매의 get으로 인한 http404 방지용
+        # 결제가 됐을때는 아래의 session이 없어져도 상관없다. 
+        # 하지만 결제가 안됐을때 checkout_iamport는 get으로 오게되어 모바일결제로 넘어오게 된다. 
+        # 이것을 방지하기 위해 아래와 같이 다시 session을 만들어 첫화면이 보이게 해준다.
+        request.session['checkout_iamport_now'] = True
+        return render(request, "carts/checkout-iamport.html", context)
 
 # billing_profile = models.ForeignKey(BillingProfile, on_delete=models.CASCADE)
 # email           = models.EmailField(max_length=255, unique=True)

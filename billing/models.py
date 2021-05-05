@@ -191,6 +191,15 @@ class ChargeManager(models.Manager):
         # local_tz = pytz.timezone("Asia/Seoul") 
         # utc_dt = datetime.utcfromtimestamp(timestamp).replace(tzinfo=pytz.utc)
         # local_dt = local_tz.normalize(utc_dt.astimezone(local_tz))
+        try:
+            pg_tid = response['pg_tid']
+            receipt_url = response['receipt_url']
+            status = response['status']
+        except:
+            response = response[0]
+            response['pg_tid'] = None
+            response['receipt_url'] = None
+            response['status'] = None
         new_charge_obj = self.model(
             order=order,
             paid=True,
@@ -224,7 +233,7 @@ class Charge(models.Model):
     # timestamp       = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
-        return self.imp_uid
+        return self.merchant_uid
 
     objects = ChargeManager()
 

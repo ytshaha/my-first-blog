@@ -204,6 +204,7 @@ a.wish-link-added {
                     <div class='col-12'>
                         <p style='font-size:large;font-weight:bold;'>카테고리</p>
                     </div>
+                    {% if product_type == 'normal' %}
                     <div class='col-12'>
                         <a class="dropdown-item" href="{% url 'products:product_list' %}" style='font-size:small;'>전체</a>
                         <hr>
@@ -226,6 +227,30 @@ a.wish-link-added {
                     <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
                         <a class="dropdown-item" href="{% url 'products:product_list' category='bag' %}" style='font-size:small;'>가방</a>
                     </div>
+                    {% elif product_type == 'rental' %}
+                    <div class='col-12'>
+                        <a class="dropdown-item" href="{% url 'products:product_rental_list' %}" style='font-size:small;'>전체</a>
+                        <hr>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_rental_list' category='woman' %}" style='font-size:small;'>여성의류</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_rental_list' category='men' %}" style='font-size:small;'>남성의류</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_rental_list' category='shoes' %}" style='font-size:small;'>슈즈</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_rental_list' category='acc' %}" style='font-size:small;'>ACC</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_rental_list' category='kid' %}" style='font-size:small;'>키즈</a>
+                    </div>
+                    <div class='col-6 col-lg-3 col-md-4 col-sm-4'>
+                        <a class="dropdown-item" href="{% url 'products:product_rental_list' category='bag' %}" style='font-size:small;'>가방</a>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -365,6 +390,8 @@ a.wish-link-added {
         <div class="col-12 ml-auto mr-auto">
             {% if is_staff_check %}
             <h2 class="index-title-index text-center">STAFF PRODUCT CHECK LIST</h2>
+            {% elif is_rental %}
+            <h2 class="index-title-index text-center">PRODUCT RENTAL LIST</h2>
             {% else %}
             <h2 class="index-title-index text-center">PRODUCT LIST</h2>
             {% endif %}

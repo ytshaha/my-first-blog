@@ -520,5 +520,11 @@ def get_register_ticket_excel(request):
     return render(request, 'accounts/get_register_ticket_excel.html', {})
 
 
-
-
+def deactive_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user_obj = User.objects.get(username=user)
+        user_obj.is_active = False
+        user_obj.save()
+        return redirect('logout')
+    return render(request, 'accounts/deactive.html', {})
