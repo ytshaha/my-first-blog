@@ -19,12 +19,20 @@
 <hr/>
 
 
+
 <!-- 새로ㅓ운 -->
 <div class='container my-2 py-2'>
-    <div class='row' >
-      <div class='col-lg-8 col-md-8 col-sm-12 mx-auto'>
-        <!-- 아이템들 -->
-        {% for object in object_list %}
+  <div class='row' >
+    <div class='col-lg-8 col-md-8 col-sm-12 mx-auto'>
+      <!-- 아이템들 -->
+      {% for object in object_list %}
+      <div class='row' style='margin-left: 0px;'>
+        <!-- 아이템수 -->
+        
+        <div class='col text-left pl-0'>
+          {% if object.status == 'cancel' %}
+        <p class='pt-3'><span style='font-size:large;font-weight:bold;color:blue'>렌탈취소</span>
+        {% else %}
         <div class='row' style='margin-left: 0px;'>
             <form method='post' action="{% url 'orders:cancel_rental' %}">
                 {% csrf_token %}
@@ -33,116 +41,120 @@
                 <input type="hidden" name="next" value="{{ request.path }}">
                 <p class='pt-3'><span style='font-size:large;font-weight:bold;color:blue'>렌탈 중  </span><button type='submit' class='btn btn-outline-dark btn-sm'>취소신청</button></p>
             </form>
-          </div>
-          <!-- 아이템수 -->
-          <div class='col text-right'>
-            <p class='mb-1' style='font-size:small;'><span>{{ object.timestamp|date:'Y-m-d' }}</span></p>
-          </div>
-          <div class='col-12 pl-0'>
-            <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
-          </div>
-          <div>
-          {% for cart_item in object.cart.cart_items.all %}
-          <div class='row mb-3' style='width:100%;'>
-            <div class='col-3'>
-              <!-- 이미지 -->
-              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
-              <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
-              <a href="{{ cart_item.product_item.get_absolute_url }}"><img src="{{ cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'></a>   
-              {% elif cart_item.product_type == 'ticket' %}
-              <p class='text-center align-middle' style='font-size:1.5em; color:#423f3b;margin-top:30px;'>
-                <i class="fas fa-ticket-alt fa-5x"></i>
-              </p>
-              {% endif %}
-            </div>
-            <div class='col'>
-              <!-- 물품명 -->
-              {% if cart_item.product_type == 'ticket' %}
-                <p class='mb-1' style='font-size:medium;font-weight:bold;'>경매티켓 {{ cart_item.ticket_item.tickets_type }}개</p>
-              {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
-                <p class='mb-1' style='font-size:medium;font-weight:bold;'>{% if cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ cart_item.product_item.product.title }}</p>
-              {% else %}
-                <p class='mb-1' style='font-size:medium;font-weight:bold;'>물품명잘못지정됨</p>
-              {% endif %}
-
-              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
-                <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.product_item.product.list_price|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
-              {% elif cart_item.product_type == 'ticket' %}
-                <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.ticket_item.subtotal|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
-              {% endif %}
-              
-              {% if cart_item.add_certificate %}
-                <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.total|intcomma }} 원</span><span style='color:gray;'><small> 정품보증서(+20,000 원)</small></span>
-                <p class='mb-2' style='font-size:small;'>정품보증서 : 포함</p>
-              {% endif %}
-              
-              {% if cart_item.product_item.option %}
-                <p class='mb-1' style='font-size:small;'>옵션: {{ cart_item.option|floatformat:"0" }}</p>
-              {% else %}
-                <p class='mb-1' style='font-size:small;'>옵션: 없음</p>
-              {% endif %}
-              
-              {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
-                <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
-                <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
-              {% endif %}
-
-              <p class='mb-2' style='font-size:small;'>수량 : {{ cart_item.amount }} 개</p>
-
-
-            </div>
-          </div>
-          {% if not forloop.last  %}
-          <div class='col-12 pl-0 pr-3'>
-            <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
-          </div>
-          {% else %}
-          <div class='col-12 pl-0 pr-3'>
-            <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
-          </div>
-          {% endif %}
-          {% endfor %}
         </div>
+        {% endif %}
+        </div>
+        <div class='col text-right'>
+          <p class='mb-1' style='font-size:small;'><span>{{ object.timestamp|date:'Y-m-d' }}</span></p>
+        </div>
+        <div class='col-12 pl-0'>
+          <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+        </div>
+        
+        {% for cart_item in object.cart.cart_items.all %}
+        <div class='row mb-3' style='width:100%;'>
+          <div class='col-3'>
+            <!-- 이미지 -->
+            {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
+            <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
+            <a href="{{ cart_item.product_item.get_absolute_url }}"><img src="{{ cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'></a>   
+            {% elif cart_item.product_type == 'ticket' %}
+            <p class='text-center align-middle' style='font-size:1.5em; color:#423f3b;margin-top:30px;'>
+              <i class="fas fa-ticket-alt fa-5x"></i>
+            </p>
+            {% endif %}
+          </div>
+          <div class='col'>
+            <!-- 물품명 -->
+            {% if cart_item.product_type == 'ticket' %}
+              <p class='mb-1' style='font-size:medium;font-weight:bold;'>경매티켓 {{ cart_item.ticket_item.tickets_type }}개</p>
+            {% elif cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
+              <p class='mb-1' style='font-size:medium;font-weight:bold;'>{% if cart_item.product_item.product_type == 'bidding' %}<span style='color:orange;font-weight:bold;'>[경매]</span>{% endif %}{{ cart_item.product_item.product.title }}</p>
+            {% else %}
+              <p class='mb-1' style='font-size:medium;font-weight:bold;'>물품명잘못지정됨</p>
+            {% endif %}
+
+            {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
+              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.product_item.product.list_price|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
+            {% elif cart_item.product_type == 'ticket' %}
+              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.subtotal|intcomma }} 원</span><span style='color:gray;'><small><del> {{ cart_item.ticket_item.subtotal|intcomma }} 원</del></small></span><span style='font-weight:bold;color:red;'><small> {{ cart_item.sale_ratio|floatformat:"0"  }} %</small></span></p>
+            {% endif %}
+            
+            {% if cart_item.add_certificate %}
+              <p class='mb-1' style='font-size:medium;'><span style='font-weight:bold;'>{{ cart_item.total|intcomma }} 원</span><span style='color:gray;'><small> 정품보증서(+20,000 원)</small></span>
+              <p class='mb-2' style='font-size:small;'>정품보증서 : 포함</p>
+            {% endif %}
+            
+            {% if cart_item.product_item.option %}
+              <p class='mb-1' style='font-size:small;'>옵션: {{ cart_item.option|floatformat:"0" }}</p>
+            {% else %}
+              <p class='mb-1' style='font-size:small;'>옵션: 없음</p>
+            {% endif %}
+            
+            {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
+              <p class='mb-1' style='font-size:small;'>모델번호: {{ cart_item.product_item.product.info_product_number }}</p>
+              <p class='mb-1' style='font-size:small;'>배송: {{ cart_item.product_item.get_info_delivery_from_display }}</p>
+            {% endif %}
+
+            <p class='mb-2' style='font-size:small;'>수량 : {{ cart_item.amount }} 개</p>
+
+
+          </div>
+        </div>
+        {% if not forloop.last  %}
+        <div class='col-12 pl-0 pr-3'>
+          <hr class='mt-0' style='border-top:2px dotted #423f3b;'>
+        </div>
+        {% else %}
+        <div class='col-12 pl-0 pr-3'>
+          <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
+        </div>
+        {% endif %}
         {% endfor %}
       </div>
+      {% endfor %}
+    </div>
+  </div>
 </div>
 <div class='row'>
-    <div class='col-12'>
-        <nav aria-label="...">
-            <ul class="pagination justify-content-center">
-                {% if page_obj.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" style='color:black'>PREVIOUS</a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">PREVIOUS</a>
-                    </li>
-                {% endif %}
-                
-                {% for i in page_obj.paginator.page_range %}
-                {% if page_obj.number == i %}
-                <li class="page-item active">
-                    <a class="page-link" href="#" style='border-color:black;background-color:black'>{{ i }} <span class="sr-only">(current)</span></a>
-                </li>
-                {% else %}
-                <li class="page-item"><a class="page-link" href="?page={{ i }}" style='color:black'>{{ i }}</a></li>
-                {% endif %}
-                {% endfor %}
+  <div class='col-12'>
+      <nav aria-label="...">
+          <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+                  <li class="page-item">
+                      <a class="page-link" href="?page={{ page_obj.previous_page_number }}" tabindex="-1" style='color:black'>PREVIOUS</a>
+                  </li>
+              {% else %}
+                  <li class="page-item disabled">
+                      <a class="page-link" href="#" tabindex="-1">PREVIOUS</a>
+                  </li>
+              {% endif %}
+              
+              {% for i in page_obj.paginator.page_range %}
+              {% if page_obj.number == i %}
+              <li class="page-item active">
+                  <a class="page-link" href="#" style='border-color:black;background-color:black'>{{ i }} <span class="sr-only">(current)</span></a>
+              </li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}" style='color:black'>{{ i }}</a></li>
+              {% endif %}
+              {% endfor %}
 
-                {% if page_obj.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" tabindex="-1" style='color:black'>NEXT</a>
-                    </li>
-                {% else %}
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#">NEXT</a>
-                    </li>
-                {% endif %}
-            </ul>
-          </nav>
-    </div>
+              {% if page_obj.has_next %}
+                  <li class="page-item">
+                      <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" tabindex="-1" style='color:black'>NEXT</a>
+                  </li>
+              {% else %}
+                  <li class="page-item disabled">
+                      <a class="page-link" href="#">NEXT</a>
+                  </li>
+              {% endif %}
+          </ul>
+        </nav>
+  </div>
 </div>
+
+
 
 
 <div class='container' style="padding-top:20px;">
