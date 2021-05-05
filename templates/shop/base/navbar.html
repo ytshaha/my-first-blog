@@ -215,6 +215,9 @@
           </div>
         </li> -->
         {% if user.is_authenticated %}
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="{% url 'products:product_rental_list' %}">RENTAL</a>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="{{ cart_url }}"><span class='navbar-cart-count'>{{ request.session.cart_items }}</span> <i class="fas fa-cart-plus"></i></a> 
         </li>
