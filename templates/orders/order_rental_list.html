@@ -37,12 +37,11 @@
           <!-- 아이템수 -->
           <div class='col text-right'>
             <p class='mb-1' style='font-size:small;'><span>{{ object.timestamp|date:'Y-m-d' }}</span></p>
-            <a href="{{ object.get_absolute_url }}" style='color:black;'><input class='btn btn-outline-dark btn-sm' type="button" name='post_purpose' value='상세보기'></a>
           </div>
           <div class='col-12 pl-0'>
             <hr class='mt-0' style='border-top:2px solid #423f3b;height:5px;box-shadow: 0 10px 5px -10px #8c8c8c inset;'>
           </div>
-          
+          <div>
           {% for cart_item in object.cart.cart_items.all %}
           <div class='row mb-3' style='width:100%;'>
             <div class='col-3'>
@@ -106,7 +105,6 @@
         </div>
         {% endfor %}
       </div>
-    </div>
 </div>
 <div class='row'>
     <div class='col-12'>
