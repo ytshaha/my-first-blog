@@ -4,6 +4,8 @@ import os
 from decimal import Decimal
 import datetime
 import pytz
+import string
+
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
@@ -47,6 +49,33 @@ def get_filename_ext(filepath):
     name, ext = os.path.splitext(filepath)
     return name, ext
 
+# def unique_slug_generator(instance, new_slug=None):
+#     """
+#     This is for a Django project and it assumes your instance 
+#     has a model with a slug field and a title character (char) field.
+#     """
+#     if new_slug is not None:
+#         slug = new_slug
+#     else:
+#         # slug = slugify(instance.title) #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
+#         title = instance.number
+#         title = title.replace(" ", "_")
+#         slug = title #원래 instance.title 이었는데 바꿈.. 그러고 보니 product는 뭔가 겹치는느낌이라 바꿔줘야할듯.
+        
+#     print(instance.title)
+#     Klass = instance.__class__
+#     qs_exists = Klass.objects.filter(slug=slug).exists()
+#     if qs_exists:
+#         new_slug = "{slug}-{randstr}".format(
+#                     slug=slug,
+#                     randstr=random_string_generator(size=4)
+#                 )
+#         return unique_slug_generator(instance, new_slug=new_slug)
+#     print(slug)
+#     return slug
+
+def random_string_generator(size=10, chars=string.ascii_lowercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 def upload_main_image_path(instance, filename):
     print("내가 실행된다.models.py의 업로드 메인이미지")
@@ -56,8 +85,8 @@ def upload_main_image_path(instance, filename):
     # final_filename = '{new_filename}{ext}'.format(new_filename=new_filename, ext=ext)
     # return "products/{new_filename}/{final_filename}".format(new_filename=new_filename, final_filename=final_filename)
     title = instance.number
-    slug = slugify(title)
-    return "products/{product_title}/{filename}".format(product_title=title, filename=filename)  
+    slug = random_string_generator(size=4)
+    return "products/{product_title}/{slug}_{filename}".format(product_title=title, filename=filename, slug=slug)  
 
 def upload_image_path(instance, filename):
     # new_filename = random.randint(1, 39111111)
@@ -65,8 +94,9 @@ def upload_image_path(instance, filename):
     # final_filename = '{new_filename}{ext}'.format(new_filename=new_filename, ext=ext)
     # return "products/{new_filename}/{final_filename}".format(new_filename=new_filename, final_filename=final_filename)
     title = instance.product.title
-    slug = slugify(title)
-    return "products/{product_title}/{filename}".format(product_title=title, filename=filename)  
+    # slug = slugify(title)
+    slug = random_string_generator(size=4)
+    return "products/{product_title}/{slug}_{filename}".format(product_title=title, filename=filename, slug=slug)  
 
 class ProductQuerySet(models.query.QuerySet):
     def featured(self):

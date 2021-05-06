@@ -30,7 +30,7 @@ from django.http import HttpResponse
 from django.conf import settings
 import pandas as pd
 from .models import Test
-from products.models import Product, ProductItem, SizeOption, upload_main_image_path
+from products.models import Product, ProductItem, SizeOption, upload_main_image_path, upload_image_path
 from products.forms import ProductForm, ProductItemForm
 from mysite.utils import unique_slug_generator, unique_product_item_slug_generator
 from mysite.mixin import StaffRequiredView
