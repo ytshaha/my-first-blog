@@ -372,13 +372,15 @@
         <div class="col-6 col-lg-4 col-md-4 add-border">
                 <div class='product-image-div'>
                     <picture>
-                        {% if product_item.product.main_image %}
                         <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
+                        {% if product_item.product.main_image %}
                         <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.main_image.url }}" class="product-main-image"></a>   
-                        
+                        {% elif product_item.product.main_image_link %}
+                        <a href="{{ product_item.get_absolute_url }}"><img src="{{ product_item.product.main_image_link }}" class="product-main-image"></a>   
                         {% else %}
                         <span class="text-muted">No Image</span>
                         {% endif %}
+                        
                     </picture>
                 </div>
                 <div class="row product-card__div product-card-on-bidding">

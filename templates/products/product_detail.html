@@ -67,7 +67,13 @@ a.wish-link-added {
         <!-- 사진부분 -->
         <div class='col-lg-6 col-md-8 col-sm-12 mx-auto'style="padding-bottom:10px;">
             <picture>
+                {% if product_item.product.main_image %}
                 <img class="detail-image detail-image-main" src="{{ product_item.product.main_image.url }}" alt="메인사진" style="object-fit:contain;width:100%;height:100%;float:both;">
+                {% elif product_item.product.main_image_link %}
+                <img class="detail-image detail-image-main" src="{{ product_item.product.main_image_link }}" alt="메인사진" style="object-fit:contain;width:100%;height:100%;float:both;">
+                {% else %}
+                <span class="text-muted">No Image</span>
+                {% endif %}
             </picture>
         </div>
         <!-- 설명부분 div1 -->
@@ -546,6 +552,16 @@ a.wish-link-added {
                 </div>
                 {% endif %}
             {% endfor %}
+            {% for image in images_link %}
+                {% if image %}
+                <div class='col-lg-10 col-md-10 col-sm-12 mx-auto' style="padding:0px;">
+                    <picture>
+                        <img class="detail-image detail-image-sub" src="{{ image }}" alt="서브사진{{ forloop.counter }}" style="width:100%;height:100%;float:both;">
+                    </picture>
+                </div>
+                {% endif %}
+            {% endfor %}
+            
         </div>
     </div>
 

@@ -50,6 +50,13 @@
                         {% for product_item in product_items %}
                         <tr>
                             <td class="align-middle">
+                                {% if product_item.product.main_image %}
+                                <img src="{{ product_item.product.main_image.url }}" style='max-width:100%;max-height:80px;height:auto;object-fit:cover;'>
+                                {% elif product_item.product.main_image_link %}
+                                <img src="{{ product_item.product.main_image_link }}" style='max-width:100%;max-height:80px;height:auto;object-fit:cover;'>
+                                {% else %}
+                                <span class='text-muted'>No Image</span>
+                                {% endif %}
                                 <img src="{{ product_item.product.main_image.url }}" style='max-width:100%;max-height:80px;height:auto;object-fit:cover;'>
                             </td>
                             <td class="align-middle" style='font-size:x-small;'>{{ product_item.product.number }}</td>

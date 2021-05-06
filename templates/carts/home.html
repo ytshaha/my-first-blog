@@ -32,7 +32,15 @@
               <!-- 이미지 -->
               {% if cart_item.product_type == 'bidding' or cart_item.product_type == 'normal' or cart_item.product_type == 'rental' %}
               <!-- 아래의 slug주소도되고 주석처리한 pk로도 됨. -->
+              
+              {% if cart_item.product_item.product.main_image %}
               <a href="{{ cart_item.product_item.get_absolute_url }}"><img src="{{ cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'></a>   
+              {% elif cart_item.product_item.product.main_image_link %}
+              <a href="{{ cart_item.product_item.get_absolute_url }}"><img src="{{ cart_item.product_item.product.main_image_link }}" style='max-width:100%;max-height:100%;height:auto;object-fit:cover;'></a>   
+              {% else %}
+              <a href="{{ cart_item.product_item.get_absolute_url }}">No Image</a>   
+              {% endif %}
+ 
               {% elif cart_item.product_type == 'ticket' %}
               <p class='text-center align-middle' style='font-size:1.5em; color:#423f3b;margin-top:30px;'>
                 <i class="fas fa-ticket-alt fa-5x"></i>

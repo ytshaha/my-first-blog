@@ -54,9 +54,12 @@
                     <tr>
                         {% if obj.product.main_image %}
                         <td><img src="{{ obj.product.main_image.url }}" alt="" style='max-width:40px;'></td>
+                        {% elif obj.product.main_image_link %}
+                        <td><img src="{{ obj.product.main_image_link }}" alt="" style='max-width:40px;'></td>
                         {% else %}
                         <td>No Image</td>
                         {% endif %}
+                        
                         <td>{{ obj.product.number }}</td>
                         <td>{{ obj.product.title }}</td>
                         <td>{{ obj.info_delivery_from }}</td>

@@ -138,7 +138,7 @@ class ProductBiddingListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_bidding_list.html'
     context_object_name = 'product_items'
-    # paginate_by = 20
+    paginate_by = 20
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductBiddingListView, self).get_context_data(*args, **kwargs)
@@ -215,7 +215,7 @@ class ProductBiddingCompleteListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_bidding_list.html'
     context_object_name = 'product_items'
-
+    paginate_by = 20
     def get_context_data(self, *args, **kwargs):
         context = super(ProductBiddingCompleteListView, self).get_context_data(*args, **kwargs)
 
@@ -239,7 +239,7 @@ class ProductWishListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_wish_list.html'
     context_object_name = 'product_items'
-
+    paginate_by = 20
     def get_context_data(self, *args, **kwargs):
         context = super(ProductWishListView, self).get_context_data(*args, **kwargs)
         brands = Brand.objects.all()
@@ -368,7 +368,7 @@ class ProductStaffCheckView(LoginRequiredMixin, StaffRequiredView, generic.ListV
     '''
     template_name = 'products/product_list.html'
     context_object_name = 'product_items'
-
+    paginate_by = 20
     def get_context_data(self, *args, **kwargs):
         context = super(ProductStaffCheckView, self).get_context_data(*args, **kwargs)
         brands = Brand.objects.all()
@@ -507,6 +507,11 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
                   product_obj.image8,
                   product_obj.image9,
                   ]
+        images_link = [product_obj.main_image_link,
+                       product_obj.image1_link,
+                       product_obj.image2_link
+                       ]
+                        
 
         # product_images_qs = ProductImage.objects.filter(product=product_obj)
         product_obj.save()
@@ -594,6 +599,7 @@ class ProductDetailSlugView(LoginRequiredMixin, generic.DetailView):
         context['bidding_on'] = bidding_on
         context['cart'] = cart_obj
         context['images'] = images
+        context['images_link'] = images_link
         context['bidding_obj_up_to_10'] = bidding_obj_up_to_10
         context['is_rental'] = is_rental
         context['has_card'] = has_card

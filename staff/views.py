@@ -167,6 +167,9 @@ def upload_product_complete(request):
         if created == True:
             obj_images = [obj.main_image, obj.image1, obj.image2, obj.image3, obj.image4, obj.image5, 
                           obj.image6, obj.image7, obj.image8, obj.image9]
+            obj_images_link = [obj.main_image_link, obj.image1_link, obj.image2_link]
+
+            image_data_link = False
             for i, col in enumerate(image_cols):
                 if data[col] is not None:
                     try:
@@ -176,18 +179,23 @@ def upload_product_complete(request):
                             # obj.save()
                             # self.license_file.save(upload_main_image_path, File(f))
                     except OSError:
-                        response = urllib.request.urlretrieve(data[col])
-                        # print("response", response)
-                        
+                        image_data_link = True
+                        # if data[col][0:4] == 'http':
+                        # obj_images_link[i] = data[col]
+                        # print("obj_images_link[{}] : {}".format(i, data[col]))
+                        # obj.save()
 
-                        # contents = open(response[0]).read()
-                        with open(response[0], 'rb') as f:
-                            file_url = urlparse(data[col])
-                            filename = os.path.basename(file_url.path)
-                            obj_images[i].save(filename, f)
-                            print(i, "이미지 확인", obj_images[i])
-                            obj.save()
-                            # obj.save()
+                        # response = urllib.request.urlretrieve(data[col])
+                        # with open(response[0], 'rb') as f:
+                        #     file_url = urlparse(data[col])
+                        #     filename = os.path.basename(file_url.path)
+                        #     obj_images[i].save(filename, f)
+                        #     print(i, "이미지 확인", obj_images[i])
+                        #     obj.save()
+            if image_data_link:
+                obj.main_image_link = data['main_image']
+                obj.image1_link = data['image1']
+                obj.image2_link = data['image2']
             obj.save()
 
     product_qs = Product.objects.all()
@@ -231,10 +239,10 @@ def upload_product_item_complete(request):
         obj, created = ProductItem.objects.new(data)
 
         
-
-        for option in option_cols:
-            if data[option]:
-                SizeOption.objects.create(product_item=obj, option=data[option], amount=data[option + '_amount'])
+        if obj is not None:
+            for option in option_cols:
+                if data[option]:
+                    SizeOption.objects.create(product_item=obj, option=data[option], amount=data[option + '_amount'])
         # if not created:
         #     no_updated_dict[data['number']] = 'Already Exist'
         # elif created == 'Brand DoesNotExist':

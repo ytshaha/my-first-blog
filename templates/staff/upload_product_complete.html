@@ -56,8 +56,10 @@
                         <td>{{ obj.info_delivery }}</td>
                         {% if obj.main_image %}
                         <td><img src="{{ obj.main_image.url }}" alt="" style='max-width:60px;'></td>
+                        {% elif obj.main_image_link %}
+                        <td><img src="{{ obj.main_image_link }}" alt="" style='max-width:60px;'></td>
                         {% else %}
-                        <td>No Image</td>
+                        <td><span class='text-muted'>No Image</span></td>
                         {% endif %}
                     </tr>  
                     {% endfor %}

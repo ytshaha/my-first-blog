@@ -30,7 +30,13 @@
                   {% for review in reviews %}  
                   <tr>
                     <td>
+                        {% if review.cart_item.product_item.product.main_image %}
                         <img src="{{ review.cart_item.product_item.product.main_image.url }}" style='max-width:100%;max-height:80px;height:auto;object-fit:cover;'>
+                        {% elif review.cart_item.product_item.product.main_image_link %}
+                        <img src="{{ review.cart_item.product_item.product.main_image_link }}" style='max-width:100%;max-height:80px;height:auto;object-fit:cover;'>
+                        {% else %}
+                        <span class="text-muted">No Image</span>
+                        {% endif %}
                     </td>
                     <td class="text-left align-middle">
                         <p class="mb-1" style='color:black;font-size:medium;font-weight:bold;'><a href="{% url 'reviews:detail' pk=review.pk %}" style='color:black;'>{{ review.title|slice:"27" }}{% if review.title|length|get_digit:"-1" > 27 %}...{% endif %}</p></a>

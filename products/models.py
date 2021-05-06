@@ -239,6 +239,10 @@ class Product(models.Model):
     image8                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
     image9                  = models.FileField(upload_to=upload_main_image_path, null=True, blank=True)
     
+    main_image_link         = models.CharField(max_length=250, blank=True, null=True)
+    image1_link             = models.CharField(max_length=250, blank=True, null=True)
+    image2_link             = models.CharField(max_length=250, blank=True, null=True)
+
 
     objects = ProductManager()
 
@@ -352,23 +356,28 @@ class ProductItemManager(models.Manager):
         return obj, created
 
     def new(self, data):
-        data['product'] = Product.objects.get(number=data['product'])
-        if data['product_type'] == 'bidding':
-            data['bidding_start_date'] = KST.localize(data['bidding_start_date']).astimezone(pytz.utc)
-            data['bidding_end_date'] = KST.localize(data['bidding_end_date']).astimezone(pytz.utc)
-            bidding_cols = ["product", "info_delivery_from", "amount", 'option', 'price', 'info_product_date', 'description', 'product_type', 
-                            'start_price', 'price_step', 'bidding_start_date', 'bidding_end_date']
-            data_filtered = {k: v for k, v in data.items() if k in bidding_cols}                
-        elif data['product_type'] == 'normal':
-            normal_cols = ["product", "info_delivery_from", "amount", 'option', 'price', 'info_product_date', 'description', 'product_type']
-            data_filtered = {k: v for k, v in data.items() if k in normal_cols}
+        try:
+            data['product'] = Product.objects.get(number=data['product'])
+            if data['product_type'] == 'bidding':
+                data['bidding_start_date'] = KST.localize(data['bidding_start_date']).astimezone(pytz.utc)
+                data['bidding_end_date'] = KST.localize(data['bidding_end_date']).astimezone(pytz.utc)
+                bidding_cols = ["product", "info_delivery_from", "amount", 'option', 'price', 'info_product_date', 'description', 'product_type', 
+                                'start_price', 'price_step', 'bidding_start_date', 'bidding_end_date']
+                data_filtered = {k: v for k, v in data.items() if k in bidding_cols}                
+            elif data['product_type'] == 'normal':
+                normal_cols = ["product", "info_delivery_from", "amount", 'option', 'price', 'info_product_date', 'description', 'product_type']
+                data_filtered = {k: v for k, v in data.items() if k in normal_cols}
+                
+                
             
-            
-        
-        obj = self.model.objects.create(**data_filtered)
-        created = True
-        return obj, created
-    
+            obj = self.model.objects.create(**data_filtered)
+            created = True
+            return obj, created
+        except:
+            # 해당 프러덕트가 없을때
+            obj = None
+            created = False
+            return obj, created
 
     def get_queryset(self):
         return ProductItemQuerySet(self.model, using=self._db)
