@@ -253,14 +253,18 @@ def send_phone_number_alimtalk(request):
     if request.method == 'POST' and request.is_ajax():
         print('Ajax requested.')
         phone_number = request.POST.get('phone_number', None)
-
-        alimtalk_message = '''회원 가입하신 이메일로 계정 활성화 링크를 보내드렸습니다. 
-24시간 이내에 메일 내 링크로 접속하시어 계정활성화를 해주세요.'''
-        send(templateCode='register', to=phone_number, message=alimtalk_message)
-        print("{}으로 결제완료 알림톡이 보내졌습니다.".format(phone_number))
-
         code = random.randint(1000,9999)
         print(code)
+        
+        alimtalk_message = '''MOUM8 회원가입에 사용하신 휴대폰 번호 본인인증 확인 안내입니다.
+        
+아래 코드를 회원가입 양식에 입력해주세요.
+3분안에 입력이 되지 않으면 인증이 되지 않습니다.
+
+코드 : {}'''.format(code)
+        send(templateCode='alim8', to=phone_number, message=alimtalk_message)
+        print("{}으로 결제완료 알림톡이 보내졌습니다.".format(phone_number))
+
         request.session['phone_code'] = code
         return HttpResponse(json.dumps({'status': "success", 'message': "알림톡보내기 성공", 'code': code}),
                                     content_type="application/json")
