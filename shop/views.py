@@ -12,8 +12,8 @@ from products.models import Product, ProductItem
 
 
 def index(request):
-    product_items_normal = ProductItem.objects.get_normal().filter(featured=True)[:6]
-    product_items_bidding = ProductItem.objects.get_bidding().filter(featured=True)[:6]
+    product_items_normal = ProductItem.objects.get_normal().filter(featured=True)[:12]
+    product_items_bidding = ProductItem.objects.get_bidding().filter(featured=True)[:12]
     
     print("Current request.session.")
     for key, value in request.session.items():

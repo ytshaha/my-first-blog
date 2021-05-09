@@ -90,7 +90,7 @@
 </div>
 
 
-
+<!-- <button id=user-certi-button>본인인증</button> -->
 
 <script>
 
@@ -127,11 +127,26 @@ function certification() {
     if (rsp.success) {
       // jQuery로 HTTP 요청
       jQuery.ajax({
-        url: "https://www.myservice.com/certifications", // 서비스 웹서버
+        url: "{% url 'accounts:certification_danal' %}", // 서비스 웹서버
         method: "POST",
         headers: { "Content-Type": "application/json" },
         data: { imp_uid: rsp.imp_uid }
-      });
+      }).done(function (data) {
+            // 제이쿼리결과 받아오기...
+            $.alert("본인인증이 완료되었습니다.");
+            console.log("ajax done");
+            if (data.status=='success') {
+                var msg = '코드가 인증되었습니다.';
+                $.alert(msg);
+                var registerCompleteBtn = $("#registerCompleteBtn")
+                registerCompleteBtn.prop('disabled', false)
+
+            } else if (data.status=='fail') {
+                var msg = '코드가 인증되지 않았습니다. 다시 입력해주세요.';
+                $.alert(msg);
+                console.log(msg);
+            }
+      })
     } else {
         alert("인증에 실패하였습니다. 에러 내용: " +  rsp.error_msg);
     }

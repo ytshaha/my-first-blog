@@ -1,6 +1,7 @@
 import pandas as pd
 import random
 import json
+from mysite.client import Iamport
 
 from django.contrib.auth import authenticate, login, get_user_model
 
@@ -30,6 +31,11 @@ from .signals import user_logged_in
 from tickets.models import Ticket
 
 User = get_user_model()
+
+IAMPORT_CODE = getattr(settings, "IAMPORT_CODE", 'imp30832141')
+IMPORT_REST_API_KEY = getattr(settings, "IMPORT_REST_API_KEY", '8306112827056798')
+IMPORT_REST_API_SECRET = getattr(settings, "IMPORT_REST_API_SECRET", 'WmAHFCAyZFfaMy10g6xRPvFawuuJAVPxiqfY2Pw2uMcgkegAlOsak7kQCOzdKpK2PZ0RPxTjj6AEkQfF')
+
 
 # Create your views here.
 @login_required # /account/lo gin/?next=/some/path/
@@ -293,6 +299,52 @@ def confirm_phone_number_alimtalk(request):
 #         product_obj = Product.objects.filter(pk=pk)
 #         request.session['product_number'] = product_obj.number
 #         return product_obj    
+
+################################################################################################################
+# 테스트 용
+
+def certification_danal(request):
+    iamport = Iamport(imp_key=IMPORT_REST_API_KEY, imp_secret=IMPORT_REST_API_SECRET)
+    print(iamport)
+    imp_uid = IAMPORT_CODE
+    # imp_uid = request.POST.get('imp_uid', None)
+    print(imp_uid)
+    response = iamport.find_certification(imp_uid=imp_uid)
+    print("★response ", response)
+    if status=='paid':
+        print("결재 상태 : paid, success")
+        card_obj = Card.objects.create(
+                                    user=user, 
+                                    card_name=card_name, 
+                                    customer_uid=customer_uid
+                                    )
+        card_obj.set_active()
+
+        return HttpResponse(json.dumps({'status': "success", 'message': "일반 결제 성공"}),
+                            content_type="application/json")
+    else:
+        print("결재 상태 : 결제가 실패하였습니다.")
+        return HttpResponse(json.dumps({'status': "fail", 'message': "결제 실패"}), content_type="application/json")
+
+    try:
+        response = iamport.find_certification(imp_uid=imp_uid)
+        
+        print('코드인증 성공')
+        return HttpResponse(json.dumps({'status': "success", 'message': "코드인증성공"}),
+                                    content_type="application/json")
+    except Iamport.ResponseError as e:
+        # 응답 에러 처리
+        print('응답 에러 처리')
+        return HttpResponse(json.dumps({'status': "fail", 'message': "응답 에러 처리"}),
+                                    content_type="application/json")
+    except Iamport.HttpError as http_error:
+        # HTTP not 200 응답 에러 처리
+        print('HTTP Error')
+        return HttpResponse(json.dumps({'status': "fail", 'message': "HTTP Error"}),
+                                    content_type="application/json")
+
+################################################################################################################
+
 
 class UserDetailUpdateView(LoginRequiredMixin, UpdateView):
     form_class = UserDetailChangeForm

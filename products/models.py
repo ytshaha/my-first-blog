@@ -425,7 +425,7 @@ class ProductItem(models.Model):
     info_product_date   = models.CharField(max_length=100, blank=True, null=True, help_text=u'제조연월_의류만 해당')
 
     updated             = models.DateTimeField(auto_now_add=True) # 업로드날짜.
-    featured            = models.BooleanField(default=False)    # 용도: 보여지게하기
+    featured            = models.BooleanField(default=True)    # 용도: 보여지게하기
     active              = models.BooleanField(default=True)     # 용도: 구매가능여부결정.(보여져도 구매안되게할 수 있다.)
     slug                = models.SlugField(blank=True, unique=True, allow_unicode=True)
     

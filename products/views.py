@@ -40,7 +40,7 @@ class ProductNormalListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_list.html'
     context_object_name = 'product_items'
-    paginate_by = 20
+    paginate_by = 24
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductNormalListView, self).get_context_data(*args, **kwargs)
@@ -138,7 +138,7 @@ class ProductBiddingListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_bidding_list.html'
     context_object_name = 'product_items'
-    paginate_by = 20
+    paginate_by = 24
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProductBiddingListView, self).get_context_data(*args, **kwargs)
@@ -239,7 +239,7 @@ class ProductWishListView(LoginRequiredMixin, generic.ListView):
     '''
     template_name = 'products/product_wish_list.html'
     context_object_name = 'product_items'
-    paginate_by = 20
+    paginate_by = 24
     def get_context_data(self, *args, **kwargs):
         context = super(ProductWishListView, self).get_context_data(*args, **kwargs)
         brands = Brand.objects.all()
@@ -368,7 +368,7 @@ class ProductStaffCheckView(LoginRequiredMixin, StaffRequiredView, generic.ListV
     '''
     template_name = 'products/product_list.html'
     context_object_name = 'product_items'
-    paginate_by = 20
+    paginate_by = 24
     def get_context_data(self, *args, **kwargs):
         context = super(ProductStaffCheckView, self).get_context_data(*args, **kwargs)
         brands = Brand.objects.all()

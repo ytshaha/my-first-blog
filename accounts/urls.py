@@ -22,7 +22,8 @@ urlpatterns = [
     path('card/register/', card_register, name='card_register'),
     path('card/select/', card_select, name='card_select'),
     path('deacitve/', views.deactive_account, name='deactive'),
-    
+    path('certification/', views.certification_danal, name='certification_danal'),
+
     
     ]
 
