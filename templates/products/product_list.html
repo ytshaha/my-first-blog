@@ -123,18 +123,24 @@ a.wish-link-added {
         font-size:small;
     }
     .product-card__title {
-        height:32px;
+        height:auto;
         font-size:small;
         line-height:1.2;
     }
 
 @media only screen and (min-width: 768px) {
+    .product-card__name {
+        font-weight:bold;
+        font-size:small;
+    }
     .product-card__price {
         font-size:medium;
+        bottom:0px;
+        position:relative;
     }
 
     .product-card__title {
-        height:38px;
+        height:auto;
         /* font-weight:bold; */
         font-size:medium;
     }
@@ -152,6 +158,15 @@ a.wish-link-added {
     .nav-link-font-responsive {
         font-size:medium;
     }
+}
+
+.product-main-image {
+    width: 100%!important;
+    height:100%!important;
+    object-fit:cover!important;
+    /* display: block;
+    border-style: none;
+    padding:0px; */
 }
 
 </style>
@@ -381,7 +396,7 @@ a.wish-link-added {
 <div class='container'>
     <div class='row'>
         {% for product_item in product_items %}
-        <div class="col-6 col-lg-3 col-md-4 col-sm-6 add-border infinite-item">
+        <div class="col-6 col-lg-3 col-md-4 col-sm-6 px-0 add-border infinite-item">
                 <div class='product-image-div'>
                     <picture>
                         {% if product_item.product.main_image %}
@@ -442,7 +457,7 @@ a.wish-link-added {
                             {% endif %} 
                         </div>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[ {{ product_item.product.brand }} ]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}

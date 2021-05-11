@@ -108,25 +108,42 @@ a.wish-link-added {
 }
 
 
-/* 데탑 */
+/* For mobile phones: */
 .product-card__name {
-    font-weight:bold;
-    font-size:small;
-}
+        font-weight:bold;
+        font-size:x-small;
+    }
+    .product-card__list-price{
+        color:gray;
+        font-size:small;
+    }
+    .product-card__price {
+        font-weight:bold;
+        font-size:small;
+    }
+    .product-card__title {
+        height:auto;
+        font-size:small;
+        line-height:1.2;
+    }
 
-.product-card__list-price{
-    color:gray;
-    font-size:small;
-}
+@media only screen and (min-width: 768px) {
+    .product-card__name {
+        font-weight:bold;
+        font-size:small;
+    }
+    .product-card__price {
+        font-size:medium;
+    }
 
-.product-card__price {
-    font-weight:bold;
-    font-size:medium;
-}
+    .product-card__title {
+        height:auto;
+        /* font-weight:bold; */
+        font-size:medium;
+    }
 
-.product-card__title {
-    /* font-weight:bold; */
-    font-size:medium;
+    
+
 }
 
 </style>
@@ -396,7 +413,7 @@ a.wish-link-added {
                             {% endif %} 
                         </div>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">[ {{ product_item.product.brand }} ]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"27" }}{% if product_item.product.title|length|get_digit:"-1" > 20 %}...{% endif %}

@@ -108,7 +108,6 @@ a.wish-link-added {
     z-index: 2;
 }
 
-
 /* For mobile phones: */
 .product-card__name {
         font-weight:bold;
@@ -123,23 +122,29 @@ a.wish-link-added {
         font-size:small;
     }
     .product-card__title {
-        height:32px;
+        height:auto;
         font-size:small;
         line-height:1.2;
     }
 
 @media only screen and (min-width: 768px) {
+    .product-card__name {
+        font-weight:bold;
+        font-size:small;
+    }
     .product-card__price {
         font-size:medium;
     }
 
     .product-card__title {
-        height:38px;
+        height:auto;
         /* font-weight:bold; */
         font-size:medium;
     }
-}
 
+    
+
+}
 @font-face {
     font-family: "Graduate"; src: 
     url("//db.onlinewebfonts.com/t/9506f84c9799845028ab3fa9a7d0f00f.eot"); src: 
@@ -408,7 +413,7 @@ a.wish-link-added {
                 </div>
                 <div class="row product-card__div product-card-on-bidding">
                     <div class='col-12 align-self-center product-infos'>
-                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[ {{ product_item.product.brand }} ]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
@@ -496,7 +501,7 @@ a.wish-link-added {
                             {% endif %} 
                         </div>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[ {{ product_item.product.brand }} ]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
@@ -595,7 +600,7 @@ a.wish-link-added {
                             {% endif %} 
                         </div>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0">{{ product_item.product.info_product_number }}</p> -->
-                        <p class="product-card__name align-text-bottom mt-1 mb-0">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-0">[ {{ product_item.product.brand }} ]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"27" }}{% if product_item.product.title|length|get_digit:"-1" > 20 %}...{% endif %}

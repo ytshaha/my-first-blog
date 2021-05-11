@@ -90,21 +90,28 @@ a.wish-link-added {
         font-size:small;
     }
     .product-card__title {
-        height:32px;
+        height:auto;
         font-size:small;
         line-height:1.2;
     }
 
 @media only screen and (min-width: 768px) {
+    .product-card__name {
+        font-weight:bold;
+        font-size:small;
+    }
     .product-card__price {
         font-size:medium;
     }
 
     .product-card__title {
-        height:38px;
+        height:auto;
         /* font-weight:bold; */
         font-size:medium;
     }
+
+    
+
 }
 
 .carousel-text-title {
@@ -421,7 +428,7 @@ a:hover{
                         {% else %}
                         <p class="product-card___on-bidding mb-0" style='font-size:small;color:black;'></p>                            
                         {% endif %}        
-                        <p class="product-card__name align-text-bottom mt-1 mb-1">[{{ product_item.product.brand }}]</p>
+                        <p class="product-card__name align-text-bottom mt-1 mb-1">[ {{ product_item.product.brand }} ]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
                             {{ product_item.product.title|slice:"30" }}{% if product_item.product.title|length|get_digit:"-1" > 30 %}...{% endif %}
