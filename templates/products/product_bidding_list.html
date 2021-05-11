@@ -411,8 +411,8 @@ a.wish-link-added {
                     {% endif %}
 
                 </div>
-                <div class="row product-card__div product-card-on-bidding">
-                    <div class='col-12 align-self-center product-infos'>
+                <div class="row product-card-on-bidding mx-0 p-1">
+                    <div class='col-12 align-self-center product-infos p-0'>
                         <p class="product-card__name align-text-bottom mt-1 mb-1">[ {{ product_item.product.brand }} ]</p>
                         <!-- <p class="product-card__name align-text-bottom mt-1 mb-0" style='font-size:small;'>{{ product_item.product.info_product_number }}</p> -->
                         <p class="product-card__title mb-0">
@@ -456,7 +456,7 @@ a.wish-link-added {
 <div class=container>
     <div class='row'>
         {% for product_item in bidding_ready_items %}
-        <div class="col-6 col-lg-4 col-md-4 add-border">
+        <div class="col-6 col-lg-3 col-md-4 col-sm-6 px-0 add-border infinite-item">
                 <div class='product-image-div'>
                     <picture>
 
@@ -508,7 +508,7 @@ a.wish-link-added {
                         </p>
                         <p class='product-card__list-price mb-0'><span><del>{{ product_item.product.list_price|intcomma }}원</del></span></p>
                         <p class='product-card__price mb-0'><span>{{ product_item.price|intcomma }} 원 </span><span class="product-card__price" style='color:red;font-size:smallfont-weight:bold;'>{{ product_item.sale_ratio|floatformat:"0" }} %</span></p>
-                        <div class='row'>
+                        <div class='row m-0 p-0'>
                             <div class='col-7 pr-0'>
                                 <!-- 해외상품의 경우 4시까지 결재해야하므로 구매가능일로 그날 4시까지로 자동 시간계산할수 있게 해야할듯하다. -->
                                 <div id='count' style='color:green;font-weight:bold;display:inline;font-size:smaller;'></div>
@@ -555,7 +555,7 @@ a.wish-link-added {
 <div class=container>
     <div class='row'>
         {% for product_item in bidding_end_items %}
-        <div class="col-6 col-lg-4 col-md-4 add-border">
+        <div class="col-6 col-lg-3 col-md-4 col-sm-6 px-0 add-border infinite-item">
                 <div class='product-image-div'>
                     <picture>
                         
